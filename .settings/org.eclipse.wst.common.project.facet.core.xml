@@ -3,5 +3,5 @@
   <fixed facet="php.core.component"/>
   <fixed facet="php.component"/>
   <installed facet="php.core.component" version="1"/>
-  <installed facet="php.component" version="7.1"/>
+  <installed facet="php.component" version="7"/>
 </faceted-project>
