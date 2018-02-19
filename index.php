@@ -8,11 +8,10 @@ if(!$db = Db::getInstance()) { die('DB not connected'); }
 
 // process given uri
 if(isset($_GET['uri'])) {
-    echo $_GET['uri'];
     $controller = Routes::getController($_GET['uri']);
     $action = Routes::getAction($_GET['uri']);
     
-    // if(!$controller OR !$action){ header('Location: error.php'); }
+    if(!$controller OR !$action){ header('Location: error.php'); }
 }else{
     $controller = 'pages';
     $action     = 'home';

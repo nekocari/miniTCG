@@ -8,7 +8,7 @@ class MemberController {
         global $db;
         require_once 'models/member.php';
         $this->members = Member::getAll($db, 'name', 'ASC');
-        require_once 'views/members/list.php';
+        require_once 'views/member/list.php';
     }
     
 }
