@@ -2,9 +2,11 @@
 require_once 'inc/constants.php';
 require_once 'inc/dbconnect.php';
 require_once 'routing.php';
+require_once 'helper/layout.php';
 
 // initialize database connection
 if(!$db = Db::getInstance()) { die('DB not connected'); }
+
 
 // process given uri
 if(isset($_GET['uri'])) {

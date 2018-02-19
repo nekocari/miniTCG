@@ -2,7 +2,7 @@
 
 
 <table>
-<?php foreach($this->members as $member){ ?>
+<?php foreach($members as $member){ ?>
 	<tr>
 		<td><?php echo $member->id; ?></td>
 		<td><?php echo $member->name; ?></td>

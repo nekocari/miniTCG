@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed|Roboto');
+
+body {
+	font-family: "Roboto", sans-serif;
+	font-size: 1rem;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	color: black;
+	background-color: white;
+}
+
+a {
+	border-bottom: 1px dotted;
+	text-decoration: none;
+	font-weight: normal;
+	font-style: normal;
+	color: DarkTurquoise;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Barlow Semi Condensed", sans-serif;
+	font-weight: bold;
+}
+
+.row {
+	display: flex;
+	align-items: flex-stretch;
+}
+
+.wrapper {
+	width: 90%;
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+#header {
+	background-color: DarkTurquoise;
+	height: 100px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	padding: 1rem;
+}
+
+#title {
+	font-family: "Barlow Semi Condensed", sans-serif;
+	font-size: 2.5rem;
+	font-weight: bold;
+	font-style: italic;
+	letter-spacing: 0.25rem;
+	text-shadow: 2px 2px 0 rgba(255,255,255,1),
+				2px 2px 3px rgba(0,0,0,0.5);
+}
+
+#nav {
+	width: 200px; 
+}
+#nav ul {
+	margin: 0;
+	padding: 0
+}
+#nav ul li {
+	display: block;
+	margin: 0.2rem;
+	padding: 0.2rem 0.5rem;
+}
+#content {
+	padding: 1rem;
+}
+#footer {
+	background-color: lightgrey;
+	padding: 1rem;
+	text-align: center;
+}

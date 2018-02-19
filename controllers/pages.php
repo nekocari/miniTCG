@@ -5,11 +5,11 @@
 class PagesController {
     
     public function home() {
-        require_once('views/pages/home.php');
+        Layout::render('pages/home.php');
     }
     
     public function notfound() {
-        require_once('views/templates/error.php');
+        Layout::render('templates/error.php');
     }
     
 }
