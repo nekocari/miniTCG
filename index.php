@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'inc/constants.php';
 require_once 'inc/dbconnect.php';
 require_once 'routing.php';
@@ -13,7 +14,7 @@ if(isset($_GET['uri'])) {
     $controller = Routes::getController($_GET['uri']);
     $action = Routes::getAction($_GET['uri']);
     
-    if(!$controller OR !$action){ header('Location: error.php'); }
+    if(!$controller OR !$action){ header('Location: '.BASE_URI.'error.php'); }
 }else{
     $controller = 'pages';
     $action     = 'home';
@@ -31,5 +32,4 @@ if(file_exists('controllers/'.$controller.'.php')) {
 }else{
     die('controller not found');
 }
-
 ?>

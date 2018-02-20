@@ -31,8 +31,9 @@ class Member {
      * 
      * @return Member[]
      */
-    public static function getAll($db_conn, $order_by, $order) {
+    public static function getAll($order_by, $order) {
         $members = array();
+        $db_conn = Db::getInstance();
         
         if(!in_array($order_by, self::$query_order_by_options)){
             $order_by = 'name';
@@ -60,8 +61,9 @@ class Member {
      * 
      * @return boolean|Member 
      */
-    public static function getById($id, $db_conn) {
-        $member = false; 
+    public static function getById($id) {
+        $member = false;
+        $db_conn = Db::getInstance();
         
         $req = $db_conn->prepare('SELECT id, name, level, mail FROM members WHERE id = :id');
         if($req->execute(array(':id' => $id))) {

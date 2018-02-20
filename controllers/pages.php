@@ -8,8 +8,12 @@ class PagesController {
         Layout::render('pages/home.php');
     }
     
-    public function notfound() {
+    public function notFound() {
         Layout::render('templates/error.php');
+    }
+    
+    public function notLoggedIn() {
+        Layout::render('templates/error_login.php');
     }
     
 }
