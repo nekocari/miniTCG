@@ -64,9 +64,11 @@ class Member {
         $member = false; 
         
         $req = $db_conn->prepare('SELECT id, name, level, mail FROM members WHERE id = :id');
-        if($req->execute(array(':id' => $id))){
-            $data = $req->fetch();
-            $member = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+        if($req->execute(array(':id' => $id))) {
+            if($req->rowCount()) {
+                $data = $req->fetch();
+                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+            }
         }
         
         return $member;

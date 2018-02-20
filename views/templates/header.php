@@ -1,6 +1,7 @@
 <html>
 
 	<head>
+		<base href="<?php echo BASE_URI; ?>">
 		<title>miniTCG</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 	</head>
