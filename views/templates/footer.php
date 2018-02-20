@@ -1,7 +1,7 @@
 				</div>
 			</div>
 			
-			<div class="row" id="footer">miniTCG by Cari</div>
+			<div class="text-center"><hr>miniTCG by Cari</div>
 		
 		</div>  
 		

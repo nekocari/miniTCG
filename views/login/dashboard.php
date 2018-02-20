@@ -1,3 +1,3 @@
 <h1>Mitgliedsbereich</h1>
 
-<a href="signout.php">AUSLOGGEN</a>
+<a class="btn btn-dark" href="signout.php">AUSLOGGEN</a>
