@@ -25,11 +25,22 @@ class Login {
                 $_SESSION['user'] = $this->user;
                 // update db field - last login to now
                 $this->db->query('UPDATE members SET login_date = NOW(), ip = \''.$_SERVER['REMOTE_ADDR'].'\' WHERE id = '.$this->user->id);
-                
+                // insert ito member online table
+                $this->db->query('INSERT INTO members_online (member,date,ip) VALUES ('.$this->user->id.',NOW(),\''.$_SERVER['REMOTE_ADDR'].'\')');
                 return true;
             }
         }
         return false;
+    }
+    
+    public static function logout($db, $user) {
+        if(isset($_SESSION['user'])){
+            session_unset();
+            session_destroy();
+            // delete from member online table
+            $db->query('DELETE FROM members_online WHERE member = '.$user->id);
+            return true;
+        }
     }
     
     /**

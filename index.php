@@ -8,7 +8,6 @@ require_once 'helper/layout.php';
 // initialize database connection
 if(!$db = Db::getInstance()) { die('DB not connected'); }
 
-
 // process given uri
 if(isset($_GET['uri'])) {
     $controller = Routes::getController($_GET['uri']);

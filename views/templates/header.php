@@ -52,7 +52,7 @@
         			<div class="card my-4">
         				<div class="card-header">Mitglieder online</div>
         				<div class="card-body">
-        					<a href="">EinNutzer02</a>
+        					<?php require_once PATH.'inc/member_online.php'; ?>
         				</div>
         			</div>
         		</div>

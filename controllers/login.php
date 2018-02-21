@@ -35,11 +35,14 @@ class LoginController {
      */
 	public function signout() {
 		if(isset($_SESSION['user'])){
-			session_unset();
-		    session_destroy();
-		    header("Location: ".BASE_URI."signout.php");
+		    require_once 'models/login.php';
+		    if(Login::logout(Db::getInstance(),$_SESSION['user'])){
+		        Layout::render('login/signout.php');
+		    }
+		}else{
+		    header("Location: ".BASE_URI."member/dashboard.php");
 		}
-      	Layout::render('login/signout.php');
+      	
     }
 
     /**
