@@ -13,4 +13,6 @@
     Routes::addRoute('signin.php', 'login', 'signin');
     Routes::addRoute('signout.php', 'login', 'signout');
     Routes::addRoute('lost_password.php', 'login', 'password');
+    
+    ROUTES::addRoute('admin/dashboard.php', 'admin', 'dashboard');
 ?>

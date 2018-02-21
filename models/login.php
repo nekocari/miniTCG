@@ -3,7 +3,7 @@ class Login {
     private $name;
     private $password;
     private $db;
-    private $user;
+    protected $user;
     
     public function __construct($db, $name, $password) {
         $this->db		= $db;
@@ -45,7 +45,7 @@ class Login {
     
     /**
      * get current user data
-     * 
+     *
      * @return mixed|boolean
      */
     public function getUser() {
@@ -54,6 +54,15 @@ class Login {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * set current user data
+     *
+     * @param mixed user data stored in session after login
+     */
+    public function setUser($user) {
+        $this->user = $user;
     }
     
     public static function userExists($name, $mail){
