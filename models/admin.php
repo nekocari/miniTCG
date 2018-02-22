@@ -22,8 +22,8 @@ class Admin extends Login {
             $req = $this->db->prepare('SELECT id, name FROM members_rights JOIN rights ON id = right_id WHERE member_id = :id');
             $req->execute(array(':id'=>$this->user->id));
             if($req->rowCount() > 0){
-                foreach($req->fetchAll(PDO::FETCH_OBJ) as $id => $right){
-                    $this->rights[$id] = $right; 
+                foreach($req->fetchAll(PDO::FETCH_OBJ) as $right){
+                    $this->rights[$right->id] = $right->name; 
                 }
             }
         }
