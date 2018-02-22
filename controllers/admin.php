@@ -3,21 +3,53 @@
  * Admin Controller
  */
 class AdminController {
-	
+    
     /**
-     * Team Dashboard 
+     * Team Dashboard
      */
     public function dashboard() {
-    	if(!isset($_SESSION['user'])){
-    		header("Location: ".BASE_URI."signin.php");
-    	}
-    	require_once PATH.'models/admin.php';
-    	$admin = new Admin(Db::getInstance(),$_SESSION['user']);
-    	if($admin->getRights() != NULL){
-    	    Layout::render('admin/dashboard.php');
-    	}else{
-    	    Layout::render('templates/error_rights.php');
-    	}
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        if($admin->getRights() != NULL){
+            Layout::render('admin/dashboard.php');
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Settings
+     */
+    public function settings() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        if($admin->getRights() != NULL){
+            
+            require_once PATH.'models/setting.php';
+            $data = array();
+            if(isset($_POST['updateSettings']) AND isset($_POST['settings'])){
+                foreach($_POST['settings'] as $name => $value){
+                    $setting = new Setting($name, $value);
+                    $return = $setting->store();
+                    if($return !== true){
+                        $data['_errors'][] = $return;
+                    }
+                }
+            }
+            if(isset($_POST['updateSettings']) AND !isset($data['_error'])){ 
+                $data['_success'] = array('Settings wurden aktualisiert.'); 
+            }
+            $data['settings'] = Setting::getAll();
+            Layout::render('admin/settings.php',$data);
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
     }
     
     /**
@@ -54,111 +86,5 @@ class AdminController {
         
     }
     
-    /**
-     * new Category
-     */
-    public function addCategory() {
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
-        }
-        require_once PATH.'models/admin.php';
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
-        if(in_array('Admin',$admin->getRights())){
-            if(isset($_POST['addCategory']) AND isset($_POST['name'])){
-                require_once PATH.'models/category.php';
-                if(($return = Category::add($_POST['name'])) === true){
-                    header("Location: ".BASE_URI."admin/categories.php");
-                }else{
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                }
-            }else{
-                Layout::render('admin/add_category.php');
-            }
-        }else{
-            Layout::render('templates/error_rights.php');
-        }
-        
-    }
-    
-    /**
-     * new Subcategory
-     */
-    public function addSubcategory() {
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
-        }
-        require_once PATH.'models/admin.php';
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
-        if(in_array('Admin',$admin->getRights())){
-            if(isset($_POST['addCategory']) AND isset($_POST['name']) AND isset($_POST['category'])){
-                require_once PATH.'models/subcategory.php';
-                if(($return = Subcategory::add($_POST['name'],$_POST['category'])) === true){
-                    header("Location: ".BASE_URI."admin/categories.php");
-                }else{
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                }
-            }else{
-                require_once PATH.'models/category.php';
-                $category = Category::getById($_POST['category']);
-                Layout::render('admin/add_subcategory.php',['category'=>$category]);
-            }
-        }else{
-            Layout::render('templates/error_rights.php');
-        }
-        
-    }
-    
-    
-    /**
-     * edit Subcategory
-     */
-    public function editSubcategory() {
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
-        }
-        require_once PATH.'models/admin.php';
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
-        if(in_array('Admin',$admin->getRights())){
-            require_once PATH.'models/subcategory.php';
-            $subcategory = Subcategory::getById($_GET['id']);
-            if(isset($_POST['rename']) AND isset($_POST['name']) AND isset($_POST['category'])){
-                $subcategory->setCategory($_POST['category']);
-                $subcategory->setName($_POST['name']);
-                $subcategory->store();
-                header("Location: ".BASE_URI."admin/categories.php");
-            }
-            $category = Category::getById($subcategory->getCategory());
-            $categories = Category::getALL();
-            Layout::render('admin/edit_subcategory.php',['category'=>$category,'subcategory'=>$subcategory,'categories'=>$categories]);
-        }else{
-            Layout::render('templates/error_rights.php');
-        }
-        
-    }
-    
-    
-    /**
-     * edit Category
-     */
-    public function editCategory() {
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
-        }
-        require_once PATH.'models/admin.php';
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
-        if(in_array('Admin',$admin->getRights())){
-            require_once PATH.'models/category.php';
-            $category = Category::getById($_GET['id']);
-            if(isset($_POST['rename']) AND isset($_POST['name'])){
-                $category->setName($_POST['name']);
-                $category->store();
-                header("Location: ".BASE_URI."admin/categories.php");
-            }
-            Layout::render('admin/edit_category.php',['category'=>$category]);
-        }else{
-            Layout::render('templates/error_rights.php');
-        }
-        
-    }
 }
 ?>

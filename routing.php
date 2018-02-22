@@ -14,8 +14,9 @@
     Routes::addRoute('signout.php', 'login', 'signout');
     Routes::addRoute('lost_password.php', 'login', 'password');
     
-    ROUTES::addRoute('admin/', 'admin', 'dashboard');
     ROUTES::addRoute('admin', 'admin', 'dashboard');
+    ROUTES::addRoute('admin/', 'admin', 'dashboard');
+    ROUTES::addRoute('admin/settings.php', 'admin', 'settings');
     
     ROUTES::addRoute('admin/categories.php', 'admincategories', 'categories');
     ROUTES::addRoute('admin/categories/add.php', 'admincategories', 'addCategory');
