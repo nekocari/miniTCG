@@ -138,5 +138,44 @@ class AdminController {
             Layout::render('templates/error_rights.php');
         }
     }
+    
+    /**
+     * Card Upload
+     */
+    public function cardUpload() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            
+            require_once 'models/setting.php';
+            $setting_decksize = Setting::getByName('cards_decksize');            
+            if($setting_decksize instanceof Setting){
+                $data['settings']['decksize'] = $setting_decksize->getValue();
+            }else{
+                $data['_error'][] = $setting_decksize;
+            }
+            
+            if(isset($_POST['upload']) AND isset($_POST['name']) AND isset($_POST['deckname']) AND isset($_FILES)){
+                require_once 'helper/cardupload.php';
+                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id);
+                if(($upload_status = $upload->store()) === true){
+                    $data['_success'][] = 'Karten wurde erfolgreich hochgeladen.';
+                }else{
+                    $data['_error'][] = 'Upload nicht abgeschlossen: '.$upload_status;
+                }
+            }
+            
+            Layout::render('admin/cards/upload.php', $data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+
+
 }
 ?>

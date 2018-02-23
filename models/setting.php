@@ -57,8 +57,30 @@ class Setting {
                 $settings[] = new Setting($setting->name, $setting->value, $setting->description);
             }
         }
-
+        
         return $settings;
+    }
+    
+    public static function getByName($name){
+        $settings = array();
+        $db = Db::getInstance();
+        
+        try {
+            $req = $db->prepare('SELECT * FROM settings WHERE name = :name');
+            $req->execute(array(':name'=>$name));
+            
+            $setting = $req->fetch(PDO::FETCH_OBJ);
+            if($setting){
+                $setting_obj = new Setting($setting->name, $setting->value, $setting->description);
+            }else{
+                return false;
+            }
+        
+            return $setting_obj;
+        }
+        catch(PDOException $e) {
+            return 'Daten nicht gefunden. Datenbank meldet: '.$e->getMessage();
+        }
     }
     
 
