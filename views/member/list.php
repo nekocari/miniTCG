@@ -13,7 +13,7 @@
 <?php foreach($members as $member){ ?>
     	<tr>
     		<td><?php echo $member->id; ?></td>
-    		<td><a href=""><?php echo $member->name; ?></a></td>
+    		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->name; ?></a></td>
     		<td><?php echo $member->level; ?></td>
     	</tr>
 <?php } ?>

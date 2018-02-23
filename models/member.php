@@ -75,4 +75,25 @@ class Member {
         
         return $member;
     }
+    
+    /**
+     * returns url to view pofil
+     *
+     * @return string
+     */
+    public function getProfilLink() {
+        return 'members/profil.php?id='.$this->id;
+    }
+    
+    public function store() {
+        $db = Db::getInstance();
+        try{
+            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail WHERE id = :id');
+            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ));
+            return true;
+        }
+        catch(PDOException $e) {
+            return $e->getMessage();
+        }
+    }
 }
