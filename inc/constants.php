@@ -11,5 +11,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost'){
     define('PATH', dirname(__FILE__).'/../'); 				// relativer Pfad
     define('BASE_URI', 'http://localhost/'.PROJECT_FOLDER.'/'); 			// absoluter Pfad
     define('SERVER_URL', $_SERVER['SERVER_NAME']);
+    
+    define('CARDS_FOLDER','img/cards/');
 }
 ?>

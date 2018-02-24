@@ -5,7 +5,7 @@ class CardUpload {
     private $name;
     private $deckname;
     private $files = array();
-    private $cards_dir = PATH."img/cards/";
+    private $cards_dir = PATH.CARDS_FOLDER;
     private $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
     private $cards_decksize;

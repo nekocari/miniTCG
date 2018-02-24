@@ -1,0 +1,1 @@
+<span class="cardimage" style="background-image:url('[URL]'); width:[WIDTH]px; height:[HEIGHT]px;"></span>

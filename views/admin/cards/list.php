@@ -11,13 +11,28 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-    		<th></th>
+    		<th>ID</th>
+    		<th>Kürzel<br><small>Name</small></th>
+    		<th>Ersteller<br><small>Datum</small></th>
     		<th></th>
 		</tr>
 	</thead>
 	<tbody>
+	<?php foreach($carddecks as $deck){ ?>
 		<tr>
-			<td></td>
+			<td><?php echo $deck->getId(); ?></td>
+			<td>
+				<span class="deckname"><?php echo $deck->getDeckname(); ?></span>
+				<span class="badge <?php echo $badge_css[$deck->getStatus()]?>"><?php echo ucfirst($deck->getStatus()); ?></span><br>
+				<small><?php echo $deck->getName(); ?></small>
+			</td>
+			<td><?php echo $deck->getCreatorName(); ?><br><small><?php echo $deck->getDate(); ?></small></td>
+			<td>
+				<form method="post" action="admin/cards/edit.php?id=<?php echo $deck->getId(); ?>" class="text-right">
+    				<button class="btn btn-link"><i class="fas fa-pencil-alt"></i> bearbeiten</button>
+    			</form>	
+			</td>
 		</tr>
+	<?php } ?>
 	</tbody>
 </table>

@@ -23,6 +23,7 @@
     
     ROUTES::addRoute('admin/cards/upload.php', 'admin', 'cardUpload');
     ROUTES::addRoute('admin/cards/list.php', 'admin', 'cardList');
+    ROUTES::addRoute('admin/cards/edit.php', 'admin', 'cardEdit');
     
     ROUTES::addRoute('admin/categories.php', 'admincategories', 'categories');
     ROUTES::addRoute('admin/categories/add.php', 'admincategories', 'addCategory');

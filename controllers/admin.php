@@ -175,6 +175,64 @@ class AdminController {
             Layout::render('templates/error_rights.php');
         }
     }
+    
+    /**
+     * Card List
+     */
+    public function cardList() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once 'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            require_once 'models/carddeck.php';
+            $data['carddecks'] = Carddeck::getAll();
+            $data['badge_css']['new'] = 'badge-primary';
+            $data['badge_css']['public'] = 'badge-secondary';
+            
+            Layout::render('admin/cards/list.php',$data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Card edit
+     */
+    public function cardEdit() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once 'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            require_once 'models/carddeck.php';
+            require_once 'models/setting.php';
+            require_once 'models/member.php';
+            
+            if(isset($_POST['updateDeckdata'])){
+                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator']);
+                if($update === true){
+                    $data['_success'][] = 'Daten wurden gespeichert';
+                }else{
+                    $date['_error'][] = $update;
+                }
+            }
+            
+            $data['deckdata'] = Carddeck::getById($_GET['id']);
+            $data['card_images'] = $data['deckdata']->getImages();
+            $data['memberlist'] = Member::getAll('name', 'ASC');
+            
+            Layout::render('admin/cards/edit.php',$data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
 
 
 }

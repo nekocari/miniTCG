@@ -10,12 +10,20 @@
 		<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     	<!-- Custom CSS -->
-		<!--<link rel="stylesheet" type="text/css" href="css/style.css">-->
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		
+		<!-- Fontawesome -->
 		<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+		
+		<!-- jquery and bootstrap js -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
 	</head>
 
 	<body>
-		
+		<!-- Main Navigation -->
         <nav class="navbar navbar-expand navbar-dark bg-dark">
         	<div class="container">
         		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">miniTCG</a>
@@ -40,21 +48,9 @@
         	</div>
         </nav>
         
+        <!-- Center of Layout -->
 		<div class="container">
-    		<div class="row my-4">
+    		<div id="main-area" class="row my-4">
     		
-        		<div class="col-3" id="nav">
-        			<div class="list-group">
-        				<a class="list-group-item" href="signup.php">Registrierung</a>
-        				<a class="list-group-item" href="member/dashboard.php">Mitgliedsbereich</a>
-        			</div>
-        			
-        			<div class="card my-4">
-        				<div class="card-header">Mitglieder online</div>
-        				<div class="card-body">
-        					<?php require_once PATH.'inc/member_online.php'; ?>
-        				</div>
-        			</div>
-        		</div>
-	
-				<div class="col" id="content">
+        		<!-- Content -->
+				<div class="col-12 col-lg-9" id="content">
