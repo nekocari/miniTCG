@@ -159,9 +159,16 @@ class AdminController {
                 $data['_error'][] = $setting_decksize;
             }
             
-            if(isset($_POST['upload']) AND isset($_POST['name']) AND isset($_POST['deckname']) AND isset($_FILES)){
+            require_once PATH.'models/subcategory.php';
+            $data['categories'] = Category::getALL();
+            foreach($data['categories'] as $category){
+                $cat_id = $category->getId();
+                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
+            }
+            
+            if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory']) AND isset($_FILES)){
                 require_once 'helper/cardupload.php';
-                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id);
+                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory']);
                 if(($upload_status = $upload->store()) === true){
                     $data['_success'][] = 'Karten wurde erfolgreich hochgeladen.';
                 }else{

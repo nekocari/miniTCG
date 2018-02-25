@@ -11,8 +11,9 @@ class CardUpload {
     private $cards_decksize;
     private $cards_file_type;
     private $upload_user;
+    private $subcategory;
     
-    public function __construct($name, $deckname, $files, $upload_user) {
+    public function __construct($name, $deckname, $files, $upload_user, $subcategory) {
         $this->name     = $name;
         $this->deckname = $deckname;
         $this->files    = $files;
@@ -20,6 +21,7 @@ class CardUpload {
         $this->cards_decksize = Setting::getByName('cards_decksize')->getValue();
         $this->cards_file_type = Setting::getByName('cards_file_type')->getValue();
         $this->upload_user = $upload_user;
+        $this->subcategory = $subcategory;
     }
     
     private function mkDir() {
@@ -71,9 +73,15 @@ class CardUpload {
                 
             }
             
-            // insert into DB
+            // insert deck into DB
             $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator) VALUES (:name, :deckname, :creator)');
             $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user));
+            $deck_id = $this->db->lastInsertId();
+            
+            // insert deck subcategory relation to DB
+            $req = $this->db->prepare('INSERT INTO decks_subcategories (deck_id, subcategory_id) VALUES (:deck_id, :sub_id)');
+            $req->execute(array(':deck_id'=>$deck_id,':sub_id'=>$this->subcategory));
+            
         }
         catch(Exception $e){
             return $e->getMessage();

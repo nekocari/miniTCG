@@ -14,17 +14,36 @@
 		<div class="card-header">
 			Stammdaten
 		</div>
-		<div class="card-body form-row">
-    		<div class="form-group col-12 col-lg-6">
-        		<label for="name">Name <br></label>
-        		<input class="form-control" name="name" id="name" type="text" maxlength="255" pattern="[A-Za-z0-9äÄüÜöÖß _\-]+" required>
-        		<small class="text-muted">Erlaubte Zeichen:<br><i>Buchstaben, Zahlen, Leerzeichen und "_","-"</i></small>
+		<div class="card-body">
+		
+    		<div class="form-row">
+        		<div class="form-group col-12 col-lg-6">
+            		<label for="name">Name <br></label>
+            		<input class="form-control" name="name" id="name" type="text" maxlength="255" pattern="[A-Za-z0-9äÄüÜöÖß _\-]+" required>
+            		<small class="text-muted">Erlaubte Zeichen:<br><i>Buchstaben, Zahlen, Leerzeichen und "_","-"</i></small>
+            	</div>
+        		<div class="form-group col-12 col-lg-6">
+            		<label for="deckname">Kürzel <br></label>
+            		<input class="form-control" name="deckname" id="deckname" type="text" maxlength="50" pattern="[a-z0-9_\-]+" required>
+            		<small class="text-muted">Erlaubte Zeichen:<br><i>Kleinbuchstaben (<b>ohne</b> Umlaute), Zahlen und "_","-"</i></small>
+            	</div>
         	</div>
-    		<div class="form-group col-12 col-lg-6">
-        		<label for="deckname">Kürzel <br></label>
-        		<input class="form-control" name="deckname" id="deckname" type="text" maxlength="50" pattern="[a-z0-9_\-]+" required>
-        		<small class="text-muted">Erlaubte Zeichen:<br><i>Kleinbuchstaben (<b>ohne</b> Umlaute), Zahlen und "_","-"</i></small>
-        	</div>
+        	
+    		<div class="form-row">
+        		<div class="form-group col-12 col-lg-6">
+            		<label for="category">Kategorie <br></label>
+            		<select class="form-control" id="category" name="subcategory" required>
+            			<?php foreach($categories as $category){ ?>
+            			<optgroup label="<?php echo $category->getName(); ?>">
+            				<?php foreach($subcategories[$category->getId()] as $subcategory){ ?>
+            				<option value="<?php echo $subcategory->getId(); ?>"><?php echo $subcategory->getName(); ?></option>
+            				<?php } ?>
+            			</optgroup>
+            			<?php } ?>
+            		</select>
+            	</div>
+            </div>
+            
     	</div>
 	</div>
 
@@ -50,14 +69,12 @@
     	
 	<div class="my-4">
     	<h6>Hinweise:</h6>
-    	<small>
     	<ul>
     		<li>Kürzel ist der Name des Decks der in der Regel auf den Karten steht.</li>
     		<li>Der Name enthält den vollen Namen der auf der Deck Unterseite angezeigt wird.</li> 
     		<li>Karten werden in der Reihenfolge ausgewählt wie sie später angezeigt werden sollen. 
     			Die Vergabe der Dateinamen erfolgt automatisch!</li>
     	</ul>
-    	</small>
 	</div>
 
 </form>
