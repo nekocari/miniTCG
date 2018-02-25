@@ -43,7 +43,24 @@ class DeckController {
     }
     
     public function deckpage() {
-        require_once 'models/carddeck.php';
+        if(isset($_SESSION['user']) AND isset($_GET['id'])){
+            require_once 'models/carddeck.php';
+            require_once 'models/setting.php';
+            
+            $data = array();
+            $data['deck'] = Carddeck::getById($_GET['id']);
+            
+            if($data['deck'] instanceof Carddeck){
+                
+                Layout::render('deck/deckpage.php',$data);
+                
+            }else{
+                header('Location: '.BASE_URI.'error.php');
+            }
+        }else{
+            Layout::render('templates/error_login.php');
+        }
+        
     }
     
 }

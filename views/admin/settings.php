@@ -14,7 +14,7 @@
     			<small class="text-muted"><?php echo $setting->getDescription(); ?></small>
     		</div>
     		<div>
-    			<input class="form-control" name="settings[<?php echo $setting->getName(); ?>]" value="<?php echo $setting->getValue(); ?>">
+    			<input class="form-control" name="settings[<?php echo $setting->getName(); ?>]" value="<?php echo $setting->getValue(); ?>" required>
     		</div>
     	</li>
     	<?php } ?>

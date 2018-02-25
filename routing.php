@@ -7,6 +7,7 @@
     
     Routes::addRoute('decks.php', 'deck', 'index');
     Routes::addRoute('decks/category.php', 'deck', 'category');
+    Routes::addRoute('decks/deck.php', 'deck', 'deckpage');
     
     Routes::addRoute('memberlist.php', 'member', 'memberlist');
     Routes::addRoute('members/profil.php', 'member', 'profil');

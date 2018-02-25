@@ -107,9 +107,12 @@ class Carddeck {
         $req->execute(array(':id'=>$id));
         if($req->rowCount() > 0){
             $deck = $req->fetch(PDO::FETCH_OBJ);
-        }
-        return new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+            return new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
             $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+        }else{
+            return false;
+        }
+        
     }
     
     public static function getBySubcategory($sub_id) {
@@ -231,4 +234,32 @@ class Carddeck {
         }
         return $card_images;
     }
+    
+    public function getDeckView() {
+        $deck = '';
+        require_once PATH.'models/setting.php';
+        $cards_per_row = Setting::getByName('deckpage_cards_per_row')->getValue();
+        $decksize = Setting::getByName('cards_decksize')->getValue();
+        
+        $card_images = $this->getImages();
+        unset($card_images['master']);
+        
+        $counter = 0;
+        foreach($card_images as $image){
+            $counter++;
+            $deck.= $image;
+            if($counter%$cards_per_row == 0 AND $counter != $decksize){
+                $deck.= "<br>";
+            }
+        } 
+        return $deck;
+    }
+    
+    public function getMasterCard() {
+        $card_images = $this->getImages();
+        return $card_images['master'];
+    }
+    
+    //TODO: improvements: get and display collectors
+    
 }
