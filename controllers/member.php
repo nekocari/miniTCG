@@ -9,9 +9,11 @@ class MemberController {
      */
     public function memberlist() {
         require_once 'models/member.php';
-        $members = Member::getAll('name', 'ASC');
+        require_once 'models/level.php';
+        $data['members'] = Member::getGrouped('level');
+        $data['level'] = Level::getAll();
         
-        Layout::render('member/list.php',['members'=>$members]);
+        Layout::render('member/list.php',$data);
     }
     
     /**

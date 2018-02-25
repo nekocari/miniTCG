@@ -38,7 +38,7 @@ class Level {
         $req = $db_conn->query("SELECT * FROM level ORDER BY level ASC");
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
-                $level[] = new Level($data['id'], $data['level'], $data['name'], $data['cards']);
+                $level[$data['level']] = new Level($data['id'], $data['level'], $data['name'], $data['cards']);
             }
         }else{
             return false;

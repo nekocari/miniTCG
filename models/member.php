@@ -24,11 +24,11 @@ class Member {
     
     /**
      * get data of all members from database
-     * 
+     *
      * @param Db $db_conn PDO connection object
      * @param string $order_by fieldname for order [id|name|level]
      * @param string $order order direction [ASC|DESC]
-     * 
+     *
      * @return Member[]
      */
     public static function getAll($order_by, $order) {
@@ -47,6 +47,28 @@ class Member {
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
                 $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+            }
+        }
+        
+        return $members;
+    }
+    
+    /**
+     * get data of all members from database
+     *
+     * @param Db $db_conn PDO connection object
+     * @param string $group fieldname for array grouping
+     *
+     * @return Member[]
+     */
+    public static function getGrouped($group) {
+        $members = array();
+        $db_conn = Db::getInstance();
+        
+        $req = $db_conn->query("SELECT id, name, level, mail FROM members ORDER BY name ASC");
+        if($req->execute()){
+            foreach($req->fetchAll() as $data) {
+                $members[$data[$group]][] = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
             }
         }
         
