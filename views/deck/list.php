@@ -22,3 +22,5 @@
     	<?php } ?>
     </table>
 </div>
+
+<?php echo $pagination; ?>

@@ -8,9 +8,23 @@ class DeckController {
         require_once 'models/category.php';
         require_once 'models/subcategory.php';
         require_once 'models/carddeck.php';
+        require_once 'helper/pagination.php';
         
-        $date = array();
-        $data['decks'] = Carddeck::getAllByStatus('public');
+        if(isset($_GET['pg']) AND intval($_GET['pg'] > 0)){
+            $currPage = $_GET['pg'];
+        }else{
+            $currPage = 1;
+        }
+        $decks = Carddeck::getAllByStatus('public');
+        $pagination = new Pagination($decks, 10, $currPage, 'decks.php');
+        
+        $data = array();
+        $data['decks'] = $pagination->getElements();
+        $data['pagination'] = $pagination->getPaginationHtml();
+        
+        if(count($data['decks']) == 0){
+            $data['_error'][] = 'Ungültige Seite: Keine Elemente zum Anzeigen.';
+        }
         
         Layout::render('deck/list.php', $data);
     }
