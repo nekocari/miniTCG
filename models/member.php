@@ -14,6 +14,7 @@ class Member {
     public $mail;
     private static $query_order_by_options = array('id','name','level');
     private static $query_order_direction_options = array('ASC','DESC');
+    private static $accepted_group_options = array('id','level');
     
     public function __construct($id, $name, $level, $mail) {
         $this->id = $id;
@@ -61,11 +62,23 @@ class Member {
      *
      * @return Member[]
      */
-    public static function getGrouped($group) {
+    public static function getGrouped($group, $order_by = 'id', $order = 'ASC') {
         $members = array();
         $db_conn = Db::getInstance();
         
-        $req = $db_conn->query("SELECT id, name, level, mail FROM members ORDER BY name ASC");
+        if(!in_array($order_by, self::$query_order_by_options)){
+            $order_by = 'name';
+        }
+        
+        if(!in_array($order, self::$query_order_direction_options)){
+            $order = 'ASC';
+        }
+        
+        if(!in_array($group, self::$accepted_group_options)){
+            $group = 'id';
+        }
+        
+        $req = $db_conn->query("SELECT id, name, level, mail FROM members ORDER BY $order_by $order");
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
                 $members[$data[$group]][] = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
