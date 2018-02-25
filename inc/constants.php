@@ -13,5 +13,6 @@ if($_SERVER['SERVER_NAME'] == 'localhost'){
     define('SERVER_URL', $_SERVER['SERVER_NAME']);
     
     define('CARDS_FOLDER','img/cards/');
+    define('DATE_FORMATE','d.m.Y');
 }
 ?>

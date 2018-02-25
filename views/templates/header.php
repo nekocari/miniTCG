@@ -21,7 +21,6 @@
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   
 	</head>
-
 	<body>
 		<!-- Main Navigation -->
         <nav class="navbar navbar-expand navbar-dark bg-dark">
@@ -34,14 +33,21 @@
     			
     			<div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
-        				<li class="nav-item active">
+        				<li class="nav-item">
         					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home"></i> Startseite</a>
         				</li>
-        				<li class="nav-item active">
+        				<li class="nav-item">
         					<a class="nav-link" href="memberlist.php"><i class="fas fa-user"></i> Mitglieder</a>
         				</li>
-        				<li class="nav-item active">
-        					<a class="nav-link" href="cardsets.php"><i class="fas fa-folder"></i> Karten</a>
+        				<li class="nav-item dropdown">
+        					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder"></i> Karten</a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
+                            	<?php foreach($tcg_categories as $tcg_category){ ?>
+									<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
+								<?php } ?>
+                            	<div class="dropdown-divider"></div>
+                            	<a class="dropdown-item" href="decks.php">Alle</a>
+                            </div>
         				</li>
         			</ul>
     			</div>

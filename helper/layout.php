@@ -9,10 +9,15 @@ class Layout {
     
     
     public static function render($view, $values = array()) {
-        foreach($values as $key => $val) {
-            $$key = $val;
-        }
         if(file_exists('views/'.$view)) {
+            
+            foreach($values as $key => $val) {
+                $$key = $val;
+            }
+            
+            require_once 'models/category.php';
+            $tcg_categories = Category::getALL();
+            
             require_once self::$headerTemplate;
             if(isset($_error)){
                 $template = file_get_contents(self::$errorMsgTemplate);
@@ -28,6 +33,7 @@ class Layout {
             }
             require_once 'views/'.$view;
             require_once self::$footerTemplate;
+            
         }else{
             die('View not found!');
         }

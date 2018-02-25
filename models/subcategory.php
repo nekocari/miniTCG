@@ -48,7 +48,22 @@ class Subcategory extends Category {
         
         if($req->rowCount() > 0){
             foreach($req->fetchALL(PDO::FETCH_OBJ) as $subcategory){
-                $subcategories[$subcategory->category][$subcategory->id] = new Subcategory($subcategory->id, $subcategory->name, $subcategory->category);
+                $subcategories[$subcategory->id] = new Subcategory($subcategory->id, $subcategory->name, $subcategory->category);
+            }
+        }
+        return $subcategories;
+    }
+    
+    public static function getByCategory($category){
+        $subcategories = array();
+        $db = Db::getInstance();
+        
+        $req = $db->prepare('SELECT * FROM subcategories WHERE category = :category ORDER BY name ASC');
+        $req->execute(array(':category'=>$category));
+        
+        if($req->rowCount() > 0){
+            foreach($req->fetchALL(PDO::FETCH_OBJ) as $subcategory){
+                $subcategories[$subcategory->id] = new Subcategory($subcategory->id, $subcategory->name, $subcategory->category);
             }
         }
         return $subcategories;

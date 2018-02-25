@@ -28,10 +28,13 @@ class AdmincategoriesController {
                     die();
                 }
             }
-            $categories = Category::getALL();
-            $subcategories = Subcategory::getALL();
+            $data['categories'] = Category::getALL();
+            foreach($data['categories'] as $category){
+                $cat_id = $category->getId();
+                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
+            }
             
-            Layout::render('admin/categories.php',['categories'=>$categories,'subcategories'=>$subcategories]);
+            Layout::render('admin/categories.php',$data);
         }else{
             Layout::render('templates/error_rights.php');
         }

@@ -36,6 +36,10 @@ class Category {
         return $this->name;
     }
     
+    public function getLinkUrl() {
+        return 'decks/category.php?id='.$this->id;
+    }
+    
     public function store() {
         // TODO: catch exception!
         $req = $this->db->prepare('UPDATE categories SET name = :name WHERE id = :id');
@@ -57,7 +61,7 @@ class Category {
         
         if($req->rowCount() > 0){
             foreach($req->fetchALL(PDO::FETCH_OBJ) as $category){
-                $categories[] = new Category($category->id, $category->name);
+                $categories[$category->id] = new Category($category->id, $category->name);
             }
         }
 
