@@ -24,10 +24,10 @@ class MemberController {
         if(isset($_GET['id'])){
             $id = intval($_GET['id']);
             require_once 'models/member.php';
-            $member = Member::getById($id);
+            $data['member'] = Member::getById($id);
             
-            if($member != false){
-                Layout::render('member/profil.php',['member'=>$member]);
+            if($data['member'] != false){
+                Layout::render('member/profil.php',$data);
             }else{
                 header('Location: '.BASE_URI.'error.php');
             }

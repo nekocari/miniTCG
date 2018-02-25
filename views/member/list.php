@@ -5,7 +5,10 @@
 	<?php foreach($members as $lv => $members){ ?>
 	<tr>
 		<th colspan="3">
-			<h4>Level <?php echo $lv.": ".$level[$lv]->getName(); ?> <span class="badge badge-dark"><?php echo count($members); ?></span></h4>
+			<div class="row justify-content-between">
+			<span>Level <?php echo $lv; ?> - <?php echo $level[$lv]->getName(); ?></span>
+			<span class="badge badge-dark"><?php echo count($members); ?> Mitglieder</span>
+			</div>
 		</th>
 	</tr>
 	<tr>

@@ -112,14 +112,10 @@ class Member {
     }
     
     /**
-     * returns url to view pofil
-     *
-     * @return string
+     * push current member data into database
+     * 
+     * @return boolean|string retuns true or in case of failure the Excetion message
      */
-    public function getProfilLink() {
-        return 'members/profil.php?id='.$this->id;
-    }
-    
     public function store() {
         $db = Db::getInstance();
         try{
@@ -130,5 +126,30 @@ class Member {
         catch(PDOException $e) {
             return $e->getMessage();
         }
+    }
+    
+    /**
+     * returns url to view pofil
+     *
+     * @return string
+     */
+    public function getProfilLink() {
+        return 'members/profil.php?id='.$this->id;
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function getMail() {
+        return $this->mail;
+    }
+    
+    public function getLevel() {
+        return $this->level;
     }
 }
