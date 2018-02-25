@@ -51,6 +51,7 @@
         		<small>Einstellungen des TCG</small>
         		<nav class="nav justify-content-end">
         			<a class="nav-link" href="admin/categories.php">Kategorien</a>
+        			<a class="nav-link" href="admin/level.php">Level</a>
         			<a class="nav-link" href="admin/settings.php">Einstellungen</a>
         		</nav>
         	</div>

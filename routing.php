@@ -18,6 +18,10 @@
     ROUTES::addRoute('admin/', 'admin', 'dashboard');
     ROUTES::addRoute('admin/settings.php', 'admin', 'settings');
     
+    ROUTES::addRoute('admin/level.php', 'admin', 'level');
+    ROUTES::addRoute('admin/level/add.php', 'admin', 'addLevel');
+    ROUTES::addRoute('admin/level/edit.php', 'admin', 'editLevel');
+    
     ROUTES::addRoute('admin/members/list.php', 'admin', 'memberList');
     ROUTES::addRoute('admin/members/edit.php', 'admin', 'editMember');
     
