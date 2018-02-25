@@ -15,9 +15,9 @@
 	</tr>
 	<?php foreach($members as $member){ ?>
 	<tr>
-		<td><?php echo $member->id; ?></td>
-		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->name; ?></a></td>
-		<td><?php echo $member->level; ?></td>
+		<td><?php echo $member->getId(); ?></td>
+		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
+		<td><?php echo $member->getLevel(); ?></td>
 	</tr>
 	<?php } ?>
 	<?php } ?>
