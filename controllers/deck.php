@@ -69,7 +69,7 @@ class DeckController {
                 Layout::render('deck/deckpage.php',$data);
                 
             }else{
-                header('Location: '.BASE_URI.'error.php');
+                header("Location: ".BASE_URI.Routes::getUri('not_found'));
             }
         }else{
             Layout::render('templates/error_login.php');
@@ -83,7 +83,7 @@ class DeckController {
      */
     public function deckUpload() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once PATH.'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
@@ -127,7 +127,7 @@ class DeckController {
      */
     public function adminDeckList() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once 'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
@@ -150,7 +150,7 @@ class DeckController {
      */
     public function deckEdit() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once 'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);

@@ -13,8 +13,8 @@
         		<h4><i class="fas fa-bullhorn"></i> News</h4>
         		<small>Neuigkeiten für die Startseite</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="admin/news/new.php">schreiben</a>
-        			<a class="nav-link" href="admin/news/edit.php">bearbeiten</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('news_add');?>">schreiben</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('news_edit');?>">bearbeiten</a>
         		</nav>
         	</div>
         </div>
@@ -25,7 +25,7 @@
         		<h4><i class="fas fa-users"></i> Mitglieder</h4>
         		<small>Verwaltung der Mitglieder</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="admin/members/list.php">Liste anzeigen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_member_index');?>">Liste anzeigen</a>
         		</nav>
         	</div>
         </div>
@@ -38,8 +38,8 @@
         		<h4><i class="fas fa-clone"></i> Karten</h4>
         		<small>Verwalte die Karten des TCG</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="admin/deck/upload.php">hochladen</a>
-        			<a class="nav-link" href="admin/deck/list.php">Liste anzeigen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('deck_upload');?>">hochladen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_deck_index');?>">Liste anzeigen</a>
         		</nav>
         	</div>
         </div>
@@ -50,9 +50,9 @@
         		<h4><i class="fas fa-cogs"></i> Applikation</h4>
         		<small>Einstellungen des TCG</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="admin/categories.php">Kategorien</a>
-        			<a class="nav-link" href="admin/level.php">Level</a>
-        			<a class="nav-link" href="admin/settings.php">Einstellungen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('category_index');?>">Kategorien</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('level_index');?>">Level</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_settings');?>">Einstellungen</a>
         		</nav>
         	</div>
         </div>

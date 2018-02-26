@@ -8,8 +8,8 @@ class LoginController {
      * Member Dashboard 
      */
     public function dashboard() {
-    	if(!isset($_SESSION['user'])){
-    		header("Location: ".BASE_URI."signin.php");
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
     	}
       	Layout::render('login/dashboard.php');
     }
@@ -24,7 +24,7 @@ class LoginController {
 			$login_success= $login->login();
 		}
 		if(isset($_SESSION['user'])){
-		    header("Location: ".BASE_URI."member/dashboard.php");
+		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}else{
 	      	Layout::render('login/signin.php');
 		}
@@ -40,7 +40,7 @@ class LoginController {
 		        Layout::render('login/signout.php');
 		    }
 		}else{
-		    header("Location: ".BASE_URI."member/dashboard.php");
+		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}
       	
     }

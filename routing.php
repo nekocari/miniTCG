@@ -1,41 +1,40 @@
 <?php
     require_once 'inc/routes.php';
     
-    Routes::addRoute('', 'pages', 'home');
-    Routes::addRoute('error.php', 'pages', 'notFound');
-    Routes::addRoute('error_login.php', 'pages', 'notLoggedIn');
+    Routes::addRoute('homepage', '', 'pages', 'home');
+    Routes::addRoute('not_found', 'error.php', 'pages', 'notFound');
+    Routes::addRoute('login_error', 'error_login.php', 'pages', 'notLoggedIn');
     
-    Routes::addRoute('decks.php', 'deck', 'index');
-    Routes::addRoute('decks/category.php', 'deck', 'category');
-    Routes::addRoute('decks/deck.php', 'deck', 'deckpage');
+    Routes::addRoute('deck_index', 'decks.php', 'deck', 'index');
+    Routes::addRoute('deck_by_category', 'decks/category.php', 'deck', 'category');
+    Routes::addRoute('deck_detail_page', 'decks/deck.php', 'deck', 'deckpage');
     
-    Routes::addRoute('memberlist.php', 'member', 'memberlist');
-    Routes::addRoute('members/profil.php', 'member', 'profil');
+    Routes::addRoute('member_index', 'memberlist.php', 'member', 'memberlist');
+    Routes::addRoute('member_profil', 'members/profil.php', 'member', 'profil');
     
-    Routes::addRoute('member/dashboard.php', 'login', 'dashboard');
-    Routes::addRoute('signup.php', 'login', 'signup');
-    Routes::addRoute('signin.php', 'login', 'signin');
-    Routes::addRoute('signout.php', 'login', 'signout');
-    Routes::addRoute('lost_password.php', 'login', 'password');
+    ROUTES::addRoute('admin_member_index', 'admin/members/list.php', 'member', 'adminMemberList');
+    ROUTES::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
     
-    ROUTES::addRoute('admin', 'admin', 'dashboard');
-    ROUTES::addRoute('admin/', 'admin', 'dashboard');
-    ROUTES::addRoute('admin/settings.php', 'admin', 'settings');
+    Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
+    Routes::addRoute('signup', 'signup.php', 'login', 'signup');
+    Routes::addRoute('signin', 'signin.php', 'login', 'signin');
+    Routes::addRoute('signout', 'signout.php', 'login', 'signout');
+    Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
     
-    ROUTES::addRoute('admin/level.php', 'level', 'level');
-    ROUTES::addRoute('admin/level/add.php', 'level', 'addLevel');
-    ROUTES::addRoute('admin/level/edit.php', 'level', 'editLevel');
+    ROUTES::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
+    ROUTES::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
     
-    ROUTES::addRoute('admin/members/list.php', 'member', 'adminMemberList');
-    ROUTES::addRoute('admin/members/edit.php', 'member', 'adminEditMember');
+    ROUTES::addRoute('level_index', 'admin/level.php', 'level', 'level');
+    ROUTES::addRoute('level_add', 'admin/level/add.php', 'level', 'addLevel');
+    ROUTES::addRoute('level_edit', 'admin/level/edit.php', 'level', 'editLevel');
     
-    ROUTES::addRoute('admin/deck/upload.php', 'deck', 'deckUpload');
-    ROUTES::addRoute('admin/deck/edit.php', 'deck', 'deckEdit');
-    ROUTES::addRoute('admin/deck/list.php', 'deck', 'adminDeckList');
+    ROUTES::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
+    ROUTES::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
+    ROUTES::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
     
-    ROUTES::addRoute('admin/categories.php', 'categories', 'categories');
-    ROUTES::addRoute('admin/categories/add.php', 'categories', 'addCategory');
-    ROUTES::addRoute('admin/categories/edit.php', 'categories', 'editCategory');
-    ROUTES::addRoute('admin/subcategories/add.php', 'categories', 'addSubcategory');
-    ROUTES::addRoute('admin/subcategories/edit.php', 'categories', 'editSubcategory');
+    ROUTES::addRoute('category_index', 'admin/category.php', 'category', 'categories');
+    ROUTES::addRoute('category_add', 'admin/category/add.php', 'category', 'addCategory');
+    ROUTES::addRoute('category_edit', 'admin/category/edit.php', 'category', 'editCategory');
+    ROUTES::addRoute('subcategory_add', 'admin/subcategory/add.php', 'category', 'addSubcategory');
+    ROUTES::addRoute('subcategory_edit', 'admin/subcategorys/edit.php', 'category', 'editSubcategory');
 ?>

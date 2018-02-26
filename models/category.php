@@ -37,7 +37,7 @@ class Category {
     }
     
     public function getLinkUrl() {
-        return 'decks/category.php?id='.$this->id;
+        return Routes::getUri('deck_by_category').'?id='.$this->id;
     }
     
     public function store() {

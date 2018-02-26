@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="admin/">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="admin/categories.php">Kategorien</a></li>
-    <li class="breadcrumb-item"><a href="admin/categories.php"><?php echo $category->getName(); ?></a>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('category_index');?>">Kategorien</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('category_index');?>"><?php echo $category->getName(); ?></a>
     <li class="breadcrumb-item active" aria-current="page">Neue Unterkategorie</li>
   </ol>
 </nav>

@@ -10,10 +10,11 @@ if(!$db = Db::getInstance()) { die('DB not connected'); }
 
 // process given uri
 if(isset($_GET['uri'])) {
-    $controller = Routes::getController($_GET['uri']);
-    $action = Routes::getAction($_GET['uri']);
+    $identifier = ROUTES::getRouteKeyByUri($_GET['uri']);
+    $controller = Routes::getController($identifier);
+    $action = Routes::getAction($identifier);
     
-    if(!$controller OR !$action){ header('Location: '.BASE_URI.'error.php'); }
+    if(!$identifier OR!$controller OR !$action){ header('Location: '.BASE_URI.'error.php'); }
 }else{
     $controller = 'pages';
     $action     = 'home';

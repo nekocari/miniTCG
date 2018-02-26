@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="admin/">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="admin/level.php">Level</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('level_index');?>">Level</a></li>
     <li class="breadcrumb-item active" aria-current="page">anlegen</li>
   </ol>
 </nav>
@@ -25,7 +25,7 @@
     </table>
 
 	<p class="text-center">
-		<a class="btn btn-dark" href="admin/level.php">zurück zur Liste</a> 
+		<a class="btn btn-dark" href="<?php echo ROUTES::getUri('level_index');?>">zurück zur Liste</a> 
 		&bull; <input class="btn btn-primary" type="submit" name="addLevel" value="anlegen">
 	</p>
 </form>

@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="admin/">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="admin/cards/list.php">Karten</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_deck_index');?>">Karten</a></li>
     <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
   </ol>
 </nav>
@@ -68,7 +68,7 @@
 </table>
 
 <p class="text-center mx-2">
-	<a class="btn btn-dark" href="admin/cards/list.php">zurück zur Liste</a> &bull;
+	<a class="btn btn-dark" href="<?php echo ROUTES::getUri('admin_deck_index');?>">zurück zur Liste</a> &bull;
 	<input class="btn btn-primary" type="submit" name="updateDeckdata" value="speichern">
 	<input type="hidden" name="id" value="<?php echo $deckdata->getId(); ?>">
 </p>

@@ -203,7 +203,7 @@ class Carddeck {
     }
     
     public function getDeckpageUrl() {
-        return 'decks/deck.php?id='.$this->id;
+        return Routes::getUri('deck_detail_page').'?id='.$this->id;
     }
     
     public function getImageUrls() {

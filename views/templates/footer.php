@@ -3,8 +3,8 @@
 				<!-- SIDEBAR -->
 				<div class="col-12 col-lg-3" id="nav">
         			<div class="list-group">
-        				<a class="list-group-item" href="signup.php">Registrierung</a>
-        				<a class="list-group-item" href="member/dashboard.php">Mitgliedsbereich</a>
+        				<a class="list-group-item" href="<?php echo ROUTES::getUri('signup');?>">Registrierung</a>
+        				<a class="list-group-item" href="<?php echo ROUTES::getUri('member_dashboard');?>">Mitgliedsbereich</a>
         			</div>
         			
         			<div class="card my-4">
@@ -21,7 +21,7 @@
 			<div class="text-center">
     			<p><hr>
     				miniTCG by <a href="http://www.heavenspell.de">Cari</a><br>
-    				<small><a href="admin/">Administration</a></small>
+    				<small><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Administration</a></small>
     			</p>
 			</div>
 		

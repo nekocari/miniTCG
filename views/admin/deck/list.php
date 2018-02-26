@@ -1,14 +1,13 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="admin/">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="admin/">Karten</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Liste</li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Karten</li>
   </ol>
 </nav>
 
 <h1>Liste aller Karten</h1>
 
-<table class="table table-striped">
+<table class="table table-striped table-sm">
 	<thead>
 		<tr>
     		<th>ID</th>
@@ -27,10 +26,9 @@
 				<small><?php echo $deck->getName(); ?></small>
 			</td>
 			<td><?php echo $deck->getCreatorName(); ?><br><small><?php echo $deck->getDate(); ?></small></td>
-			<td>
-				<form method="post" action="admin/deck/edit.php?id=<?php echo $deck->getId(); ?>" class="text-right">
-    				<button class="btn btn-link"><i class="fas fa-pencil-alt"></i> bearbeiten</button>
-    			</form>	
+			<td class="text-right">
+    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_deck_edit');?>?id=<?php echo $deck->getId(); ?>">
+    				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
 			</td>
 		</tr>
 	<?php } ?>

@@ -37,7 +37,7 @@
         					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home"></i> Startseite</a>
         				</li>
         				<li class="nav-item">
-        					<a class="nav-link" href="memberlist.php"><i class="fas fa-user"></i> Mitglieder</a>
+        					<a class="nav-link" href="<?php echo ROUTES::getUri('member_index');?>"><i class="fas fa-user"></i> Mitglieder</a>
         				</li>
         				<li class="nav-item dropdown">
         					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder"></i> Karten</a>
@@ -46,7 +46,7 @@
 									<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
 								<?php } ?>
                             	<div class="dropdown-divider"></div>
-                            	<a class="dropdown-item" href="decks.php">Alle</a>
+                            	<a class="dropdown-item" href="<?php echo ROUTES::getUri('deck_index');?>">Alle</a>
                             </div>
         				</li>
         			</ul>

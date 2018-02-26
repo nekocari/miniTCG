@@ -1,3 +1,4 @@
+
 <?php
 /*
  * Controller for member related pages
@@ -39,16 +40,25 @@ class MemberController {
      */
     public function adminMemberList() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once PATH.'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
         
         if(in_array('Admin',$admin->getRights())){
             require_once 'models/member.php';
+            require_once 'helper/pagination.php';
             $members = Member::getAll('id', 'ASC');
+            if(isset($_GET['pg'])){ 
+                $currPage = $_GET['pg'];
+            }else{
+                $currPage = 1;
+            }
+            $pagination = new Pagination($members, 10, $currPage, Routes::getUri('admin_member_index'));
+            $data['members'] = $pagination->getElements();
+            $data['pagination'] = $pagination->getPaginationHtml(); 
             
-            Layout::render('admin/members/list.php',['members'=>$members]);
+            Layout::render('admin/members/list.php',$data);
         }else{
             Layout::render('templates/error_rights.php');
         }
@@ -60,7 +70,7 @@ class MemberController {
     public function adminEditMember(){
         // TODO: add pw reset option
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once PATH.'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);

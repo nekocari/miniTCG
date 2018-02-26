@@ -9,7 +9,7 @@ class AdminController {
      */
     public function dashboard() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once PATH.'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
@@ -25,7 +25,7 @@ class AdminController {
      */
     public function settings() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once PATH.'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);

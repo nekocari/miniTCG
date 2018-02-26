@@ -10,7 +10,7 @@ class LevelController {
      */
     public function level() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once 'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
@@ -32,7 +32,7 @@ class LevelController {
      */
     public function addLevel() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once 'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
@@ -45,7 +45,7 @@ class LevelController {
                 $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
                 
                 if($return === true){
-                    header("Location: ".BASE_URI."admin/level.php");
+                    header("Location: ".BASE_URI.Routes::getUri('level_index'));
                 }else{
                     $data['_error'][] = 'Anlegen fehlgeschlagen. '.$return;
                 }
@@ -63,7 +63,7 @@ class LevelController {
      */
     public function editLevel() {
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI."signin.php");
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         require_once 'models/admin.php';
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);

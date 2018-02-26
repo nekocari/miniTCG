@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="admin/">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Verwaltung</a></li>
     <li class="breadcrumb-item active" aria-current="page">Mitglieder</li>
   </ol>
 </nav>
@@ -23,11 +23,12 @@
     		<td><?php echo $member->id; ?></td>
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->name; ?></a></td>
     		<td><?php echo $member->mail; ?></td>
-    		<td><form method="post" action="admin/members/edit.php?id=<?php echo $member->id; ?>" class="text-right">
-    				<button class="btn btn-link"><i class="fas fa-pencil-alt"></i> bearbeiten</button>
-    			</form>
+    		<td class="text-right"><a href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->id; ?>" class="btn btn-link">
+    			<i class="fas fa-pencil-alt"></i> bearbeiten</a>    			
     		</td>
     	</tr>
 <?php } ?>
 	</tbody>
 </table>
+
+<?php echo $pagination; ?>
