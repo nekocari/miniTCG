@@ -63,7 +63,7 @@ class Level {
         if($req->execute(array(':id' => $id))) {
             if($req->rowCount()) {
                 $data = $req->fetch();
-                $level = new Level($data['id'], $data['name'], $data['cards']);
+                $level = new Level($data['id'], $data['level'], $data['name'], $data['cards']);
             }
         }else{
             return false;
@@ -72,12 +72,12 @@ class Level {
         return $level;
     }
     
-    public static function add($name, $cards) {
+    public static function add($level, $name, $cards) {
         $db_conn = Db::getInstance();
         try {
             if(preg_match(self::$naming_pattern, $name) AND intval($cards) >= 0){
-                $req = $db_conn->prepare('INSERT INTO level (name, cards) VALUES (:name, :cards)');
-                $req->execute(array(':name'=>$name, 'cards'=>$cards));
+                $req = $db_conn->prepare('INSERT INTO level (level, name, cards) VALUES (:level, :name, :cards)');
+                $req->execute(array(':level'=>$level, ':name'=>$name, 'cards'=>$cards));
                 return true;
             }else{
                 throw new Exception('Name enthält mindestens ein ungültiges Zeichen.');
@@ -88,13 +88,14 @@ class Level {
         }
     }
     
-    public function update($name, $cards) {
+    public function update($level, $name, $cards) {
         try {
-            if(preg_match(self::$naming_pattern, $name) AND intval($cards) >= 0){
-                $req = $this->db->prepare('UPDATE level SET name = :name, cards = :cards WHERE id = :id');
-                $req->execute(array(':name'=>$name, ':cards'=>$cards, ':id'=>$this->id));
+            if(preg_match(self::$naming_pattern, $name) AND intval($cards) >= 0 AND intval($level) >= 0){
+                $req = $this->db->prepare('UPDATE level SET level = :level, name = :name, cards = :cards WHERE id = :id');
+                $req->execute(array(':level'=>$level, ':name'=>$name, ':cards'=>$cards, ':id'=>$this->id));
                 $this->name = $name;
                 $this->cards = $cards;
+                $this->level = $level;
                 return true;
             }else{
                 throw new Exception('Name enthält mindestens ein ungültiges Zeichen.');

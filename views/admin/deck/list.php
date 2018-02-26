@@ -28,7 +28,7 @@
 			</td>
 			<td><?php echo $deck->getCreatorName(); ?><br><small><?php echo $deck->getDate(); ?></small></td>
 			<td>
-				<form method="post" action="admin/cards/edit.php?id=<?php echo $deck->getId(); ?>" class="text-right">
+				<form method="post" action="admin/deck/edit.php?id=<?php echo $deck->getId(); ?>" class="text-right">
     				<button class="btn btn-link"><i class="fas fa-pencil-alt"></i> bearbeiten</button>
     			</form>	
 			</td>

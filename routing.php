@@ -22,20 +22,20 @@
     ROUTES::addRoute('admin/', 'admin', 'dashboard');
     ROUTES::addRoute('admin/settings.php', 'admin', 'settings');
     
-    ROUTES::addRoute('admin/level.php', 'admin', 'level');
-    ROUTES::addRoute('admin/level/add.php', 'admin', 'addLevel');
-    ROUTES::addRoute('admin/level/edit.php', 'admin', 'editLevel');
+    ROUTES::addRoute('admin/level.php', 'level', 'level');
+    ROUTES::addRoute('admin/level/add.php', 'level', 'addLevel');
+    ROUTES::addRoute('admin/level/edit.php', 'level', 'editLevel');
     
-    ROUTES::addRoute('admin/members/list.php', 'admin', 'memberList');
-    ROUTES::addRoute('admin/members/edit.php', 'admin', 'editMember');
+    ROUTES::addRoute('admin/members/list.php', 'member', 'adminMemberList');
+    ROUTES::addRoute('admin/members/edit.php', 'member', 'adminEditMember');
     
-    ROUTES::addRoute('admin/cards/upload.php', 'admin', 'cardUpload');
-    ROUTES::addRoute('admin/cards/list.php', 'admin', 'cardList');
-    ROUTES::addRoute('admin/cards/edit.php', 'admin', 'cardEdit');
+    ROUTES::addRoute('admin/deck/upload.php', 'deck', 'deckUpload');
+    ROUTES::addRoute('admin/deck/edit.php', 'deck', 'deckEdit');
+    ROUTES::addRoute('admin/deck/list.php', 'deck', 'adminDeckList');
     
-    ROUTES::addRoute('admin/categories.php', 'admincategories', 'categories');
-    ROUTES::addRoute('admin/categories/add.php', 'admincategories', 'addCategory');
-    ROUTES::addRoute('admin/categories/edit.php', 'admincategories', 'editCategory');
-    ROUTES::addRoute('admin/subcategories/add.php', 'admincategories', 'addSubcategory');
-    ROUTES::addRoute('admin/subcategories/edit.php', 'admincategories', 'editSubcategory');
+    ROUTES::addRoute('admin/categories.php', 'categories', 'categories');
+    ROUTES::addRoute('admin/categories/add.php', 'categories', 'addCategory');
+    ROUTES::addRoute('admin/categories/edit.php', 'categories', 'editCategory');
+    ROUTES::addRoute('admin/subcategories/add.php', 'categories', 'addSubcategory');
+    ROUTES::addRoute('admin/subcategories/edit.php', 'categories', 'editSubcategory');
 ?>

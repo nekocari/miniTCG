@@ -34,4 +34,57 @@ class MemberController {
         }
     }
     
+    /**
+     * Admin Memberlist
+     */
+    public function adminMemberList() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights())){
+            require_once 'models/member.php';
+            $members = Member::getAll('id', 'ASC');
+            
+            Layout::render('admin/members/list.php',['members'=>$members]);
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Member edit for Admins
+     */
+    public function adminEditMember(){
+        // TODO: add pw reset option
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights())){
+            require_once 'models/member.php';
+            if(isset($_POST['updateMemberdata'])){
+                $updated_member = new Member($_POST['id'],$_POST['name'],$_POST['level'],$_POST['mail']);
+                $return = $updated_member->store();
+                if($return === true){
+                    $data['_success'][] = 'Daten wurden gespeichert.';
+                }else{
+                    $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
+                }
+            }
+            $data['memberdata'] = Member::getById($_GET['id']);
+            if($data['memberdata']){
+                Layout::render('admin/members/edit.php',$data);
+            }else{
+                Layout::render('admin/error.php',['errors'=>array('ID ist ungültig!')]);
+            }
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
 }

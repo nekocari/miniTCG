@@ -77,4 +77,114 @@ class DeckController {
         
     }
     
+    
+    /**
+     * Deck Upload
+     */
+    public function deckUpload() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            
+            require_once 'models/setting.php';
+            $setting_decksize = Setting::getByName('cards_decksize');
+            if($setting_decksize instanceof Setting){
+                $data['settings']['decksize'] = $setting_decksize->getValue();
+            }else{
+                $data['_error'][] = $setting_decksize;
+            }
+            
+            require_once PATH.'models/subcategory.php';
+            $data['categories'] = Category::getALL();
+            foreach($data['categories'] as $category){
+                $cat_id = $category->getId();
+                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
+            }
+            
+            if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory']) AND isset($_FILES)){
+                require_once 'helper/cardupload.php';
+                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory']);
+                if(($upload_status = $upload->store()) === true){
+                    $data['_success'][] = 'Karten wurde erfolgreich hochgeladen.';
+                }else{
+                    $data['_error'][] = 'Upload nicht abgeschlossen: '.$upload_status;
+                }
+            }
+            
+            Layout::render('admin/deck/upload.php', $data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Admin Deck List
+     */
+    public function adminDeckList() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once 'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            require_once 'models/carddeck.php';
+            $data['carddecks'] = Carddeck::getAll();
+            $data['badge_css']['new'] = 'badge-primary';
+            $data['badge_css']['public'] = 'badge-secondary';
+            
+            Layout::render('admin/deck/list.php',$data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Deck edit
+     */
+    public function deckEdit() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI."signin.php");
+        }
+        require_once 'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+            require_once 'models/carddeck.php';
+            require_once 'models/setting.php';
+            require_once 'models/member.php';
+            require_once 'models/subcategory.php';
+            
+            if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'])){
+                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator'], $_POST['subcategory']);
+                if($update === true){
+                    $data['_success'][] = 'Daten wurden gespeichert';
+                }else{
+                    $date['_error'][] = $update;
+                }
+            }
+            
+            $data['categories'] = Category::getALL();
+            foreach($data['categories'] as $category){
+                $cat_id = $category->getId();
+                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
+            }
+            
+            $data['deckdata'] = Carddeck::getById($_GET['id']);
+            $data['card_images'] = $data['deckdata']->getImages();
+            $data['memberlist'] = Member::getAll('name', 'ASC');
+            
+            Layout::render('admin/deck/edit.php',$data);
+            
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
 }

@@ -38,8 +38,8 @@
         		<h4><i class="fas fa-clone"></i> Karten</h4>
         		<small>Verwalte die Karten des TCG</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="admin/cards/upload.php">hochladen</a>
-        			<a class="nav-link" href="admin/cards/list.php">Liste anzeigen</a>
+        			<a class="nav-link" href="admin/deck/upload.php">hochladen</a>
+        			<a class="nav-link" href="admin/deck/list.php">Liste anzeigen</a>
         		</nav>
         	</div>
         </div>

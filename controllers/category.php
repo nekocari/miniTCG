@@ -1,8 +1,10 @@
 <?php
 /*
- * Admin Categories Controller
+ * Categories and Subcategories Controller
  */
-class AdmincategoriesController {
+
+class CategoryController {
+  
     
     /**
      * Categories List
@@ -147,5 +149,6 @@ class AdmincategoriesController {
         }
         
     }
+
 }
 ?>
