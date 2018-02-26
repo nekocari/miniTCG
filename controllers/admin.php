@@ -220,14 +220,21 @@ class AdminController {
             require_once 'models/carddeck.php';
             require_once 'models/setting.php';
             require_once 'models/member.php';
+            require_once 'models/subcategory.php';
             
-            if(isset($_POST['updateDeckdata'])){
-                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator']);
+            if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'])){
+                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator'], $_POST['subcategory']);
                 if($update === true){
                     $data['_success'][] = 'Daten wurden gespeichert';
                 }else{
                     $date['_error'][] = $update;
                 }
+            }
+            
+            $data['categories'] = Category::getALL();
+            foreach($data['categories'] as $category){
+                $cat_id = $category->getId();
+                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
             }
             
             $data['deckdata'] = Carddeck::getById($_GET['id']);

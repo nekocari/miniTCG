@@ -139,13 +139,21 @@ class Carddeck {
         return $decks;
     }
     
-    public static function update($id, $name, $creator) {
+    public static function update($id, $name, $creator, $subcat) {
         $db = DB::getInstance();
-        if(preg_match(self::$naming_pattern, $name)){
-            $req = $db->prepare('UPDATE decks SET name = :name, creator = :creator WHERE id = :id');
-            return $req->execute(array(':id'=>$id, ':name'=>$name, ':creator'=>$creator));
-        }else{
-            return 'Der Name enthält mindestens ein ungültiges Zeichen.';
+        try{
+            if(preg_match(self::$naming_pattern, $name)){
+                $req = $db->prepare('UPDATE decks SET name = :name, creator = :creator WHERE id = :id');
+                $req->execute(array(':id'=>$id, ':name'=>$name, ':creator'=>$creator));
+                $req = $db->prepare('UPDATE decks_subcategories SET subcategory_id = :sub_cat WHERE deck_id = :id');
+                $req->execute(array(':id'=>$id, ':sub_cat'=>$subcat));
+                return true;
+            }else{
+                throw new Exception('Der Name enthält mindestens ein ungültiges Zeichen.');
+            }
+        }
+        catch(Exception $e) {
+            return $e->getMessage();
         }
     }
     
