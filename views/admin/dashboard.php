@@ -40,6 +40,7 @@
         		<nav class="nav justify-content-end">
         			<a class="nav-link" href="<?php echo ROUTES::getUri('deck_upload');?>">hochladen</a>
         			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_deck_index');?>">Liste anzeigen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('deck_update');?>">Updates</a>
         		</nav>
         	</div>
         </div>

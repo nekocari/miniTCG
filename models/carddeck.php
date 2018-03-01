@@ -119,17 +119,67 @@ class Carddeck {
         $decks = array();
         $db = DB::getInstance();
         
-        $query = 'SELECT d.*, m.name as creator_name , 
-                        s.id as sub_id, s.name as sub_name, 
+        $query = 'SELECT d.*, m.name as creator_name ,
+                        s.id as sub_id, s.name as sub_name,
                         c.id as cat_id, c.name as cat_name
                     FROM decks d
                     JOIN members m ON m.id = d.creator
                     JOIN decks_subcategories ds ON ds.deck_id = d.id
                     JOIN subcategories s ON s.id = ds.subcategory_id
                     JOIN categories c ON s.category = c.id
-                WHERE ds.subcategory_id = :sub ORDER BY d.id DESC';
+                WHERE ds.subcategory_id = :sub ORDER BY d.id ASC';
         $req = $db->prepare($query);
         $req->execute(array(':sub'=>$sub_id));
+        if($req->rowCount() > 0){
+            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                    $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+            }
+        }
+        return $decks;
+    }
+    
+    public static function getNotInUpdate() {
+        $decks = array();
+        $db = DB::getInstance();
+        
+        $query = 'SELECT d.*, m.name as creator_name ,
+                        s.id as sub_id, s.name as sub_name,
+                        c.id as cat_id, c.name as cat_name
+                    FROM decks d
+                    JOIN members m ON m.id = d.creator
+                    JOIN decks_subcategories ds ON ds.deck_id = d.id
+                    JOIN subcategories s ON s.id = ds.subcategory_id
+                    JOIN categories c ON s.category = c.id
+                    LEFT JOIN updates_decks ud ON ud.deck_id = d.id
+                WHERE ud.update_id IS NULL ORDER BY d.id ASC';
+        $req = $db->prepare($query);
+        $req->execute();
+        if($req->rowCount() > 0){
+            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                    $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+            }
+        }
+        return $decks;
+    }
+    
+    public static function getInUpdate($update_id) {
+        $decks = array();
+        $db = DB::getInstance();
+        
+        $query = 'SELECT d.*, m.name as creator_name ,
+                        s.id as sub_id, s.name as sub_name,
+                        c.id as cat_id, c.name as cat_name
+                    FROM decks d
+                    JOIN members m ON m.id = d.creator
+                    JOIN decks_subcategories ds ON ds.deck_id = d.id
+                    JOIN subcategories s ON s.id = ds.subcategory_id
+                    JOIN categories c ON s.category = c.id
+                    LEFT JOIN updates_decks ud ON ud.deck_id = d.id
+                WHERE ud.update_id = :update_id ORDER BY d.id ASC';
+        $req = $db->prepare($query);
+        $req->execute(array(':update_id'=>$update_id));
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
                 $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,

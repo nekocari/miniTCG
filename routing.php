@@ -28,6 +28,9 @@
     ROUTES::addRoute('level_add', 'admin/level/add.php', 'level', 'addLevel');
     ROUTES::addRoute('level_edit', 'admin/level/edit.php', 'level', 'editLevel');
     
+    ROUTES::addRoute('deck_update', 'admin/deck/update.php', 'update', 'updates');
+    ROUTES::addRoute('deck_update_add', 'admin/deck/update/add.php', 'update', 'add');
+    ROUTES::addRoute('deck_update_edit', 'admin/deck/update/edit.php', 'update', 'edit');
     ROUTES::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
     ROUTES::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
     ROUTES::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
