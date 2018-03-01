@@ -71,10 +71,23 @@ class Card {
     
     public function getImageUrl() {
         require_once PATH.'models/setting.php';
-        $setting_file_type = Setting::getByName('cards_file_type'); 
+        $setting_file_type = Setting::getByName('cards_file_type');
         $deckname = $this->getDeckname();
-        $url = CARDS_FOLDER.'/'.$deckname.'/'.$deckname.'.'.$setting_file_type->getValue();
-        return $this->deckname;
+        $url = CARDS_FOLDER.$deckname.'/'.$deckname.$this->card_no.'.'.$setting_file_type->getValue();
+        return $url;
+    }
+    
+    public function getImageHtml() {
+        require_once PATH.'models/setting.php';
+        $setting_tpl_width = Setting::getByName('cards_template_width')->getValue();
+        $setting_tpl_height = Setting::getByName('cards_template_height')->getValue();
+        $cardimage_tpl = file_get_contents(PATH.'views/templates/card_image_temp.php');
+        $url = $this->getImageUrl();
+        
+        $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
+        $replace = array($setting_tpl_width, $setting_tpl_height, $url);
+        
+        return str_replace($tpl_placeholder, $replace, $cardimage_tpl);
     }
     
     public static function createRandomCard($user_id,$number=1) {
@@ -97,7 +110,7 @@ class Card {
             $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
             $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deckdata->id, ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
             
-            $cards[] = new Card($db->lastInsertId(), $card['name'], $deckdata->deckname, $card['number'], $user_id, 'new', $card['date']);
+            $cards[] = new Card($db->lastInsertId(), $card['name'], $deckdata->id, $card['number'], $user_id, 'new', $card['date']);
         }
         if($number == 1){ 
             return $cards[1]; 

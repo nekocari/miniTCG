@@ -65,7 +65,7 @@ class LoginController {
 		            $errors[] = 'Benutzername oder E-Mailadresse bereits belegt';
 		        }
 		        
-		        if(count($errors)==0 AND Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail']) != false){
+		        if(count($errors)==0 AND ($new_user_id = Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail'])) != false){
 		            Layout::render('login/signup_successfull.php');
 		        }else{
 		            Layout::render('login/signup_error.php',['errors'=>$errors]);
