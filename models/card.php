@@ -76,4 +76,33 @@ class Card {
         $url = CARDS_FOLDER.'/'.$deckname.'/'.$deckname.'.'.$setting_file_type->getValue();
         return $this->deckname;
     }
+    
+    public static function createRandomCard($user_id,$number=1) {
+        require_once 'models/setting.php';
+        if(intval($number) < 0){ 
+            throw new Exception('Keine gültige Anzahl übergeben!');
+        }
+        $cards = array();
+        $decksize = Setting::getByName('cards_decksize')->getValue();
+        $db = DB::getInstance();
+        
+        for($i = 0; $i < $number; $i++){
+            // grab deck data randomly
+            $req = $db->query('SELECT id, deckname FROM decks WHERE status = \'public\' ORDER BY RAND() LIMIT 1');
+            $deckdata = $req->fetch(PDO::FETCH_OBJ);
+            // insert create data to insert into DB for a new Card Object
+            $card['number'] = mt_rand(1,$decksize);
+            $card['name'] = $deckdata->deckname.$card['number'];
+            $card['date'] = date('Y-m-d G:i:s');
+            $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
+            $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deckdata->id, ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
+            
+            $cards[] = new Card($db->lastInsertId(), $card['name'], $deckdata->deckname, $card['number'], $user_id, 'new', $card['date']);
+        }
+        if($number == 1){ 
+            return $cards[1]; 
+        }else{
+            return $cards;
+        }
+    }
 }
