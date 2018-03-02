@@ -22,7 +22,7 @@ class Carddeck {
     private $subcategory_name;
     private $db;
     private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
-    private static $allowed_statuses = array('new','public'); 
+    private static $allowed_status = array('new','public'); 
     private static $date_formate = DATE_FORMATE;
     
     public function __construct($id, $name, $deckname, $status, $date, $creator_id, $creator_name, $category, $subcategory, $category_name, $subcategory_name) {
@@ -66,7 +66,7 @@ class Carddeck {
         $decks = array();
         $db = DB::getInstance();
         
-        if(!in_array($status,self::$allowed_statuses)){
+        if(!in_array($status,self::$allowed_status)){
             throw new Exception('Status enthält unerlaubten Wert.');
         }
         

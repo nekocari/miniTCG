@@ -106,5 +106,71 @@ class LoginController {
 		}
 	}
 	
+	
+	/**
+	 * Card Manager
+	 */
+	public function cardmanager() {
+	    if(!isset($_SESSION['user'])){
+	        header("Location: ".BASE_URI.Routes::getUri('signin'));
+	    }
+	    require_once 'models/card.php';
+	    require_once 'models/setting.php';
+	    require_once 'models/carddeck.php';
+	    
+	    if(isset($_GET['status']) AND in_array($_GET['status'], Card::$accepted_status)){
+	        $status = $_GET['status'];
+	    }else{
+	        $status = 'new';
+	        if(isset($_GET['status'])){
+	            $data['_error'][] = "Der übergebene Status <i>".$_GET['status']."</i> ist ungültig.";
+	        }
+	    }
+	    
+	    if(isset($_POST['changeCardStatus'])){
+	        foreach($_POST['newStatus'] as $card_id => $new_status){
+	            if($new_status != "" AND in_array($new_status, Card::$accepted_status) ){
+	                $updated = Card::changeStatusById($card_id,$new_status, $_SESSION['user']->id);
+	                if($updated == false){
+	                    $card_name = Card::getById($card_id)->getName();
+	                    $data['_error'][] = 'Karte <i>'.$card_name.'</i> nicht verschoben.';
+	                }
+	            }
+	        }
+	    }
+	    
+	    if(isset($_POST['dissolve'])){
+	        $updated = Card::dissolveCollection($_POST['dissolve'], $_SESSION['user']->id);
+	        if($updated == true){
+	            $data['_success'][] = 'Sammlung aufgelöst. Die Karten sind nun wieder unter <i>NEW</i>';
+	        }else{
+	            $data['_error'][] = 'Sammlung konnte nicht aufgelöst werden.';
+	        }
+	    }
+	    
+	    $data['curr_status'] = $status;
+	    $data['accepted_status'] = Card::$accepted_status;
+	    $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id,$status);
+	    
+	    if($status != 'collect'){
+	        Layout::render('login/cardmanager.php',$data);
+	        
+	    }else{
+	        $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
+	        $data['cards_per_row'] = Setting::getByName('deckpage_cards_per_row')->getValue();
+	        $data['searchcard_html'] = Card::getSerachcardHtml();
+	        $data['collections'] = array();
+	        foreach($data['cards'] as $card){
+	            $data['collections'][$card->getDeckId()][$card->getNumber()] = $card;
+	            if(!isset($data['deckdata'][$card->getDeckId()])){
+	                $data['deckdata'][$card->getDeckId()] = Carddeck::getById($card->getDeckId());
+	            }
+	        }
+	        
+	        Layout::render('login/collectmanager.php',$data);
+	    }
+	    
+	}
+	
 }
 ?>

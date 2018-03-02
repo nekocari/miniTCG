@@ -6,7 +6,7 @@
  * @author Cari
  *
  */
-
+require_once PATH.'models/setting.php';
 class Card {
     
     private $id;
@@ -17,6 +17,10 @@ class Card {
     private $owner_name;
     private $status;
     private $date;
+    private static $tpl_width;
+    private static $tpl_height;
+    private static $tpl_html;
+    public static $accepted_status = array('new','trade','keep','collect');
     private $db;
     
     public function __construct($id, $name, $deck_id, $card_no, $owner, $status, $date) {
@@ -28,6 +32,11 @@ class Card {
         $this->status       = $status;
         $this->date         = $date;
         $this->db           = DB::getInstance();
+        if(is_null(self::$tpl_html)){
+            self::$tpl_width = Setting::getByName('cards_template_width')->getValue();
+            self::$tpl_height = Setting::getByName('cards_template_height')->getValue();
+            self::$tpl_html = file_get_contents(PATH.'views/templates/card_image_temp.php');
+        }
     }
     
     public static function getById($id) {
@@ -41,6 +50,38 @@ class Card {
             $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $carddata->owner, $carddata->status, $carddata->date);
         }
         return $card;
+    }
+    
+    public static function changeStatusById($id,$status,$user) {
+        $db = DB::getInstance();
+        if($status == 'collect'){
+            $card_name = self::getById($id)->getName();
+            $req = $db->prepare('SELECT * FROM cards WHERE owner = :user AND status = :status AND name = :name');
+            $req->execute(array(':status'=>$status,':name'=>$card_name,':user'=>$user));
+            if($req->rowCount() > 0){
+                return false;
+            }
+        }
+        $req = $db->prepare('UPDATE cards SET status = :status WHERE id = :id and owner = :user');
+        return $req->execute(array(':status'=>$status,':id'=>$id,':user'=>$user));
+    }
+    
+    public static function dissolveCollection($deck_id,$user) {
+        $db = DB::getInstance();
+        $req = $db->prepare('UPDATE cards SET status = \'new\' WHERE deck = :deck_id and owner = :user');
+        return $req->execute(array(':deck_id'=>$deck_id,':user'=>$user));
+    }
+    
+    public static function getMemberCardsByStatus($user_id, $status) {
+        $cards = array();
+        $db = DB::getInstance();
+        
+        $req = $db->prepare('SELECT * FROM cards WHERE owner = :user_id AND status = :status ORDER BY name ASC');
+        $req->execute(array(':user_id'=>$user_id, ':status'=>$status));
+        foreach($req->fetchAll(PDO::FETCH_OBJ) as $carddata){
+            $cards[] = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $carddata->owner, $carddata->status, $carddata->date);
+        }
+        return $cards;
     }
     
     public function setOwnerName($name) {
@@ -59,18 +100,26 @@ class Card {
         return $this->date;
     }
     
+    public function getDeckId() {
+        return $this->deck_id;
+    }
+    
+    public function getNumber() {
+        return $this->card_no;
+    }
+    
     public function getStatus() {
         return $this->status;
     }
     
     public function getDeckname() {
-        require_once PATH.'models/carddeck.php';
-        $deck = Carddeck::getById($this->deck_id);
+        $cardname_length = strlen($this->name);
+        $cardnumber_length = strlen($this->card_no);
+        return substr($this->name,0,-$cardnumber_length);
         return $deck->getDeckname();
     }
     
     public function getImageUrl() {
-        require_once PATH.'models/setting.php';
         $setting_file_type = Setting::getByName('cards_file_type');
         $deckname = $this->getDeckname();
         $url = CARDS_FOLDER.$deckname.'/'.$deckname.$this->card_no.'.'.$setting_file_type->getValue();
@@ -78,20 +127,24 @@ class Card {
     }
     
     public function getImageHtml() {
-        require_once PATH.'models/setting.php';
-        $setting_tpl_width = Setting::getByName('cards_template_width')->getValue();
-        $setting_tpl_height = Setting::getByName('cards_template_height')->getValue();
-        $cardimage_tpl = file_get_contents(PATH.'views/templates/card_image_temp.php');
         $url = $this->getImageUrl();
         
         $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
-        $replace = array($setting_tpl_width, $setting_tpl_height, $url);
+        $replace = array(self::$tpl_width, self::$tpl_height, $url);
         
-        return str_replace($tpl_placeholder, $replace, $cardimage_tpl);
+        return str_replace($tpl_placeholder, $replace, self::$tpl_html);
+    }
+    
+    public static function getSerachcardHtml($img_url = NULL) {
+        $url = CARDS_FOLDER.'searchcards/1.png';
+        
+        $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
+        $replace = array(self::$tpl_width, self::$tpl_height, $url);
+        
+        return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
     
     public static function createRandomCard($user_id,$number=1) {
-        require_once 'models/setting.php';
         if(intval($number) < 0){ 
             throw new Exception('Keine gültige Anzahl übergeben!');
         }

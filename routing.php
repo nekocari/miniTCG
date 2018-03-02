@@ -16,6 +16,7 @@
     ROUTES::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
     
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
+    Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
     Routes::addRoute('signup', 'signup.php', 'login', 'signup');
     Routes::addRoute('signin', 'signin.php', 'login', 'signin');
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
