@@ -6,12 +6,19 @@
  * @author Cari
  *
  */
+
+require_once PATH.'models/card.php';
+require_once PATH.'models/carddeck.php';
+require_once PATH.'models/master.php';
+
 class Member {
     
     public $id;
     public $name;
     public $level;
     public $mail;
+    private $cards = array();
+    private $mastered_decks = array();
     private static $query_order_by_options = array('id','name','level');
     private static $query_order_direction_options = array('ASC','DESC');
     private static $accepted_group_options = array('id','level');
@@ -126,6 +133,33 @@ class Member {
         catch(PDOException $e) {
             return $e->getMessage();
         }
+    }
+    
+    
+    /**
+     * Uses Card Method getMemberCardsByStatus to get this members cards of given status
+     * 
+     * @param string $status current card status
+     * 
+     * @return Card[] array of Card Objects or empty array 
+     */
+    public function getCardsByStatus($status) {
+        if(!isset($this->cards)){
+            $this->cards = Card::getMemberCardsByStatus($this->id, $status);
+        }
+        return $this->cards;
+    }
+    
+    /**
+     * Uses Carddeck Method getMasterdByMember to get this members masterd decks
+     * 
+     * @return Carddeck[]
+     */
+    public function getMasterdDecks() {
+        if(!isset($this->mastered_decks)){
+            $this->mastered_decks = Master::getMasterdByMember($this->id);
+        }
+        return $this->masterd_decks;
     }
     
     /**

@@ -72,6 +72,7 @@ class Card {
         return $req->execute(array(':deck_id'=>$deck_id,':user'=>$user));
     }
     
+    // TODO: MOVE TO MEMBER CLASS?
     public static function getMemberCardsByStatus($user_id, $status) {
         $cards = array();
         $db = DB::getInstance();

@@ -207,6 +207,28 @@ class Carddeck {
         }
     }
     
+    public static function master($deck, $member){
+        $db = DB::getInstance();
+        try{
+            $db->beginTransaction();
+            // delete cards
+            $req = $db->prepare('DELETE FROM cards WHERE owner = :member AND deck = :deck AND status=\'collect\' ');
+            $req->execute(array(':deck'=>$deck, ':member'=>$member));
+            if($req->rowCount() != Setting::getByName('cards_decksize')->getValue()){
+                throw new Exception('Das Deck ist nicht komplett!');
+            }
+            // add master
+            $req = $db->prepare('INSERT INTO decks_master (deck,member) VALUES (:deck,:member) ');
+            $req->execute(array(':deck'=>$deck, ':member'=>$member));
+            $db->commit();
+            return true;
+        }
+        catch(Exception $e) {
+            $db->rollBack();
+            return $e->getMessage();
+        }
+    }
+    
     public function getId() {
         return $this->id;
     }
@@ -316,6 +338,11 @@ class Carddeck {
     public function getMasterCard() {
         $card_images = $this->getImages();
         return $card_images['master'];
+    }
+    
+    public function getMasterMembers() {
+        require_once PATH.'models/master.php';
+        return Master::getMemberByDeck($this->id);
     }
     
     //TODO: improvements: get and display collectors

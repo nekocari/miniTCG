@@ -141,10 +141,19 @@ class LoginController {
 	    
 	    if(isset($_POST['dissolve'])){
 	        $updated = Card::dissolveCollection($_POST['dissolve'], $_SESSION['user']->id);
-	        if($updated == true){
+	        if($updated === true){
 	            $data['_success'][] = 'Sammlung aufgelöst. Die Karten sind nun wieder unter <i>NEW</i>';
 	        }else{
 	            $data['_error'][] = 'Sammlung konnte nicht aufgelöst werden.';
+	        }
+	    }
+	    
+	    if(isset($_POST['master'])){
+	        $updated = Carddeck::master($_POST['master'], $_SESSION['user']->id);
+	        if($updated === true){
+	            $data['_success'][] = 'Sammlung gemastert!';
+	        }else{
+	            $data['_error'][] = 'Sammlung konnte nicht gemastert werden. '.$updated;
 	        }
 	    }
 	    
@@ -168,8 +177,38 @@ class LoginController {
 	        }
 	        
 	        Layout::render('login/collectmanager.php',$data);
+	    }   
+	}
+	
+	public function mastercards() {
+	    if(!isset($_SESSION['user'])){
+	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
+	    require_once 'helper/pagination.php';
+	    require_once 'models/master.php';
 	    
+	    if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
+	        $currPage = intval($_GET['pg']);
+	    }else{
+	        $currPage = 1;
+	    }
+	    if(isset($_GET['order'])){
+	        $order = $_GET['order'];
+	    }else{
+	        $order = 'ASC';
+	    }
+	    if(isset($_GET['order_by'])){
+	        $order_by = $_GET['order_by'];
+	    }else{
+	        $order_by = 'deckname';
+	    }
+	    $masters = Master::getMasterdByMember($_SESSION['user']->id,$order_by,$order);
+	    
+	    $pagination = new Pagination($masters, 20, $currPage, Routes::getController('member_mastercards'));
+	    $data['mastered_decks'] = $pagination->getElements();
+	    $data['pagination'] = $pagination->getPaginationHtml();
+	    
+	    Layout::render('login/mastercards.php',$data);
 	}
 	
 }
