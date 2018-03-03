@@ -8,13 +8,20 @@
     		am <i class="fas fa-calendar-alt text-dark"></i> <?php echo $deck->getDate(); ?> <br>
     		in <i class="fas fa-folder text-dark"></i> <?php echo $deck->getCategoryName(); ?> - <?php echo $deck->getSubcategoryName(); ?>
 		</p>
-		<div>gemastert von: 
+		<p>Sammler: 
+		<?php foreach($deck->getCollectorMembers() as $member){ ?>
+    		<a class="btn btn-sm btn-outline-primary" href="<?php echo $member->getProfilLink(); ?>">
+    			<i class="fas fa-user"></i> <?php echo $member->getName(); ?>
+    		</a> 
+    	<?php } ?>
+    	</p>
+		<p><i class="fas fa-trophy"></i> Master: 
 		<?php foreach($deck->getMasterMembers() as $member){ ?>
     		<a class="btn btn-sm btn-outline-primary" href="<?php echo $member->getProfilLink(); ?>">
     			<i class="fas fa-user"></i> <?php echo $member->getName(); ?>
     		</a> 
     	<?php } ?>
-    	</div>
+    	</p>
 	</div>
 </div>
 

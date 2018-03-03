@@ -6,6 +6,7 @@
  * @author Cari
  *
  */
+require_once PATH.'models/member.php';
 
 class Carddeck {
     
@@ -201,6 +202,22 @@ class Carddeck {
             }else{
                 throw new Exception('Der Name enthält mindestens ein ungültiges Zeichen.');
             }
+        }
+        catch(Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    public function getCollectorMembers(){
+        try{
+            $members = array();
+            $req = $this->db->prepare('SELECT DISTINCT m.id, m.name, m.level, m.mail FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id);
+            $req->execute();
+            
+            foreach($req->fetchAll() as $data){
+                $members[] =  new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+            }
+            return $members;
         }
         catch(Exception $e) {
             return $e->getMessage();
