@@ -133,4 +133,39 @@ class UpdateController {
         }
     }
     
+    public function take() {
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        require_once 'models/update.php';
+        require_once 'models/card.php';
+        require_once 'models/carddeck.php';
+        require_once 'models/member.php';
+      
+        $curr_update = Update::getLatest();
+        $user = Member::getById($_SESSION['user']->id);
+        $data['show_take_button'] = true;
+        
+        if(!$user->gotUpdateCards($curr_update->getId())){
+            
+            
+            if(isset($_POST['takeUpdateCards'])){
+                $update_cards = Card::takeCardsFromUpdate($_SESSION['user']->id, $curr_update->getId());
+                
+                if(!is_array($update_cards)){
+                    $data['_error'][] = 'Keine Karten erhalten! <br>'.$update_cards;
+                }else{
+                    $data['_success'][] = 'Karten erhalten. Bitte schau unter <i>NEW</i>.';
+                    $data['show_take_button'] = false;
+                }
+            }
+            $data['update_decks'] = Carddeck::getInUpdate($curr_update->getId());
+        
+            Layout::render('login/take_update_cards.php',$data);
+            
+        }else{
+            Layout::render('login/no_new_update.php');
+        }
+    }
+    
 }

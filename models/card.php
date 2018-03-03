@@ -7,6 +7,7 @@
  *
  */
 require_once PATH.'models/setting.php';
+require_once PATH.'models/carddeck.php';
 class Card {
     
     private $id;
@@ -157,7 +158,7 @@ class Card {
             // grab deck data randomly
             $req = $db->query('SELECT id, deckname FROM decks WHERE status = \'public\' ORDER BY RAND() LIMIT 1');
             $deckdata = $req->fetch(PDO::FETCH_OBJ);
-            // insert create data to insert into DB for a new Card Object
+            // insert created data to insert into DB for a new Card Object
             $card['number'] = mt_rand(1,$decksize);
             $card['name'] = $deckdata->deckname.$card['number'];
             $card['date'] = date('Y-m-d G:i:s');
@@ -171,5 +172,36 @@ class Card {
         }else{
             return $cards;
         }
+    }
+    
+    public static function takeCardsFromUpdate($user_id,$update_id) {
+        $cards = array();
+        $db = Db::getInstance();
+        try{
+            $update_decks = Carddeck::getInUpdate($update_id);
+            $decksize = Setting::getByName('cards_decksize')->getValue();
+            $db->beginTransaction();
+            foreach($update_decks as $deck){
+                // insert created data to insert into DB for a new Card Object
+                $card['number'] = mt_rand(1,$decksize);
+                $card['name'] = $deck->getDeckname().$card['number'];
+                $card['date'] = date('Y-m-d G:i:s');
+                
+                $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
+                $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deck->getId(), ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
+                $cards[] = new Card($db->lastInsertId(), $card['name'], $deck->getId(), $card['number'], $user_id, 'new', $card['date']);
+            }
+            if(count($cards) > 0){
+                $req = $db->prepare('INSERT INTO updates_members (update_id, member_id) VALUES (:update_id,:user_id) ');
+                $req->execute(array(':update_id'=>$update_id,':user_id'=>$user_id));
+            }
+            $db->commit();
+            return $cards;
+        }
+        catch(Exception $e) {
+            $db->rollBack();
+            return $e->getMessage();
+        }
+        
     }
 }

@@ -22,6 +22,12 @@
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo ROUTES::getUri('member_cardupdate');?>">
+			<i class="fas fa-star h1"></i><br>
+			Update Karten
+		</a>
+	</div>
+	<div class="col-6 col-md-4 text-center p-4">
 		<a class="btn btn-outline-secondary w-100" href="<?php echo ROUTES::getUri('member_edit_profil');?>">
 			<i class="fas fa-user h1"></i><br>
 			Profil Daten

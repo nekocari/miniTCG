@@ -146,6 +146,5 @@ class Login {
         return $str;
     }
     
-    
 }
 ?>

@@ -171,6 +171,17 @@ class Member {
         return 'members/profil.php?id='.$this->id;
     }
     
+    public function gotUpdateCards($update_id){
+        $db = Db::getInstance();
+        $req = $db->prepare('SELECT * FROM updates_members WHERE member_id = :member_id AND update_id = :update_id ');
+        $req->execute(array(':member_id'=>$this->id, ':update_id'=>$update_id));
+        if($req->rowCount() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     public function getId() {
         return $this->id;
     }

@@ -137,6 +137,19 @@ class Update {
         return $this->decks;
     }
     
+    public static function getLatest() {
+        try{
+            $updates = array();
+            $db = Db::getInstance();
+            $req = $db->query('SELECT * FROM updates ORDER BY id DESC LIMIT 1');
+            $update = $req->fetch(PDO::FETCH_ASSOC);
+            return new Update($update['id'],$update['date'],$update['status']);;
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+    
     /*
      * Getter
      */
