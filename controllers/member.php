@@ -22,17 +22,58 @@ class MemberController {
      */
     public function profil() {
         if(!isset($_SESSION['user'])){ header('Location: '.BASE_URI.'error_login.php'); }
-        if(isset($_GET['id'])){
-            $id = intval($_GET['id']);
-            require_once 'models/member.php';
-            $data['member'] = Member::getById($id);
+        if(!isset($_GET['id'])){  header('Location: '.BASE_URI.'error.php'); }
             
-            if($data['member'] != false){
-                Layout::render('member/profil.php',$data);
-            }else{
-                header('Location: '.BASE_URI.'error.php');
-            }
+        require_once 'models/member.php';
+        require_once 'helper/pagination.php';
+        
+        // get user or relocate to error page
+        $data['member'] = Member::getById(intval($_GET['id']));
+        if($data['member'] == false){ header('Location: '.BASE_URI.'error.php'); }
+        
+        // current page for pagination
+        if(isset($_GET['pg']) AND intval($_GET['pg'])>0 ){
+            $currPage = $_GET['pg'];
+        }else{
+            $currPage = 1;
         }
+        
+        // check category for partial
+        if(isset($_GET['cat']) AND in_array($_GET['cat'], array('master','trade','keep','collect')) ){
+            $cat = $_GET['cat'];
+        }else{
+            $cat = 'master';
+        }
+        // get elements for partial
+        switch($cat){
+            
+            case 'master':
+                $data['cat_elements'] = $data['member']->getMasteredDecks();
+                break;
+                
+            case 'trade':
+            case 'keep':
+                $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
+                break;
+                
+            case 'collect':
+                $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
+                foreach($data['cat_elements'] as $card){
+                    $data['collections'][$card->getDeckId()][$card->getNumber()] = $card;
+                    if(!isset($data['deckdata'][$card->getDeckId()])){
+                        $data['deckdata'][$card->getDeckId()] = Carddeck::getById($card->getDeckId());
+                    }
+                }
+                $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
+                $data['cards_per_row'] = Setting::getByName('deckpage_cards_per_row')->getValue();
+                $data['searchcard_html'] = Card::getSerachcardHtml();
+                break;
+        }
+        
+        $data['partial_uri'] = PATH.'views/member/profil/'.$cat.'.php';
+        
+        Layout::render('member/profil.php',$data);
+          
     }
     
     /**

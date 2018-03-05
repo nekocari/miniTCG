@@ -7,15 +7,17 @@ class Pagination {
 	private $currPage;
 	private $offset;
 	private $link;
+	private $parameterName;
 	private $css_class = 'pagination-sm justify-content-center';
 
 
-    public function __construct($elements, $itemsPerPage, $currPage, $link, $offset=2) {
+    public function __construct($elements, $itemsPerPage, $currPage, $link, $offset=2, $parameterName='pg') {
 		$this->elements	    = $elements;
 		$this->itemsPerPage	= $itemsPerPage;
 		$this->currPage		= $currPage;
 		$this->offset		= $offset;
 		$this->link			= $link;
+		$this->parameterName= $parameterName;
 		$this->totalItems   = count($elements);
     }
 
@@ -58,9 +60,18 @@ class Pagination {
     }
     
     private function getFirst() {
-    	$first = max(($this->getTotalPages()-$this->offset * 2)-1,max(($this->currPage - $this->offset),1));
-    	return $first;
-    }    
+        $first = max(($this->getTotalPages()-$this->offset * 2)-1,max(($this->currPage - $this->offset),1));
+        return $first;
+    }
+    
+    private function getParameter() {
+        if(strpos($this->link, '?')){
+            $param = '&'.$this->parameterName.'=';
+        }else{
+            $param = '?'.$this->parameterName.'=';
+        }
+        return $param;
+    } 
     
 	public function getPaginationHtml() {
 		$html = '<ul class="pagination '.$this->css_class.'">';
@@ -70,14 +81,14 @@ class Pagination {
 			$html.= '<li class="page-item disabled"><a class="page-link">&laquo;</a></li>';
 		}
 		if($this->hasPrev()){
-			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.'?pg='.($this->getCurr()-1).'">&lsaquo;</a></li>';
+			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.$this->getParameter().($this->getCurr()-1).'">&lsaquo;</a></li>';
 		}else{
 			$html.= '<li class="page-item disabled"><a class="page-link">&lsaquo;</a></li>';
 		}
 		
 		foreach($this->getPages() as $page){
 			if($this->currPage != $page){
-				$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.'?pg='.$page.'">'.$page.'</a></li>';
+			    $html.= '<li class="page-item"><a class="page-link" href="'.$this->link.$this->getParameter().$page.'">'.$page.'</a></li>';
 			}else{
 				$html.= '<li class="page-item active"><span class="page-link">'.$page.'</span></li>';
 			}
@@ -89,7 +100,7 @@ class Pagination {
 			$html.= '<li class="page-item disabled"><a class="page-link">&rsaquo;</a></li>';
 		}
 		if($this->getTotalPages() > ($this->getCurr() + 1)){
-			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.'?pg='.($this->getTotalPages()).'">&raquo;</a></li>';
+			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.$this->getParameter().($this->getTotalPages()).'">&raquo;</a></li>';
 		}else{
 			$html.= '<li class="page-item disabled"><a class="page-link">&raquo;</a></li>';
 		}

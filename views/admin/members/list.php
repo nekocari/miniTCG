@@ -20,10 +20,10 @@
 	<tbody>
 <?php foreach($members as $member){ ?>
     	<tr>
-    		<td><?php echo $member->id; ?></td>
-    		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->name; ?></a></td>
-    		<td><?php echo $member->mail; ?></td>
-    		<td class="text-right"><a href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->id; ?>" class="btn btn-link">
+    		<td><?php echo $member->getId(); ?></td>
+    		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
+    		<td><?php echo $member->getMail(); ?></td>
+    		<td class="text-right"><a href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>" class="btn btn-link">
     			<i class="fas fa-pencil-alt"></i> bearbeiten</a>    			
     		</td>
     	</tr>
