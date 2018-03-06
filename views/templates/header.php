@@ -23,9 +23,9 @@
 	</head>
 	<body>
 		<!-- Main Navigation -->
-        <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         	<div class="container">
-        		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">miniTCG</a>
+        		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small>v0.1</small></a>
         	
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 	<span class="navbar-toggler-icon"></span>
@@ -55,6 +55,7 @@
     			</div>
         	</div>
         </nav>
+        
         
         <!-- Center of Layout -->
 		<div class="container">

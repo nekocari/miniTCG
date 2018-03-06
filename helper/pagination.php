@@ -55,12 +55,12 @@ class Pagination {
 	}
     
     private function getLast() {
-    	$last = min($this->getTotalPages(),max(($this->offset * 2)+1,($this->currPage + $this->offset)));
+    	$last = min($this->getTotalPages(), max( ($this->offset * 2)+1 , ($this->currPage + $this->offset) ) );
     	return $last;
     }
     
     private function getFirst() {
-        $first = max(($this->getTotalPages()-$this->offset * 2)-1,max(($this->currPage - $this->offset),1));
+        $first = max( ($this->getTotalPages()-$this->offset * 2)-1 , max( ($this->currPage - $this->offset), 1) );
         return $first;
     }
     

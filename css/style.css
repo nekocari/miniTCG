@@ -2,6 +2,24 @@
 
 @import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed|Roboto');
 
+.navbar-brand {
+	font-style: italic;
+}
+
+.navbar-brand .tcg {
+	color: #007bff;
+	font-weight: bold;
+}
+
+.navbar-brand small{
+	color: lightgrey;
+	font-size: 0.8rem;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+	font-family: Barlow Semi Condensed;
+}
+
 .deckname {
 	text-transform: uppercase;
 }
