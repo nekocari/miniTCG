@@ -225,7 +225,10 @@ class Carddeck {
     }
     
     public static function master($deck, $member){
+        require_once PATH.'models/setting.php';
         $db = DB::getInstance();
+        
+        $gift_cards_num = Setting::getByName('giftcards_for_master')->getValue();
         try{
             $db->beginTransaction();
             // delete cards
@@ -238,6 +241,10 @@ class Carddeck {
             $req = $db->prepare('INSERT INTO decks_master (deck,member) VALUES (:deck,:member) ');
             $req->execute(array(':deck'=>$deck, ':member'=>$member));
             $db->commit();
+            // add gift cards for mastering a deck
+            if($gift_cards_num > 0){
+                Card::createRandomCard($member,$gift_cards_num,'Deck gemastert');
+            }
             return true;
         }
         catch(Exception $e) {

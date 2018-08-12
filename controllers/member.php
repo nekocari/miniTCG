@@ -157,7 +157,7 @@ class MemberController {
             
             if(isset($_POST['addCards']) and intval($_POST['addCards'])){
                 
-                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'GUTSCHRIFT');
+                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'manuelle GUTSCHRIFT');
                 if(count($data['cards']) > 0){
                     $cardnames = '';
                     foreach($data['cards'] as $card){

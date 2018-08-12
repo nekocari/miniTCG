@@ -173,7 +173,7 @@ class Card {
             Tradelog::addEntry($user_id, $log_text);
         }
         if($number == 1){ 
-            return $cards[1]; 
+            return $cards[0]; 
         }else{
             return $cards;
         }
