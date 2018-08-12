@@ -7,6 +7,8 @@
  *
  */
 require_once 'models/carddeck.php';
+require_once 'models/setting.php';
+
 class Update {
     
     private $id;
@@ -154,7 +156,7 @@ class Update {
      * Getter
      */
     public function getDate() {
-        return date(DATE_FORMATE,strtotime($this->date));
+        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
     }
     public function getStatus() {
         return $this->status;

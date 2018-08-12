@@ -8,6 +8,7 @@
  */
 require_once PATH.'models/member.php';
 require_once PATH.'models/carddeck.php';
+require_once PATH.'models/setting.php';
 
 class Master {
     

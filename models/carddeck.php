@@ -7,6 +7,7 @@
  *
  */
 require_once PATH.'models/member.php';
+require_once PATH.'models/setting.php';
 
 class Carddeck {
     
@@ -24,7 +25,7 @@ class Carddeck {
     private $db;
     private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
     private static $allowed_status = array('new','public'); 
-    private static $date_formate = DATE_FORMATE;
+    private $date_formate = 'd.m.Y';
     
     public function __construct($id, $name, $deckname, $status, $date, $creator_id, $creator_name, $category, $subcategory, $category_name, $subcategory_name) {
         $this->id           = $id;
@@ -39,6 +40,7 @@ class Carddeck {
         $this->category_name     = $category_name;
         $this->subcategory_name  = $subcategory_name;
         $this->db           = DB::getInstance();
+        $this->date_formate = Setting::getByName('date_format')->getValue();
     }
     
     public static function getAll() {
@@ -266,7 +268,7 @@ class Carddeck {
     }
     
     public function getDate() {
-        $date = date(self::$date_formate, strtotime($this->date));
+        $date = date($this->date_formate, strtotime($this->date));
         return $date;
     }
     
