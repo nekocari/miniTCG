@@ -128,7 +128,7 @@ class Carddeck {
                     JOIN decks_subcategories ds ON ds.deck_id = d.id
                     JOIN subcategories s ON s.id = ds.subcategory_id
                     JOIN categories c ON s.category = c.id
-                WHERE ds.subcategory_id = :sub ORDER BY d.id ASC';
+                WHERE ds.subcategory_id = :sub and d.status = \'public\' ORDER BY d.id ASC';
         $req = $db->prepare($query);
         $req->execute(array(':sub'=>$sub_id));
         if($req->rowCount() > 0){
