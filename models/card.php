@@ -70,7 +70,7 @@ class Card {
     
     public static function dissolveCollection($deck_id,$user) {
         $db = DB::getInstance();
-        $req = $db->prepare('UPDATE cards SET status = \'new\' WHERE deck = :deck_id and owner = :user');
+        $req = $db->prepare('UPDATE cards SET status = \'new\' WHERE deck = :deck_id and owner = :user and status = \'collect\'');
         return $req->execute(array(':deck_id'=>$deck_id,':user'=>$user));
     }
     
