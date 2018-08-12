@@ -18,18 +18,20 @@ class Member {
     private $level;
     private $mail;
     private $join_date;
+    private $text;
     private $cards;
     private $mastered_decks;
     private static $query_order_by_options = array('id','name','level');
     private static $query_order_direction_options = array('ASC','DESC');
     private static $accepted_group_options = array('id','level');
     
-    public function __construct($id, $name, $level, $mail, $join_date='00.00.0000 00:00:00') {
+    public function __construct($id, $name, $level, $mail, $join_date='00.00.0000 00:00:00', $text = '') {
         $this->id = $id;
         $this->name = $name;
         $this->level = $level;
         $this->mail = $mail;
         $this->join_date = $join_date;
+        $this->text = $text;
     }
     
     /**
@@ -56,7 +58,7 @@ class Member {
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
-                $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date']);
+                $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text']);
             }
         }
         
@@ -113,7 +115,7 @@ class Member {
         if($req->execute(array(':id' => $id))) {
             if($req->rowCount()) {
                 $data = $req->fetch();
-                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date']);
+                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text']);
             }
         }
         
@@ -128,8 +130,8 @@ class Member {
     public function store() {
         $db = Db::getInstance();
         try{
-            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail WHERE id = :id');
-            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ));
+            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail, info_text = :text WHERE id = :id');
+            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text));
             return true;
         }
         catch(PDOException $e) {
@@ -220,5 +222,14 @@ class Member {
     
     public function getJoinDate() {
         return $this->join_date;
+    }
+    
+    public function getInfoText() {
+        $parsedown = new Parsedown();
+        return $parsedown->text($this->text);
+    }
+    
+    public function getInfoTextplain() {
+        return $this->text;
     }
 }
