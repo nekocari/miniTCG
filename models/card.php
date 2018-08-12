@@ -8,6 +8,7 @@
  */
 require_once PATH.'models/setting.php';
 require_once PATH.'models/carddeck.php';
+require_once PATH.'models/tradelog.php';
 class Card {
     
     private $id;
@@ -146,7 +147,7 @@ class Card {
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
     
-    public static function createRandomCard($user_id,$number=1) {
+    public static function createRandomCard($user_id,$number=1,$tradelog_text = '') {
         if(intval($number) < 0){ 
             throw new Exception('Keine gültige Anzahl übergeben!');
         }
@@ -164,8 +165,12 @@ class Card {
             $card['date'] = date('Y-m-d G:i:s');
             $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
             $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deckdata->id, ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
+            $card['id'] = $db->lastInsertId();
             
-            $cards[] = new Card($db->lastInsertId(), $card['name'], $deckdata->id, $card['number'], $user_id, 'new', $card['date']);
+            $cards[] = new Card($card['id'], $card['name'], $deckdata->id, $card['number'], $user_id, 'new', $card['date']);
+            
+            $log_text = $tradelog_text.' -> '.$card['name'].' (#'.$card['id'].') erhalten.';
+            Tradelog::addEntry($user_id, $log_text);
         }
         if($number == 1){ 
             return $cards[1]; 

@@ -98,7 +98,7 @@ class Login {
             require_once 'models/card.php';
             require_once 'models/setting.php';
             $first_cards_num = Setting::getByName('cards_startdeck_num')->getValue();
-            Card::createRandomCard($user_id,$first_cards_num);
+            Card::createRandomCard($user_id,$first_cards_num,'Startdeck');
             // TODO activation code system
             // TODO send E-Mail            
             return $user_id;

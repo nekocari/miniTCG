@@ -12,8 +12,9 @@
     Routes::addRoute('member_index', 'memberlist.php', 'member', 'memberlist');
     Routes::addRoute('member_profil', 'members/profil.php', 'member', 'profil');
     
-    ROUTES::addRoute('admin_member_index', 'admin/members/list.php', 'member', 'adminMemberList');
-    ROUTES::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
+    Routes::addRoute('admin_member_index', 'admin/members/list.php', 'member', 'adminMemberList');
+    Routes::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
+    Routes::addRoute('admin_member_gift_cards', 'admin/members/gift_cards.php', 'member', 'giftCards');
     
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
     Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
@@ -24,23 +25,23 @@
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
     
-    ROUTES::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
-    ROUTES::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
+    Routes::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
+    Routes::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
     
-    ROUTES::addRoute('level_index', 'admin/level.php', 'level', 'level');
-    ROUTES::addRoute('level_add', 'admin/level/add.php', 'level', 'addLevel');
-    ROUTES::addRoute('level_edit', 'admin/level/edit.php', 'level', 'editLevel');
+    Routes::addRoute('level_index', 'admin/level.php', 'level', 'level');
+    Routes::addRoute('level_add', 'admin/level/add.php', 'level', 'addLevel');
+    Routes::addRoute('level_edit', 'admin/level/edit.php', 'level', 'editLevel');
     
-    ROUTES::addRoute('deck_update', 'admin/deck/update.php', 'update', 'updates');
-    ROUTES::addRoute('deck_update_add', 'admin/deck/update/add.php', 'update', 'add');
-    ROUTES::addRoute('deck_update_edit', 'admin/deck/update/edit.php', 'update', 'edit');
-    ROUTES::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
-    ROUTES::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
-    ROUTES::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
+    Routes::addRoute('deck_update', 'admin/deck/update.php', 'update', 'updates');
+    Routes::addRoute('deck_update_add', 'admin/deck/update/add.php', 'update', 'add');
+    Routes::addRoute('deck_update_edit', 'admin/deck/update/edit.php', 'update', 'edit');
+    Routes::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
+    Routes::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
+    Routes::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
     
-    ROUTES::addRoute('category_index', 'admin/category.php', 'category', 'categories');
-    ROUTES::addRoute('category_add', 'admin/category/add.php', 'category', 'addCategory');
-    ROUTES::addRoute('category_edit', 'admin/category/edit.php', 'category', 'editCategory');
-    ROUTES::addRoute('subcategory_add', 'admin/subcategory/add.php', 'category', 'addSubcategory');
-    ROUTES::addRoute('subcategory_edit', 'admin/subcategorys/edit.php', 'category', 'editSubcategory');
+    Routes::addRoute('category_index', 'admin/category.php', 'category', 'categories');
+    Routes::addRoute('category_add', 'admin/category/add.php', 'category', 'addCategory');
+    Routes::addRoute('category_edit', 'admin/category/edit.php', 'category', 'editCategory');
+    Routes::addRoute('subcategory_add', 'admin/subcategory/add.php', 'category', 'addSubcategory');
+    Routes::addRoute('subcategory_edit', 'admin/subcategorys/edit.php', 'category', 'editSubcategory');
 ?>

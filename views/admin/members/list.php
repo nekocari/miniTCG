@@ -23,7 +23,9 @@
     		<td><?php echo $member->getId(); ?></td>
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
     		<td><?php echo $member->getMail(); ?></td>
-    		<td class="text-right"><a href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>" class="btn btn-link">
+    		<td class="text-right">
+    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_member_gift_cards');?>?id=<?php echo $member->getId(); ?>">Karten geben</a>
+    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>">
     			<i class="fas fa-pencil-alt"></i> bearbeiten</a>    			
     		</td>
     	</tr>

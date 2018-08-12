@@ -58,6 +58,7 @@ class MemberController {
                 
             case 'collect':
                 $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
+                $data['collections'] = array();
                 foreach($data['cat_elements'] as $card){
                     $data['collections'][$card->getDeckId()][$card->getNumber()] = $card;
                     if(!isset($data['deckdata'][$card->getDeckId()])){
@@ -133,6 +134,44 @@ class MemberController {
             }else{
                 Layout::render('admin/error.php',['errors'=>array('ID ist ungültig!')]);
             }
+        }else{
+            Layout::render('templates/error_rights.php');
+        }
+    }
+    
+    /**
+     * Member Gift Cards
+     */
+    public function giftCards(){
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        require_once PATH.'models/admin.php';
+        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        
+        if(in_array('Admin',$admin->getRights())){
+            
+            require_once 'models/member.php';
+            require_once 'models/card.php';
+            $data['member'] = $member = Member::getById($_GET['id']);
+            
+            if(isset($_POST['addCards']) and intval($_POST['addCards'])){
+                
+                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'GUTSCHRIFT');
+                if(count($data['cards']) > 0){
+                    $cardnames = '';
+                    foreach($data['cards'] as $card){
+                        $cardnames.= $card->getName().", ";
+                    }
+                    $cardnames = substr($cardnames, 0, -2);
+                    $data['_success'][] = 'Gutschrift erfolgt: '.$cardnames;
+                }else{
+                    $data['_error'][] = 'Gutschrift fehlgeschlagen.';
+                }
+            }
+            
+            
+            Layout::render('admin/members/gift_cards.php',$data);
         }else{
             Layout::render('templates/error_rights.php');
         }

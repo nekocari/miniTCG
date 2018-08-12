@@ -159,7 +159,9 @@ class Member {
      */
     public function getMasteredDecks() {
         if(!isset($this->mastered_decks)){
+            $this->mastered_decks = array();
             $masters = Master::getMasterdByMember($this->id);
+            
             foreach($masters as $master){
                 $this->mastered_decks[] = $master->getDeck(); 
             }

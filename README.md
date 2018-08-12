@@ -18,7 +18,7 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * manage Level
   * manage Categories (and Subcategories)
   * manage TCG Settings (like size of decks)
-  * edit Member data
+  * Admins can give Random Cards to Members
 * Public Functions
   * Homepage
   * Deck list
@@ -28,14 +28,13 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * view Decks
   * manage Cards
   * master Decks
+  * Members can take Cards from Updates
 
    
 ## Features TBA
-
-* Members can take Cards from Updates
+* Admins can edit Member data
 * Members can edit their data
 * delete Accounts (Member and Admin)
-* Admins can give Random Cards to Members
 * automated Level Ups
 
 

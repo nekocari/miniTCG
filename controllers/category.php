@@ -82,7 +82,7 @@ class CategoryController {
             if(isset($_POST['addCategory']) AND isset($_POST['name']) AND isset($_POST['category'])){
                 require_once PATH.'models/subcategory.php';
                 if(($return = Subcategory::add($_POST['name'],$_POST['category'])) === true){
-                    header("Location: ".BASE_URI."admin/categories.php");
+                    header("Location: ".BASE_URI."admin/category.php");
                 }else{
                     Layout::render('admin/error.php',['errors'=>array($return)]);
                 }
