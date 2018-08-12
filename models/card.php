@@ -182,6 +182,7 @@ class Card {
     public static function takeCardsFromUpdate($user_id,$update_id) {
         $cards = array();
         $db = Db::getInstance();
+         
         try{
             $update_decks = Carddeck::getInUpdate($update_id);
             $decksize = Setting::getByName('cards_decksize')->getValue();
@@ -200,6 +201,12 @@ class Card {
                 $req = $db->prepare('INSERT INTO updates_members (update_id, member_id) VALUES (:update_id,:user_id) ');
                 $req->execute(array(':update_id'=>$update_id,':user_id'=>$user_id));
             }
+            
+            // add entry for each card in member tradelog
+            foreach($cards as $card){
+                Tradelog::addEntry($user_id, 'Cardupdate -> '.$card->getName().' (#'.$card->getId().') erhalten.');
+            }
+            
             $db->commit();
             return $cards;
         }

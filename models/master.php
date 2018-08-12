@@ -85,6 +85,6 @@ class Master {
     }
     
     public function getDate() {
-        return date(DATE_FORMATE,strtotime($this->date));
+        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
     }
 }

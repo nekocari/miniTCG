@@ -76,7 +76,7 @@ class Tradelog {
         return $this->id;
     }
     public function getDate() {
-        return $this->date;
+        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
     }
     public function getText() {
         return $this->text;
