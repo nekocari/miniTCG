@@ -25,6 +25,8 @@
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
     
+    Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
+    
     Routes::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
     Routes::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
     

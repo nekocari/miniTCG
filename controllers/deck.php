@@ -16,7 +16,7 @@ class DeckController {
             $currPage = 1;
         }
         $decks = Carddeck::getAllByStatus('public');
-        $pagination = new Pagination($decks, 10, $currPage, 'decks.php');
+        $pagination = new Pagination($decks, 10, $currPage, Routes::getUri('deck_index'));
         
         $data = array();
         $data['decks'] = $pagination->getElements();
