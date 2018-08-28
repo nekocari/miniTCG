@@ -44,7 +44,7 @@
 		<li class="list-group-item">
 			<form method="POST" action="<?php echo ROUTES::getUri('subcategory_add');?>?id=<?php echo $category->getId(); ?>">
 				<input type="hidden" name="category" value="<?php echo $category->getId(); ?>">
-        		<button class="btn btn-primary">Unterkategorie anlegen</button>
+        		<button class="btn btn-primary btn-sm">Unterkategorie anlegen</button>
         	</form>
         </li>
 	</ul>

@@ -12,4 +12,4 @@
 	<input class="form-control m-2" type="text" name="name" pattern="[A-Za-z0-9äÄöÖüÜß _\-]+" value="<?php echo $category->getName(); ?>">
 	<input class="btn btn-primary" type="submit" name="rename" value="speichern">
 </form>
-<small>Erlaubt sind Buchstaben, Zahlen sowie Leerzeichen, "-" und "_"</small>
+<small>Erlaubt sind Buchstaben, Zahlen, sowie Leerzeichen, "-" und "_"</small>

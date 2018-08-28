@@ -24,9 +24,21 @@
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
     		<td><?php echo $member->getMail(); ?></td>
     		<td class="text-right">
-    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_member_gift_cards');?>?id=<?php echo $member->getId(); ?>">Karten geben</a>
-    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>">
-    			<i class="fas fa-pencil-alt"></i> bearbeiten</a>    			
+    			<div class="dropdown">
+					<a class="dropdown-toggle" href="#"  id="memberEditDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aktionen</a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberEditDropdown">
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-pencil-alt"></i> Daten bearbeiten</a>  
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('admin_member_gift_cards');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-plus"></i> Karten geben</a>   
+            			<!-- 
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-key"></i> Passwort zurücksetzen</a>   
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-unlock-alt"></i> Status und Rechte</a>  
+            			-->                     	
+                    </div>
+				</div>   			
     		</td>
     	</tr>
 <?php } ?>
