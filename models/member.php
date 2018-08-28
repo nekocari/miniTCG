@@ -19,19 +19,21 @@ class Member {
     private $mail;
     private $join_date;
     private $text;
+    private $text_html;
     private $cards;
     private $mastered_decks;
     private static $query_order_by_options = array('id','name','level');
     private static $query_order_direction_options = array('ASC','DESC');
     private static $accepted_group_options = array('id','level');
     
-    public function __construct($id, $name, $level, $mail, $join_date='00.00.0000 00:00:00', $text = '') {
+    public function __construct($id, $name, $level, $mail, $join_date, $text, $text_html) {
         $this->id = $id;
         $this->name = $name;
         $this->level = $level;
         $this->mail = $mail;
         $this->join_date = $join_date;
         $this->text = $text;
+        $this->text_html = $text_html;
     }
     
     /**
@@ -58,7 +60,7 @@ class Member {
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
-                $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text']);
+                $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
             }
         }
         
@@ -89,10 +91,10 @@ class Member {
             $group = 'id';
         }
         
-        $req = $db_conn->query("SELECT id, name, level, mail FROM members ORDER BY $order_by $order");
+        $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
             foreach($req->fetchAll() as $data) {
-                $members[$data[$group]][] = new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+                $members[$data[$group]][] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
             }
         }
         
@@ -115,7 +117,7 @@ class Member {
         if($req->execute(array(':id' => $id))) {
             if($req->rowCount()) {
                 $data = $req->fetch();
-                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text']);
+                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
             }
         }
         
@@ -130,8 +132,8 @@ class Member {
     public function store() {
         $db = Db::getInstance();
         try{
-            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail, info_text = :text WHERE id = :id');
-            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text));
+            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
+            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text, ':text_html' => $this->text_html) );
             return true;
         }
         catch(PDOException $e) {
@@ -212,12 +214,24 @@ class Member {
         return $this->name;
     }
     
+    public function setName($name) {
+        $this->name = $name;
+    }
+    
     public function getMail() {
         return $this->mail;
     }
     
+    public function setMail($mail) {
+        $this->mail = $mail;
+    }
+    
     public function getLevel() {
         return $this->level;
+    }
+    
+    public function setLevel($level) {
+        $this->level = $level;
     }
     
     public function getJoinDate() {
@@ -225,11 +239,20 @@ class Member {
     }
     
     public function getInfoText() {
-        $parsedown = new Parsedown();
-        return $parsedown->text($this->text);
+        return $this->text_html;
     }
     
     public function getInfoTextplain() {
         return $this->text;
+    }
+    
+    public function setInfoText($text){
+        $parsedown = new Parsedown();
+        $this->text = $text;
+        $this->text_html = $parsedown->text($this->text);
+    }
+    
+    public function getEditableData() {
+        return array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->text);
     }
 }

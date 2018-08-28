@@ -1,4 +1,3 @@
-<!-- TODO: fix!!! -->
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('member_dashboard');?>">Verwaltung</a></li>
@@ -12,12 +11,25 @@
 <form method="post" action="">
 <table class="table table-striped">
 	<tbody>
-		<?php foreach($memberdata as $var => $value){ if($var != 'id') {?>
-    	<tr>
-    		<td><?php echo $var; ?></td>
-    		<td><input class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>"></td>
-    	</tr>
-		<?php } } ?>
+		<?php 
+		foreach($memberdata as $var => $value){ 
+		     if($var != 'Text') {
+		?>
+        	<tr>
+        		<td><?php echo $var; ?></td>
+        		<td><input type="text" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>"></td>
+        	</tr>
+		<?php 
+		     }elseif($var == 'Text'){
+		     ?>
+        	<tr>
+        		<td><?php echo $var; ?></td>
+        		<td><textarea class="form-control" name="<?php echo $var; ?>"><?php echo $value; ?></textarea></td>
+        	</tr>
+		<?php 
+		     } 
+		} 
+		?>
 	</tbody>
 </table>
 

@@ -213,11 +213,11 @@ class Carddeck {
     public function getCollectorMembers(){
         try{
             $members = array();
-            $req = $this->db->prepare('SELECT DISTINCT m.id, m.name, m.level, m.mail FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND status = \'collect\'');
+            $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND status = \'collect\'');
             $req->execute();
             
             foreach($req->fetchAll() as $data){
-                $members[] =  new Member($data['id'], $data['name'], $data['level'], $data['mail']);
+                $members[] =  new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
             }
             return $members;
         }

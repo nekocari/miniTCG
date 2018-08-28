@@ -34,7 +34,8 @@ class Master {
                     s.id as sub_id, s.name as sub_name,
                     c.id as cat_id, c.name as cat_name,
                     dm.date as master_date,
-                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail
+                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail, 
+                    master.join_date as master_member_join_date, master.info_text as master_member_text, master.info_text_html as master_member_text_html
                 FROM decks_master dm
                 JOIN decks d ON d.id = dm.deck
                 JOIN members m ON m.id = d.creator
@@ -49,7 +50,8 @@ class Master {
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $master){
                 $deck = new Carddeck($master->id, $master->name, $master->deckname, $master->status, $master->date, $master->creator, $master->creator_name,
                     $master->cat_id, $master->sub_id, $master->cat_name, $master->sub_name);
-                $member = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail);
+                $member = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail, 
+                    $master->master_member_join_date, $master->master_member_text, $master->master_member_text_html);
                 $mastered_decks[] = new Master($deck, $member, $master->master_date);
             }
         }
@@ -63,7 +65,8 @@ class Master {
         if(!in_array($order, self::$allowed_order)) $order = 'ASC';
         
         $query = 'SELECT dm.date as master_date,
-                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail
+                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail, 
+                    master.join_date as master_member_join_date, master.info_text as master_member_text, master.info_text_html as master_member_text_html
                 FROM decks_master dm
                 JOIN members master ON master.id = dm.member
             WHERE dm.deck = :deck_id ORDER BY '.$order_by.' '.$order;
@@ -71,7 +74,8 @@ class Master {
         $req->execute(array(':deck_id'=>$deck_id));
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $master){
-                $members[] = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail);
+                $members[] = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail,
+                    $master->master_member_join_date, $master->master_member_text, $master->master_member_text_html);
             }
         }
         return $members;

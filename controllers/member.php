@@ -11,7 +11,7 @@ class MemberController {
     public function memberlist() {
         require_once 'models/member.php';
         require_once 'models/level.php';
-        $data['members'] = Member::getGrouped('level');
+        $data['members'] = Member::getGrouped('level','level','ASC');
         $data['level'] = Level::getAll();
         
         Layout::render('member/list.php',$data);
@@ -118,17 +118,24 @@ class MemberController {
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
         
         if(in_array('Admin',$admin->getRights())){
+            
             require_once 'models/member.php';
+            $memberdata = Member::getById($_GET['id']);
+            
             if(isset($_POST['updateMemberdata'])){
-                $updated_member = new Member($_POST['id'],$_POST['name'],$_POST['level'],$_POST['mail']);
-                $return = $updated_member->store();
+                $memberdata->setName($_POST['Name']);
+                $memberdata->setLevel($_POST['Level']);
+                $memberdata->setMail($_POST['Mail']);
+                $memberdata->setInfoText($_POST['Text']);
+                $return = $memberdata->store();
                 if($return === true){
                     $data['_success'][] = 'Daten wurden gespeichert.';
                 }else{
                     $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
                 }
             }
-            $data['memberdata'] = Member::getById($_GET['id']);
+            
+            $data['memberdata'] = $memberdata->getEditableData();
             if($data['memberdata']){
                 Layout::render('admin/members/edit.php',$data);
             }else{
