@@ -14,7 +14,7 @@
         		<small>Neuigkeiten für die Startseite</small>
         		<nav class="nav justify-content-end">
         			<a class="nav-link" href="<?php echo ROUTES::getUri('news_add');?>">schreiben</a>
-        			<a class="nav-link" href="<?php echo ROUTES::getUri('news_edit');?>">bearbeiten</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('news_index');?>">Liste anzeigen</a>
         		</nav>
         	</div>
         </div>
