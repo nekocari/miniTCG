@@ -1,1 +1,1 @@
-<a class="btn btn-link"><i class="fas fa-user"></i> [NAME]</a>
+<a class="btn btn-link" href="[URL]"><i class="fas fa-user"></i> [NAME]</a>
