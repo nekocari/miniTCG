@@ -16,14 +16,15 @@
     Routes::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
     Routes::addRoute('admin_member_gift_cards', 'admin/members/gift_cards.php', 'member', 'giftCards');
     
-    Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
-    Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
-    Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
-    Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     Routes::addRoute('signup', 'signup.php', 'login', 'signup');
     Routes::addRoute('signin', 'signin.php', 'login', 'signin');
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
+    Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
+    Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
+    Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
+    Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
+    Routes::addRoute('edit_userdata', 'member/userdata.php', 'member', 'editUserdata');
     
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
     

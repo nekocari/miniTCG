@@ -147,6 +147,41 @@ class MemberController {
     }
     
     /**
+     * Member edit for Users
+     */
+    public function editUserdata(){
+            
+        require_once 'models/member.php';
+        $memberdata = Member::getById($_SESSION['user']->id);
+        
+        if(isset($_POST['updateMemberdata'])){
+            $memberdata->setName($_POST['Name']);
+            $memberdata->setMail($_POST['Mail']);
+            $memberdata->setInfoText($_POST['Text']);
+            
+            if(($return = $memberdata->store()) === true){
+                $data['_success'][] = 'Daten wurden gespeichert.';
+            }else{
+                $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
+            }
+        }
+        
+        if(isset($_POST['changePassword'])){
+            if($memberdata->setPassword($_POST['password1'],$_POST['password2'])){
+                $data['_success'][] = 'Passwort wurden gespeichert.';
+            }else{
+                $data['_error'][] = 'Passwort nicht aktualisiert. Folgender Fehler trat auf: '.$return;
+            }
+        }
+        
+        $data['memberdata'] = $memberdata->getEditableData();
+        unset($data['memberdata']['Level']);
+        
+        Layout::render('login/edit_userdata.php',$data);
+           
+    }
+    
+    /**
      * Member Gift Cards
      */
     public function giftCards(){
