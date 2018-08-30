@@ -22,6 +22,7 @@ class Login {
         if($req->rowCount() == 1) {
             $this->user = $req->fetch(PDO::FETCH_OBJ);
             if(password_verify($this->password, $this->user->pw)) {
+                $this->user->pw = null;
                 $_SESSION['user'] = $this->user;
                 // update db field - last login to now
                 $this->db->query('UPDATE members SET login_date = NOW(), ip = \''.$_SERVER['REMOTE_ADDR'].'\' WHERE id = '.$this->user->id);
@@ -144,6 +145,30 @@ class Login {
             $str .= $characters[$rand];
         }
         return $str;
+    }
+    
+    /**
+     * Changes password of user
+     * @param string $pw1   - new password string
+     * @param string $pw2   - repetition to prevent unintended wrong inputs 
+     * @throws Exception    - if password inputs do not match
+     * 
+     * @return boolean|string
+     */
+    public static function setPassword($pw1, $pw2) {
+        try {
+            if($pw1 == $pw2){
+                $db = DB::getInstance();
+                $req = $db->prepare('UPDATE members SET password = :password WHERE id = :id');
+                $req->execute([':password'=>password_hash($pw1,PASSWORD_BCRYPT), ':id'=>$_SESSION['user']->id]);
+                return true;
+            }else{
+                throw new Exception('Passwörter stimmen nicht überein');
+            }
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
     
 }

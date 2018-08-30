@@ -150,8 +150,10 @@ class MemberController {
      * Member edit for Users
      */
     public function editUserdata(){
-            
+        
         require_once 'models/member.php';
+        require_once 'models/login.php';
+        
         $memberdata = Member::getById($_SESSION['user']->id);
         
         if(isset($_POST['updateMemberdata'])){
@@ -167,8 +169,8 @@ class MemberController {
         }
         
         if(isset($_POST['changePassword'])){
-            if($memberdata->setPassword($_POST['password1'],$_POST['password2'])){
-                $data['_success'][] = 'Passwort wurden gespeichert.';
+            if(($return = Login::setPassword($_POST['password1'],$_POST['password2'])) === true){
+                $data['_success'][] = 'Passwort wurde gespeichert.';
             }else{
                 $data['_error'][] = 'Passwort nicht aktualisiert. Folgender Fehler trat auf: '.$return;
             }

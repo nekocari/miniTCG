@@ -246,7 +246,7 @@ class Member {
         return $this->text;
     }
     
-    public function setInfoText($text){
+    public function setInfoText($text) {
         $parsedown = new Parsedown();
         $this->text = $text;
         $this->text_html = $parsedown->text($this->text);

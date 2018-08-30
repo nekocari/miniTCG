@@ -1,11 +1,3 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('member_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo ROUTES::getUri('admin_member_index');?>">Mitglieder</a></li>
-    <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
-  </ol>
-</nav>
-
 <h1>Nutzerdaten bearbeiten</h1>
 
 <form method="post" action="">
@@ -34,8 +26,29 @@
 </table>
 
 <p class="text-center mx-2">
-	<a class="btn btn-dark" href="<?php echo ROUTES::getUri('admin_member_index');?>">zurück zur Liste</a> 
-	&bull; <input class="btn btn-primary" type="submit" name="updateMemberdata" value="speichern">
-	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+	<input class="btn btn-primary" type="submit" name="updateMemberdata" value="speichern">
+</p>
+</form>
+
+
+
+<h1>Passwort ändern</h1>
+
+<form method="post" action="">
+<table class="table table-striped">
+	<tbody>
+		<tr>
+			<td>neues Passwort</td>
+			<td><input class="form-control" type="password" name="password1"></td>
+		</tr>
+		<tr>
+			<td>Wiederholung</td>
+			<td><input class="form-control" type="password" name="password2"></td>
+		</tr>
+	</tbody>
+</table>
+
+<p class="text-center mx-2">
+	<input class="btn btn-primary" type="submit" name="changePassword" value="speichern">
 </p>
 </form>
