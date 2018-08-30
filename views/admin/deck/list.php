@@ -27,7 +27,7 @@
 			</td>
 			<td><?php echo $deck->getCreatorName(); ?><br><small><?php echo $deck->getDate(); ?></small></td>
 			<td class="text-right">
-    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('admin_deck_edit');?>?id=<?php echo $deck->getId(); ?>">
+    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('deck_edit');?>?id=<?php echo $deck->getId(); ?>">
     				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
 			</td>
 		</tr>

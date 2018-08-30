@@ -31,9 +31,9 @@
 				<select class="form-control" name="creator">
 					<?php 
 					foreach($memberlist as $member){
-					   echo '<option value="'.$member->id.'"';
-					   if($member->id == $deckdata->getCreator()){ echo " selected"; }
-					   echo '>'.$member->name.' </option>';
+					   echo '<option value="'.$member->getId().'"';
+					   if($member->getId() == $deckdata->getCreator()){ echo " selected"; }
+					   echo '>'.$member->getName().' </option>';
 					} 
 					?>
 				</select>
@@ -60,7 +60,7 @@
     		<td>
     			<?php foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>
         		<div class="text-right">
-        			<a href="admin/cards/replace.php?id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
+        			<a href="<?php echo ROUTES::getUri('deck_card_replace');?>?id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
         		</div>
     		</td>
     	</tr>
