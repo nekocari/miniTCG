@@ -27,6 +27,9 @@
     Routes::addRoute('edit_userdata', 'member/userdata.php', 'member', 'editUserdata');
     
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
+    Routes::addRoute('trades_recieved', 'member/trades_recieved.php', 'trade', 'recieved');
+    Routes::addRoute('trades_sent', 'member/trades_sent.php', 'trade', 'sent');
+    Routes::addRoute('trade', 'member/trade.php', 'trade', 'add');
     
     Routes::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
     Routes::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');

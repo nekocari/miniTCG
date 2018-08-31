@@ -15,6 +15,6 @@
 
 <div class="my-4">
 <?php foreach($cat_elements as $card){ ?>
-    <a href="<?php echo Routes::getUri('member_trade'); ?>"><?php echo $card->getImageHtml(); ?></a>
+    <a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>"><?php echo $card->getImageHtml(); ?></a>
 <?php } ?>
 </div>

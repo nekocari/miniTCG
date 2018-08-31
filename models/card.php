@@ -9,6 +9,8 @@
 require_once PATH.'models/setting.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/tradelog.php';
+require_once PATH.'models/member.php';
+
 class Card {
     
     private $id;
@@ -16,7 +18,6 @@ class Card {
     private $deck_id;
     private $card_no;
     private $owner;
-    private $owner_name;
     private $status;
     private $date;
     private static $tpl_width;
@@ -49,7 +50,8 @@ class Card {
         $req->execute(array(':id'=>$id));
         if($req->rowCount() > 0){
             $carddata = $req->fetch(PDO::FETCH_OBJ);
-            $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $carddata->owner, $carddata->status, $carddata->date);
+            $owner = Member::getById($carddata->owner);
+            $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
         }
         return $card;
     }
@@ -82,13 +84,10 @@ class Card {
         $req = $db->prepare('SELECT * FROM cards WHERE owner = :user_id AND status = :status ORDER BY name ASC');
         $req->execute(array(':user_id'=>$user_id, ':status'=>$status));
         foreach($req->fetchAll(PDO::FETCH_OBJ) as $carddata){
-            $cards[] = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $carddata->owner, $carddata->status, $carddata->date);
+            $owner = Member::getById($carddata->owner);
+            $cards[] = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
         }
         return $cards;
-    }
-    
-    public function setOwnerName($name) {
-        $this->owner_name = $name;
     }
     
     public function getId() {
@@ -113,6 +112,10 @@ class Card {
     
     public function getStatus() {
         return $this->status;
+    }
+    
+    public function getOwner() {
+        return $this->owner;
     }
     
     public function getDeckname() {

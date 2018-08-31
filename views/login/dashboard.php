@@ -10,7 +10,7 @@
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo ROUTES::getUri('member_trademanager');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo ROUTES::getUri('trades_recieved');?>">
 			<i class="fas fa-exchange-alt h1"></i><br>
 			Tauschanfragen
 		</a>
