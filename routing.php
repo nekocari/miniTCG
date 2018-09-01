@@ -25,6 +25,7 @@
     Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     Routes::addRoute('edit_userdata', 'member/userdata.php', 'member', 'editUserdata');
+    Routes::addRoute('messages_received', 'member/inbox.php', 'message', 'received');
     
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
     Routes::addRoute('trades_recieved', 'member/trades_recieved.php', 'trade', 'recieved');

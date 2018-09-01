@@ -6,6 +6,7 @@ class Layout {
     private static $footerTemplate = 'views/templates/footer.php';
     private static $errorMsgTemplate = 'views/templates/message_error.php';
     private static $successMsgTemplate = 'views/templates/message_success.php';
+    private static $infoMsgTemplate = 'views/templates/message_info.php';
     
     
     public static function render($view, $values = array()) {
@@ -28,6 +29,12 @@ class Layout {
             if(isset($_success)){
                 $template = file_get_contents(self::$successMsgTemplate);
                 foreach($_success as $msg){
+                    echo str_replace('[MESSAGE]',$msg,$template);
+                }
+            }
+            if(isset($_info)){
+                $template = file_get_contents(self::$infoMsgTemplate);
+                foreach($_info as $msg){
                     echo str_replace('[MESSAGE]',$msg,$template);
                 }
             }
