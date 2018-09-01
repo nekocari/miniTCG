@@ -22,9 +22,12 @@
 		<div class="text-muted font-italic">Nachricht: "<?php echo $trade->getText(); ?>"</div>
 	</div>
 	<div class="card-footer text-center">
-		<button class="btn btn-sm btn-primary"><i class="fas fa-check"></i> Ja</button>
-		&bull; 
-		<button class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Nein</button>
+		<form class="m-0 p-0 inline-form" method="POST" action="">
+    		<button class="btn btn-sm btn-primary" name="accept"><i class="fas fa-check"></i> Ja</button>
+    		&bull; 
+    		<button class="btn btn-sm btn-danger" name="decline"><i class="fas fa-times"></i> Nein</button>
+    		<input type="hidden" name="id" value="<?php echo $trade->getId(); ?>">
+    	</form>
 	</div>
 </div>
 

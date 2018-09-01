@@ -21,7 +21,7 @@
         	</div>
     	</div>
 	</div>
-	<div class="card-body"><?php echo $msg->getText(); ?><?php echo $msg->getStatus(); ?></div>
+	<div class="card-body"><?php echo $msg->getText(); ?></div>
 </div>
 <?php } ?>
 

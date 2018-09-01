@@ -33,6 +33,30 @@ class Trade {
         $this->db           = DB::getInstance();
     }
     
+    
+    public static function getById($id) {
+        try {
+            require_once PATH.'models/card.php';
+            require_once PATH.'models/member.php';
+            
+            $db = DB::getInstance();
+            
+            $req = $db->prepare('SELECT * FROM trades WHERE id = :id');
+            $req->execute(array(':id'=>$id));
+            $tradedata = $req->fetch(PDO::FETCH_OBJ);
+            
+            $offerer = Member::getById($tradedata->offerer);
+            $recipient = Member::getById($tradedata->recipient);
+            $offered_card = Card::getById($tradedata->offered_card);
+            $requested_card = Card::getById($tradedata->requested_card);
+            
+            return new Trade($tradedata->id, $tradedata->date, $offerer, $offered_card, $recipient, $requested_card, $tradedata->status, $tradedata->text);
+        }
+        catch (Exception $e){
+            return $e->getMessage();
+        }
+    }
+    
     /**
      * get all trades recieved by a member using the member ID
      *
@@ -158,6 +182,25 @@ class Trade {
             
         }else{
             return false;
+        }
+    }
+    
+    public function decline() {
+        try {
+            if($this->recipient->getId() == $_SESSION['user']->id){
+                // update trade status to declined
+                $this->db->query('UPDATE trades SET status = \'declined\' WHERE id = '.$this->id);            
+                // send message to inform offerer
+                require_once PATH.'models/message.php';
+                $msg_text = 'ANFRAGE ABGELEHNT! '.$this->recipient->getName().' tauscht '.strtoupper($this->requested_card->getName()).' nicht gegen deine '.strtoupper($this->offered_card->getName()).'.';
+                Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
+                return true;
+            }else{
+                throw new Exception('Du kannst diese Anfrage nicht ablehnen, da du nicht der Empfänger bist!');
+            }
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
         }
     }
     

@@ -15,6 +15,16 @@ class TradeController {
         require_once 'models/trade.php';
         
         $data = array();
+        
+        if(isset($_POST['decline']) AND isset($_POST['id'])){
+            $trade = Trade::getById($_POST['id']);
+            if(($return = $trade->decline()) === true){
+                $data['_success'][] = 'Tauschanfrage wurde abgelehnt.';
+            }else{
+                $data['_error'][] = 'Tauschanfrage konnte nicht abgeleht werden. Fehlercode: '.$return;
+            }
+        }
+        
         $data['trades'] = Trade::getRecievedByMemberId($_SESSION['user']->id);
         
         Layout::render('trade/recieved.php',$data);
@@ -72,7 +82,7 @@ class TradeController {
                 
             }else{
             
-                $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade');
+                $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade', true);
                 Layout::render('trade/add.php',$data);
                 
             }
