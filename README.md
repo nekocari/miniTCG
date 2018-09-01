@@ -14,26 +14,33 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * Sign In
   * Sign Out
 * Admin Panel
-  * manage Decks incl. file upload and updates
+  * manage Decks incl. file upload
+  * manage Cardupdates
   * manage Level
+  * manage News
   * manage Categories (and Subcategories)
   * manage TCG Settings (like size of decks)
-  * Admins can give Random Cards to Members
+  * give Random Cards to Members
+  * edit Member data
 * Public Functions
   * Homepage
+  * display News
   * Deck list
   * Member list
   * display online Members
 * Member Functions
   * view Decks
+  * Messages (Inbox)
   * manage Cards
   * master Decks
-  * Members can take Cards from Updates
+  * take Cards from Updates
+  * Tradelog
+  * edit Member data (+ Password change)
+  * make Trade offers
+  * respond to Trade offers __-> in progress__
 
    
 ## Features TBA
-* Admins can edit Member data
-* Members can edit their data
 * delete Accounts (Member and Admin)
 * automated Level Ups
 
