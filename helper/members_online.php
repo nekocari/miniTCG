@@ -16,7 +16,9 @@ class MembersOnline {
      */
     public function getOnlineMembers() {
         require_once PATH.'models/member.php';
-        // TODO: delete row after 1 h automatically!
+        $query = "DELETE FROM members_online WHERE date < (NOW() - INTERVAL 60 MINUTE)";
+        $this->db->query($query);
+        
         $query = "SELECT id, name FROM members_online JOIN members ON id = member ORDER BY name ASC";
         $req = $this->db->query($query);
         if($req->rowCount() > 0){
@@ -25,6 +27,17 @@ class MembersOnline {
             }
         }
         return $this->members;
+    }
+    
+    public static function updateTime() {
+        if(isset($_SESSION['user'])){
+            $db = DB::getInstance();
+            $req = $db->prepare('UPDATE members_online SET date = NOW() WHERE member = :id');
+            $req->execute(array(':id'=>$_SESSION['user']->id));
+            if($req->rowCount() == 0){
+                $db->query('INSERT INTO members_online (member,date,ip) VALUES ('.$_SESSION['user']->id.',NOW(),\''.$_SERVER['REMOTE_ADDR'].'\')');
+            }
+        }
     }
     
 }

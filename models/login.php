@@ -15,20 +15,20 @@ class Login {
      * 
      * @return boolean|mixed
      */
-    public function login() {        
-        $req = $this->db->prepare('SELECT id, name, password as pw FROM members WHERE name LIKE :username');
-        $req->execute(array(':username' => $this->name));
-        
-        if($req->rowCount() == 1) {
-            $this->user = $req->fetch(PDO::FETCH_OBJ);
-            if(password_verify($this->password, $this->user->pw)) {
-                $this->user->pw = null;
-                $_SESSION['user'] = $this->user;
-                // update db field - last login to now
-                $this->db->query('UPDATE members SET login_date = NOW(), ip = \''.$_SERVER['REMOTE_ADDR'].'\' WHERE id = '.$this->user->id);
-                // insert ito member online table
-                $this->db->query('INSERT INTO members_online (member,date,ip) VALUES ('.$this->user->id.',NOW(),\''.$_SERVER['REMOTE_ADDR'].'\')');
-                return true;
+    public function login() {    
+        if(!isset($_SESSION['user'])){
+            $req = $this->db->prepare('SELECT id, name, password as pw FROM members WHERE name LIKE :username');
+            $req->execute(array(':username' => $this->name));
+            
+            if($req->rowCount() == 1) {
+                $this->user = $req->fetch(PDO::FETCH_OBJ);
+                if(password_verify($this->password, $this->user->pw)) {
+                    $this->user->pw = null;
+                    $_SESSION['user'] = $this->user;
+                    // update db field - last login to now
+                    $this->db->query('UPDATE members SET login_date = NOW(), ip = \''.$_SERVER['REMOTE_ADDR'].'\' WHERE id = '.$this->user->id);
+                    return true;
+                }
             }
         }
         return false;

@@ -4,10 +4,14 @@ require_once 'inc/constants.php';
 require_once 'inc/dbconnect.php';
 require_once 'routing.php';
 require_once 'helper/layout.php';
+require_once 'helper/members_online.php';
 require_once 'helper/Parsedown.php';
 
 // initialize database connection
 if(!$db = Db::getInstance()) { die('DB not connected'); }
+
+// manage members online / active sessions
+MembersOnline::updateTime();
 
 // process given uri
 if(isset($_GET['uri'])) {
