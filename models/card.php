@@ -20,11 +20,11 @@ class Card {
     private $owner;
     private $status;
     private $date;
+    private $db;
     private static $tpl_width;
     private static $tpl_height;
     private static $tpl_html;
     public static $accepted_status = array('new','trade','keep','collect');
-    private $db;
     
     public function __construct($id, $name, $deck_id, $card_no, $owner, $status, $date) {
         $this->id           = $id;
@@ -77,7 +77,7 @@ class Card {
     }
     
     // TODO: MOVE TO MEMBER CLASS?
-    public static function getMemberCardsByStatus($user_id, $status) {
+    public static function getMemberCardsByStatus($user_id, $status, $only_tradeable = false) {
         $cards = array();
         $db = DB::getInstance();
         
@@ -85,7 +85,10 @@ class Card {
         $req->execute(array(':user_id'=>$user_id, ':status'=>$status));
         foreach($req->fetchAll(PDO::FETCH_OBJ) as $carddata){
             $owner = Member::getById($carddata->owner);
-            $cards[] = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
+            $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
+            if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
+                $cards[] = $card;
+            }
         }
         return $cards;
     }
@@ -148,6 +151,18 @@ class Card {
         $replace = array(self::$tpl_width, self::$tpl_height, $url);
         
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
+    }
+    
+    public function isTradeable() {
+        $tradeable = false;
+        if($this->status == 'trade'){
+            $query = 'SELECT count(*) FROM trades WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
+            $trades = $this->db->query($query)->fetchColumn();
+            if($trades == 0){
+                $tradeable = true;
+            }
+        }
+        return $tradeable;
     }
     
     public static function createRandomCard($user_id,$number=1,$tradelog_text = '') {

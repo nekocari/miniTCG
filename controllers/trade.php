@@ -54,13 +54,28 @@ class TradeController {
         
         if(!empty($_GET['card'])){
             require_once 'models/card.php';
+            require_once 'models/trade.php';
             
             $data = array();
+            $data['requested_card'] = Card::getById($_GET['card']);
             
-            $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade');
-            $data['requested_card'] = Card::getById($_GET['card']); 
+            if(isset($_POST['add_trade'])){
+                
+                $data['offered_card'] = Card::getById($_POST['offered_card_id']); 
+                if(TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text'])){
+                    $data['_success'][] = 'Taschanfrage wurde gesendet!';
+                }else{
+                    $data['_error'][] = 'Anfrage konnte nicht gestellt werden. Mindestens eine der Karten ist nicht mehr verfügbar.';
+                }
+                
+                Layout::render('trade/add_result.php',$data);
+                
+            }else{
             
-            Layout::render('trade/add.php',$data);
+                $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade');
+                Layout::render('trade/add.php',$data);
+                
+            }
         }else{
             $data['_error'][] = 'Keine gültige Auswahl getroffen!';
             Layout::render('templates/error.php', $data);

@@ -149,9 +149,9 @@ class Member {
      * 
      * @return Card[] array of Card Objects or empty array 
      */
-    public function getCardsByStatus($status) {
+    public function getCardsByStatus($status, $only_tradeable = false) {
         if(!isset($this->cards[$status])){
-            $this->cards[$status] = Card::getMemberCardsByStatus($this->id, $status);
+            $this->cards[$status] = Card::getMemberCardsByStatus($this->id, $status, $only_tradeable);
         }
         return $this->cards[$status];
     }

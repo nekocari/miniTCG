@@ -16,6 +16,7 @@ class MembersOnline {
      */
     public function getOnlineMembers() {
         require_once PATH.'models/member.php';
+        // TODO: delete row after 1 h automatically!
         $query = "SELECT id, name FROM members_online JOIN members ON id = member ORDER BY name ASC";
         $req = $this->db->query($query);
         if($req->rowCount() > 0){

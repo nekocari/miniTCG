@@ -12,9 +12,14 @@
 			am <?php echo $trade->getDate(); ?></small>
 	</div>
 	<div class="card-body text-center">
-		<div></div>
+		<div>
+			<?php echo $trade->getOfferedCard()->getImageHTML(); ?>
+			<i class="fas fa-sync-alt h1"></i>
+			<?php echo $trade->getRequestedCard()->getImageHTML(); ?>
+		</div>
 		<div>Deine <span class="text-uppercase"><?php echo $trade->getOfferedCard()->getName(); ?></span> gegen 
 			<span class="text-uppercase"><?php echo $trade->getRequestedCard()->getName(); ?></span> von <?php echo $trade->getRecipient()->getName(); ?></div>
+		<div class="text-muted font-italic">Nachricht: "<?php echo $trade->getText(); ?>"</div>
 	</div>
 	<div class="card-footer text-center">
 		<form class="m-0" method="post" action="">

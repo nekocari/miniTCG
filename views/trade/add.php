@@ -15,7 +15,7 @@
 	<div class="col-12 col-md-6">
 		<h4>Karte anbieten</h4>
 		<div class="text-center">
-			<p><select class="form-control">
+			<p><select class="form-control" name="offered_card_id">
                 	<option value="">Karte auswählen</option>
                     <?php foreach($cards as $card){ ?>
                     <option value="<?php echo $card->getId(); ?>"><?php echo $card->getName(); ?></option>
@@ -34,6 +34,7 @@
 	<a class="btn btn-dark" href="<?php echo $requested_card->getOwner()->getProfilLink(); ?>">zurück zum Nutzerprofil</a> &bull; 
 	<input class="btn btn-primary" type="submit" name="add_trade" value="Angebot senden">
 	<input type="hidden" name="requested_card_id" value="<?php echo $requested_card->getId(); ?>">
+	<input type="hidden" name="recipient" value="<?php echo $requested_card->getOwner()->getId(); ?>">
 </p>
 
 </form>

@@ -15,12 +15,13 @@ class Trade {
     private $recipient;
     private $offered_card;
     private $requested_card;
+    private $text;
     private $status;
     private static $query_order_by_options = array('id','date','status','offerer','recipient');
     private static $query_order_direction_options = array('ASC','DESC');
     private static $query_status_options = array('new','accepted','declined');
     
-    public function __construct($id, $date, $offerer, $offered_card, $recipient, $requested_card, $status) {
+    public function __construct($id, $date, $offerer, $offered_card, $recipient, $requested_card, $status, $text) {
         $this->id           = $id;
         $this->date         = $date;
         $this->offerer      = $offerer;
@@ -28,6 +29,7 @@ class Trade {
         $this->recipient    = $recipient;
         $this->requested_card = $requested_card;
         $this->status       = $status;
+        $this->text         = $text;
         $this->db           = DB::getInstance();
     }
     
@@ -66,7 +68,7 @@ class Trade {
             $recipient = Member::getById($trade['recipient']);
             $offered_card = Card::getById($trade['offered_card']);
             $requested_card = Card::getById($trade['requested_card']);
-            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status']);
+            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status'], $trade['text']);
         }
         
         return $trades;
@@ -107,7 +109,7 @@ class Trade {
             $recipient = Member::getById($trade['recipient']);
             $offered_card = Card::getById($trade['offered_card']);
             $requested_card = Card::getById($trade['requested_card']);
-            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status']);
+            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status'], $trade['text']);
         }
         
         return $trades;
@@ -138,6 +140,27 @@ class Trade {
         return self::delete($this->id);
     }
     
+    public static function add($recipient, $requested_card_id, $offered_card_id, $text) {
+        // TODO: check if cards are still free
+        $db = DB::getInstance();
+        
+        $offered_card = Card::getById($offered_card_id);
+        $requested_card = Card::getById($requested_card_id);        
+        $text = strip_tags($text);
+        
+        if($offered_card->isTradeable() AND $requested_card->isTradeable() AND 
+            $offered_card->getOwner()->getId() == $_SESSION['user']->id AND $requested_card->getOwner()->getID() == $recipient){
+            
+            $req = $db->prepare('INSERT INTO trades (offerer,recipient,offered_card,requested_card,text) VALUES (:offerer,:recipient,:offered_card,:requested_card,:text) ');
+            $req->execute(array(':offerer'=>$_SESSION['user']->id, ':recipient'=>$recipient, ':offered_card'=>$offered_card_id, ':requested_card'=>$requested_card_id, ':text'=>$text ));
+            
+            return true;
+            
+        }else{
+            return false;
+        }
+    }
+    
     
     /*
      *  basic GETTER methods 
@@ -163,6 +186,9 @@ class Trade {
     }
     public function getStatus() {
         return $this->status;
+    }
+    public function getText() {
+        return $this->text;
     }
     
 }

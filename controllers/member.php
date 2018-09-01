@@ -52,6 +52,8 @@ class MemberController {
                 break;
                 
             case 'trade':
+                $data['cat_elements'] = $data['member']->getCardsByStatus($cat,true);
+                break;
             case 'keep':
                 $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
                 break;
