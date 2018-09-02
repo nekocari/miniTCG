@@ -16,10 +16,19 @@ class TradeController {
         
         $data = array();
         
-        if(isset($_POST['decline']) AND isset($_POST['id'])){
+        if(isset($_POST['decline']) AND isset($_POST['id']) AND isset($_POST['text'])){
             $trade = Trade::getById($_POST['id']);
-            if(($return = $trade->decline()) === true){
+            if(($return = $trade->decline($_POST['text'])) === true){
                 $data['_success'][] = 'Tauschanfrage wurde abgelehnt.';
+            }else{
+                $data['_error'][] = 'Tauschanfrage konnte nicht abgeleht werden. Fehlercode: '.$return;
+            }
+        }
+        
+        if(isset($_POST['accept']) AND isset($_POST['id']) AND isset($_POST['text'])){
+            $trade = Trade::getById($_POST['id']);
+            if(($return = $trade->accept($_POST['text'])) === true){
+                $data['_success'][] = 'Tauschanfrage wurde angenommen. '.strtoupper($trade->getOfferedCard()->getName()).' findest du bei deinen Karten unter NEW';
             }else{
                 $data['_error'][] = 'Tauschanfrage konnte nicht abgeleht werden. Fehlercode: '.$return;
             }

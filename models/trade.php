@@ -185,21 +185,89 @@ class Trade {
         }
     }
     
-    public function decline() {
+    public function decline($msg = '') {
         try {
             if($this->recipient->getId() == $_SESSION['user']->id){
                 // update trade status to declined
-                $this->db->query('UPDATE trades SET status = \'declined\' WHERE id = '.$this->id);            
-                // send message to inform offerer
-                require_once PATH.'models/message.php';
-                $msg_text = 'ANFRAGE ABGELEHNT! '.$this->recipient->getName().' tauscht '.strtoupper($this->requested_card->getName()).' nicht gegen deine '.strtoupper($this->offered_card->getName()).'.';
-                Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
-                return true;
+                $req = $this->db->query('UPDATE trades SET status = \'declined\' WHERE id = '.$this->id); 
+                if($req->rowCount() == 1){
+                    // send message to inform offerer
+                    require_once PATH.'models/message.php';
+                    $msg_text = 'ANFRAGE ABGELEHNT! '.$this->recipient->getName().' tauscht '.strtoupper($this->requested_card->getName()).' nicht gegen deine '.strtoupper($this->offered_card->getName()).'.';
+                    if(!empty($msg)){
+                        $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
+                    }
+                    Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
+                    return true;
+                }else{
+                    throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.');
+                }
             }else{
                 throw new Exception('Du kannst diese Anfrage nicht ablehnen, da du nicht der Empfänger bist!');
             }
         }
         catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    public function accept($msg = '') {
+        try {
+            $this->db->beginTransaction();
+            if($this->recipient->getId() == $_SESSION['user']->id){
+                
+                // change owner of offered card to recipient
+                if($this->offered_card->getOwner()->getId() == $this->offerer->getId()){
+                    
+                    $this->offered_card->setOwner($this->recipient->getId());
+                    $this->offered_card->setStatus('new');
+                    $this->offered_card->store();
+                    
+                    // change owner of requested card to offerer
+                    if($this->requested_card->getOwner()->getId() == $this->recipient->getId()){
+                        
+                        $this->requested_card->setOwner($this->offerer->getId());
+                        $this->requested_card->setStatus('new');
+                        $this->requested_card->store();
+                        
+                        // update trade status to declined
+                        $req = $this->db->query('UPDATE trades SET status = \'accepted\' WHERE id = '.$this->id);
+                        if($req->rowCount() == 1){
+                            
+                            // send message to inform offerer
+                            require_once PATH.'models/message.php';
+                            $msg_text = 'ANFRAGE ANGENOMMEN! '.$this->recipient->getName().' hat '.strtoupper($this->requested_card->getName()).' gegen deine '.strtoupper($this->offered_card->getName()).' getauscht.';
+                            if(!empty($msg)){
+                                $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
+                            }
+                            Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
+                            
+                            // create Tradelog entry for offerer
+                            $text = 'Du hast '.strtoupper($this->offered_card->getName()).' gegen '.strtoupper($this->requested_card->getName()).' von '.$this->recipient->getName().' getauscht.';
+                            Tradelog::addEntry($this->offerer->getId(), $text);
+                            // create Tradelog entry for recipient
+                            $text = 'Du hast '.strtoupper($this->requested_card->getName()).' gegen '.strtoupper($this->offered_card->getName()).' von '.$this->offerer->getName().' getauscht.';
+                            Tradelog::addEntry($this->recipient->getId(), $text);
+                            $text = null;
+                            
+                            $this->db->commit();
+                            return true;
+                            
+                        }else{
+                            throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.');
+                        }
+                    }else{
+                        throw new Exception('Angefragte Karte ist nicht verfügbar.');
+                    }                    
+                }else{
+                    throw new Exception('Angebotene Karte ist nicht verfügbar.');
+                }
+            }else{
+                throw new Exception('Du kannst diese Anfrage nicht annehmen, da du nicht der Empfänger bist!');
+            }
+        }
+        catch (Exception $e) {
+            $this->db->rollBack();
             return $e->getMessage();
         }
     }

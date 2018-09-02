@@ -22,7 +22,8 @@
 		<div class="text-muted font-italic">Nachricht: "<?php echo $trade->getText(); ?>"</div>
 	</div>
 	<div class="card-footer text-center">
-		<form class="m-0 p-0 inline-form" method="POST" action="">
+		<form class="m-0 p-0" method="POST" action="">
+			<input type="text" class="form-control my-1" maxlength="250" name="text" placeholder="Nachricht (optional)">
     		<button class="btn btn-sm btn-primary" name="accept"><i class="fas fa-check"></i> Ja</button>
     		&bull; 
     		<button class="btn btn-sm btn-danger" name="decline"><i class="fas fa-times"></i> Nein</button>

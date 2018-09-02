@@ -93,6 +93,16 @@ class Card {
         return $cards;
     }
     
+    public function store() {
+        $req = $this->db->prepare('UPDATE cards SET name = :name, deck = :deck, number = :number, owner = :owner, status = :status, date = :date WHERE id = :id ');
+        $req->execute(array(':name'=>$this->name, ':deck'=>$this->deck_id, ':number'=>$this->card_no, ':status'=>$this->status, ':owner'=>$this->owner->getId(), ':date'=>$this->date, ':id'=>$this->id));
+        if($req->rowCount() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     public function getId() {
         return $this->id;
     }
@@ -119,6 +129,20 @@ class Card {
     
     public function getOwner() {
         return $this->owner;
+    }
+    
+    public function setStatus($status) {
+        if(in_array($status, self::$accepted_status)){
+            $this->status = $status;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    public function setOwner($member_id) {
+        $this->owner = Member::getById($member_id);
+        return true;
     }
     
     public function getDeckname() {
