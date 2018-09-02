@@ -201,9 +201,9 @@ class MemberController {
             require_once 'models/card.php';
             $data['member'] = $member = Member::getById($_GET['id']);
             
-            if(isset($_POST['addCards']) and intval($_POST['addCards'])){
+            if(isset($_POST['addCards']) and intval($_POST['addCards']) and isset($_POST['text'])){
                 
-                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'manuelle GUTSCHRIFT');
+                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'manuelle GUTSCHRIFT ('.strip_tags($_POST['text'].')'));
                 if(count($data['cards']) > 0){
                     $cardnames = '';
                     foreach($data['cards'] as $card){
