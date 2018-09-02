@@ -206,6 +206,27 @@ class Member {
         return $counter;
     }
     
+    public function checkLevelUp() {
+        require_once PATH.'models/level.php';
+        $reached_level = Level::getByCardNumber($this->getCardCount());
+        
+        if($this->getLevel() != $reached_level->getId()){
+            
+            // find next level id and update member data
+            $next_level = Level::getById($this->getLevel())->next();
+            if($next_level != false){
+                
+                $this->setLevel($next_level->getId());
+                $this->store();
+                
+                // TODO: gift for level up??
+                if($next_level != $reached_level){
+                    $this->checkLevelUp();
+                }
+            }
+        }
+    }
+    
     public function getId() {
         return $this->id;
     }

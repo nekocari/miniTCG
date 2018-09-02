@@ -214,6 +214,7 @@ class Card {
             $log_text = $tradelog_text.' -> '.$card['name'].' (#'.$card['id'].') erhalten.';
             Tradelog::addEntry($user_id, $log_text);
         }
+        Member::getById($user_id)->checkLevelUp();
         if($number == 1){ 
             return $cards[0]; 
         }else{
@@ -250,6 +251,7 @@ class Card {
             }
             
             $db->commit();
+            Member::getById($user_id)->checkLevelUp();
             return $cards;
         }
         catch(Exception $e) {

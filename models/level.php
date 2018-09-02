@@ -122,4 +122,27 @@ class Level {
         return $this->id;
     }
     
+    public static function getByCardNumber($number) {
+        $db = DB::getInstance();
+        $req = $db->prepare('SELECT * FROM level WHERE cards < :number ORDER BY level DESC LIMIT 1');
+        $req->execute(array(':number'=>$number));
+        if($req->rowCount()){
+            $data = $req->fetch();
+            return new Level($data['id'], $data['level'], $data['name'], $data['cards']);
+        }else{
+            return false;
+        }
+    }
+    
+    public function next() {
+        $req = $this->db->prepare('SELECT * FROM level WHERE level > :level ORDER BY level ASC LIMIT 1');
+        $req->execute(array(':level'=>$this->getLevel()));
+        if($req->rowCount()){
+            $data = $req->fetch();
+            return new Level($data['id'], $data['level'], $data['name'], $data['cards']);
+        }else{
+            return false;
+        }
+    }
+    
 }
