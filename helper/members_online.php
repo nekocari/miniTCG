@@ -35,7 +35,7 @@ class MembersOnline {
             $req = $db->prepare('UPDATE members_online SET date = NOW() WHERE member = :id');
             $req->execute(array(':id'=>$_SESSION['user']->id));
             if($req->rowCount() == 0){
-                $db->query('INSERT INTO members_online (member,date,ip) VALUES ('.$_SESSION['user']->id.',NOW(),\''.$_SERVER['REMOTE_ADDR'].'\')');
+                $db->query('INSERT INTO members_online (member,date,ip) VALUES ('.$_SESSION['user']->id.',NOW(),\''.$_SERVER['REMOTE_ADDR'].'\') ON DUPLICATE KEY UPDATE ip = ip');
             }
         }
     }
