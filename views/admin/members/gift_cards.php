@@ -12,7 +12,7 @@
 
 <form method="POST" action="">
     <div class="mx-2 mb-2">Wie viele Karten gutschreiben?</div>
-    <div class="mx-2 mb-2"><input type="number" name="addCards" class="form-control"></div>
-    <div class="mx-2 mb-2"><textarea name="text" class="form-control" placeholder="Grund der Gutschrift?"></textarea></div>
+    <div class="mx-2 mb-2"><input type="number" name="addCards" class="form-control" required></div>
+    <div class="mx-2 mb-2"><textarea name="text" class="form-control" placeholder="Grund der Gutschrift?" required></textarea></div>
     <div class="mx-2 mb-2"><button class="btn btn-primary" name="add" value="1">Gutschrift durchführen</button></div>
 </form>
