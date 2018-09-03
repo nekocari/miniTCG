@@ -94,7 +94,7 @@ class Member {
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $data) {
-                $members[$data[$group]][] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
+                $members[$data->$group][] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
             }
         }
         

@@ -1,6 +1,5 @@
 <h1>Mitgliederliste</h1>
 
-
 <table class="table">
 	<?php foreach($members as $lv => $members){ ?>
 	<tr>
