@@ -5,8 +5,8 @@ class MembersOnline {
     private $db;
     private $members = array();
     
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct() {
+        $this->db = DB::getInstance();
     }
     
     /**

@@ -25,6 +25,7 @@
         		<h4><i class="fas fa-users"></i> Mitglieder</h4>
         		<small>Verwaltung der Mitglieder</small>
         		<nav class="nav justify-content-end">
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_member_search');?>">suchen</a>
         			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_member_index');?>">Liste anzeigen</a>
         		</nav>
         	</div>

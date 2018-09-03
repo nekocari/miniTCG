@@ -2,13 +2,15 @@
 /*
  * Manage Login
  */
+require_once 'models/login.php';
+
 class LoginController {
 	
     /**
-     * Member Dashboard 
+     * dashboard 
      */
     public function dashboard() {
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
     	}
       	Layout::render('login/dashboard.php');
@@ -18,12 +20,13 @@ class LoginController {
      * Sign in form
      */
 	public function signin() {
+	    
 		if(isset($_POST['username']) AND isset($_POST['password'])){
-			require_once 'models/login.php';
 			$login = new Login(Db::getInstance(), $_POST['username'],  $_POST['password']);
 			$login_success= $login->login();
 		}
-		if(isset($_SESSION['user'])){
+		
+		if(Login::loggedIn()){
 		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}else{
 	      	Layout::render('login/signin.php');
@@ -34,9 +37,8 @@ class LoginController {
      * Sign out
      */
 	public function signout() {
-		if(isset($_SESSION['user'])){
-		    require_once 'models/login.php';
-		    if(Login::logout(Db::getInstance(),$_SESSION['user'])){
+	    if(Login::loggedIn()){
+		    if(Login::logout()){
 		        Layout::render('login/signout.php');
 		    }
 		}else{
@@ -49,10 +51,9 @@ class LoginController {
      * Sign up 
      */
     public function signup() {
-    	if(isset($_SESSION['user'])){
+        if(Login::loggedIn()){
 			self::dashboard();
     	}else{
-    	    require_once 'models/login.php';
     	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep'])){
     	        $errors = array();
     	        if(trim($_POST['password']) == ''){
@@ -81,10 +82,9 @@ class LoginController {
 	 * account activation page
 	 */
     public function activate() {
-    	if(isset($_SESSION['user'])){
+        if(Login::loggedIn()){
 			self::dashboard();
 		}else{
-			require_once 'models/login.php';
 			if(isset($_GET['code']) AND isset($_GET['user'])
 				AND Login::activateAccount($_GET['code'], $_GET['user'])){
 				$file_path = 'activation_true.php';
@@ -99,7 +99,7 @@ class LoginController {
 	 * get password reset form
 	 */
     public function password() {
-    	if(isset($_SESSION['user'])){
+        if(Login::loggedIn()){
 			self::dashboard();
 		}else{
 	    	Layout::render('login/password.php');
@@ -108,10 +108,10 @@ class LoginController {
 	
 	
 	/**
-	 * Card Manager
+	 * card manager
 	 */
 	public function cardmanager() {
-	    if(!isset($_SESSION['user'])){
+	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
 	    require_once 'models/card.php';
@@ -180,8 +180,11 @@ class LoginController {
 	    }   
 	}
 	
+	/**
+	 * mastercards
+	 */
 	public function mastercards() {
-	    if(!isset($_SESSION['user'])){
+	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
 	    require_once 'helper/pagination.php';
@@ -209,6 +212,46 @@ class LoginController {
 	    $data['pagination'] = $pagination->getPaginationHtml();
 	    
 	    Layout::render('login/mastercards.php',$data);
+	}
+	
+	
+	
+	/**
+	 * edit Userdata
+	 */
+	public function editUserdata(){
+	    
+	    if(!Login::loggedIn()){
+	        header("Location: ".BASE_URI.Routes::getUri('signin'));
+	    }
+    	    
+	    $memberdata = Member::getById($_SESSION['user']->id);
+	    
+	    if(isset($_POST['updateMemberdata'])){
+	        $memberdata->setName($_POST['Name']);
+	        $memberdata->setMail($_POST['Mail']);
+	        $memberdata->setInfoText($_POST['Text']);
+	        
+	        if(($return = $memberdata->store()) === true){
+	            $data['_success'][] = 'Daten wurden gespeichert.';
+	        }else{
+	            $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
+	        }
+	    }
+	    
+	    if(isset($_POST['changePassword'])){
+	        if(($return = Login::setPassword($_POST['password1'],$_POST['password2'])) === true){
+	            $data['_success'][] = 'Passwort wurde gespeichert.';
+	        }else{
+	            $data['_error'][] = 'Passwort nicht aktualisiert. Folgender Fehler trat auf: '.$return;
+	        }
+	    }
+	    
+	    $data['memberdata'] = $memberdata->getEditableData();
+	    unset($data['memberdata']['Level']);
+	    
+	    Layout::render('login/edit_userdata.php',$data);
+	    
 	}
 	
 }

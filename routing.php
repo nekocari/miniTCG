@@ -5,6 +5,16 @@
     Routes::addRoute('not_found', 'error.php', 'pages', 'notFound');
     Routes::addRoute('login_error', 'error_login.php', 'pages', 'notLoggedIn');
     
+    /**
+     * add your own routes here! 
+     */
+    
+    
+    /**
+     * DO NOT EDIT BELOW THIS LINE - unless you know what you are doing!
+     *********************************************************************
+     */
+    
     Routes::addRoute('deck_index', 'decks.php', 'deck', 'index');
     Routes::addRoute('deck_by_category', 'decks/category.php', 'deck', 'category');
     Routes::addRoute('deck_detail_page', 'decks/deck.php', 'deck', 'deckpage');
@@ -12,28 +22,31 @@
     Routes::addRoute('member_index', 'memberlist.php', 'member', 'memberlist');
     Routes::addRoute('member_profil', 'members/profil.php', 'member', 'profil');
     
-    Routes::addRoute('admin_member_index', 'admin/members/list.php', 'member', 'adminMemberList');
-    Routes::addRoute('admin_member_edit', 'admin/members/edit.php', 'member', 'adminEditMember');
-    Routes::addRoute('admin_member_gift_cards', 'admin/members/gift_cards.php', 'member', 'giftCards');
+    Routes::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
+    Routes::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
+    Routes::addRoute('admin_member_index', 'admin/members/list.php', 'admin', 'memberlist');
+    Routes::addRoute('admin_member_search', 'admin/members/search.php', 'admin', 'searchMember');
+    Routes::addRoute('admin_member_edit', 'admin/members/edit.php', 'admin', 'editMember');
+    Routes::addRoute('admin_member_gift_cards', 'admin/members/gift_cards.php', 'admin', 'giftCards');
+    Routes::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
     
     Routes::addRoute('signup', 'signup.php', 'login', 'signup');
     Routes::addRoute('signin', 'signin.php', 'login', 'signin');
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
+    Routes::addRoute('edit_userdata', 'member/userdata.php', 'login', 'editUserdata');
+    
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
     Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
     Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
-    Routes::addRoute('edit_userdata', 'member/userdata.php', 'member', 'editUserdata');
+    
     Routes::addRoute('messages_received', 'member/inbox.php', 'message', 'received');
     
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
     Routes::addRoute('trades_recieved', 'member/trades_recieved.php', 'trade', 'recieved');
     Routes::addRoute('trades_sent', 'member/trades_sent.php', 'trade', 'sent');
     Routes::addRoute('trade', 'member/trade.php', 'trade', 'add');
-    
-    Routes::addRoute('admin_dashboard', 'admin/', 'admin', 'dashboard');
-    Routes::addRoute('admin_settings', 'admin/settings.php', 'admin', 'settings');
     
     Routes::addRoute('news_index', 'admin/news/list.php','news', 'index');
     Routes::addRoute('news_add', 'admin/news/add.php','news', 'add');
@@ -48,7 +61,6 @@
     Routes::addRoute('deck_update_edit', 'admin/deck/update/edit.php', 'update', 'edit');
     Routes::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
     Routes::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
-    Routes::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');
     
     Routes::addRoute('category_index', 'admin/category.php', 'category', 'categories');
     Routes::addRoute('category_add', 'admin/category/add.php', 'category', 'addCategory');

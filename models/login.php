@@ -34,13 +34,33 @@ class Login {
         return false;
     }
     
-    public static function logout($db, $user) {
+    /**
+     * log out current user
+     * 
+     * @return boolean
+     */
+    public static function logout() {
         if(isset($_SESSION['user'])){
+            $db = DB::getInstance();
+            // delete from member online table
+            $db->query('DELETE FROM members_online WHERE member = '.intval($_SESSION['user']->id));
+            // delete sesseion data
             session_unset();
             session_destroy();
-            // delete from member online table
-            $db->query('DELETE FROM members_online WHERE member = '.$user->id);
             return true;
+        }
+    }
+    
+    /**
+     * checkes if $_SESSION['user'] is set
+     * 
+     * @return boolean
+     */
+    public static function loggedIn() {
+        if(isset($_SESSION['user'])){
+            return true;
+        }else{
+            return false;
         }
     }
     
@@ -66,6 +86,14 @@ class Login {
         $this->user = $user;
     }
     
+    /**
+     * checks if a user exists using Name and Mail
+     * 
+     * @param string $name - name
+     * @param string $mail - email adress
+     * 
+     * @return boolean
+     */
     public static function userExists($name, $mail){
         $db = Db::getInstance();
         $req = $db->prepare('SELECT id FROM members WHERE name LIKE :name OR mail LIKE :mail');
@@ -149,6 +177,7 @@ class Login {
     
     /**
      * Changes password of user
+     * 
      * @param string $pw1   - new password string
      * @param string $pw2   - repetition to prevent unintended wrong inputs 
      * @throws Exception    - if password inputs do not match

@@ -93,8 +93,8 @@ class Member {
         
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
-            foreach($req->fetchAll() as $data) {
-                $members[$data[$group]][] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
+            foreach($req->fetchAll(PDO::FETCH_OBJ) as $data) {
+                $members[$data[$group]][] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
             }
         }
         
@@ -115,32 +115,33 @@ class Member {
         
         $req = $db_conn->prepare('SELECT * FROM members WHERE id = :id');
         if($req->execute(array(':id' => $id))) {
-            if($req->rowCount()) {
-                $data = $req->fetch();
-                $member = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
+            if($req->rowCount() == 1) {
+                $data = $req->fetch(PDO::FETCH_OBJ);
+                $member = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
             }
         }
         
         return $member;
-    }
+    }  
     
     /**
-     * push current member data into database
+     * find members with names matching the search string
      * 
-     * @return boolean|string retuns true or in case of failure the Excetion message
+     * @param string $search_str
+     * 
+     * @return Member[]
      */
-    public function store() {
-        $db = Db::getInstance();
-        try{
-            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
-            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text, ':text_html' => $this->text_html) );
-            return true;
+    public static function searchByName($search_str) {
+        $db = DB::getInstance();
+        $members = array();
+        
+        $req = $db->prepare('SELECT * FROM members WHERE name LIKE :search_str ');
+        $req->execute(array(':search_str'=>'%'.$search_str.'%'));
+        foreach($req->fetchAll(PDO::FETCH_OBJ) as $data){
+            $members[] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
-        }
+        return $members;
     }
-    
     
     /**
      * Uses Card Method getMemberCardsByStatus to get this members cards of given status
@@ -176,12 +177,19 @@ class Member {
     /**
      * returns url to view pofil
      *
-     * @return string
+     * @return string - html code 
      */
     public function getProfilLink() {
-        return 'members/profil.php?id='.$this->id;
+        return Routes::getUri('member_profil').'?id='.$this->id;
     }
     
+    /**
+     * checks if member already took cards from the update with $update_id
+     * 
+     * @param int $update_id - id of update
+     * 
+     * @return boolean
+     */
     public function gotUpdateCards($update_id){
         $db = Db::getInstance();
         $req = $db->prepare('SELECT * FROM updates_members WHERE member_id = :member_id AND update_id = :update_id ');
@@ -193,10 +201,20 @@ class Member {
         }
     }
     
+    /**
+     * retuns the amount of decks the member has mastered
+     * 
+     * @return int
+     */
     public function getMasterCount(){
         return count($this->getMasteredDecks());
     }
     
+    /**
+     * returns the total amount of cards the member owns
+     * 
+     * @return int - number of cards in total
+     */
     public function getCardCount(){
         $counter = 0;
         $counter+= count($this->getCardsByStatus('trade'));
@@ -206,6 +224,9 @@ class Member {
         return $counter;
     }
     
+    /**
+     * checks if the member has enough cards to level up and changes the level
+     */
     public function checkLevelUp() {
         require_once PATH.'models/level.php';
         $reached_level = Level::getByCardNumber($this->getCardCount());
@@ -227,6 +248,40 @@ class Member {
         }
     }
     
+    /**
+     * returns the fields admins can edit
+     * @return String[]
+     */
+    public function getEditableData($mode = 'admin') {
+        if($mode  = 'admin'){
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->text);
+        }else{
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->text);
+        }
+        return $fields; 
+    }
+    
+    /**
+     * push current member data into database
+     *
+     * @return boolean|string retuns true or in case of failure the Excetion message
+     */
+    public function store() {
+        $db = Db::getInstance();
+        try{
+            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
+            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text, ':text_html' => $this->text_html) );
+            return true;
+        }
+        catch(PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    /**
+     * BASIC GETTER FUNCTIONS
+     */
+    
     public function getId() {
         return $this->id;
     }
@@ -235,24 +290,12 @@ class Member {
         return $this->name;
     }
     
-    public function setName($name) {
-        $this->name = $name;
-    }
-    
     public function getMail() {
         return $this->mail;
     }
     
-    public function setMail($mail) {
-        $this->mail = $mail;
-    }
-    
     public function getLevel() {
         return $this->level;
-    }
-    
-    public function setLevel($level) {
-        $this->level = $level;
     }
     
     public function getJoinDate() {
@@ -267,13 +310,27 @@ class Member {
         return $this->text;
     }
     
+    
+    /**
+     * BASIC SETTER FUCTIONS
+     */
+    
+    public function setName($name) {
+        $this->name = $name;
+    }
+    
+    public function setMail($mail) {
+        $this->mail = $mail;
+    }
+    
+    public function setLevel($level) {
+        $this->level = $level;
+    }    
+    
     public function setInfoText($text) {
         $parsedown = new Parsedown();
         $this->text = $text;
         $this->text_html = $parsedown->text($this->text);
     }
     
-    public function getEditableData() {
-        return array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->text);
-    }
 }
