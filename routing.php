@@ -35,6 +35,7 @@
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
     Routes::addRoute('edit_userdata', 'member/userdata.php', 'login', 'editUserdata');
+    Routes::addRoute('delete_account', 'member/delete_account.php', 'login', 'deleteAccount');
     
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
     Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');

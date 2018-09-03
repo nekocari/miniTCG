@@ -279,6 +279,22 @@ class Member {
     }
     
     /**
+     * add a right to member
+     * 
+     * @param int $right_id - id of right to add
+     * 
+     * @return boolean
+     */
+    public function addRight($right_id){
+        $req = $this->db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
+        if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
      * BASIC GETTER FUNCTIONS
      */
     
@@ -332,5 +348,6 @@ class Member {
         $this->text = $text;
         $this->text_html = $parsedown->text($this->text);
     }
+    
     
 }

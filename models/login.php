@@ -52,6 +52,40 @@ class Login {
     }
     
     /**
+     * delete account
+     */
+    public static function delete($password) {
+        try {
+            // check if logged in
+            if(self::loggedIn()){
+                
+                // does password match
+                $db = DB::getInstance();
+                $req = $db->prepare('SELECT password FROM members WHERE id = :id');
+                $req->execute(array(':id' => $_SESSION['user']->id));
+                if($req->rowCount() == 1) {
+                    
+                    if(password_verify($password, $req->fetchColumn())){
+                        if($db->query('DELETE FROM members WHERE id = '.$_SESSION['user']->id)){
+                            self::logout();
+                            return true;
+                        }
+                    }else{
+                        throw new Exception('Passwort ist nicht korrekt.');
+                    }                    
+                }else{
+                    throw new Exception('Benutzerdaten nicht gefunden.');
+                }
+            }else{
+                throw new Exception('Du bist nicht eingeloggt!');
+            }
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    /**
      * checkes if $_SESSION['user'] is set
      * 
      * @return boolean

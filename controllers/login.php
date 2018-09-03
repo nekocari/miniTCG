@@ -254,5 +254,27 @@ class LoginController {
 	    
 	}
 	
+	/**
+	 * Delete Account
+	 */
+	public function deleteAccount() {
+	    
+	    if(!Login::loggedIn()){
+	        header("Location: ".BASE_URI.Routes::getUri('signin'));
+	    }
+	    
+	    if(!isset($_POST['delete']) OR !isset($_POST['password'])){
+	        Layout::render('login/delete_account.php');
+	    }else{
+	        if(($result = Login::delete($_POST['password'])) === true){
+    	        // delete the account
+    	        Layout::render('login/delete_account_success.php');
+    	    }else{
+    	        $data['_error'][] = $result;
+    	        Layout::render('login/delete_account.php',$data);
+    	    }	        
+	    }
+	}
+	
 }
 ?>
