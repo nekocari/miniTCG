@@ -10,9 +10,11 @@ class LoginController {
      * dashboard 
      */
     public function dashboard() {
+        // if not logged in redirect
         if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
     	}
+    	
       	Layout::render('login/dashboard.php');
     }
     
@@ -20,29 +22,38 @@ class LoginController {
      * Sign in form
      */
 	public function signin() {
-	    
+	    // login form was sent
 		if(isset($_POST['username']) AND isset($_POST['password'])){
+		    // try to login with post data
 			$login = new Login(Db::getInstance(), $_POST['username'],  $_POST['password']);
 			$login_success= $login->login();
 		}
 		
+		// if logged in redirect to dashboard
 		if(Login::loggedIn()){
 		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
-		}else{
-	      	Layout::render('login/signin.php');
 		}
+		
+	    Layout::render('login/signin.php');
     }
 
     /**
      * Sign out
      */
-	public function signout() {
+    public function signout() {
+        // is logged in?
 	    if(Login::loggedIn()){
+	        // try to log out
 		    if(Login::logout()){
+		        // on success
 		        Layout::render('login/signout.php');
+		    }else{
+		        // on failure redirect to dashboard
+		        header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		    }
+		// redirect to login form
 		}else{
-		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
+		    header("Location: ".BASE_URI.Routes::getUri('sign_in'));
 		}
       	
     }
@@ -51,47 +62,58 @@ class LoginController {
      * Sign up 
      */
     public function signup() {
+        // if logged in redirect to dashboard 
         if(Login::loggedIn()){
-			self::dashboard();
-    	}else{
-    	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep'])){
-    	        $errors = array();
-    	        if(trim($_POST['password']) == ''){
-    	            $errors[] = 'Passwort muss gesetzt werden!';
-    	        }
-    	        if($_POST['password'] != $_POST['password_rep']){
-    	            $errors[] = 'Passwörter stimmen nicht überein';
-    	        }
-		        if(Login::userExists($_POST['username'], $_POST['mail'])){
-		            $errors[] = 'Benutzername oder E-Mailadresse bereits belegt';
-		        }
-		        
-		        if(count($errors)==0 AND ($new_user_id = Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail'])) != false){
-		            Layout::render('login/signup_successfull.php');
-		        }else{
-		            Layout::render('login/signup_error.php',['errors'=>$errors]);
-		        }
-		        
-		    }else{
-    	    	Layout::render('login/signup.php');
-		    }
-		}
+            // redirect to dashboard
+            header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
+    	}
+    	
+	    // check form data if exists
+	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep'])){
+	        $errors = array();
+	        if(trim($_POST['password']) == ''){
+	            $errors[] = 'Passwort muss gesetzt werden!';
+	        }
+	        if($_POST['password'] != $_POST['password_rep']){
+	            $errors[] = 'Passwörter stimmen nicht überein';
+	        }
+	        if(Login::userExists($_POST['username'], $_POST['mail'])){
+	            $errors[] = 'Benutzername oder E-Mailadresse bereits belegt';
+	        }
+	        
+	        // if form data is ok and account was created successfully display success message
+	        if(count($errors)==0 AND ($new_user_id = Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail'])) != false){
+	            Layout::render('login/signup_successfull.php');
+	            
+	        // if form data is NOT ok or account was NOT created display error message
+	        }else{
+	            Layout::render('login/signup_error.php',['errors'=>$errors]);
+	        }
+	    
+	    // display sign up form
+	    }else{
+	    	Layout::render('login/signup.php');
+	    }
+		
 	}
     
 	/**
 	 * account activation page
 	 */
-    public function activate() {
-        if(Login::loggedIn()){
-			self::dashboard();
+	public function activate() {
+	    // is logged in?
+	    if(Login::loggedIn()){
+	        // redirect to dashboard
+	        header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
+	    }
+	    
+	    // process form data
+		if(isset($_GET['code']) AND isset($_GET['user']) AND Login::activateAccount($_GET['code'], $_GET['user'])){
+			Layout::render('login/activation_true.php');
+			
+		// no form data or data is invalid
 		}else{
-			if(isset($_GET['code']) AND isset($_GET['user'])
-				AND Login::activateAccount($_GET['code'], $_GET['user'])){
-				$file_path = 'activation_true.php';
-			}else{
-		    	$file_path = 'activation_false.php';
-			}
-	    	Layout::render('login/'.$file_path);
+		    Layout::render('login/activation_false.php');
 		}
 	}
     
@@ -184,33 +206,39 @@ class LoginController {
 	 * mastercards
 	 */
 	public function mastercards() {
+	    // if not logged in redirect
 	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
+	    // Models needed
 	    require_once 'helper/pagination.php';
 	    require_once 'models/master.php';
 	    
+	    // Vars needed
+	    $curr_page = 1;
+	    $order = 'ASC';
+	    $order_by = 'deckname';
+	    
+	    // process post vars if exist
 	    if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
-	        $currPage = intval($_GET['pg']);
-	    }else{
-	        $currPage = 1;
+	        $curr_page = intval($_GET['pg']);
 	    }
 	    if(isset($_GET['order'])){
 	        $order = $_GET['order'];
-	    }else{
-	        $order = 'ASC';
 	    }
 	    if(isset($_GET['order_by'])){
 	        $order_by = $_GET['order_by'];
-	    }else{
-	        $order_by = 'deckname';
 	    }
-	    $masters = Master::getMasterdByMember($_SESSION['user']->id,$order_by,$order);
 	    
-	    $pagination = new Pagination($masters, 20, $currPage, Routes::getController('member_mastercards'));
+	    // get masterd sets from database
+	    $masters = Master::getMasterdByMember($_SESSION['user']->id,$order_by,$order);
+	    // pagination
+	    $pagination = new Pagination($masters, 20, $curr_page, Routes::getController('member_mastercards'));
+	    // set vars accessable in view
 	    $data['mastered_decks'] = $pagination->getElements();
 	    $data['pagination'] = $pagination->getPaginationHtml();
 	    
+	    // render page
 	    Layout::render('login/mastercards.php',$data);
 	}
 	
@@ -220,20 +248,25 @@ class LoginController {
 	 * edit Userdata
 	 */
 	public function editUserdata(){
-	    
+	    // if not logged in redirect
 	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
-    	    
+	    // Models needed
+    	require_once 'models/member.php';
+    	// get data of current member
 	    $memberdata = Member::getById($_SESSION['user']->id);
 	    
+	    // if form was sent update object data
 	    if(isset($_POST['updateMemberdata'])){
 	        $memberdata->setName($_POST['Name']);
 	        $memberdata->setMail($_POST['Mail']);
 	        $memberdata->setInfoText($_POST['Text']);
 	        
+	        // if data was successfully stored return success message
 	        if(($return = $memberdata->store()) === true){
 	            $data['_success'][] = 'Daten wurden gespeichert.';
+	        // if update was not successfull return error message
 	        }else{
 	            $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
 	        }
@@ -247,9 +280,7 @@ class LoginController {
 	        }
 	    }
 	    
-	    $data['memberdata'] = $memberdata->getEditableData();
-	    unset($data['memberdata']['Level']);
-	    
+	    $data['memberdata'] = $memberdata->getEditableData('user');	    
 	    Layout::render('login/edit_userdata.php',$data);
 	    
 	}
@@ -258,18 +289,23 @@ class LoginController {
 	 * Delete Account
 	 */
 	public function deleteAccount() {
-	    
+	    // if not logged in redirect
 	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
 	    
+	    // if form was not sent
 	    if(!isset($_POST['delete']) OR !isset($_POST['password'])){
 	        Layout::render('login/delete_account.php');
+	        
+	    // form was sent
 	    }else{
+	        // try to delete the account 
 	        if(($result = Login::delete($_POST['password'])) === true){
-    	        // delete the account
+    	        // on success display message
     	        Layout::render('login/delete_account_success.php');
     	    }else{
+    	        // display error 
     	        $data['_error'][] = $result;
     	        Layout::render('login/delete_account.php',$data);
     	    }	        
