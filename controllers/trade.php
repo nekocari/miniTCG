@@ -3,16 +3,18 @@
  * Trade Controller
  */
 
+require_once PATH.'models/login.php';
+require_once PATH.'models/trade.php';
+
 class TradeController {
     
     /**
      * Trades recieved
      */
     public function recieved() {
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
-        require_once 'models/trade.php';
         
         $data = array();
         
@@ -43,10 +45,9 @@ class TradeController {
      * Trades sent
      */
     public function sent() {
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
-        require_once 'models/trade.php';
         
         $data = array();
         
@@ -67,13 +68,12 @@ class TradeController {
      * new Trade
      */
     public function add() {
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
+        require_once 'models/card.php';
         if(!empty($_GET['card'])){
-            require_once 'models/card.php';
-            require_once 'models/trade.php';
             
             $data = array();
             $data['requested_card'] = Card::getById($_GET['card']);
@@ -90,11 +90,15 @@ class TradeController {
                 Layout::render('trade/add_result.php',$data);
                 
             }else{
-            
-                $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade', true);
-                Layout::render('trade/add.php',$data);
-                
+                if($data['requested_card']->getOwner()->getId() != $_SESSION['user']->id){
+                    $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade', true);
+                    Layout::render('trade/add.php',$data);
+                }else{
+                    $data['_error'][] = 'Du kannst nicht mit dir selbst tauschen.';
+                    Layout::render('templates/error.php', $data);
+                }
             }
+            
         }else{
             $data['_error'][] = 'Keine gültige Auswahl getroffen!';
             Layout::render('templates/error.php', $data);
