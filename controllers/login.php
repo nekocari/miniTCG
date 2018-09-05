@@ -22,11 +22,14 @@ class LoginController {
      * Sign in form
      */
 	public function signin() {
+	    $data = array();
 	    // login form was sent
 		if(isset($_POST['username']) AND isset($_POST['password'])){
 		    // try to login with post data
 			$login = new Login(Db::getInstance(), $_POST['username'],  $_POST['password']);
-			$login_success= $login->login();
+			if(!$login->login()){
+			    $data['_error'][] = 'Benutzerdaten sind ungültig.';
+			}
 		}
 		
 		// if logged in redirect to dashboard
@@ -34,7 +37,7 @@ class LoginController {
 		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}
 		
-	    Layout::render('login/signin.php');
+	    Layout::render('login/signin.php',$data);
     }
 
     /**
@@ -133,9 +136,11 @@ class LoginController {
 	 * card manager
 	 */
 	public function cardmanager() {
+	    // if not logged in redirect
 	    if(!Login::loggedIn()){
 	        header("Location: ".BASE_URI.Routes::getUri('signin'));
 	    }
+	    // models needed
 	    require_once 'models/card.php';
 	    require_once 'models/setting.php';
 	    require_once 'models/carddeck.php';

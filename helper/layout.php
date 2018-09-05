@@ -21,21 +21,18 @@ class Layout {
             
             require_once self::$headerTemplate;
             if(isset($_error)){
-                $template = file_get_contents(self::$errorMsgTemplate);
                 foreach($_error as $msg){
-                    echo str_replace('[MESSAGE]',$msg,$template);
+                    self::sysMessage($msg,'error');
                 }
             }
             if(isset($_success)){
-                $template = file_get_contents(self::$successMsgTemplate);
                 foreach($_success as $msg){
-                    echo str_replace('[MESSAGE]',$msg,$template);
+                    self::sysMessage($msg,'success');
                 }
             }
             if(isset($_info)){
-                $template = file_get_contents(self::$infoMsgTemplate);
                 foreach($_info as $msg){
-                    echo str_replace('[MESSAGE]',$msg,$template);
+                    self::sysMessage($msg,'info');
                 }
             }
             require_once 'views/'.$view;
@@ -44,6 +41,33 @@ class Layout {
         }else{
             die('View not found!');
         }
+    }
+    
+    /**
+     * displays a system message using template files
+     * 
+     * @param string $type - allowed values [info|error|success]
+     */
+    public static function sysMessage($msg, $type='info') {
+       // check if $type contains an allowed value and if not set 'info' as type
+       $allowed_types = array('info','error','success');
+       if(!in_array($type,$allowed_types)){
+           $type = 'info';
+       }
+       
+       switch($type){
+           case 'error':
+               $template = file_get_contents(self::$errorMsgTemplate);
+               break;
+           case 'success':
+               $template = file_get_contents(self::$successMsgTemplate);
+               break;
+           case 'info':
+               $template = file_get_contents(self::$infoMsgTemplate);
+               break;
+       }
+       
+       echo str_replace('[MESSAGE]',$msg,$template);
     }
     
 }

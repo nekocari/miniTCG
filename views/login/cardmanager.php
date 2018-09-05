@@ -32,5 +32,7 @@
 <?php } ?>
 </div>
 
+<?php if(count($cards) == 0){ Layout::sysMessage('In dieser Kategorie befinden sich derzeit keine Karten.'); }else{ ?>
 <p class="text-center"><button class="btn btn-primary" role="submit" name="changeCardStatus" value="1">Karten einsortieren</button></p>
+<?php } ?>
 </form>

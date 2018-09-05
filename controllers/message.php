@@ -39,8 +39,6 @@ class MessageController {
         if(!is_array($msgs)){ 
             $data['_error'][] = $msgs;
             $msgs = array(); 
-        }elseif(count($msgs) == 0){
-            $data['_info'][] = 'Du hast keine Nachrichten.';
         }
         
         $pagination = new Pagination($msgs, 20, $currPage, Routes::getUri('messages_received'));

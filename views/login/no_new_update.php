@@ -1,3 +1,3 @@
 <h1>Update Karten nehmen</h1>
 
-<p>Es gibt kein Update aus dem du Karten nehmen kannst.</p>
+<?php Layout::sysMessage('Es gibt kein Update aus dem du Karten nehmen kannst.'); ?>

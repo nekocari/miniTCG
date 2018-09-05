@@ -45,6 +45,12 @@
 			Profil Daten
 		</a>
 	</div>
+	<div class="col-6 col-md-4 text-center p-4">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo ROUTES::getUri('delete_account');?>">
+			<i class="fas fa-trash-alt h1"></i><br>
+			Benutzerkonto löschen
+		</a>
+	</div>
 </div>
 
 <hr>

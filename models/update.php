@@ -144,8 +144,12 @@ class Update {
             $updates = array();
             $db = Db::getInstance();
             $req = $db->query('SELECT * FROM updates ORDER BY id DESC LIMIT 1');
-            $update = $req->fetch(PDO::FETCH_ASSOC);
-            return new Update($update['id'],$update['date'],$update['status']);;
+            if($req->rowCount()){
+                $update = $req->fetch(PDO::FETCH_ASSOC);
+                return new Update($update['id'],$update['date'],$update['status']);
+            }else{
+                throw new Exception('Kein Update gefunden');
+            }
         }
         catch(Exception $e){
             return $e->getMessage();

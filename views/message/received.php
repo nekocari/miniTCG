@@ -25,4 +25,6 @@
 </div>
 <?php } ?>
 
+<?php if(count($msgs) == 0){ Layout::sysMessage('Du hast keine Nachrichten'); } ?>
+
 <?php echo $pagination; ?>

@@ -13,4 +13,6 @@
 </div>
 <?php } ?>
 
+<?php if(count($mastered_decks) == 0){ Layout::sysMessage('Keine gemasterten Decks.'); } ?>
+
 <?php echo $pagination; ?>

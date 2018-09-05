@@ -146,8 +146,7 @@ class UpdateController {
         $user = Member::getById($_SESSION['user']->id);
         $data['show_take_button'] = true;
         
-        if(!$user->gotUpdateCards($curr_update->getId())){
-            
+        if($curr_update instanceof Update AND !$user->gotUpdateCards($curr_update->getId())){
             
             if(isset($_POST['takeUpdateCards'])){
                 $update_cards = Card::takeCardsFromUpdate($_SESSION['user']->id, $curr_update->getId());

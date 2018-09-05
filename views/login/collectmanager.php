@@ -32,3 +32,5 @@
 	</div>
 <?php } ?>
 </form>
+
+<?php if(count($cards) == 0){ Layout::sysMessage('In dieser Kategorie befinden sich derzeit keine Karten.'); } ?>
