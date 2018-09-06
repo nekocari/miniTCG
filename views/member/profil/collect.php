@@ -13,7 +13,7 @@
   </li>
 </ul>
 
-<div>
+<div class="my-4">
 <?php foreach($collections as $deck_id => $collection){ ?>
 	<div class="d-inline-block m-4 text-center">
 		<h4><span class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></span></h4>
@@ -30,3 +30,5 @@
 	</div>
 <?php } ?>
 </div>
+
+<?php if(count($collections) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>

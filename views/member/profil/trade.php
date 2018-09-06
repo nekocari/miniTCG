@@ -18,3 +18,5 @@
     <a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>"><?php echo $card->getImageHtml(); ?></a>
 <?php } ?>
 </div>
+
+<?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>

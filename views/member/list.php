@@ -1,7 +1,7 @@
 <h1>Mitgliederliste</h1>
 
 <table class="table">
-	<?php foreach($members as $lv => $members){ ?>
+<?php foreach($members as $lv => $members){ ?>
 	<tr>
 		<th colspan="3">
 			<div class="row justify-content-between">
@@ -16,11 +16,11 @@
 		<th>Level</th>
 	</tr>
 	<?php foreach($members as $member){ ?>
-	<tr>
-		<td><?php echo $member->getId(); ?></td>
-		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
-		<td><?php echo $member->getLevel(); ?></td>
-	</tr>
+    	<tr>
+    		<td><?php echo $member->getId(); ?></td>
+    		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
+    		<td><?php echo $member->getLevel(); ?></td>
+    	</tr>
 	<?php } ?>
-	<?php } ?>
+<?php } ?>
 </table>

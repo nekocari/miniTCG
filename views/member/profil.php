@@ -7,13 +7,13 @@
 
 <?php if($member->getInfoText()) { ?>  	
     <p class="text-right">
-    <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="collapse">
     	Infos zu <span class="font-weight-bold"><?php echo $member->getName(); ?></span>
     </button>
     </p>
     
     
-    <div class=" my-2 collapse" id="collapseExample">
+    <div class=" my-2 collapse" id="collapse">
       <div class="card card-body p-1">
     	<?php echo $member->getInfoText(); ?>
       </div>

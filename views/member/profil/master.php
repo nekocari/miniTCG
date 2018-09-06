@@ -18,3 +18,5 @@
     echo $master_deck->getMasterCard();
 }?>
 </div>
+
+<?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>
