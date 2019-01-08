@@ -73,6 +73,9 @@ class MemberController {
                 break;
         }
         
+        $pagination = new Pagination($data['cat_elements'], 21, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
+        $data['cat_elements'] = $pagination->getElements();
+        $data['pagination'] = $pagination->getPaginationHtml();
         $data['partial_uri'] = PATH.'views/member/profil/'.$cat.'.php';
         
         Layout::render('member/profil.php',$data);

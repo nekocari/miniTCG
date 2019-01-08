@@ -6,13 +6,11 @@
 </div>
 
 <?php if($member->getInfoText()) { ?>  	
-    <p class="text-right">
+    <p class="text-left">
     <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="collapse">
-    	Infos zu <span class="font-weight-bold"><?php echo $member->getName(); ?></span>
+    	Infos und Tauschregeln von <span class="font-weight-bold"><?php echo $member->getName(); ?></span>
     </button>
     </p>
-    
-    
     <div class=" my-2 collapse" id="collapse">
       <div class="card card-body p-1">
     	<?php echo $member->getInfoText(); ?>
@@ -21,3 +19,5 @@
 <?php } ?>
         
 <?php include $partial_uri ?>
+
+<?php echo $pagination; ?>

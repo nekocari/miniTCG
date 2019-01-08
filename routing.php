@@ -44,6 +44,10 @@
     
     Routes::addRoute('messages_received', 'member/inbox.php', 'message', 'received');
     
+    Routes::addRoute('game', 'games.php', 'game', 'index');
+    Routes::addRoute('game_lucky_number', 'games/lucky_number.php', 'game', 'luckyNumber');
+    Routes::addRoute('game_head_or_tail', 'games/head_or_tail.php', 'game', 'headOrTail');
+    
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
     Routes::addRoute('trades_recieved', 'member/trades_recieved.php', 'trade', 'recieved');
     Routes::addRoute('trades_sent', 'member/trades_sent.php', 'trade', 'sent');

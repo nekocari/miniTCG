@@ -310,7 +310,7 @@ class Carddeck {
         $setting_file_type = Setting::getByName('cards_file_type')->getValue();
         $setting_cards_decksize = Setting::getByName('cards_decksize')->getValue();
         $deckname = $this->getDeckname();
-        for($i = 1; $i <= $setting_cards_decksize; $i++){-
+        for($i = 1; $i <= $setting_cards_decksize; $i++){
             $urls[$i] = CARDS_FOLDER.$deckname.'/'.$deckname.$i.'.'.$setting_file_type;
         }
         $urls['master'] = CARDS_FOLDER.$deckname.'/'.$deckname.'_master.'.$setting_file_type;
@@ -319,7 +319,6 @@ class Carddeck {
     
     public function getImages() {
         $card_images = array();
-        require_once PATH.'models/setting.php';
         $setting_tpl_width = Setting::getByName('cards_template_width')->getValue();
         $setting_tpl_height = Setting::getByName('cards_template_height')->getValue();
         $setting_master_tpl_width = Setting::getByName('cards_master_template_width')->getValue();

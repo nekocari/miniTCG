@@ -7,5 +7,5 @@
     } 
     ?>
     </ul>
-	<hr><a class="alert-link" href="javascript:history.go(-1);">zurück</a></p>
+	<hr><a class="alert-link" href="javascript:history.go(-1);">zurück</a>
 </div>
