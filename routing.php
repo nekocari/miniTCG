@@ -42,7 +42,7 @@
     Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     
-    Routes::addRoute('messages_received', 'member/inbox.php', 'message', 'received');
+    Routes::addRoute('messages_recieved', 'member/inbox.php', 'message', 'received');
     
     Routes::addRoute('game', 'games.php', 'game', 'index');
     Routes::addRoute('game_lucky_number', 'games/lucky_number.php', 'game', 'luckyNumber');

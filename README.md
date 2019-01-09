@@ -22,6 +22,7 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * manage TCG Settings (like size of decks)
   * give Random Cards to Members
   * edit Member data
+  * delete Accounts
 * Public Functions
   * Homepage
   * display News
@@ -37,12 +38,14 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * Tradelog
   * edit Member data (+ Password change)
   * make Trade offers
-  * respond to Trade offers __-> in progress__
+  * respond to Trade offers 
+  * delete Account
+  * automated Level Ups
 
    
 ## Features TBA
-* delete Accounts (Member and Admin)
-* automated Level Ups
+* enable messaging between members
+* add pagination for card management pages
 
 
 ## Authors

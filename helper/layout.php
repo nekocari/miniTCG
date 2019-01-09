@@ -1,5 +1,9 @@
 <?php 
 
+
+require_once PATH.'helper/notification.php';
+require_once PATH.'models/category.php';
+
 class Layout {
     
     private static $headerTemplate = 'views/templates/header.php';
@@ -15,9 +19,12 @@ class Layout {
             foreach($values as $key => $val) {
                 $$key = $val;
             }
-            
-            require_once 'models/category.php';
+            // setze für das design benötigte variablen
             $tcg_categories = Category::getALL();
+            
+            // benachrichtigungenerstellen (sidebar)
+            $tcg_notifications = new Notification();;
+            
             
             require_once self::$headerTemplate;
             if(isset($_error)){

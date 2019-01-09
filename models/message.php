@@ -19,6 +19,8 @@ class Message {
     private $status;
     private $db;
     
+    private static $accepted_status_values = array('new','all');
+    
     public function __construct($id, $date, $sender, $recipient, $text, $status) {
         $this->id           = $id;
         $this->date         = $date;
@@ -34,15 +36,20 @@ class Message {
             $msgs = array();
             $db = DB::getInstance();
             
-            if($status = 'all'){
+            if(!in_array($status, self::$accepted_status_values)){ $status = 'all'; }
+            
+            if($status = 'new'){
                 $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id ORDER BY date DESC');
                 $req->execute(array(':id'=>$id));
-                if($req->rowCount() > 0){
-                    foreach($req->fetchAll(PDO::FETCH_OBJ) as $msgdata){
-                        $sender = Member::getById($msgdata->sender);
-                        $recipient = Member::getById($msgdata->recipient);    
-                        $msgs[] = new Message($msgdata->id, $msgdata->date, $sender, $recipient, $msgdata->text, $msgdata->status);
-                    }
+            }else{
+                $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id ORDER BY date DESC');
+                $req->execute(array(':id'=>$id));
+            }
+            if($req->rowCount() > 0){
+                foreach($req->fetchAll(PDO::FETCH_OBJ) as $msgdata){
+                    $sender = Member::getById($msgdata->sender);
+                    $recipient = Member::getById($msgdata->recipient);    
+                    $msgs[] = new Message($msgdata->id, $msgdata->date, $sender, $recipient, $msgdata->text, $msgdata->status);
                 }
             }
             return $msgs;

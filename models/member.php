@@ -280,14 +280,47 @@ class Member {
     
     /**
      * add a right to member
-     * 
+     *
      * @param int $right_id - id of right to add
-     * 
+     *
      * @return boolean
      */
     public function addRight($right_id){
-        $req = $this->db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
+        $db = Db::getInstance();
+        $req = $db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
         if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * remove a right from member
+     *
+     * @param int $right_id - id of right to remove
+     *
+     * @return boolean
+     */
+    public function removeRight($right_id){
+        $db = Db::getInstance();
+        $req = $db->prepare('DELETE FROM member_rights WHERE member_id = :member_id AND right_id = :right_id) ');
+        if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * Deletes a Member entierly from Database
+     * 
+     * @return boolean
+     */
+    public function delete(){
+        $db = Db::getInstance();
+        $req = $db->query('DELETE FROM members WHERE id = '.$this->id);
+        if($req->rowCount() == 1){
             return true;
         }else{
             return false;

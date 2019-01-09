@@ -3,7 +3,7 @@
 				<!-- SIDEBAR -->
 				<div class="col-12 col-lg-3" id="nav">
 				
-        			<?php if(!isset($_SESSION['user'])) { ?>
+        			<?php if(!Login::loggedIn()) { ?>
         			<!-- Navigation if NOT logged in -->
         			<div class="card my-4">
         				<div class="card-header">Hallo <b>Gast</b></div>
@@ -19,6 +19,8 @@
         				<div class="card-header">Hallo <b><?php echo $_SESSION['user']->name; ?></b></div>
     					<div class="list-group list-group-flush">
     						<a class="list-group-item" href="<?php echo ROUTES::getUri('member_dashboard');?>">Mitgliedsbereich</a>
+            				<a class="list-group-item" href="<?php echo ROUTES::getUri('messages_recieved');?>">Nachrichten (<?php echo $tcg_notifications->getMessageCountNew(); ?>)</a>
+            				<a class="list-group-item" href="<?php echo ROUTES::getUri('trades_recieved');?>">Tauschanfragen (<?php echo $tcg_notifications->getTradeCountNew(); ?>)</a>
             				<a class="list-group-item" href="<?php echo ROUTES::getUri('signout');?>">Ausloggen</a>
     					</div>
         			</div>

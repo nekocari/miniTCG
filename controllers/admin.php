@@ -112,12 +112,22 @@ class AdminController {
                     $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
                 }
             }
+           
+            if(isset($_POST['deleteMemberdata'])){
+                if($memberdata->delete()){
+                    $data['_success'][] = 'Die Mitgliedsdaten wurden komplett gelöscht.';
+                    $memberdata = false; 
+                }else{
+                    $data['_error'][] = 'Es wurden keine Daten gelöscht.';
+                }
+            }
             
-            $data['memberdata'] = $memberdata->getEditableData();
-            if($data['memberdata']){
+            if($memberdata){
+                $data['memberdata'] = $memberdata->getEditableData();
                 Layout::render('admin/members/edit.php',$data);
             }else{
-                Layout::render('admin/error.php',['errors'=>array('ID ist ungültig!')]);
+                $data['errors'] = array('ID ist ungültig!');
+                Layout::render('admin/error.php',$data);
             }
         }else{
             Layout::render('templates/error_rights.php');

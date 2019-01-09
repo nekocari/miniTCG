@@ -39,3 +39,12 @@
 	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
 </p>
 </form>
+
+<hr>
+
+<form method="post" action="" onsubmit="return confirm('Diese Aktion kann nicht rückgängig gemacht werden.\nFortfahren?');">
+	<p class="text-center">
+    	<input class="btn btn-danger" type="submit" name="deleteMemberdata" value="Mitglied endgültig LÖSCHEN">
+    	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+    </p>
+</form>
