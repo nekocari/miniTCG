@@ -1,7 +1,10 @@
 # miniTCG
 
 A very basic automated Trading Card Game Application written in PHP. 
-miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
+miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
+
+(Because of the DSGVO you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
+
 *Note that this is a german project, so files will contain german text elements!*
 
 **The Application is still under development!**
@@ -43,9 +46,8 @@ miniTCG is using Bootstrap 4 for styling and fontawesome for icons.
   * automated Level Ups
 
    
-## Features TBA
+## Features TBA in the future
 * enable messaging between members
-* add pagination for card management pages
 
 
 ## Authors

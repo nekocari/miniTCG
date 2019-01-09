@@ -9,6 +9,9 @@
 <h2>Kategorie: <?php echo strtoupper($curr_status); ?></h2>
 
 <form name="sortCards" method="POST" action="">
+
+<?php echo $pagination; ?>
+
 <div>
 <?php foreach($cards as $card){ ?>
 	<div class="d-inline-block text-center m-1">
@@ -31,6 +34,8 @@
 	</div>
 <?php } ?>
 </div>
+
+<?php echo $pagination; ?>
 
 <?php if(count($cards) == 0){ Layout::sysMessage('In dieser Kategorie befinden sich derzeit keine Karten.'); }else{ ?>
 <p class="text-center"><button class="btn btn-primary" role="submit" name="changeCardStatus" value="1">Karten einsortieren</button></p>

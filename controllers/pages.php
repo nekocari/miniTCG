@@ -1,6 +1,6 @@
 <?php
 /*
- * Controller for plain html pages
+ * Controller for static html pages
  */
 class PagesController {
     

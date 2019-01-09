@@ -38,9 +38,9 @@ class Message {
             
             if(!in_array($status, self::$accepted_status_values)){ $status = 'all'; }
             
-            if($status = 'new'){
-                $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id ORDER BY date DESC');
-                $req->execute(array(':id'=>$id));
+            if($status != 'all'){
+                $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id and status = :status ORDER BY date DESC');
+                $req->execute(array(':id'=>$id, ':status'=>$status));
             }else{
                 $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id ORDER BY date DESC');
                 $req->execute(array(':id'=>$id));

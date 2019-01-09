@@ -32,7 +32,7 @@ class AdminController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
-        if($admin->getRights() != NULL){
+        if(in_array('Admin',$admin->getRights())){
             
             require_once PATH.'models/setting.php';
             $data = array();
@@ -65,7 +65,9 @@ class AdminController {
         }
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('manage_member',$admin->getRights())){
+            
             require_once 'models/member.php';
             require_once 'helper/pagination.php';
             $members = Member::getAll('id', 'ASC');
@@ -95,7 +97,8 @@ class AdminController {
         
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('manage_member',$admin->getRights())){
             
             require_once 'models/member.php';
             $memberdata = Member::getById($_GET['id']);
@@ -142,7 +145,8 @@ class AdminController {
             
             $admin = new Admin(Db::getInstance(),$_SESSION['user']);
             
-            if(in_array('Admin',$admin->getRights())){
+            if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+                OR in_array('manage_member',$admin->getRights())){
                 
                 
                 if(!isset($_POST['search'])){
@@ -175,7 +179,8 @@ class AdminController {
         }
         $admin = new Admin(Db::getInstance(),$_SESSION['user']);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('manage_member',$admin->getRights())){
             
             require_once 'models/member.php';
             require_once 'models/card.php';

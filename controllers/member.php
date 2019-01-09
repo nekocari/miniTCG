@@ -3,14 +3,18 @@
 /*
  * Controller for member related pages
  */
+
+require_once 'models/member.php';
+require_once 'models/level.php';
+require_once 'helper/pagination.php';
+
 class MemberController {
     
     /**
      * get the memberlist
      */
     public function memberlist() {
-        require_once 'models/member.php';
-        require_once 'models/level.php';
+        
         $data['members'] = Member::getGrouped('level','level','ASC');
         $data['level'] = Level::getAll();
         
@@ -21,11 +25,10 @@ class MemberController {
      * get a member profil using get id
      */
     public function profil() {
+        
         if(!isset($_SESSION['user'])){ header('Location: '.BASE_URI.'error_login.php'); }
         if(!isset($_GET['id'])){  header('Location: '.BASE_URI.'error.php'); }
             
-        require_once 'models/member.php';
-        require_once 'helper/pagination.php';
         
         // get user or relocate to error page
         $data['member'] = Member::getById(intval($_GET['id']));
@@ -44,6 +47,7 @@ class MemberController {
         }else{
             $cat = 'master';
         }
+        
         // get elements for partial
         switch($cat){
             
@@ -73,7 +77,7 @@ class MemberController {
                 break;
         }
         
-        $pagination = new Pagination($data['cat_elements'], 21, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
+        $pagination = new Pagination($data['cat_elements'], 35, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
         $data['cat_elements'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         $data['partial_uri'] = PATH.'views/member/profil/'.$cat.'.php';

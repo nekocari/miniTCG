@@ -33,10 +33,15 @@ class GameController {
         foreach($game_list as $entry){
              
             $entry_game = Game::getById($entry['type'], $_SESSION['user']->id);
+            
             if($entry_game and $entry_game->isPlayable()){
+                
                 $link = '<a href="'.Routes::getUri($entry['routing']).'">jetzt spielen</a>';
+                
             }else{
+                
                 $link = 'nicht spielbar';
+                
             }
             
             $data['games'][] = array('name'=> $entry['name'], 'link'=>$link);
@@ -66,6 +71,7 @@ class GameController {
             if(!isset($_POST['play'])){
                 
                 $data['game'] = $lucky_game;
+                
                 Layout::render('game/lucky_game.php',$data);
                 
             }else{
@@ -75,12 +81,14 @@ class GameController {
                 $game->setDate(time());
                 $game->store();
                 
-                
                 Layout::render('game/display_result.php',$data);
                 
             }
+            
         }else{
-            Layout::render('game/wait_message.php',);
+            
+            Layout::render('game/wait_message.php');
+            
         }
     }
     
@@ -104,6 +112,7 @@ class GameController {
             if(!isset($_POST['play'])){
                 
                 $data['game'] = $lucky_game;
+                
                 Layout::render('game/lucky_game.php',$data);
                 
             }else{
@@ -113,12 +122,14 @@ class GameController {
                 $game->setDate(time());
                 $game->store();
                 
-                
                 Layout::render('game/display_result.php',$data);
                 
             }
+            
         }else{
-            Layout::render('game/wait_message.php',);
+            
+            Layout::render('game/wait_message.php');
+            
         }
     }
     
