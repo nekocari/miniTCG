@@ -1,5 +1,11 @@
 <?php 
-
+/**
+ * helper class for rendering the page content
+ * Header and Footer will be added automaticaly
+ * 
+ * @author Cari
+ * 
+ */
 
 require_once PATH.'helper/notification.php';
 require_once PATH.'models/category.php';

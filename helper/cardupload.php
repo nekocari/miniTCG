@@ -1,5 +1,13 @@
 <?php 
+/**
+ * helper class for cardupload
+ * 
+ * @author Cari
+ * 
+ */
+
 require_once PATH.'models/setting.php';
+
 class CardUpload {
     
     private $name;
@@ -24,12 +32,20 @@ class CardUpload {
         $this->subcategory = $subcategory;
     }
     
+    /**
+     * create a new dir for images within defined cards folder
+     * @throws Exception
+     */
     private function mkDir() {
         if(!mkdir($this->cards_dir.$this->deckname, 0777) ){
             throw new Exception('Ordner existiert bereits.');
         }
     }
     
+    /**
+     * validates all form inputs
+     * @throws Exception
+     */
     private function validate() {
         if(!preg_match('/[A-za-z0-9\-_]+/', $this->deckname)){
             throw new Exception('Eingabe enthält ungültige Zeichen');
@@ -50,6 +66,11 @@ class CardUpload {
         }
     }
     
+    /**
+     * stores all files on the server
+     * @throws Exception
+     * @return String|boolean - string contains exception message
+     */
     public function store() {
         try {
             $this->validate(); // validate data

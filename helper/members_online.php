@@ -1,4 +1,10 @@
 <?php 
+/**
+ * helper class manage online members
+ * 
+ * @author Cari
+ *
+ */
 
 class MembersOnline {
     
@@ -29,6 +35,9 @@ class MembersOnline {
         return $this->members;
     }
     
+    /**
+     * updates the timestamp of if viewer is a logged in user
+     */
     public static function updateTime() {
         if(isset($_SESSION['user'])){
             $db = DB::getInstance();
