@@ -47,8 +47,10 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
   * automated Level Ups
 
    
-## Features TBA in the future
+## Features TBA
 * enable messaging between members
+* admins can reset passwords
+* add activation codes into registration process 
 
 
 ## Authors
