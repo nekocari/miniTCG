@@ -6,27 +6,43 @@
  * @author Cari
  *
  */
-require_once 'login.php';
+require_once 'member.php';
 
-class Admin extends Login {
+class Admin extends Member {
     
     private $rights;
     
-    public function __construct($db, $user) {
-        $this->db   = $db;
-        $this->user = $user;
+    public function __construct($member_id) {
+        
+        $member = parent::getById($member_id);
+        parent::__construct($member->getId(), $member->getName(), $member->getLevel(), $member->getMail(), $member->getJoinDate(), $member->getInfoTextPlain(), $member->getInfoText());
+        
     }
     
+    /**
+     * get all rights assigned to current member as an array
+     * 
+     * @return array - Form: [right_id]=right_name
+     */
     public function getRights() {
-        if(!$this->rights AND $this->user != NULL){
+        
+        if(!$this->rights){
+            
             $req = $this->db->prepare('SELECT id, name FROM members_rights JOIN rights ON id = right_id WHERE member_id = :id');
-            $req->execute(array(':id'=>$this->user->id));
+            $req->execute(array(':id'=>$this->id));
+            
             if($req->rowCount() > 0){
+                
                 foreach($req->fetchAll(PDO::FETCH_OBJ) as $right){
+                    
                     $this->rights[$right->id] = $right->name; 
+                    
                 }
+                
             }
+            
         }
+        
         return $this->rights;
     }
 }

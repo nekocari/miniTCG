@@ -13,18 +13,12 @@ require_once PATH.'models/master.php';
 
 class Member {
     
-    private $id;
-    private $name;
-    private $level;
-    private $mail;
-    private $join_date;
-    private $text;
-    private $text_html;
-    private $cards;
-    private $mastered_decks;
-    private static $query_order_by_options = array('id','name','level');
-    private static $query_order_direction_options = array('ASC','DESC');
-    private static $accepted_group_options = array('id','level');
+    protected 
+        $db, $id, $name, $level, $mail, $join_date, $text, $text_html, $cards,  $mastered_decks;
+    private static 
+        $query_order_by_options = array('id','name','level'),
+        $query_order_direction_options = array('ASC','DESC'),
+        $accepted_group_options = array('id','level');
     
     public function __construct($id, $name, $level, $mail, $join_date, $text, $text_html) {
         $this->id = $id;
@@ -34,6 +28,7 @@ class Member {
         $this->join_date = $join_date;
         $this->text = $text;
         $this->text_html = $text_html;
+        $this->db = Db::getInstance();
     }
     
     /**
@@ -191,8 +186,7 @@ class Member {
      * @return boolean
      */
     public function gotUpdateCards($update_id){
-        $db = Db::getInstance();
-        $req = $db->prepare('SELECT * FROM updates_members WHERE member_id = :member_id AND update_id = :update_id ');
+        $req = $this->db->prepare('SELECT * FROM updates_members WHERE member_id = :member_id AND update_id = :update_id ');
         $req->execute(array(':member_id'=>$this->id, ':update_id'=>$update_id));
         if($req->rowCount() > 0){
             return true;
@@ -267,9 +261,8 @@ class Member {
      * @return boolean|string retuns true or in case of failure the Excetion message
      */
     public function store() {
-        $db = Db::getInstance();
         try{
-            $req = $db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
+            $req = $this->db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
             $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text, ':text_html' => $this->text_html) );
             return true;
         }
@@ -286,8 +279,7 @@ class Member {
      * @return boolean
      */
     public function addRight($right_id){
-        $db = Db::getInstance();
-        $req = $db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
+        $req = $this->db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
         if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
             return true;
         }else{
@@ -303,8 +295,7 @@ class Member {
      * @return boolean
      */
     public function removeRight($right_id){
-        $db = Db::getInstance();
-        $req = $db->prepare('DELETE FROM member_rights WHERE member_id = :member_id AND right_id = :right_id) ');
+        $req = $this->db->prepare('DELETE FROM member_rights WHERE member_id = :member_id AND right_id = :right_id) ');
         if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
             return true;
         }else{
@@ -318,8 +309,7 @@ class Member {
      * @return boolean
      */
     public function delete(){
-        $db = Db::getInstance();
-        $req = $db->query('DELETE FROM members WHERE id = '.$this->id);
+        $req = $this->db->query('DELETE FROM members WHERE id = '.$this->id);
         if($req->rowCount() == 1){
             return true;
         }else{

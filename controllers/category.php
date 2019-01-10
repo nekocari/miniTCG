@@ -20,7 +20,8 @@ class CategoryController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         if(in_array('Admin',$admin->getRights())){
             
@@ -70,7 +71,8 @@ class CategoryController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         if(in_array('Admin',$admin->getRights())){
         
@@ -107,7 +109,8 @@ class CategoryController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         if(in_array('Admin',$admin->getRights())){
             
@@ -149,7 +152,8 @@ class CategoryController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         if(in_array('Admin',$admin->getRights())){
             
@@ -188,7 +192,8 @@ class CategoryController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         if(in_array('Admin',$admin->getRights())){
             

@@ -19,8 +19,8 @@ class UpdateController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        // chreate a admin instance
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         // all users with any right may pass
         if($admin->getRights() != NULL){
@@ -85,8 +85,8 @@ class UpdateController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        // create update instance
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         // all users with any right may pass
         if($admin->getRights() != NULL){
@@ -145,8 +145,8 @@ class UpdateController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        // create update instance
-        $admin = new Admin(Db::getInstance(),$_SESSION['user']);
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
         
         // all users with any right may pass
         if($admin->getRights() != NULL){
