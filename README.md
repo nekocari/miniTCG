@@ -23,6 +23,7 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
   * manage News
   * manage Categories (and Subcategories)
   * manage TCG Settings (like size of decks)
+  * manage Rights for each Member
   * give Random Cards to Members
   * edit Member data
   * delete Accounts

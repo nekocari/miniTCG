@@ -33,10 +33,10 @@
             				<i class="fas fa-plus"></i> Karten geben</a>   
             			<!-- 
             			<a class="dropdown-item" href="<?php echo ROUTES::getUri('');?>?id=<?php echo $member->getId(); ?>">
-            				<i class="fas fa-key"></i> Passwort zurücksetzen</a>   
-            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('');?>?id=<?php echo $member->getId(); ?>">
-            				<i class="fas fa-unlock-alt"></i> Status und Rechte</a>  
-            			-->                     	
+            				<i class="fas fa-key"></i> Passwort zurücksetzen</a>     
+            			-->   
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('admin_member_manage_rights');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-unlock-alt"></i> Rechte verwalten</a>                  	
                     </div>
 				</div>   			
     		</td>

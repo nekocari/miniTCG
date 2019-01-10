@@ -21,7 +21,8 @@ class NewsController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){            
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageNews',$admin->getRights())){            
             
             if(isset($_POST['action']) AND $_POST['id'] AND $_POST['action'] == 'del_news'){
                 if(($return = News::delete($_POST['id'])) !== true){
@@ -68,7 +69,8 @@ class NewsController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageNews',$admin->getRights())){    
             
             if(isset($_POST['addNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
                 
@@ -107,7 +109,8 @@ class NewsController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageNews',$admin->getRights())){    
             
             if(isset($_POST['updateNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
                 

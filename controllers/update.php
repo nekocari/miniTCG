@@ -22,8 +22,8 @@ class UpdateController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        // all users with any right may pass
-        if($admin->getRights() != NULL){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageUpdates',$admin->getRights())){    
             
             // action: publish update
             if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'publish'){
@@ -88,8 +88,8 @@ class UpdateController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        // all users with any right may pass
-        if($admin->getRights() != NULL){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageUpdates',$admin->getRights())){  
             
             // form was submitted and decks were chosen
             if(isset($_POST['addUpdate'], $_POST['decks'])){
@@ -148,8 +148,8 @@ class UpdateController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        // all users with any right may pass
-        if($admin->getRights() != NULL){
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
+            OR in_array('ManageUpdates',$admin->getRights())){  
             
             // get update data
             $update = Update::getById($_GET['id']);

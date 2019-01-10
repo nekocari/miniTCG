@@ -279,7 +279,7 @@ class Member {
      * @return boolean
      */
     public function addRight($right_id){
-        $req = $this->db->prepare('INSERT INTO member_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
+        $req = $this->db->prepare('INSERT INTO members_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
         if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
             return true;
         }else{
@@ -295,7 +295,7 @@ class Member {
      * @return boolean
      */
     public function removeRight($right_id){
-        $req = $this->db->prepare('DELETE FROM member_rights WHERE member_id = :member_id AND right_id = :right_id) ');
+        $req = $this->db->prepare('DELETE FROM members_rights WHERE member_id = :member_id AND right_id = :right_id ');
         if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
             return true;
         }else{

@@ -10,12 +10,16 @@ require_once 'member.php';
 
 class Admin extends Member {
     
-    private $rights;
+    private $rights = array();
     
     public function __construct($member_id) {
         
         $member = parent::getById($member_id);
-        parent::__construct($member->getId(), $member->getName(), $member->getLevel(), $member->getMail(), $member->getJoinDate(), $member->getInfoTextPlain(), $member->getInfoText());
+        if($member){
+            parent::__construct($member->getId(), $member->getName(), $member->getLevel(), $member->getMail(), $member->getJoinDate(), $member->getInfoTextPlain(), $member->getInfoText());
+        }else{
+            throw new Exception('ID ungültig');
+        }
         
     }
     

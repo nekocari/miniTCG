@@ -7,6 +7,7 @@ require_once 'models/member.php';
 require_once 'models/card.php';
 require_once 'models/login.php';
 require_once 'models/admin.php';
+require_once 'models/right.php';
 require_once 'models/setting.php';
 
 class AdminController {
@@ -50,7 +51,7 @@ class AdminController {
         $admin = new Admin($_SESSION['user']->id);
         
         // check if user has any rights
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('EditSettings', $admin->getRights())){
             
             $data = array();
             
@@ -99,8 +100,8 @@ class AdminController {
         }
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
-            OR in_array('manage_member',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageMembers',$admin->getRights())
+            OR in_array('ManageRights',$admin->getRights())){
             
             require_once 'models/member.php';
             require_once 'helper/pagination.php';
@@ -132,8 +133,7 @@ class AdminController {
         
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
-            OR in_array('manage_member',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageMembers',$admin->getRights())){
             
             $memberdata = Member::getById($_GET['id']);
             
@@ -195,8 +195,8 @@ class AdminController {
             
             $admin = new Admin($_SESSION['user']->id);
             
-            if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
-                OR in_array('manage_member',$admin->getRights())){
+            if(in_array('Admin',$admin->getRights()) OR in_array('ManageMembers',$admin->getRights())
+                OR in_array('ManageRights',$admin->getRights())){
                         
                 if(!isset($_POST['search'])){
                     
@@ -240,8 +240,7 @@ class AdminController {
         $admin = new Admin($_SESSION['user']->id);
         
         // check if user rights matches one of the conditions
-        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
-            OR in_array('manage_member',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageMembers',$admin->getRights())){
             
             // get current member data
             $data['member'] = $member = Member::getById($_GET['id']);
@@ -286,8 +285,7 @@ class AdminController {
     /**
      * manage user rights -> TODO
      */
-    public function manage_rights() {
-        // TODO ---> in progress
+    public function manageRights() {
         
         // if not logged in redirect to sign in form
         if(!Login::loggedIn()){
@@ -298,26 +296,40 @@ class AdminController {
         $admin = new Admin($_SESSION['user']->id);
         
         // check if user rights matches one of the conditions
-        if(in_array('Admin',$admin->getRights()) OR in_array('manage_member_rights',$admin->getRights())){
-                
-            // get current member data
-            $data['member'] = $member = Member::getById($_GET['id']);
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageRights',$admin->getRights())){
             
             // form to add right was submitted
             if(isset($_POST['add']) AND isset($_POST['right_id'])){
-                
+                if($member = Member::getById($_GET['id'])){
+                    $member->addRight($_POST['right_id']);
+                }
             }
             
             // form to remove right was submitted
             if(isset($_POST['remove']) AND isset($_POST['right_id'])){
-                
+                if($member = Member::getById($_GET['id'])){
+                    $member->removeRight($_POST['right_id']);
+                }
             }
             
-            // get all rights current member already has
-            $member_as_admin = new Admin($member->getId());
-            $data['rights'] = $member_as_admin->getRights();
+            try {
+                // get all possible rights
+                $data['rights'] = Right::getAll();
+                // get all data + rights current member already has
+                $data['member'] = new Admin($_GET['id']);
+                
+                Layout::render('admin/members/rights.php', $data);
+                
+            }
+            catch(Exception $e) {
+                $data['errors'][] = $e->getMessage();
+                Layout::render('admin/error.php',$data);
+            }
             
             
+        }else{
+            
+            Layout::render('templates/error_rights.php');
             
         }
         

@@ -23,7 +23,7 @@ class CategoryController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageCategories',$admin->getRights())){
             
             if(isset($_POST['action']) AND $_POST['id']){
                 
@@ -74,7 +74,7 @@ class CategoryController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageCategories',$admin->getRights())){
         
             if(isset($_POST['addCategory']) AND isset($_POST['name'])){
                 
@@ -112,7 +112,7 @@ class CategoryController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageCategories',$admin->getRights())){
             
             if(isset($_POST['addCategory']) AND isset($_POST['name']) AND isset($_POST['category'])){
                 
@@ -155,7 +155,7 @@ class CategoryController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageCategories',$admin->getRights())){
             
             $subcategory = Subcategory::getById($_GET['id']);
             
@@ -195,7 +195,7 @@ class CategoryController {
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
         
-        if(in_array('Admin',$admin->getRights())){
+        if(in_array('Admin',$admin->getRights()) OR in_array('ManageCategories',$admin->getRights())){
             
             $category = Category::getById($_GET['id']);
             
