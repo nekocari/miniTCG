@@ -34,7 +34,6 @@ class Member {
     /**
      * get data of all members from database
      *
-     * @param Db $db_conn PDO connection object
      * @param string $order_by fieldname for order [id|name|level]
      * @param string $order order direction [ASC|DESC]
      *
@@ -65,7 +64,6 @@ class Member {
     /**
      * get data of all members from database
      *
-     * @param Db $db_conn PDO connection object
      * @param string $group fieldname for array grouping
      *
      * @return Member[]
@@ -98,11 +96,10 @@ class Member {
     
     /**
      * get member data from database using id number
-     * 
+     *
      * @param int $id Id number of member in database
-     * @param Db $db_conn PDO connection object
-     * 
-     * @return boolean|Member 
+     *
+     * @return boolean|Member
      */
     public static function getById($id) {
         $member = false;
@@ -117,7 +114,29 @@ class Member {
         }
         
         return $member;
-    }  
+    }
+    
+    /**
+     * get member data from database using id number
+     *
+     * @param int $id Id number of member in database
+     *
+     * @return boolean|Member
+     */
+    public static function getByMail($mail) {
+        $member = false;
+        $db_conn = Db::getInstance();
+        
+        $req = $db_conn->prepare('SELECT * FROM members WHERE mail = :mail');
+        if($req->execute(array(':mail' => $mail))) {
+            if($req->rowCount() == 1) {
+                $data = $req->fetch(PDO::FETCH_OBJ);
+                $member = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
+            }
+        }
+        
+        return $member;
+    } 
     
     /**
      * find members with names matching the search string

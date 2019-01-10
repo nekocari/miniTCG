@@ -22,7 +22,12 @@
         </div>
         
         <input class="btn btn-primary" type="submit" name="signIn" value="einloggen">
-        <hr> noch kein Account? Jetzt registrieren!
+        <hr>
+        <div class="text-center text-muted small">
+        	<a href="<?php echo Routes::getUri('lost_password'); ?>">Passwort vergessen?</a><br>
+        	oder<br>
+        	Noch kein Account? <a href="<?php echo Routes::getUri('signup'); ?>">Jetzt registrieren!</a>
+        </div>
 	</div>
     	
 </form>

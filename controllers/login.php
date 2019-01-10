@@ -155,7 +155,54 @@ class LoginController {
 			
 		}else{
 		    
-	    	Layout::render('login/password.php');
+	    	$data = array();
+	    	
+		    if(isset($_POST['reset']) AND isset($_POST['mail'])){
+		    		        
+		        // try setting a new random password and store it into $pw
+		        if(($pw = Login::resetPassword($_POST['mail'])) !== false){
+		            // get application mail and name from settings
+		            $app_name = Setting::getByName('app_name')->getValue();
+		            $app_mail = Setting::getByName('app_mail')->getValue();
+		            // get member name
+		            $member_name = Member::getByMail($_POST['mail'])->getName();
+		            
+    		        // set recipient
+    		        $recipient  = $_POST['mail'];
+    		        // title
+    		        $title = 'Neues Passwort für '.$app_name;
+    		        // set message
+    		        $message = '
+                        <html>
+                        <head>
+                          <title>Neues Passwort für '.$app_name.'</title>
+                        </head>
+                        <body>
+                          <p>Für deinen Account wurde ein neues Passwort angefordert. Das alte ist ab sofort ungültig.</p>
+                          <p>Benutzername: '.$member_name.'<br>
+                            neues Passwort: '.$pw.'</p>
+                        </body>
+                        </html> ';
+    		        
+    		        // set mail header
+    		        $header[] = 'MIME-Version: 1.0';
+    		        $header[] = 'Content-type: text/html; charset=UTF-8';
+    		        $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+    		        
+    		        // send E-Mail
+    		        mail($recipient, $title, $message, implode("\r\n", $header));
+    		        
+    		        $data['_success'][] = $pw;
+    		        
+		        }else{
+		            
+		            $data['_error'][] = 'Passwort nicht zurück gesetzt';
+		            
+		        }
+		        
+		    }
+		        
+		    Layout::render('login/lost_password.php', $data);
 	    	
 		}
 	}

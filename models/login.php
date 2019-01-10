@@ -234,5 +234,29 @@ class Login {
         }
     }
     
+    
+    /**
+     * reset password
+     *
+     * @param string $mail the e-mail
+     *
+     * @return boolean|string - string contains new password
+     */
+    public static function resetPassword($mail) {
+        $db = Db::getInstance();
+        
+        $pw = self::getRandomActivationCode();
+        
+        $query = 'UPDATE members SET password = :password WHERE mail = :mail ';
+        $req = $db->prepare($query);
+        $req->execute(array(':password'=>password_hash($pw,PASSWORD_BCRYPT), ':mail'=>$mail));
+        
+        if($req->rowCount() == 1){
+            return $pw;
+        }else{
+            return false;
+        }
+    }
+    
 }
 ?>
