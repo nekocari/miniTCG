@@ -5,9 +5,19 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 
 (Because of the DSGVO you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
 
-*Note that this is a german project, so files will contain german text elements!*
+*Note that this is a german project, so files will contain mostly german text elements!*
+If you are interested in an english translation, please let me know.
 
 **The Application is still under development!**
+
+## How to setup
+* Go to inc/constants.php and set the constants for the App. See comments in the file for details.
+* Upload everything to your webspace using a FTP programm.
+* Run *yourwebsitehere.com*/setup/setup.php
+* Now you should be able to login using the default Admin account.
+* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link on the bottom) and change the Application settings to your liking.
+* Delete the *setup* folder!
+
 
 
 ## Current Features
