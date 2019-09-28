@@ -110,6 +110,37 @@ class LoginController {
 	        
 	        // if form data is ok and account was created successfully display success message
 	        if(count($errors)==0 AND ($new_user_id = Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail'])) != false){
+	            
+	            
+	            // get application mail and name from settings
+	            $app_name = Setting::getByName('app_name')->getValue();
+	            $app_mail = Setting::getByName('app_mail')->getValue();
+	            // set recipient
+	            $recipient  = $_POST['mail'];
+	            // title
+	            $title = 'Deine Anmeldung bei '.$app_name;
+	            // set message
+	            $message = '
+                        <html>
+                        <head>
+                          <title>Deine Anmeldung bei '.$app_name.'</title>
+                        </head>
+                        <body>
+                          <p>Vielen Dank für deine Anmeldung!<br>
+                            Mit dieser Mail erhältst du nocheinmal deine Anmeldedaten.</p>
+                          <p>Benutzername: '.$_POST['username'].'<br>
+                            Passwort: '.$_POST['password'].'</p>
+                        </body>
+                        </html> ';
+	            
+	            // set mail header
+	            $header[] = 'MIME-Version: 1.0';
+	            $header[] = 'Content-type: text/html; charset=UTF-8';
+	            $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+	            
+	            // send E-Mail
+	            mail($recipient, $title, $message, implode("\r\n", $header));
+	            
 	            Layout::render('login/signup_successfull.php');
 	            
 	        // if form data is NOT ok or account was NOT created display error message
@@ -192,7 +223,8 @@ class LoginController {
     		        // send E-Mail
     		        mail($recipient, $title, $message, implode("\r\n", $header));
     		        
-    		        $data['_success'][] = $pw;
+    		        //$data['_success'][] = $pw;
+    		        $data['_success'][] = 'Neues Passwort wurde an deine E-Mailadresse gesendet.';
     		        
 		        }else{
 		            
