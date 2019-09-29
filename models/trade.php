@@ -200,14 +200,14 @@ class Trade {
                     Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
                     return true;
                 }else{
-                    throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.');
+                    throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.',5001);
                 }
             }else{
-                throw new Exception('Du kannst diese Anfrage nicht ablehnen, da du nicht der Empfänger bist!');
+                throw new Exception('Nutzer und Empfänger stimmen nicht überein.',5002);
             }
         }
         catch (Exception $e) {
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
@@ -254,21 +254,21 @@ class Trade {
                             return true;
                             
                         }else{
-                            throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.');
+                            throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.',5001);
                         }
                     }else{
-                        throw new Exception('Angefragte Karte ist nicht verfügbar.');
+                        throw new Exception('Angefragte Karte ist nicht verfügbar.', 5003);
                     }                    
                 }else{
-                    throw new Exception('Angebotene Karte ist nicht verfügbar.');
+                    throw new Exception('Angebotene Karte ist nicht verfügbar.', 5004);
                 }
             }else{
-                throw new Exception('Du kannst diese Anfrage nicht annehmen, da du nicht der Empfänger bist!');
+                throw new Exception('Nutzer und Empfänger stimmen nicht überein.', 5002);
             }
         }
         catch (Exception $e) {
             $this->db->rollBack();
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     

@@ -62,8 +62,9 @@ class Update {
             $update_id = $db->lastInsertId();
             return self::getById($update_id);
         }
-        catch(Exception $e){
-            return $e->getMessage();
+        catch(PDOException $e){
+            error_log('new update could not be created - '.$e->getMessage(), 3, ERROR_LOG);
+            return 9999;
         }
     }
     

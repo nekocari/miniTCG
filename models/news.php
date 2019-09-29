@@ -97,14 +97,15 @@ class News {
                     return true;
                 }
                 catch (PDOException $pdo_e){
-                    return 'Löschen aus DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
+                    error_log("news could not be deleted - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
+                    return 9999;
                 }
             }else{
-                throw new Exception('Parameter ungültig!');
+                throw new Exception('Parameter ungültig', 2001);
             }
         }
         catch (Exception $e){
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
@@ -121,14 +122,15 @@ class News {
                     return true;
                 }
                 catch (PDOException $pdo_e){
-                    return 'Löschen aus DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
+                    error_log("news could not be edited - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
+                    return 9999;
                 }
             }else{
-                throw new Exception('Parameter ungültig!');
+                throw new Exception('Parameter ungültig', 2001);
             }
         }
         catch (Exception $e){
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
@@ -171,14 +173,15 @@ class News {
                     return $news;
                 }
                 catch (PDOException $pdo_e){
-                    return 'Einfügen in DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
+                    error_log("news could not be inserted - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
+                    return 9999;
                 }
             }else{
-                throw new Exception('Parmeter ungültig');
+                throw new Exception('Parmeter ungültig',2001);
             }
         }
         catch (Exception $e){
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
@@ -191,6 +194,7 @@ class News {
             }
         }
         catch (Exception $e){
+            error_log("could not fetch news - ".$e->getMessage()."\n", 3, ERROR_LOG);
             return $e->getMessage();
         }
     }

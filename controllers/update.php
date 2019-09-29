@@ -29,11 +29,11 @@ class UpdateController {
             if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'publish'){
                 
                 // try to update database and set for case of success or failure
-                $published = Update::publish($_GET['id']);
-                if($published === true){
-                    $data['_success'][] = 'Decks im Update wurden freigeschaltet';
+                $return = Update::publish($_GET['id']);
+                if($return === true){
+                    $data['_success'][] = SystemMessages::getSystemMessageText('update_publish_success');
                 }else{
-                    $data['_error'][] = 'Decks nicht freigeschaltet: '.$published;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_publish_failed').' - '.SystemMessages::getSystemMessageText($return);
                 }
                 
             }
@@ -42,11 +42,11 @@ class UpdateController {
             if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'delete'){
                 
                 // try to update database and set for case of success or failure
-                $deleted = Update::delete($_GET['id']);
-                if($deleted === true){
-                    $data['_success'][] = 'Update wurde gelöscht';
+                $return = Update::delete($_GET['id']);
+                if($return === true){
+                    $data['_success'][] = SystemMessages::getSystemMessageText('update_delete_success');
                 }else{
-                    $data['_error'][] = 'Update kann nicht gelöscht werden: '.$deleted;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
                 }
                 
             }
@@ -113,13 +113,13 @@ class UpdateController {
                 }else{
                     
                     // set up error message
-                    $data['_error'][] = 'Update nicht angelegt: '.$update;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_new_failed').' - '.SystemMessages::getSystemMessageText($update);
                     
                 }
                 
             }elseif(isset($_POST['addUpdate'])){
                 
-                $data['_error'][] = 'Es muss mindestens ein Deck ausgewählt werden.';
+                $data['_error'][] = SystemMessages::getSystemMessageText('update_no_deck');
                 
             }
             
@@ -162,7 +162,7 @@ class UpdateController {
                     AND (!isset($_POST['add_decks']) OR  count($_POST['add_decks']) == 0) ){
                     
                     // setup error message
-                    $data['_error'][] = 'Es dürfen nicht alle Decks entfent werden.';
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_no_deck');
                     
                 }else{
                     
@@ -192,7 +192,7 @@ class UpdateController {
             // .. in case update is already published
             }else{
                 
-                $data['_error'][] = 'Update kann nicht mehr bearbeitet werden.';
+                $data['_error'][] = SystemMessages::getSystemMessageText('update_edit_published');
                 $data['curr_decks'] = array();
                 $data['new_decks'] = array();
                 
@@ -236,9 +236,9 @@ class UpdateController {
                 
                 // set up messages for success or faliure
                 if(!is_array($update_cards)){
-                    $data['_error'][] = 'Keine Karten erhalten! <br>'.$update_cards;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_take_failed');
                 }else{
-                    $data['_success'][] = 'Karten erhalten. Bitte schau unter <i>NEW</i>.';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('update_take_success');
                     $data['show_take_button'] = false;
                 }
                 

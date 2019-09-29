@@ -22,14 +22,14 @@ class MessageController {
         // mark messsage as read if formdata was sent
         if(isset($_POST['read'])){
             if(Message::read($_POST['read'])){
-                $data['_success'][] = 'Nachricht als gelesen markiert.';
+                $data['_success'][] = SystemMessages::getSystemMessageText('pm_mark_read');
             }
         }
         
         // delete message if formdata was sent
         if(isset($_POST['delete'])){
             if(Message::delete($_POST['delete'])){
-                $data['_success'][] = 'Nachricht wurde gelöscht.';
+                $data['_success'][] = SystemMessages::getSystemMessageText('pm_deleted');
             }
         }
         

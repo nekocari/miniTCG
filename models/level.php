@@ -83,6 +83,10 @@ class Level {
                 throw new Exception('Name enthält mindestens ein ungültiges Zeichen.',1001);
             }
         }
+        catch (PDOException $pdo_e){
+            error_log("could not add new level - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
+            return 9999;
+        }
         catch (Exception $e) {
             return $e->getCode();
         }

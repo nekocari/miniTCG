@@ -14,11 +14,11 @@
 	<tbody>
 		<tr>
 			<td>Titel</td>
-			<td><input class="form-control" type="text" name="title"></td>
+			<td><input class="form-control" type="text" name="title" required></td>
 		</tr>
 		<tr>
 			<td>Text</td>
-			<td><textarea class="form-control" name="text" rows="6"></textarea>
+			<td><textarea class="form-control" name="text" rows="6" required></textarea>
 				<div><small>Du kannst <a href="https://de.wikipedia.org/wiki/Markdown#Auszeichnungsbeispiele" target="_blank">Markdown</a> 
 				verwenden um den Text zu formatieren!</small></div>
 			</td>

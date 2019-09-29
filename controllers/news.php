@@ -26,8 +26,7 @@ class NewsController {
             
             if(isset($_POST['action']) AND $_POST['id'] AND $_POST['action'] == 'del_news'){
                 if(($return = News::delete($_POST['id'])) !== true){
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                    die();
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
                 }
             }
             
@@ -45,7 +44,7 @@ class NewsController {
             $data['pagination'] = $pagination->getPaginationHtml();
             
             if(count($data['news']) == 0){
-                $data['_error'][] = 'Ungültige Seite: Keine Elemente zum Anzeigen.';
+                $data['_error'][] = 'Keine Elemente zum Anzeigen.';
             }
             
             Layout::render('admin/news/list.php',$data);
@@ -72,6 +71,8 @@ class NewsController {
         if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
             OR in_array('ManageNews',$admin->getRights())){    
             
+            $data = array();    
+                
             if(isset($_POST['addNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
                 
                 if(($return = News::add($_POST['title'],$_POST['text'])) === true){
@@ -79,16 +80,13 @@ class NewsController {
                     header("Location: ".BASE_URI.Routes::getUri('news_index'));
                     
                 }else{
-                    
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                    
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_insert_failed').' - '.SystemMessages::getSystemMessageText($return);
                 }
                 
-            }else{
-                
-                Layout::render('admin/news/add.php');
-                
             }
+            
+            Layout::render('admin/news/add.php',$data);
+             
             
         }else{
             
@@ -112,6 +110,8 @@ class NewsController {
         if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
             OR in_array('ManageNews',$admin->getRights())){    
             
+            $data = array();
+            
             if(isset($_POST['updateNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
                 
                 if(($return = News::update($_POST['id'],$_POST['title'],$_POST['text'])) === true){
@@ -119,17 +119,12 @@ class NewsController {
                     header("Location: ".BASE_URI.Routes::getUri('news_index'));
                     
                 }else{
-                    
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                    
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_update_failed').' - '.SystemMessages::getSystemMessageText($return);                  
                 }
                 
-            }else{
-                
-                $data['entry'] = News::getById($_GET['id']);
-                Layout::render('admin/news/edit.php', $data);
-                
             }
+            $data['entry'] = News::getById($_GET['id']);
+            Layout::render('admin/news/edit.php', $data);
             
         }else{
             

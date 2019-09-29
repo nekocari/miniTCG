@@ -28,9 +28,9 @@ class TradeController {
             
             // try db update an set messages in case of success or failure
             if(($return = $trade->decline($_POST['text'])) === true){
-                $data['_success'][] = 'Tauschanfrage wurde abgelehnt.';
+                $data['_success'][] = SystemMessages::getSystemMessageText('trade_decline_success');
             }else{
-                $data['_error'][] = 'Tauschanfrage konnte nicht abgeleht werden. Fehlercode: '.$return;
+                $data['_error'][] = SystemMessages::getSystemMessageText('trade_decline_failed').' - '.SystemMessages::getSystemMessageText($return);
             }
         }
         
@@ -41,9 +41,10 @@ class TradeController {
             
             // try db update an set messages in case of success or failure
             if(($return = $trade->accept($_POST['text'])) === true){
-                $data['_success'][] = 'Tauschanfrage wurde angenommen. '.strtoupper($trade->getOfferedCard()->getName()).' findest du bei deinen Karten unter NEW';
+                $data['_success'][] = SystemMessages::getSystemMessageText('trade_accept_success').' - '.SystemMessages::getSystemMessageText('trade_card_new_info').
+                                      strtoupper($trade->getOfferedCard()->getName());
             }else{
-                $data['_error'][] = 'Tauschanfrage konnte nicht abgeleht werden. Fehlercode: '.$return;
+                $data['_error'][] = SystemMessages::getSystemMessageText('trade_accept_failed').' - '.SystemMessages::getSystemMessageText($return);
             }
         }
         
@@ -70,9 +71,9 @@ class TradeController {
             
             // try db update an set messages in case of success or failure
             if(($return = Trade::delete($_POST['id'])) === true){
-                $data['_success'][] = "Tauschangebot wurde gelöscht.";
+                $data['_success'][] = SystemMessages::getSystemMessageText('trade_delete_success');
             }else{
-                $data['_error'][] = "Tauschangebot konnte nicht zurückgezogen werden: ".$return;
+                $data['_error'][] = SystemMessages::getSystemMessageText('trade_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
             }
         }
         
@@ -107,9 +108,9 @@ class TradeController {
                 
                 // try to add the new trade offer to the database and create messages for case of success and failure
                 if(TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text'])){
-                    $data['_success'][] = 'Taschanfrage wurde gesendet!';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('trade_new_success');
                 }else{
-                    $data['_error'][] = 'Anfrage konnte nicht gestellt werden. Mindestens eine der Karten ist nicht mehr verfügbar.';
+                    $data['_error'][] = SystemMessages::getSystemMessageText('trade_new_failed');
                 }
                 
                 Layout::render('trade/add_result.php',$data);
@@ -127,7 +128,7 @@ class TradeController {
                 }else{
                     
                     // set up error message in case user is logged in user
-                    $data['_error'][] = 'Du kannst nicht mit dir selbst tauschen.';
+                    $data['_error'][] = SystemMessages::getSystemMessageText('trade_with_self');
                     Layout::render('templates/error.php', $data);
                     
                 }
@@ -137,7 +138,7 @@ class TradeController {
         }else{
             
             // display an error message
-            $data['_error'][] = 'Keine gültige Auswahl getroffen!';
+            $data['_error'][] = SystemMessages::getSystemMessageText('2001');
             Layout::render('templates/error.php', $data);
             
         }
