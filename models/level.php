@@ -80,11 +80,11 @@ class Level {
                 $req->execute(array(':level'=>$level, ':name'=>$name, 'cards'=>$cards));
                 return true;
             }else{
-                throw new Exception('Name enthält mindestens ein ungültiges Zeichen.');
+                throw new Exception('Name enthält mindestens ein ungültiges Zeichen.',1001);
             }
         }
         catch (Exception $e) {
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
@@ -98,11 +98,11 @@ class Level {
                 $this->level = $level;
                 return true;
             }else{
-                throw new Exception('Name enthält mindestens ein ungültiges Zeichen.');
+                throw new Exception('Name enthält mindestens ein ungültiges Zeichen.',1001);
             }
         }
         catch (Exception $e) {
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     

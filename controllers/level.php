@@ -59,7 +59,7 @@ class LevelController {
                     
                 }else{
                     
-                    $data['_error'][] = 'Anlegen fehlgeschlagen. '.$return;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').' - '.SystemMessages::getSystemMessageText($return);
                     
                 }
             }
@@ -96,11 +96,11 @@ class LevelController {
                 
                 if($return === true){
                     
-                    $data['_success'][] = 'Änderungen gespeichert.';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('level_edit_success');
                     
                 }else{
                     
-                    $data['_error'][] = 'Ändern fehlgeschlagen. '.$return;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed').' - '.SystemMessages::getSystemMessageText($return);
                     
                 }
             }

@@ -34,7 +34,7 @@ class DeckController {
         
         if(count($data['decks']) == 0){
             
-            $data['_error'][] = 'Ungültige Seite: Keine Elemente zum Anzeigen.';
+            $data['_error'][] = SystemMessages::getSystemMessageText('deck_no_elements');
             
         }
         
@@ -149,11 +149,11 @@ class DeckController {
                 
                 if(($upload_status = $upload->store()) === true){
                     
-                    $data['_success'][] = 'Karten wurde erfolgreich hochgeladen.';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_upload_success');
                     
                 }else{
                 
-                    $data['_error'][] = 'Upload nicht abgeschlossen: '.$upload_status;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('deck_upload_failed').' - '.$upload_status;
                     
                 }
                 
@@ -215,11 +215,11 @@ class DeckController {
                 
                 if($update === true){
                     
-                    $data['_success'][] = 'Daten wurden gespeichert';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_edit_success');
                     
                 }else{
                     
-                    $date['_error'][] = $update;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('deck_edit_failed').' - '.SystemMessages::getSystemMessageText($update);
                     
                 }
                 

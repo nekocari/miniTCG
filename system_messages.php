@@ -51,21 +51,50 @@
     
     // texts used by the admin controller ----------------------------
     
-    // ADMINISTRATION
+    // SETTINGS
     SystemMessages::addMessage('admin_settings_updated', 'settings are now updated', 'Settings wurden aktualisiert.');
     SystemMessages::addMessage('admin_settings_not_updated', 'settings could not be updated', 'Settings konnten nicht aktualisiert werden.');
     
+    // USER
     SystemMessages::addMessage('admin_edit_user_success', 'userdata saved', 'Daten wurden gespeichert.');
     SystemMessages::addMessage('admin_edit_user_failed', 'userdata not saved', 'Daten nicht aktualisiert.');
     SystemMessages::addMessage('admin_delete_user_success', 'user completly deleted', 'Die Mitgliedsdaten wurden komplett gelöscht.');
     SystemMessages::addMessage('admin_delete_user_failed', 'no userdata deleted', 'Es wurden keine Daten gelöscht.');
     
+    // GIFT CARDS
     SystemMessages::addMessage('admin_gift_cards_success', 'credit successfull:', 'Gutschrift erfolgt:'); // NOTE the cards will be listet afterwards
     SystemMessages::addMessage('admin_gift_cards_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');    
     SystemMessages::addMessage('admin_gift_cards_log_text', 'manual credit', 'manuelle GUTSCHRIFT');
     
     
+    
+    // texts used in the deck controller ------------------------------
+    
+    // DECK DISPLAY
+    SystemMessages::addMessage('deck_no_elements', 'no decks to display', 'Keine Decks zum Anzeigen.');
+    
+    // DECK UPLOAD
+    SystemMessages::addMessage('deck_upload_success', 'deck successfully uploaded', 'Deck wurde erfolgreich hochgeladen.');
+    SystemMessages::addMessage('deck_upload_failed', 'upload not completed', 'Upload nicht abgeschlossen');
+    SystemMessages::addMessage('deck_edit_success', 'deck successfully updated', 'Daten wurden gespeichert');
+    SystemMessages::addMessage('deck_edit_failed', 'deck not updated', 'Daten nicht gespeichert');
+    
+    
+    
+    // texts used in level controller --------------------------------------
+    
+    SystemMessages::addMessage('level_add_failed','level not added','Anlegen fehlgeschlagen.');
+    SystemMessages::addMessage('level_edit_success', 'changes saved', 'Änderungen gespeichert.');
+    SystemMessages::addMessage('level_edit_failed', 'changes not saved', 'Ändern fehlgeschlagen.');
+    
+    
+    
+    // GENERAL - stuff like custom error codes
+    SystemMessages::addMessage('1001', 'invalid character', 'Ungültiges Zeichen');
+    
+    
     // SystemMessages::addMessage('', '', '');
+    // SystemMessages::getSystemMessageText('')
     
     
 ?>

@@ -202,11 +202,11 @@ class Carddeck {
                 $req->execute(array(':id'=>$id, ':sub_cat'=>$subcat));
                 return true;
             }else{
-                throw new Exception('Der Name enthält mindestens ein ungültiges Zeichen.');
+                throw new Exception('invalid character',1001);
             }
         }
         catch(Exception $e) {
-            return $e->getMessage();
+            return $e->getCode();
         }
     }
     
