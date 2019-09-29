@@ -40,7 +40,7 @@ class LoginController {
 			
 			if(!$login->login()){
 			    
-			    $data['_error'][] = 'Benutzerdaten sind ungültig.';
+			    $data['_error'][] = SystemMessages::getSystemMessageText('login_sign_in_failed');
 			    
 			}
 		}
@@ -99,13 +99,13 @@ class LoginController {
 	        
 	        $errors = array();
 	        if(trim($_POST['password']) == ''){
-	            $errors[] = 'Passwort muss gesetzt werden!';
+	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_no_password');
 	        }
 	        if($_POST['password'] != $_POST['password_rep']){
-	            $errors[] = 'Passwörter stimmen nicht überein';
+	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_password_not_matching');
 	        }
 	        if(Login::userExists($_POST['username'], $_POST['mail'])){
-	            $errors[] = 'Benutzername oder E-Mailadresse bereits belegt';
+	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_username_or_mail_taken');
 	        }
 	        
 	        // if form data is ok and account was created successfully display success message
@@ -224,11 +224,11 @@ class LoginController {
     		        mail($recipient, $title, $message, implode("\r\n", $header));
     		        
     		        //$data['_success'][] = $pw;
-    		        $data['_success'][] = 'Neues Passwort wurde an deine E-Mailadresse gesendet.';
+    		        $data['_success'][] = SystemMessages::getSystemMessage('login_new_password_success');
     		        
 		        }else{
 		            
-		            $data['_error'][] = 'Passwort nicht zurück gesetzt';
+		            $data['_error'][] = SystemMessages::getSystemMessage('login_new_password_success');
 		            
 		        }
 		        
@@ -260,7 +260,7 @@ class LoginController {
 	        
 	        // a status is given but invalid then set error message 
 	        if(isset($_GET['status'])){
-	            $data['_error'][] = "Der übergebene Status <i>".$_GET['status']."</i> ist ungültig.";
+	            $data['_error'][] = SystemMessages::getSystemMessage('cardmanager_status_invalid')." <i>".$_GET['status']."</i>";
 	        }
 	    }
 	    
@@ -280,7 +280,7 @@ class LoginController {
 	                if($updated == false){
 	                    
 	                    $card_name = Card::getById($card_id)->getName();
-	                    $data['_error'][] = 'Karte <i>'.$card_name.'</i> nicht verschoben.';
+	                    $data['_error'][] = SystemMessages::getSystemMessageText('cardmanager_move_card_failed').' <i>'.$card_name.'</i>';
 	                    
 	                }
 	            }
@@ -295,9 +295,9 @@ class LoginController {
 	        
 	        // set messages for case of sucess and for failure
 	        if($updated === true){
-	            $data['_success'][] = 'Sammlung aufgelöst. Die Karten sind nun wieder unter <i>NEW</i>';
+	            $data['_success'][] = SystemMessages::getSystemMessageText('cardmanager_dissolve_collection_success');
 	        }else{
-	            $data['_error'][] = 'Sammlung konnte nicht aufgelöst werden.';
+	            $data['_error'][] = SystemMessages::getSystemMessageText('cardmanager_dissolve_collection_failed');;
 	        }
 	        
 	    }
@@ -310,9 +310,9 @@ class LoginController {
 	        
 	        // set messages for case of sucess and for failure
 	        if($updated === true){
-	            $data['_success'][] = 'Sammlung gemastert!';
+	            $data['_success'][] = SystemMessages::getSystemMessageText('cardmanager_master_deck_success');
 	        }else{
-	            $data['_error'][] = 'Sammlung konnte nicht gemastert werden. '.$updated;
+	            $data['_error'][] = SystemMessages::getSystemMessageText('cardmanager_master_deck_failed').' - database error: '.$updated;
 	        }
 	    }
 	    
@@ -426,10 +426,10 @@ class LoginController {
 	        
 	        // if data was successfully stored return success message
 	        if(($return = $memberdata->store()) === true){
-	            $data['_success'][] = 'Daten wurden gespeichert.';
+	            $data['_success'][] = SystemMessages::getSystemMessageText('user_edit_data_success');
 	        // if update was not successfull return error message
 	        }else{
-	            $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
+	            $data['_error'][] = SystemMessages::getSystemMessageText('user_edit_data_failed').' - database error: '.$return;
 	        }
 	    }
 	    
@@ -438,9 +438,9 @@ class LoginController {
 	        
 	        // try updating the password an set up message in case of success an failure
 	        if(($return = Login::setPassword($_POST['password1'],$_POST['password2'])) === true){
-	            $data['_success'][] = 'Passwort wurde gespeichert.';
+	            $data['_success'][] =SystemMessages::getSystemMessageText('user_edit_pw_success');
 	        }else{
-	            $data['_error'][] = 'Passwort nicht aktualisiert. Folgender Fehler trat auf: '.$return;
+	            $data['_error'][] = SystemMessages::getSystemMessageText('user_edit_pw_failed').' '.$return;
 	        }
 	    }
 	    
