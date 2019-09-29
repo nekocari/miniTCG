@@ -55,5 +55,17 @@
     SystemMessages::addMessage('admin_settings_updated', 'settings are now updated', 'Settings wurden aktualisiert.');
     SystemMessages::addMessage('admin_settings_not_updated', 'settings could not be updated', 'Settings konnten nicht aktualisiert werden.');
     
+    SystemMessages::addMessage('admin_edit_user_success', 'userdata saved', 'Daten wurden gespeichert.');
+    SystemMessages::addMessage('admin_edit_user_failed', 'userdata not saved', 'Daten nicht aktualisiert.');
+    SystemMessages::addMessage('admin_delete_user_success', 'user completly deleted', 'Die Mitgliedsdaten wurden komplett gelöscht.');
+    SystemMessages::addMessage('admin_delete_user_failed', 'no userdata deleted', 'Es wurden keine Daten gelöscht.');
+    
+    SystemMessages::addMessage('admin_gift_cards_success', 'credit successfull:', 'Gutschrift erfolgt:'); // NOTE the cards will be listet afterwards
+    SystemMessages::addMessage('admin_gift_cards_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');    
+    SystemMessages::addMessage('admin_gift_cards_log_text', 'manual credit', 'manuelle GUTSCHRIFT');
+    
+    
+    // SystemMessages::addMessage('', '', '');
+    
     
 ?>

@@ -75,7 +75,7 @@ class AdminController {
             
             // if form was sent and no error message was created - create a success message
             if(isset($_POST['updateSettings']) AND !isset($data['_error'])){ 
-                $data['_success'] = array('Settings wurden aktualisiert.'); 
+                $data['_success'][] = SystemMessages::getSystemMessageText('admin_settings_updated'); 
             }
             
             // get all settings form database
@@ -147,9 +147,9 @@ class AdminController {
                 $return = $memberdata->store();
                 
                 if($return === true){
-                    $data['_success'][] = 'Daten wurden gespeichert.';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('admin_edit_user_success');
                 }else{
-                    $data['_error'][] = 'Daten nicht aktualisiert. Datenbank meldet: '.$return;
+                    $data['_error'][] = SystemMessages::getSystemMessageText('admin_edit_user_failed').' - database error: '.$return;
                 }
                 
             }
@@ -157,10 +157,10 @@ class AdminController {
             if(isset($_POST['deleteMemberdata'])){
                 
                 if($memberdata->delete()){
-                    $data['_success'][] = 'Die Mitgliedsdaten wurden komplett gelöscht.';
+                    $data['_success'][] = SystemMessages::getSystemMessageText('admin_delete_user_success');
                     $memberdata = false;
                 }else{                    
-                    $data['_error'][] = 'Es wurden keine Daten gelöscht.';
+                    $data['_error'][] = SystemMessages::getSystemMessageText('admin_delete_user_failed');
                 }
                 
             }
@@ -173,7 +173,7 @@ class AdminController {
                 
             }else{
                 
-                $data['errors'] = array('ID ist ungültig!');
+                $data['errors'] = array('ID NOT FOUND');
                 
                 Layout::render('admin/error.php',$data);
                 
@@ -248,8 +248,10 @@ class AdminController {
             // if add card form was sent
             if(isset($_POST['addCards']) and intval($_POST['addCards']) and isset($_POST['text'])){
                 
+                // put together text for tradelog
+                $log_text = SystemMessages::getSystemMessageText('admin_gift_cards_log_text').' ('.strip_tags($_POST['text']).')';
                 // create the set number of random cards
-                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],'manuelle GUTSCHRIFT ('.strip_tags($_POST['text'].')'));
+                $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],$log_text);
                 
                 // if cards were created 
                 if(count($data['cards']) > 0){
@@ -262,13 +264,13 @@ class AdminController {
                     $cardnames = substr($cardnames, 0, -2);
                     
                     // set success message
-                    $data['_success'][] = 'Gutschrift erfolgt: '.$cardnames;
+                    $data['_success'][] = SystemMessages::getSystemMessageText('admin_gift_cards_success').' '.$cardnames;
                 
                 // no cards were created
                 }else{
                     
                     // set error message
-                    $data['_error'][] = 'Gutschrift fehlgeschlagen.';
+                    $data['_error'][] = SystemMessages::getSystemMessageText('admin_gift_cards_failed');
                 
                 }
             }
