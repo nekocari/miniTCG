@@ -80,7 +80,7 @@ class CategoryController {
                 
                 if(($return = Category::add($_POST['name'])) === true){
                     
-                    header("Location: ".BASE_URI."admin/categories.php");
+                    header("Location: ".BASE_URI."admin/category.php");
                     
                 }else{
                     
@@ -118,7 +118,7 @@ class CategoryController {
                 
                 if(($return = Subcategory::add($_POST['name'],$_POST['category'])) === true){
                     
-                    header("Location: ".BASE_URI."admin/category.php");
+                    header("Location: ".BASE_URI.Routes::getUri('category_index'));
                     
                 }else{
                 
@@ -204,7 +204,7 @@ class CategoryController {
                 $category->setName($_POST['name']);
                 $category->store();
                 
-                header("Location: ".BASE_URI.Routes::getUri('category_edit'));
+                header("Location: ".BASE_URI.Routes::getUri('category_index'));
                 
             }
             
