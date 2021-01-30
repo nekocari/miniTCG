@@ -12,15 +12,18 @@ require_once PATH.'models/setting.php';
 
 class Master {
     
+    private $id;
+    private $deck_id;
     private $deck;
+    private $member_id;
     private $member;
     private $date;
-    private static $allowed_order_by = array('deckname','master_date','master_member_name');
+    private static $allowed_order_by = array('deckname','master_date','name');
     private static $allowed_order = array('ASC','DESC');
     
-    public function __construct($deck,$member,$date) {
-        $this->deck = $deck;
-        $this->member = $member;
+    public function __construct($deck_id,$member_id,$date) {
+        $this->deck_id = $deck_id;
+        $this->member_id = $member_id;
         $this->date = $date;
     }
     
@@ -30,62 +33,57 @@ class Master {
         if(!in_array($order_by, self::$allowed_order_by)) $order_by = 'deckname';
         if(!in_array($order, self::$allowed_order)) $order = 'ASC';
         
-        $query = 'SELECT d.*, m.name as creator_name,
-                    s.id as sub_id, s.name as sub_name,
-                    c.id as cat_id, c.name as cat_name,
+        $query = 'SELECT d.*, 
                     dm.date as master_date,
-                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail, 
-                    master.join_date as master_member_join_date, master.info_text as master_member_text, master.info_text_html as master_member_text_html
+                    master.id as master_member_id
                 FROM decks_master dm
                 JOIN decks d ON d.id = dm.deck
-                JOIN members m ON m.id = d.creator
                 JOIN members master ON master.id = dm.member
-                JOIN decks_subcategories ds ON ds.deck_id = d.id
-                JOIN subcategories s ON s.id = ds.subcategory_id
-                JOIN categories c ON s.category = c.id
             WHERE dm.member = :member_id ORDER BY '.$order_by.' '.$order;
         $req = $db->prepare($query);
         $req->execute(array(':member_id'=>$member_id));
         if($req->rowCount() > 0){
+            
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $master){
-                $deck = new Carddeck($master->id, $master->name, $master->deckname, $master->status, $master->date, $master->creator, $master->creator_name,
-                    $master->cat_id, $master->sub_id, $master->cat_name, $master->sub_name);
-                $member = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail, 
-                    $master->master_member_join_date, $master->master_member_text, $master->master_member_text_html);
-                $mastered_decks[] = new Master($deck, $member, $master->master_date);
+                
+                $mastered_decks[] = new Master($master->id, $master->master_member_id, $master->master_date);
             }
         }
         return $mastered_decks;
     }
     
-    public static function getMemberByDeck($deck_id,$order_by='master_member_name',$order='ASC') {
+    public static function getMemberByDeck($deck_id,$order_by='name',$order='ASC') {
         $members = array();
         $db = DB::getInstance();
-        if(!in_array($order_by, self::$allowed_order_by)) $order_by = 'master_member_name';
+        if(!in_array($order_by, self::$allowed_order_by)) $order_by = 'name';
         if(!in_array($order, self::$allowed_order)) $order = 'ASC';
         
-        $query = 'SELECT dm.date as master_date,
-                    master.id as master_member_id, master.name as master_member_name, master.level as master_member_level, master.mail as master_member_mail, 
-                    master.join_date as master_member_join_date, master.info_text as master_member_text, master.info_text_html as master_member_text_html
+        $query = 'SELECT dm.date as master_date,master.*
                 FROM decks_master dm
                 JOIN members master ON master.id = dm.member
             WHERE dm.deck = :deck_id ORDER BY '.$order_by.' '.$order;
         $req = $db->prepare($query);
         $req->execute(array(':deck_id'=>$deck_id));
         if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $master){
-                $members[] = new Member($master->master_member_id, $master->master_member_name, $master->master_member_level, $master->master_member_mail,
-                    $master->master_member_join_date, $master->master_member_text, $master->master_member_text_html);
+            foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
+                $members[] = $member;
             }
         }
+        var_dump($members);
         return $members;
     }
     
     public function getDeck() {
+        if(!$this->deck instanceof Carddeck){
+            $this->deck = Carddeck::getById($this->deck_id);
+        }
         return $this->deck;
     }
     
     public function getMember() {
+        if(!$this->member instanceof Member){
+            $this->member = Member::getById($this->member_id);
+        }
         return $this->member;
     }
     

@@ -50,7 +50,8 @@ class Message {
                     if(!is_null($msgdata->sender)){
                         $sender = Member::getById($msgdata->sender);
                     }else{
-                        $sender = new Member(null, 'System', null, null, null, null, null);
+                        $sender = new Member();
+                        $sender->setName('System');
                     }
                     $recipient = Member::getById($msgdata->recipient);    
                     $msgs[] = new Message($msgdata->id, $msgdata->date, $sender, $recipient, $msgdata->text, $msgdata->status);

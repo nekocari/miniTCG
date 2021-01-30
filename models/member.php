@@ -20,14 +20,7 @@ class Member {
         $query_order_direction_options = array('ASC','DESC'),
         $accepted_group_options = array('id','level');
     
-    public function __construct($id, $name, $level, $mail, $join_date, $text, $text_html) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->level = $level;
-        $this->mail = $mail;
-        $this->join_date = $join_date;
-        $this->text = $text;
-        $this->text_html = $text_html;
+    public function __construct() {
         $this->db = Db::getInstance();
     }
     
@@ -53,8 +46,9 @@ class Member {
         
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
-            foreach($req->fetchAll() as $data) {
-                $members[] = new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
+            
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
+                $members[] = $member;
             }
         }
         
@@ -86,8 +80,9 @@ class Member {
         
         $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
         if($req->execute()){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $data) {
-                $members[$data->$group][] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
+            
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
+                $members[$member->$group][]  = $member;
             }
         }
         
@@ -107,9 +102,9 @@ class Member {
         
         $req = $db_conn->prepare('SELECT * FROM members WHERE id = :id');
         if($req->execute(array(':id' => $id))) {
-            if($req->rowCount() == 1) {
-                $data = $req->fetch(PDO::FETCH_OBJ);
-                $member = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
+            
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
+                $members[] = $member;
             }
         }
         
@@ -129,9 +124,9 @@ class Member {
         
         $req = $db_conn->prepare('SELECT * FROM members WHERE mail = :mail');
         if($req->execute(array(':mail' => $mail))) {
-            if($req->rowCount() == 1) {
-                $data = $req->fetch(PDO::FETCH_OBJ);
-                $member = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
+            if($req->rowCount() == 1) {               
+                
+                $member = $req->fetchObject(__CLASS__);
             }
         }
         
@@ -151,9 +146,10 @@ class Member {
         
         $req = $db->prepare('SELECT * FROM members WHERE name LIKE :search_str ');
         $req->execute(array(':search_str'=>'%'.$search_str.'%'));
-        foreach($req->fetchAll(PDO::FETCH_OBJ) as $data){
-            $members[] = new Member($data->id, $data->name, $data->level, $data->mail, $data->join_date, $data->info_text, $data->info_text_html);
-        }
+       
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
+                $members[] = $member;
+            }
         return $members;
     }
     

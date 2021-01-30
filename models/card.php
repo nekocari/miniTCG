@@ -260,4 +260,28 @@ class Card {
         }
         
     }
+    
+    public static function findTrader($deck_id, $number){
+        
+        $db = Db::getInstance();
+        $trader = array();
+        
+        $query = 'SELECT DISTINCT members.*, min(cards.id) as card_id FROM cards 
+                JOIN members ON members.id = owner
+                LEFT JOIN trades ON trades.status = \'new\' AND (requested_card = cards.id OR offered_card = cards.id)
+                WHERE trades.status IS NULL AND deck= ? AND number = ?
+                GROUP BY members.id 
+                ORDER BY members.name ASC
+                ';
+        $req = $db->prepare($query);
+        if($req->execute([$deck_id,$number])){
+            foreach($req->fetchALL(PDO::FETCH_CLASS,'Member') as $member){
+                
+                $trader[$member->card_id] = $member; 
+                
+            }
+        }
+        
+        return $trader;
+    }
 }

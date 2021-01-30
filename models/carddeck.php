@@ -223,9 +223,10 @@ class Carddeck {
             $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND c.status = \'collect\'');
             $req->execute();
             
-            foreach($req->fetchAll() as $data){
-                $members[] =  new Member($data['id'], $data['name'], $data['level'], $data['mail'], $data['join_date'], $data['info_text'], $data['info_text_html']);
+            foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
+                $members[] = $member;
             }
+            
             return $members;
         }
         catch(Exception $e) {

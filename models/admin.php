@@ -14,13 +14,10 @@ class Admin extends Member {
     
     public function __construct($member_id) {
         
-        $member = parent::getById($member_id);
-        if($member){
-            parent::__construct($member->getId(), $member->getName(), $member->getLevel(), $member->getMail(), $member->getJoinDate(), $member->getInfoTextPlain(), $member->getInfoText());
-        }else{
-            throw new Exception('ID ungültig');
-        }
+        $this->id = $member_id;
         
+        parent::__construct();
+        //parent::getById($member_id);
     }
     
     /**
