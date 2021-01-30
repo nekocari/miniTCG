@@ -83,19 +83,31 @@ class Game {
      * compare today with game date
      * 
      * checks if the currents games date lies before today
+     * @param int $mins Wartezeit in Minuten
      * 
      * @return boolean
      */
-    public function isPlayable() {
-        // Datum heute 0 Uhr festlegen
-        $today_str = date('Y-m-d').' 00:00:00';
-        // unixzeitstempel vergleichen game muss kleiner sein als heute 
-        if(strtotime($this->date) <= strtotime($today_str)){
+    public function isPlayable($mins=null) {
+        if(is_null($mins)){
+            // Datum heute 0 Uhr festlegen
+            $today_str = date('Y-m-d').' 00:00:00';
+            $compare_time =  strtotime($today_str);
+        }else{
+            // Zeitstempel jetzt
+            $now = time();
+            $secs = 60 * intval($mins); // 60 Sekunden * X Minuten
+            $compare_time = $now-$secs; // jetzt weniger berechnete Wartezeit in Sekunden
+        }
+        
+        // Unixzeitstempel vergleichen letzte game Zeit muss kleiner sein als Vergleichszeit
+        if(strtotime($this->date) <= $compare_time){
             return true;
         }else{
             return false;
         }
     }
+    
+    
     
     /*
      * Getter
