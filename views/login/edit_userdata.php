@@ -5,7 +5,7 @@
 	<tbody>
 		<?php 
 		foreach($memberdata as $var => $value){ 
-		     if($var != 'Text') {
+		     if($var != 'Text' AND $var !='Mail') {
 		?>
         	<tr>
         		<td><?php echo $var; ?></td>
@@ -17,6 +17,14 @@
         	<tr>
         		<td><?php echo $var; ?></td>
         		<td><textarea class="form-control" name="<?php echo $var; ?>"><?php echo $value; ?></textarea></td>
+        	</tr>
+		<?php 
+		     
+		}elseif($var == 'Mail'){
+		    ?>
+        	<tr>
+        		<td><?php echo $var; ?></td>
+        		<td><input type="email" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>"></td>
         	</tr>
 		<?php 
 		     } 
@@ -39,11 +47,11 @@
 	<tbody>
 		<tr>
 			<td>neues Passwort</td>
-			<td><input class="form-control" type="password" name="password1"></td>
+			<td><input class="form-control" type="password" name="password1" required></td>
 		</tr>
 		<tr>
 			<td>Wiederholung</td>
-			<td><input class="form-control" type="password" name="password2"></td>
+			<td><input class="form-control" type="password" name="password2" required></td>
 		</tr>
 	</tbody>
 </table>

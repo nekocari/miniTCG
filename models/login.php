@@ -220,13 +220,13 @@ class Login {
      */
     public static function setPassword($pw1, $pw2) {
         try {
-            if($pw1 == $pw2){
+            if($pw1 == $pw2 AND !empty($pw1)){
                 $db = DB::getInstance();
                 $req = $db->prepare('UPDATE members SET password = :password WHERE id = :id');
                 $req->execute([':password'=>password_hash($pw1,PASSWORD_BCRYPT), ':id'=>$_SESSION['user']->id]);
                 return true;
             }else{
-                throw new Exception('Passwörter stimmen nicht überein');
+                throw new Exception('Passwörter stimmen nicht überein, oder die Eingabe enthielt keine Daten.');
             }
         }
         catch (Exception $e) {
