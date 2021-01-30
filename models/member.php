@@ -250,7 +250,7 @@ class Member {
                 $this->store();
                 
                 // Gift for level up
-                $levelup_bonus = Setting::getByName('levelup_bonus_cards');
+                $levelup_bonus = Setting::getByName('giftcards_for_master');
                 if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
                     Card::createRandomCard($this->getId(),$levelup_bonus->getValue(),'Level Up!');
                 }

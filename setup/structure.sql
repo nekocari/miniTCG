@@ -389,4 +389,8 @@ ALTER TABLE `updates_decks`
 ALTER TABLE `updates_members`
   ADD CONSTRAINT `updates_members_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `updates_members_ibfk_2` FOREIGN KEY (`update_id`) REFERENCES `updates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  
+
+ALTER TABLE `decks`  ADD `type` ENUM('default','puzzle') NOT NULL DEFAULT 'default'  AFTER `status`;  
+  
 COMMIT;
