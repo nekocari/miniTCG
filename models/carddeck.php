@@ -15,6 +15,7 @@ class Carddeck {
     private $name;
     private $deckname;
     private $status;
+    private $type;
     private $creator_id;
     private $creator_name;
     private $date;
@@ -25,13 +26,15 @@ class Carddeck {
     private $db;
     private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
     private static $allowed_status = array('new','public'); 
+    private static $allowed_types = array('default','puzzle');
     private $date_formate = 'd.m.Y';
     
-    public function __construct($id, $name, $deckname, $status, $date, $creator_id, $creator_name, $category, $subcategory, $category_name, $subcategory_name) {
+    public function __construct($id, $name, $deckname, $status, $type, $date, $creator_id, $creator_name, $category, $subcategory, $category_name, $subcategory_name) {
         $this->id           = $id;
         $this->name         = $name;
         $this->deckname     = $deckname;
         $this->status       = $status;
+        $this->type      = $type;
         $this->creator_id   = $creator_id;
         $this->creator_name = $creator_name;
         $this->date         = $date;
@@ -41,6 +44,10 @@ class Carddeck {
         $this->subcategory_name  = $subcategory_name;
         $this->db           = DB::getInstance();
         $this->date_formate = Setting::getByName('date_format')->getValue();
+    }
+    
+    public static function getAcceptedTypes(){
+        return self::$allowed_types;
     }
     
     public static function getAll() {
@@ -58,7 +65,7 @@ class Carddeck {
                     ORDER BY d.id DESC');
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name, 
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name, 
                                         $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
             }
         }
@@ -86,7 +93,7 @@ class Carddeck {
         $req->execute(array(':status'=>$status));
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
                                         $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
             }
         }
@@ -110,7 +117,7 @@ class Carddeck {
         $req->execute(array(':id'=>$id));
         if($req->rowCount() > 0){
             $deck = $req->fetch(PDO::FETCH_OBJ);
-            return new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+            return new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
             $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
         }else{
             return false;
@@ -135,7 +142,7 @@ class Carddeck {
         $req->execute(array(':sub'=>$sub_id));
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
                     $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
             }
         }
@@ -160,7 +167,7 @@ class Carddeck {
         $req->execute();
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
                     $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
             }
         }
@@ -185,19 +192,19 @@ class Carddeck {
         $req->execute(array(':update_id'=>$update_id));
         if($req->rowCount() > 0){
             foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->date, $deck->creator, $deck->creator_name,
+                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
                     $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
             }
         }
         return $decks;
     }
     
-    public static function update($id, $name, $creator, $subcat) {
+    public static function update($id, $name, $creator, $subcat, $type='default') {
         $db = DB::getInstance();
         try{
             if(preg_match(self::$naming_pattern, $name)){
-                $req = $db->prepare('UPDATE decks SET name = :name, creator = :creator WHERE id = :id');
-                $req->execute(array(':id'=>$id, ':name'=>$name, ':creator'=>$creator));
+                $req = $db->prepare('UPDATE decks SET name = :name, creator = :creator, type = :type WHERE id = :id');
+                $req->execute(array(':id'=>$id, ':name'=>$name, ':creator'=>$creator, ':type'=>$type));
                 $req = $db->prepare('UPDATE decks_subcategories SET subcategory_id = :sub_cat WHERE deck_id = :id');
                 $req->execute(array(':id'=>$id, ':sub_cat'=>$subcat));
                 return true;
@@ -284,6 +291,10 @@ class Carddeck {
         return $this->status;
     }
     
+    public function getType() {
+        return $this->type;
+    }
+    
     public function getCategory() {
         return $this->category;
     }
@@ -302,6 +313,14 @@ class Carddeck {
     
     public function getDeckpageUrl() {
         return Routes::getUri('deck_detail_page').'?id='.$this->id;
+    }
+    
+    public function isPuzzle(){
+        $is_puzzle = false;
+        if($this->getType() == 'puzzle'){
+            $is_puzzle = true;
+        }
+        return $is_puzzle;
     }
     
     public function getImageUrls() {
@@ -370,6 +389,5 @@ class Carddeck {
         return Master::getMemberByDeck($this->id);
     }
     
-    //TODO: improvements: get and display collectors
     
 }

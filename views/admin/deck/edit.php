@@ -26,6 +26,22 @@
     		<td><input class="form-control" type="text" name="name" value="<?php echo $deckdata->getName(); ?>"></td>
     	</tr>
     	<tr>
+    		<td>Typ</td>
+    		<td>
+    			<select class="form-control" name="type">
+    				<?php 
+    				foreach($deck_types as $type){
+    				    echo "<option";
+    				    if($deckdata->getType() == $type){
+    				        echo " selected"; 
+    				    }
+    				    echo ">$type</option>";
+    				}
+    				?>
+    			</select>
+    		</td>
+    	</tr>
+    	<tr>
     		<td>Ersteller</td>
     		<td>
 				<select class="form-control" name="creator">

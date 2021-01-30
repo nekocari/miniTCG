@@ -27,6 +27,6 @@
 
 <hr>
 
-<div class="my-4 text-center">
+<div class="my-4 text-center <?php if($deck->isPuzzle()){ echo "puzzle-view"; } ?>">
 	<?php echo $deck->getDeckView(); ?>
 </div>

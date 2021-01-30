@@ -209,9 +209,9 @@ class DeckController {
         
         if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
             
-            if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'])){
+            if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'], $_POST['type'])){
                 
-                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator'], $_POST['subcategory']);
+                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator'], $_POST['subcategory'], $_POST['type']);
                 
                 if($update === true){
                     
@@ -233,6 +233,8 @@ class DeckController {
                 $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
                 
             }
+            
+            $data['deck_types'] = Carddeck::getAcceptedTypes(); 
             
             $data['deckdata'] = Carddeck::getById($_GET['id']);
             $data['card_images'] = $data['deckdata']->getImages();

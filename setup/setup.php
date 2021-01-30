@@ -14,6 +14,9 @@ try{
     // create tables
     $mysql = file_get_contents(PATH.'setup/structure.sql');
     $req = $db->query($mysql);
+    // TODO: check folder for updates and add them in in a loop.
+    $mysql_updates = file_get_contents(PATH.'setup/structure_updates_puzzle.sql');
+    $req = $db->query($mysql_updates);
     // TODO: check for actual success of query
     
     $setup_result_message= '<p>Tabellen erfolgreich angelegt</p>'.
