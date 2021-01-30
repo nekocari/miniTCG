@@ -47,7 +47,11 @@ class Message {
             }
             if($req->rowCount() > 0){
                 foreach($req->fetchAll(PDO::FETCH_OBJ) as $msgdata){
-                    $sender = Member::getById($msgdata->sender);
+                    if(!is_null($msgdata->sender)){
+                        $sender = Member::getById($msgdata->sender);
+                    }else{
+                        $sender = new Member(null, 'System', null, null, null, null, null);
+                    }
                     $recipient = Member::getById($msgdata->recipient);    
                     $msgs[] = new Message($msgdata->id, $msgdata->date, $sender, $recipient, $msgdata->text, $msgdata->status);
                 }

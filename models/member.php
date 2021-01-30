@@ -253,7 +253,13 @@ class Member {
                 $this->setLevel($next_level->getId());
                 $this->store();
                 
-                // TODO: gift for level up??
+                // Gift for level up
+                $levelup_bonus = Setting::getByName('levelup_bonus_cards');
+                if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
+                    Card::createRandomCard($this->getId(),$levelup_bonus->getValue(),'Level Up!');
+                }
+                Message::add(null, $this->getId(), 'LEVEL UP! Du hast dafür '.$levelup_bonus->getValue().' Karten erhalten.');
+                
                 if($next_level != $reached_level){
                     $this->checkLevelUp();
                 }
