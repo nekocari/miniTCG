@@ -265,8 +265,8 @@ class Member {
      * returns the fields admins can edit
      * @return String[]
      */
-    public function getEditableData($mode = 'admin') {
-        if($mode  = 'admin'){
+    public function getEditableData($mode = 'user') {
+        if($mode  == 'admin'){
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->text);
         }else{
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->text);
