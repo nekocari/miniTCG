@@ -69,7 +69,6 @@ class Master {
                 $members[] = $member;
             }
         }
-        var_dump($members);
         return $members;
     }
     
