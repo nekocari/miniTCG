@@ -144,17 +144,21 @@ class DeckController {
             }
             
             if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory']) AND isset($_FILES)){
-                
-                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory']);
-                
-                if(($upload_status = $upload->store()) === true){
+                try{
+                    $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory']);
                     
-                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_upload_success');
+                    if(($upload_status = $upload->store()) === true){
+                        
+                        $data['_success'][] = SystemMessages::getSystemMessageText('deck_upload_success');
+                        
+                    }else{
                     
-                }else{
-                
-                    $data['_error'][] = SystemMessages::getSystemMessageText('deck_upload_failed').' - '.$upload_status;
-                    
+                        $data['_error'][] = SystemMessages::getSystemMessageText('deck_upload_failed').' - '.$upload_status;
+                        
+                    }
+                }
+                catch(Exception $e){
+                    die($e->getMessage());
                 }
                 
             }

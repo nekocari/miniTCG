@@ -38,7 +38,7 @@ class CardUpload {
      * @throws Exception
      */
     private function mkDir() {
-        if(!mkdir($this->cards_dir.$this->deckname, 0777) ){
+        if(!mkdir(self::$cards_dir.$this->deckname, 0777) ){
             throw new Exception('Ordner existiert bereits.');
         }
     }
@@ -73,41 +73,37 @@ class CardUpload {
      * @return String|boolean - string contains exception message
      */
     public function store() {
-        try {
-            $this->validate(); // validate data
-            $this->mkDir(); // make new dir
-            foreach($this->files as $key => $file){
-                 
-                // create new file path
-                $filename = $this->deckname.str_replace('card_', '', $key).".".$this->cards_file_type;
-                $file_path = $this->cards_dir.$this->deckname.'/'.$filename;
-                
-                if(!file_exists($file_path)){
-                    // move file from temp to new dir
-                    if(move_uploaded_file($file['tmp_name'], $file_path)){
-                        chmod($file_path, 0644);
-                    }else{
-                        throw new Exception('Datei konnte nicht dauerhaft gespeichert werden');
-                    }
-                }else {
-                    throw new Exception('Datei existiert bereits!');
+        
+        $this->validate(); // validate data
+        $this->mkDir(); // make new dir
+        foreach($this->files as $key => $file){
+             
+            // create new file path
+            $filename = $this->deckname.str_replace('card_', '', $key).".".$this->cards_file_type;
+            $file_path = self::$cards_dir.$this->deckname.'/'.$filename;
+            
+            if(!file_exists($file_path)){
+                // move file from temp to new dir
+                if(move_uploaded_file($file['tmp_name'], $file_path)){
+                    chmod($file_path, 0644);
+                }else{
+                    throw new Exception('Datei konnte nicht dauerhaft gespeichert werden');
                 }
-                
+            }else {
+                throw new Exception('Datei existiert bereits!');
             }
             
-            // insert deck into DB
-            $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator) VALUES (:name, :deckname, :creator)');
-            $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user));
-            $deck_id = $this->db->lastInsertId();
-            
-            // insert deck subcategory relation to DB
-            $req = $this->db->prepare('INSERT INTO decks_subcategories (deck_id, subcategory_id) VALUES (:deck_id, :sub_id)');
-            $req->execute(array(':deck_id'=>$deck_id,':sub_id'=>$this->subcategory));
-            
         }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
+        
+        // insert deck into DB
+        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator) VALUES (:name, :deckname, :creator)');
+        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user));
+        $deck_id = $this->db->lastInsertId();
+        
+        // insert deck subcategory relation to DB
+        $req = $this->db->prepare('INSERT INTO decks_subcategories (deck_id, subcategory_id) VALUES (:deck_id, :sub_id)');
+        $req->execute(array(':deck_id'=>$deck_id,':sub_id'=>$this->subcategory));
+          
         return true;    
     }
     
@@ -130,7 +126,7 @@ class CardUpload {
                 throw new Exception('Datei konnte nicht dauerhaft gespeichert werden');
             }
         }else {
-            throw new Exception('Originale Bilddatei unter Pfad '.$file_path.'/'.$filename.' nicht gefunden!');
+            throw new Exception('Originale Bilddatei unter Pfad '.$file_path.' nicht gefunden!');
             return false;
         }
     }

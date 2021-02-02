@@ -63,7 +63,7 @@
         			<optgroup label="<?php echo $category->getName(); ?>">
         				<?php foreach($category->getSubcategories() as $subcategory){
         				    echo '<option value="'.$subcategory->getId().'"';
-        				    if($subcategory->getId() == $deckdata->getSubcategory()){ echo " selected"; }
+        				    if($subcategory->getId() == $deckdata->getSubcategory()->getId()){ echo " selected"; }
         				    echo '>'.$subcategory->getName().'</option>';
         				} ?>
         			</optgroup>

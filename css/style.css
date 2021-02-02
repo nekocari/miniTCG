@@ -39,6 +39,9 @@
 	margin: 2px;
 	background-color: rgba(0,0,0,0.2);
 }
+.puzzle-view >.cardimage {
+		margin: 0;
+}
 
 #main-area {
 		flex-direction: row;

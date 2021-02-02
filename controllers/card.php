@@ -54,13 +54,17 @@ class CardController {
                     
                     if(isset($_POST) AND isset($_POST['number']) AND isset($_FILES['file']) ){
                         if(in_array($_POST['number'], $data['card_keys'])){
+                            try{
+                                $upload = CardUpload::replaceCardImage($deck->getId(), $_POST['number'], $_FILES['file']);
                             
-                            $upload = CardUpload::replaceCardImage($deck->getId(), $_POST['number'], $_FILES['file']);
-                            
-                            if($upload){
-                                $data['_success'][] = 'Upload erfolgreich';
-                            }else{
-                                $data['_error'][] = 'Upload fehlgeschlagen';
+                                if($upload){
+                                    $data['_success'][] = 'Upload erfolgreich';
+                                }else{
+                                    $data['_error'][] = 'Upload fehlgeschlagen';
+                                }
+                            }
+                            catch(Exception $e){
+                                die($e->getMessage());
                             }
                         }
                     }
