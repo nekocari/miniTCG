@@ -44,7 +44,7 @@ class MemberController {
         if(isset($_GET['cat']) AND in_array($_GET['cat'], array('master','trade','keep','collect')) ){
             $cat = $_GET['cat'];
         }else{
-            $cat = 'master';
+            $cat = 'trade';
         }
         
         // get elements for partial

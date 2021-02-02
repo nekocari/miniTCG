@@ -24,7 +24,7 @@ class Card extends DbRecordModel {
     
     private static  $tpl_width, $tpl_height, $tpl_html;
     
-    public static $accepted_status = array('new','trade','keep','collect');
+    private static $accepted_stati = array('new','trade','keep','collect');
     
     public function __construct() {
         parent::__construct();
@@ -33,6 +33,10 @@ class Card extends DbRecordModel {
             self::$tpl_height = Setting::getByName('cards_template_height')->getValue();
             self::$tpl_html = file_get_contents(PATH.'views/templates/card_image_temp.php');
         }
+    }
+    
+    public static function getAcceptedStati(){
+        return self::$accepted_stati;
     }
     
     public static function getById($id) {
@@ -121,7 +125,7 @@ class Card extends DbRecordModel {
     }
         
     public function setStatus($status) {
-        if(in_array($status, self::$accepted_status)){
+        if(in_array($status, self::getAcceptedStati())){
             $this->status = $status;
             return true;
         }else{

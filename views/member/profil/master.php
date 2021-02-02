@@ -3,7 +3,7 @@
     <a class="nav-link" href="<?php echo $member->getProfilLink().'&cat=trade'; ?>">Trade Karten</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="<?php echo $member->getProfilLink().'&cat=keep'; ?>"">Keep Karten</a>
+    <a class="nav-link" href="<?php echo $member->getProfilLink().'&cat=keep'; ?>">Keep Karten</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="<?php echo $member->getProfilLink().'&cat=collect'; ?>">Collect Karten</a>

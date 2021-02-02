@@ -76,7 +76,7 @@
     		<td>
     			<?php foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>
         		<div class="text-right">
-        			<a href="<?php echo ROUTES::getUri('deck_card_replace');?>?id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
+        			<a href="<?php echo ROUTES::getUri('card_replace_image');?>?deck_id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
         		</div>
     		</td>
     	</tr>

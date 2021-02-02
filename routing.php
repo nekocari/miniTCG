@@ -39,7 +39,7 @@
     Routes::addRoute('delete_account', 'member/delete_account.php', 'login', 'deleteAccount');
     
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
-    Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'login', 'cardmanager');
+    Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'cardmanager', 'cardmanager');
     Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     
@@ -69,6 +69,7 @@
     Routes::addRoute('deck_update_edit', 'admin/deck/update/edit.php', 'update', 'edit');
     Routes::addRoute('deck_upload', 'admin/deck/upload.php', 'deck', 'deckUpload');
     Routes::addRoute('deck_edit', 'admin/deck/edit.php', 'deck', 'deckEdit');
+    Routes::addRoute('card_replace_image', 'admin/deck/edit/replace_card.php', 'card', 'replaceImage');
     
     Routes::addRoute('category_index', 'admin/category.php', 'category', 'categories');
     Routes::addRoute('category_add', 'admin/category/add.php', 'category', 'addCategory');

@@ -290,7 +290,7 @@ class AdminController {
     }
     
     /**
-     * manage user rights -> TODO
+     * manage user rights 
      */
     public function manageRights() {
         

@@ -2,6 +2,13 @@
 /*
  * Controller for card related pages
  */
+
+require_once PATH.'models/carddeck.php';
+require_once PATH.'models/card.php';
+require_once PATH.'models/setting.php';
+require_once PATH.'models/admin.php';
+require_once PATH.'helper/cardupload.php';
+
 class CardController {
     
     function search() {
@@ -21,5 +28,54 @@ class CardController {
         }
         
     }
+    
+    
+    function replaceImage(){
+        
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // create a new instance of admin class
+        $admin = new Admin($_SESSION['user']->id);
+        
+        if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())){
+
+            if(!empty($_GET['deck_id'])){
+                
+                $deck = Carddeck::getById($_GET['deck_id']);
+                
+                if($deck instanceof Carddeck){
+                    
+                    $data['deck'] = $deck;
+                    $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
+                    
+                    if(isset($_POST) AND isset($_POST['number']) AND isset($_FILES['file']) ){
+                        if(intval($_POST['number']) > 0 AND intval($_POST['number']) < $data['decksize']){
+                            
+                            $upload = CardUpload::replaceCardImage($deck->getId(), intval($_POST['number']), $_FILES['file']);
+                            
+                            if($upload){
+                                $data['_success'][] = 'Upload erfolgreich';
+                            }else{
+                                $data['_error'][] = 'Upload fehlgeschlagen';
+                            }
+                        }
+                    }
+                    
+                    
+                    Layout::render('admin/deck/replace_card_image.php',$data);
+                    
+                    
+                }else{
+                    Layout::render('templates/error.php');
+                }
+            }
+            
+            
+        }
+        
+    }
+    
     
 }

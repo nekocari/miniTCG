@@ -10,6 +10,7 @@ require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/member.php';
 require_once PATH.'models/deck_subcategory.php';
 require_once PATH.'models/setting.php';
+require_once PATH.'models/master.php';
 
 class Carddeck extends DbRecordModel {
     
@@ -38,7 +39,11 @@ class Carddeck extends DbRecordModel {
     }
     
     
-    
+    /**
+     * get deck by id
+     * @param int $id
+     * @return Carddeck|NULL
+     */
     public static function getById($id) {
         return parent::getByPk($id);
     }
@@ -115,20 +120,15 @@ class Carddeck extends DbRecordModel {
     }
     
     public function getCollectorMembers(){
-        try{
-            $members = array();
-            $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND c.status = \'collect\'');
-            $req->execute();
-            
-            foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
-                $members[] = $member;
-            }
-            
-            return $members;
+        $members = array();
+        $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND c.status = \'collect\'');
+        $req->execute();
+        
+        foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
+            $members[] = $member;
         }
-        catch(Exception $e) {
-            return $e->getMessage();
-        }
+        
+        return $members;
     }
     
     public static function master($deck, $member){
@@ -290,7 +290,6 @@ class Carddeck extends DbRecordModel {
     
     public function getDeckView() {
         $deck = '';
-        require_once PATH.'models/setting.php';
         $cards_per_row = Setting::getByName('deckpage_cards_per_row')->getValue();
         $decksize = Setting::getByName('cards_decksize')->getValue();
         
@@ -314,7 +313,6 @@ class Carddeck extends DbRecordModel {
     }
     
     public function getMasterMembers() {
-        require_once PATH.'models/master.php';
         return Master::getMemberByDeck($this->id);
     }
     

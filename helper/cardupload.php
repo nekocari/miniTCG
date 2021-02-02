@@ -7,14 +7,15 @@
  */
 
 require_once PATH.'models/setting.php';
+require_once PATH.'models/carddeck.php';
 
 class CardUpload {
     
     private $name;
     private $deckname;
     private $files = array();
-    private $cards_dir = PATH.CARDS_FOLDER;
-    private $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
+    private static $cards_dir = PATH.CARDS_FOLDER;
+    private static $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
     private $cards_decksize;
     private $cards_file_type;
@@ -81,7 +82,7 @@ class CardUpload {
                 $filename = $this->deckname.str_replace('card_', '', $key).".".$this->cards_file_type;
                 $file_path = $this->cards_dir.$this->deckname.'/'.$filename;
                 
-                if(!file_exists($file_path."/".$filename)){
+                if(!file_exists($file_path)){
                     // move file from temp to new dir
                     if(move_uploaded_file($file['tmp_name'], $file_path)){
                         chmod($file_path, 0644);
@@ -108,6 +109,30 @@ class CardUpload {
             return $e->getMessage();
         }
         return true;    
+    }
+    
+    public static function replaceCardImage($deck_id,$card_number,$file){
+        // create new file path
+        $deck = Carddeck::getById($deck_id);
+        
+        $file_type =  Setting::getByName('cards_file_type')->getValue();
+        $filename = $deck->getDeckname().$card_number.".".$file_type;
+        $file_path = self::$cards_dir.$deck->getDeckname().'/'.$filename;
+        
+        if(file_exists($file_path)){
+            // delete old file
+            unlink($file_path);
+            // move file from temp to new dir
+            if(move_uploaded_file($file['tmp_name'], $file_path)){
+                chmod($file_path, 0644);
+                return true;
+            }else{
+                throw new Exception('Datei konnte nicht dauerhaft gespeichert werden');
+            }
+        }else {
+            throw new Exception('Originale Bilddatei unter Pfad '.$file_path.'/'.$filename.' nicht gefunden!');
+            return false;
+        }
     }
     
 }
