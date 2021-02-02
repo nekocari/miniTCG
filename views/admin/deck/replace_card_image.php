@@ -18,7 +18,7 @@
 		<td>Welche Nummer ersetzen?</td>
 		<td>
         	<select name="number" class="form-control">
-        		<?php for($i=1; $i<=$decksize; $i++){ ?>
+        		<?php foreach($card_keys as $i){ ?>
         		<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
         		<?php } ?>
         	</select>

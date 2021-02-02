@@ -49,11 +49,13 @@ class CardController {
                     
                     $data['deck'] = $deck;
                     $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
+                    $data['card_keys'] = range(1,$data['decksize']);
+                    array_push($data['card_keys'], '_master');
                     
                     if(isset($_POST) AND isset($_POST['number']) AND isset($_FILES['file']) ){
-                        if(intval($_POST['number']) > 0 AND intval($_POST['number']) < $data['decksize']){
+                        if(in_array($_POST['number'], $data['card_keys'])){
                             
-                            $upload = CardUpload::replaceCardImage($deck->getId(), intval($_POST['number']), $_FILES['file']);
+                            $upload = CardUpload::replaceCardImage($deck->getId(), $_POST['number'], $_FILES['file']);
                             
                             if($upload){
                                 $data['_success'][] = 'Upload erfolgreich';
