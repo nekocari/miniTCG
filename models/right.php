@@ -6,41 +6,30 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 
-class Right {
+class Right extends DbRecordModel {
     
-    private $id, $name, $description, $db;
+    protected $id, $name, $description;
     
-    public function __construct($id, $name, $description) {
-        $this->id           = $id;
-        $this->name         = $name;
-        $this->description  = $description;
-        $this->db           = DB::getInstance();
+    protected static
+        $db_table = 'rights',
+        $db_pk = 'id',
+        $db_fields = array('id','name','description'),
+        $sql_order_by_allowed_values = array('id','name');
+    
+    public function __construct() {
+        parent::__construct();
     }
     
-    public static function getAll() {
-        
-        try {
-            $db = Db::getInstance();
-            $rights = array();
-           
-            $req = $db->query('SELECT * FROM rights ORDER BY name ASC');
-            
-            if($req->rowCount() > 0){
-                
-                foreach($req->fetchAll(PDO::FETCH_OBJ) as $right){  
-                    
-                    $rights[] = new Right($right->id, $right->name, $right->description);
-                    
-                }
-            }
-            
-            return $rights;
-        }
-        
-        catch (Exception $e) {
-            return $e->getMessage();
-        }
+    /**
+     * gets als rights for assigend to member
+     * @param int $member_id
+     * @return Right[]
+     */
+    public static function getByMemberId($member_id){
+        // TODO
+        return [];
     }
     
     public function getId() {

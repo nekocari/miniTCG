@@ -61,7 +61,7 @@
         		<select class="form-control" id="category" name="subcategory" required>
         			<?php foreach($categories as $category){ ?>
         			<optgroup label="<?php echo $category->getName(); ?>">
-        				<?php foreach($subcategories[$category->getId()] as $subcategory){
+        				<?php foreach($category->getSubcategories() as $subcategory){
         				    echo '<option value="'.$subcategory->getId().'"';
         				    if($subcategory->getId() == $deckdata->getSubcategory()){ echo " selected"; }
         				    echo '>'.$subcategory->getName().'</option>';

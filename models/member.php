@@ -7,83 +7,64 @@
  *
  */
 
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/card.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/master.php';
+require_once PATH.'models/level.php';
+require_once PATH.'models/member_right.php';
+require_once PATH.'helper/Parsedown.php';
 
-class Member {
+class Member extends DbRecordModel {
     
     protected 
-        $db, $id, $name, $level, $mail, $join_date, $text, $text_html, $cards,  $mastered_decks;
-    private static 
-        $query_order_by_options = array('id','name','level'),
-        $query_order_direction_options = array('ASC','DESC'),
-        $accepted_group_options = array('id','level');
+        $id, $name, $mail, $info_text, $info_text_html, $level, $join_date, $login_date, $status, $ip;
+    
+    private 
+        $password, $cards, $masterd_decks;
+    
+        
+    protected static
+        $db_table = 'members',
+        $db_pk = 'id',
+        $db_fields = array('id','name','mail','info_text','info_text_html','level','join_date','login_date','status','ip'),
+        $sql_order_by_allowed_values = array('id','name','level','join_date','login_date','status');
+    
+    private static $accepted_group_options = array('level');
     
     public function __construct() {
-        $this->db = Db::getInstance();
+        parent::__construct();
     }
     
-    /**
-     * get data of all members from database
-     *
-     * @param string $order_by fieldname for order [id|name|level]
-     * @param string $order order direction [ASC|DESC]
-     *
-     * @return Member[]
-     */
-    public static function getAll($order_by, $order) {
-        $members = array();
-        $db_conn = Db::getInstance();
-        
-        if(!in_array($order_by, self::$query_order_by_options)){
-            $order_by = 'name';
-        }
-        
-        if(!in_array($order, self::$query_order_direction_options)){
-            $order = 'ASC';
-        }
-        
-        $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
-        if($req->execute()){
-            
-            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
-                $members[] = $member;
-            }
-        }
-        
-        return $members;
-    }
     
     /**
-     * get data of all members from database
+     * get data of all members in an array grouped by a col from database
      *
      * @param string $group fieldname for array grouping
      *
      * @return Member[]
      */
-    public static function getGrouped($group, $order_by = 'id', $order = 'ASC') {
+    public static function getGrouped($group, $order_by = 'name', $order = 'ASC') {
+        
         $members = array();
         $db_conn = Db::getInstance();
         
-        if(!in_array($order_by, self::$query_order_by_options)){
-            $order_by = 'name';
+        if(!in_array($order_by, self::$sql_order_by_allowed_values)){
+            $order_by = self::$sql_order_by_allowed_values[0];
         }
         
-        if(!in_array($order, self::$query_order_direction_options)){
-            $order = 'ASC';
+        if(!in_array($order, self::$sql_direction_allowed_values)){
+            $order = self::$sql_direction_allowed_values[0];
         }
         
         if(!in_array($group, self::$accepted_group_options)){
-            $group = 'id';
+            $group = self::$accepted_group_options[0];
         }
         
-        $req = $db_conn->query("SELECT * FROM members ORDER BY $order_by $order");
-        if($req->execute()){
+        $members_array = self::getAll([$order_by=>$order]);
             
-            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
-                $members[$member->$group][]  = $member;
-            }
+        foreach($members_array as $member){
+            $members[$member->$group][]  = $member;
         }
         
         return $members;
@@ -97,6 +78,8 @@ class Member {
      * @return boolean|Member
      */
     public static function getById($id) {
+        return parent::getByPk($id);
+        /*
         $member = false;
         $db_conn = Db::getInstance();
         
@@ -108,17 +91,19 @@ class Member {
             }
         }
         
-        return $member;
+        return $member;*/
     }
     
     /**
-     * get member data from database using id number
+     * get member data from database mail adress
      *
-     * @param int $id Id number of member in database
+     * @param string $mail
      *
-     * @return boolean|Member
+     * @return Member|NULL
      */
     public static function getByMail($mail) {
+        return parent::getByUniqueKey('mail', $mail);
+        /*
         $member = false;
         $db_conn = Db::getInstance();
         
@@ -131,6 +116,7 @@ class Member {
         }
         
         return $member;
+        */
     } 
     
     /**
@@ -141,15 +127,17 @@ class Member {
      * @return Member[]
      */
     public static function searchByName($search_str) {
+        
         $db = DB::getInstance();
         $members = array();
         
-        $req = $db->prepare('SELECT * FROM members WHERE name LIKE :search_str ');
+        $req = $db->prepare('SELECT * FROM '.self::$db_table.' WHERE name LIKE :search_str ');
         $req->execute(array(':search_str'=>'%'.$search_str.'%'));
        
             foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
                 $members[] = $member;
             }
+            
         return $members;
     }
     
@@ -237,7 +225,7 @@ class Member {
      * checks if the member has enough cards to level up and changes the level
      */
     public function checkLevelUp() {
-        require_once PATH.'models/level.php';
+        
         $reached_level = Level::getByCardNumber($this->getCardCount());
         
         if($this->getLevel() != $reached_level->getId()){
@@ -268,10 +256,11 @@ class Member {
      * @return String[]
      */
     public function getEditableData($mode = 'user') {
+        $filed = array();
         if($mode  == 'admin'){
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->text);
-        }else{
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->text);
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->info_text);
+        }elseif($mode == 'user'){
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->info_text);
         }
         return $fields; 
     }
@@ -279,17 +268,29 @@ class Member {
     /**
      * push current member data into database
      *
-     * @return boolean|string retuns true or in case of failure the Excetion message
+     * @return boolean
      */
     public function store() {
-        try{
-            $req = $this->db->prepare('UPDATE members SET name = :name, level = :level, mail = :mail , info_text = :text, info_text_html = :text_html WHERE id = :id');
-            $req->execute(array(':id' => $this->id, ':name' => $this->name, ':level' => $this->level, ':mail' => $this->mail, ':text' => $this->text, ':text_html' => $this->text_html) );
-            return true;
+        
+        // make sure info_text_html is up to date!
+        $parsedown = new Parsedown();
+        $this->info_text_html = $parsedown->text($this->info_text);
+        
+        return parent::update();
+    }
+    
+    
+    /**
+     * get members assigned rights
+     * @return Right[]
+     */
+    public function getRights(){
+        $member_rights = MemberRight::getByMemberId($this->getId());
+        $rights = array();
+        foreach($member_rights as $right){
+            $rights[] = $right->getRight();
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
-        }
+        return $rights;
     }
     
     /**
@@ -300,12 +301,16 @@ class Member {
      * @return boolean
      */
     public function addRight($right_id){
-        $req = $this->db->prepare('INSERT INTO members_rights (member_id,right_id) VALUES (:member_id,:right_id) ');
-        if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
+        $member_right = new MemberRight();
+        $member_right->setPropValues(['member_id'=>$this->getId(), 'right_id'=>$right_id]);
+        try {
+            $member_right->create();
             return true;
-        }else{
+        }
+        catch(Exception $e){
             return false;
         }
+        
     }
     
     /**
@@ -316,24 +321,14 @@ class Member {
      * @return boolean
      */
     public function removeRight($right_id){
-        $req = $this->db->prepare('DELETE FROM members_rights WHERE member_id = :member_id AND right_id = :right_id ');
-        if($req->execute(array(':member_id'=>$this->id, ':right_id'=>$right_id))){
-            return true;
-        }else{
-            return false;
+        $result = false;
+        try{
+            $member_right = MemberRight::getWhere('member_id = '.$this->getId().' AND right_id = '.intval($right_id));
+            if(is_array($member_right) AND count($member_right) == 1){
+                $member_right[0]->delete();
+            }
         }
-    }
-    
-    /**
-     * Deletes a Member entierly from Database
-     * 
-     * @return boolean
-     */
-    public function delete(){
-        $req = $this->db->query('DELETE FROM members WHERE id = '.$this->id);
-        if($req->rowCount() == 1){
-            return true;
-        }else{
+        catch(Exception $e){
             return false;
         }
     }
@@ -363,7 +358,7 @@ class Member {
     }
     
     public function getInfoText() {
-        return $this->text_html;
+        return $this->info_text_html;
     }
     
     public function getInfoTextplain() {
@@ -389,8 +384,13 @@ class Member {
     
     public function setInfoText($text) {
         $parsedown = new Parsedown();
-        $this->text = $text;
-        $this->text_html = $parsedown->text($this->text);
+        $this->info_text = $text;
+        $this->info_text_html = $parsedown->text($this->info_text);
+    }
+    
+    public function setPassword($pw){
+        $req = $this->db->prepare('UPDATE members SET password = :password WHERE id = :id');
+        return $req->execute([':password'=>password_hash($pw,PASSWORD_BCRYPT), ':id'=>$this->getId()]);
     }
     
     

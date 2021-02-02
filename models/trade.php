@@ -6,55 +6,65 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
-class Trade {
+require_once PATH.'models/card.php';
+require_once PATH.'models/member.php';
+require_once PATH.'models/message.php';
+
+class Trade extends DbRecordModel {
     
-    private $id;
-    private $date;
-    private $offerer;
-    private $recipient;
-    private $offered_card;
-    private $requested_card;
-    private $text;
-    private $status;
-    private static $query_order_by_options = array('id','date','status','offerer','recipient');
-    private static $query_order_direction_options = array('ASC','DESC');
+    protected $id, $date, $offerer, $offered_card, $recipient, $requested_card, $text, $status;
+    private $offerer_obj, $recipient_obj, $offered_card_obj, $requested_card_obj;
+    
+    protected static
+        $db_table = 'trades',
+        $db_pk = 'id',
+        $db_fields = array('id','date','offerer','offered_card','recipient','requested_card','text','status'),
+        $sql_order_by_allowed_values = array('id','status','date','offerer','recipient');
+    
     private static $query_status_options = array('new','accepted','declined');
     
-    public function __construct($id, $date, $offerer, $offered_card, $recipient, $requested_card, $status, $text) {
-        $this->id           = $id;
-        $this->date         = $date;
-        $this->offerer      = $offerer;
-        $this->offered_card = $offered_card;
-        $this->recipient    = $recipient;
-        $this->requested_card = $requested_card;
-        $this->status       = $status;
-        $this->text         = $text;
-        $this->db           = DB::getInstance();
+    
+    public function __construct() {
+        parent::__construct();
     }
     
     
     public static function getById($id) {
-        try {
-            require_once PATH.'models/card.php';
-            require_once PATH.'models/member.php';
+        return parent::getByPk($id);
+    }
+    
+    private static function getTradesByMemberId($member_id,$type, $status='new', $order_by = 'date', $order = 'ASC'){
+        $trades = array();
+        if(in_array($type,['recieved','sent'])){
             
-            $db = DB::getInstance();
+            if(!in_array($order_by, self::$sql_order_by_allowed_values)){
+                $order_by = self::$sql_order_by_allowed_values[0];
+                throw new Exception();
+            }
+            if(!in_array($order, self::$sql_direction_allowed_values)){
+                $order = self::$sql_direction_allowed_values[0];
+                throw new Exception();
+            }
+            if(!in_array($status, self::$query_status_options)){
+                $status = self::$query_status_options[0];
+                throw new Exception();
+            }
             
-            $req = $db->prepare('SELECT * FROM trades WHERE id = :id');
-            $req->execute(array(':id'=>$id));
-            $tradedata = $req->fetch(PDO::FETCH_OBJ);
+            switch ($type){
+                case 'recieved':
+                    return parent::getWhere('recipient = '.intval($member_id).' AND status = \''.$status.'\'', [$order_by=>$order]);
+                    break;
+                case 'sent':
+                    return parent::getWhere('offerer = '.intval($member_id).' AND status = \''.$status.'\'', [$order_by=>$order]);
+                    break;
+            }
             
-            $offerer = Member::getById($tradedata->offerer);
-            $recipient = Member::getById($tradedata->recipient);
-            $offered_card = Card::getById($tradedata->offered_card);
-            $requested_card = Card::getById($tradedata->requested_card);
-            
-            return new Trade($tradedata->id, $tradedata->date, $offerer, $offered_card, $recipient, $requested_card, $tradedata->status, $tradedata->text);
+        }else{
+            throw new Exception();
         }
-        catch (Exception $e){
-            return $e->getMessage();
-        }
+        return $trades;
     }
     
     /**
@@ -68,34 +78,7 @@ class Trade {
      */
     public static function getRecievedByMemberId($member_id, $status='new', $order_by = 'date', $order = 'ASC') {
         
-        $db = DB::getInstance();
-        require_once PATH.'models/member.php';
-        require_once PATH.'models/member.php';
-        
-        $trades = array();
-        
-        if(!in_array($order_by, self::$query_order_by_options)){
-            $order_by = 'date';
-        }
-        if(!in_array($order, self::$query_order_direction_options)){
-            $order = 'DESC';
-        }
-        if(!in_array($status, self::$query_status_options)){
-            $status = 'new';
-        }
-        
-        $req = $db->prepare('SELECT * FROM trades WHERE recipient = :member AND status = :status ORDER BY '.$order_by.' '.$order);
-        $req->execute(array(':member'=>$member_id, ':status'=>$status));
-        
-        foreach($req->fetchAll(PDO::FETCH_ASSOC) as $trade){
-            $offerer = Member::getById($trade['offerer']);
-            $recipient = Member::getById($trade['recipient']);
-            $offered_card = Card::getById($trade['offered_card']);
-            $requested_card = Card::getById($trade['requested_card']);
-            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status'], $trade['text']);
-        }
-        
-        return $trades;
+        return self::getTradesByMemberId($member_id, 'recieved');
     }
     
     /**
@@ -109,167 +92,155 @@ class Trade {
      */
     public static function getSentByMemberId($member_id, $status='new', $order_by = 'date', $order = 'ASC') {
         
-        $db = DB::getInstance();
-        require_once PATH.'models/member.php';
-        require_once PATH.'models/member.php';
-        
-        $trades = array();
-        
-        if(!in_array($order_by, self::$query_order_by_options)){
-            $order_by = 'date';
-        }
-        if(!in_array($order, self::$query_order_direction_options)){
-            $order = 'DESC';
-        }
-        if(!in_array($status, self::$query_status_options)){
-            $status = 'new';
-        }
-        
-        $req = $db->prepare('SELECT * FROM trades WHERE offerer = :member AND status = :status ORDER BY '.$order_by.' '.$order);
-        $req->execute(array(':member'=>$member_id, ':status'=>$status));
-        
-        foreach($req->fetchAll(PDO::FETCH_ASSOC) as $trade){
-            $offerer = Member::getById($trade['offerer']);
-            $recipient = Member::getById($trade['recipient']);
-            $offered_card = Card::getById($trade['offered_card']);
-            $requested_card = Card::getById($trade['requested_card']);
-            $trades[] = new Trade($trade['id'], $trade['date'], $offerer, $offered_card, $recipient, $requested_card, $trade['status'], $trade['text']);
-        }
-        
-        return $trades;
+        return self::getTradesByMemberId($member_id, 'sent');
     }
     
-    
-    public static function delete($id) {
-        $db = DB::getInstance();
-        try {
-            if(isset($_SESSION['user'])){
-                $req = $db->prepare('DELETE FROM trades WHERE id = :id AND offerer = :offerer');
-                $req->execute(array(':id'=>$id, ':offerer'=>$_SESSION['user']->id));
-                if($req->rowCount() > 0){
-                    return true;
-                }else{
-                    throw new Exception('Tausch und Nutzer ID Kombination existiert nicht!');
-                }
-            }else{
-                throw new Exception('Du bist nicht eingeloggt!');
-            }
-        }
-        catch (Exception $e) {
-            return $e->getMessage();
-        }
-    }
     
     public function del() {
-        return self::delete($this->id);
+        return $this->delete();
     }
     
     public static function add($recipient, $requested_card_id, $offered_card_id, $text) {
-        // TODO: check if cards are still free
-        $db = DB::getInstance();
+        
         
         $offered_card = Card::getById($offered_card_id);
         $requested_card = Card::getById($requested_card_id);        
         $text = strip_tags($text);
         
-        if($offered_card->isTradeable() AND $requested_card->isTradeable() AND 
-            $offered_card->getOwner()->getId() == $_SESSION['user']->id AND $requested_card->getOwner()->getID() == $recipient){
+        if(!is_null($offered_card) AND $offered_card->isTradeable() AND 
+            !is_null($requested_card) AND $requested_card->isTradeable() AND 
+            $offered_card->getOwner()->getId() == $_SESSION['user']->id AND 
+            $requested_card->getOwner()->getID() == $recipient){
             
-            $req = $db->prepare('INSERT INTO trades (offerer,recipient,offered_card,requested_card,text) VALUES (:offerer,:recipient,:offered_card,:requested_card,:text) ');
-            $req->execute(array(':offerer'=>$_SESSION['user']->id, ':recipient'=>$recipient, ':offered_card'=>$offered_card_id, ':requested_card'=>$requested_card_id, ':text'=>$text ));
+            $prop_values = array(
+                'recipient'     =>$recipient,
+                'requested_card'=>$requested_card_id,
+                'offered_card'   =>$offered_card_id,
+                'offerer'       =>$_SESSION['user']->id,
+                'text'          =>$text
+            );
+                
+            $trade = new Trade();
+            $trade->setPropValues($prop_values);
+            //die(var_dump($trade));
+            $trade_id = $trade->create();
             
-            return true;
+            if($trade_id !== false){
+                return true;
+            }
             
         }else{
-            return false;
+            throw new Exception('Eine der Karten steht leider nicht mehr zur Verfüngung.');
         }
+        
+        return false;
     }
     
-    public function decline($msg = '') {
-        try {
-            if($this->recipient->getId() == $_SESSION['user']->id){
-                // update trade status to declined
-                $req = $this->db->query('UPDATE trades SET status = \'declined\' WHERE id = '.$this->id); 
-                if($req->rowCount() == 1){
-                    // send message to inform offerer
-                    require_once PATH.'models/message.php';
-                    $msg_text = 'ANFRAGE ABGELEHNT! '.$this->recipient->getName().' tauscht '.strtoupper($this->requested_card->getName()).' nicht gegen deine '.strtoupper($this->offered_card->getName()).'.';
-                    if(!empty($msg)){
-                        $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
-                    }
-                    Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
-                    return true;
-                }else{
-                    throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.',5001);
+    public function answer($status, $msg = '') {
+        
+        if(in_array($status, self::$query_status_options) AND $this->recipient == $_SESSION['user']->id){
+            
+            $this->setPropValues(['status'=>$status]);
+            
+            if($this->update()){
+            
+                switch($status){
+                    
+                    case 'return_offer':
+                        // TBA later
+                        break;
+                        
+                    case 'declined':
+                        $msg_text = 'ANFRAGE ABGELEHNT! '.$this->getRecipient()->getName().' tauscht '.
+                                strtoupper($this->getRequestedCard()->getName()).' nicht gegen deine '.
+                                strtoupper($this->getOfferedCard()->getName()).'.';
+                        break;
                 }
-            }else{
-                throw new Exception('Nutzer und Empfänger stimmen nicht überein.',5002);
+                
+                if(!empty($msg)){
+                    $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
+                }
+                
+                Message::add($this->getRecipient()->getId(), $this->getOfferer()->getId(), $msg_text);
+                
+                return true;
             }
+            
         }
-        catch (Exception $e) {
-            return $e->getCode();
-        }
+        
+        return false;
+        
+    }
+    
+    
+    public function decline($msg = '') {
+        
+        return $this->answer('declined',$msg);
+        
     }
     
     public function accept($msg = '') {
-        try {
-            $this->db->beginTransaction();
-            if($this->recipient->getId() == $_SESSION['user']->id){
+       
+        $this->db->beginTransaction();
+        if($this->getRecipient()->getId() == $_SESSION['user']->id){
+            
+            // change owner of offered card to recipient
+            if($this->getOfferedCard()->getOwner()->getId() == $this->getOfferer()->getId()){
                 
-                // change owner of offered card to recipient
-                if($this->offered_card->getOwner()->getId() == $this->offerer->getId()){
+                $this->getOfferedCard()->setOwner($this->getRecipient()->getId());
+                $this->getOfferedCard()->setStatus('new');
+                $this->getOfferedCard()->store();
+                
+                // change owner of requested card to offerer
+                if($this->getRequestedCard()->getOwner()->getId() == $this->getRecipient()->getId()){
                     
-                    $this->offered_card->setOwner($this->recipient->getId());
-                    $this->offered_card->setStatus('new');
-                    $this->offered_card->store();
+                    $this->getRequestedCard()->setOwner($this->getOfferer()->getId());
+                    $this->getRequestedCard()->setStatus('new');
+                    $this->getRequestedCard()->store();
                     
-                    // change owner of requested card to offerer
-                    if($this->requested_card->getOwner()->getId() == $this->recipient->getId()){
+                    // update trade status 
+                    $req = $this->db->query('UPDATE trades SET status = \'accepted\' WHERE id = '.$this->getId());
+                    if($req->rowCount() == 1){
                         
-                        $this->requested_card->setOwner($this->offerer->getId());
-                        $this->requested_card->setStatus('new');
-                        $this->requested_card->store();
+                        // send message to inform offerer
+                        $msg_text = 'ANFRAGE ANGENOMMEN! '.$this->getRecipient()->getName().' hat '.
+                            strtoupper($this->getRequestedCard()->getName()).' gegen deine '.
+                            strtoupper($this->getOfferedCard()->getName()).' getauscht.';
                         
-                        // update trade status to declined
-                        $req = $this->db->query('UPDATE trades SET status = \'accepted\' WHERE id = '.$this->id);
-                        if($req->rowCount() == 1){
-                            
-                            // send message to inform offerer
-                            require_once PATH.'models/message.php';
-                            $msg_text = 'ANFRAGE ANGENOMMEN! '.$this->recipient->getName().' hat '.strtoupper($this->requested_card->getName()).' gegen deine '.strtoupper($this->offered_card->getName()).' getauscht.';
-                            if(!empty($msg)){
-                                $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
-                            }
-                            Message::add($this->recipient->getId(), $this->offerer->getId(), $msg_text);
-                            
-                            // create Tradelog entry for offerer
-                            $text = 'Du hast '.strtoupper($this->offered_card->getName()).' gegen '.strtoupper($this->requested_card->getName()).' von '.$this->recipient->getName().' getauscht.';
-                            Tradelog::addEntry($this->offerer->getId(), $text);
-                            // create Tradelog entry for recipient
-                            $text = 'Du hast '.strtoupper($this->requested_card->getName()).' gegen '.strtoupper($this->offered_card->getName()).' von '.$this->offerer->getName().' getauscht.';
-                            Tradelog::addEntry($this->recipient->getId(), $text);
-                            $text = null;
-                            
-                            $this->db->commit();
-                            return true;
-                            
-                        }else{
-                            throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.',5001);
+                        if(!empty($msg)){
+                            $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
                         }
+                        
+                        Message::add($this->getRecipient()->getId(), $this->getOfferer()->getId(), $msg_text);
+                        
+                        // create Tradelog entry for offerer
+                        $text = 'Du hast '.strtoupper($this->getOfferedCard()->getName()).' gegen '.strtoupper($this->getRequestedCard()->getName()).
+                            ' von '.$this->getRecipient()->getName().' getauscht.';
+                        Tradelog::addEntry($this->getOfferer()->getId(), $text);
+                        
+                        // create Tradelog entry for recipient
+                        $text = 'Du hast '.strtoupper($this->getRequestedCard()->getName()).' gegen '.strtoupper($this->getOfferedCard()->getName()).
+                            ' von '.$this->getOfferer()->getName().' getauscht.';
+                        Tradelog::addEntry($this->getRecipient()->getId(), $text);
+                        
+                        
+                        $this->db->commit();
+                        return true;
+                        
                     }else{
-                        throw new Exception('Angefragte Karte ist nicht verfügbar.', 5003);
-                    }                    
+                        throw new Exception('Der Status der Tauschanfrage wurde bereits geändert.',5001);
+                    }
                 }else{
-                    throw new Exception('Angebotene Karte ist nicht verfügbar.', 5004);
-                }
+                    throw new Exception('Angefragte Karte ist nicht verfügbar.', 5003);
+                }                    
             }else{
-                throw new Exception('Nutzer und Empfänger stimmen nicht überein.', 5002);
+                throw new Exception('Angebotene Karte ist nicht verfügbar.', 5004);
             }
+        }else{
+            throw new Exception('Nutzer und Empfänger stimmen nicht überein.', 5002);
         }
-        catch (Exception $e) {
-            $this->db->rollBack();
-            return $e->getCode();
-        }
+        
+        return false;
     }
     
     
@@ -284,17 +255,30 @@ class Trade {
         return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
     }
     public function getOfferer() {
-        return $this->offerer;
+        if(!$this->offerer_obj instanceof Member){
+            $this->offerer_obj = Member::getById($this->offerer);
+        }
+        return $this->offerer_obj;
     }
     public function getOfferedCard() {
-        return $this->offered_card;
+        if(!$this->offered_card_obj instanceof Card){
+            $this->offered_card_obj = Card::getById($this->offered_card);
+        }
+        return $this->offered_card_obj;
     }
     public function getRecipient() {
-        return $this->recipient;
+        if(!$this->recipient_obj instanceof Member){
+            $this->recipient_obj = Member::getById($this->recipient);
+        }
+        return $this->recipient_obj;
     }
     public function getRequestedCard() {
-        return $this->requested_card;
+        if(!$this->requested_card_obj instanceof Card){
+            $this->requested_card_obj = Card::getById($this->requested_card);
+        }
+        return $this->requested_card_obj;
     }
+    
     public function getStatus() {
         return $this->status;
     }

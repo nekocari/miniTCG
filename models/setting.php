@@ -65,7 +65,6 @@ class Setting {
         $settings = array();
         $db = Db::getInstance();
         
-        try {
             $req = $db->prepare('SELECT * FROM settings WHERE name = :name');
             $req->execute(array(':name'=>$name));
             
@@ -77,10 +76,6 @@ class Setting {
             }
         
             return $setting_obj;
-        }
-        catch(PDOException $e) {
-            return 'Daten nicht gefunden. Datenbank meldet: '.$e->getMessage();
-        }
     }
     
 

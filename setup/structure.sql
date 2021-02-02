@@ -392,5 +392,6 @@ ALTER TABLE `updates_members`
   
 
 ALTER TABLE `decks`  ADD `type` ENUM('default','puzzle') NOT NULL DEFAULT 'default'  AFTER `status`;  
+ALTER TABLE `messages` CHANGE `sender` `sender` INT(10) UNSIGNED NULL;
   
 COMMIT;

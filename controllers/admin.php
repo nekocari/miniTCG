@@ -9,6 +9,7 @@ require_once 'models/login.php';
 require_once 'models/admin.php';
 require_once 'models/right.php';
 require_once 'models/setting.php';
+require_once 'helper/pagination.php';
 
 class AdminController {
     
@@ -103,15 +104,15 @@ class AdminController {
         if(in_array('Admin',$admin->getRights()) OR in_array('ManageMembers',$admin->getRights())
             OR in_array('ManageRights',$admin->getRights())){
             
-            require_once 'models/member.php';
-            require_once 'helper/pagination.php';
-            $members = Member::getAll('id', 'ASC');
-            if(isset($_GET['pg'])){
-                $currPage = $_GET['pg'];
-            }else{
-                $currPage = 1;
+            $members = Member::getAll(['id'=>'ASC']);
+            $currPage = 1;
+            
+            if(isset($_GET['pg'])){ 
+                $currPage = $_GET['pg']; 
             }
+            
             $pagination = new Pagination($members, 10, $currPage, Routes::getUri('admin_member_index'));
+            
             $data['members'] = $pagination->getElements();
             $data['pagination'] = $pagination->getPaginationHtml();
             
@@ -139,17 +140,18 @@ class AdminController {
             
             if(isset($_POST['updateMemberdata'])){
                 
-                $memberdata->setName($_POST['Name']);
-                $memberdata->setLevel($_POST['Level']);
-                $memberdata->setMail($_POST['Mail']);
-                $memberdata->setInfoText($_POST['Text']);
-                
-                $return = $memberdata->store();
-                
-                if($return === true){
+                try {
+                    $memberdata->setName($_POST['Name']);
+                    $memberdata->setLevel($_POST['Level']);
+                    $memberdata->setMail($_POST['Mail']);
+                    $memberdata->setInfoText($_POST['Text']);
+                    
+                    $return = $memberdata->store();
+                    
                     $data['_success'][] = SystemMessages::getSystemMessageText('admin_edit_user_success');
-                }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('admin_edit_user_failed').' - database error: '.$return;
+                }
+                catch(Exception $e){
+                    $data['_error'][] = SystemMessages::getSystemMessageText('admin_edit_user_failed').' - '.$e->getMessage();
                 }
                 
             }
@@ -167,7 +169,7 @@ class AdminController {
             
             if($memberdata){
                 
-                $data['memberdata'] = $memberdata->getEditableData();
+                $data['memberdata'] = $memberdata->getEditableData('admin');
                 
                 Layout::render('admin/members/edit.php',$data);
                 
@@ -254,7 +256,7 @@ class AdminController {
                 $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],$log_text);
                 
                 // if cards were created 
-                if(count($data['cards']) > 0){
+                if(is_array($data['cards']) AND count($data['cards']) > 0){
                     
                     // add all cardnames into a string
                     $cardnames = '';
@@ -262,6 +264,9 @@ class AdminController {
                         $cardnames.= $card->getName().", ";
                     }
                     $cardnames = substr($cardnames, 0, -2);
+                    
+                    // add a message for user
+                    Message::add(null, $member->getId(), $log_text." -> ".$cardnames);
                     
                     // set success message
                     $data['_success'][] = SystemMessages::getSystemMessageText('admin_gift_cards_success').' '.$cardnames;
@@ -315,10 +320,16 @@ class AdminController {
             }
             
             try {
+                $member = Member::getById($_GET['id']);
+                $member_rights = array();
+                foreach($member->getRights() as $right){
+                    $member_rights[] = $right->getName();
+                }
                 // get all possible rights
                 $data['rights'] = Right::getAll();
                 // get all data + rights current member already has
-                $data['member'] = new Admin($_GET['id']);
+                $data['member'] = $member;
+                $data['member_rights'] = $member_rights;
                 
                 Layout::render('admin/members/rights.php', $data);
                 

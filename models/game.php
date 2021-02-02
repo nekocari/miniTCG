@@ -6,25 +6,30 @@
  * @author Cari
  *
  */
-require_once 'models/member.php';
-require_once 'models/setting.php';
-require_once 'models/card.php';
+require_once PATH.'models/db_record_model.php';
+require_once PATH.'models/member.php';
+require_once PATH.'models/setting.php';
+require_once PATH.'models/card.php';
 
-class Game {
+class Game extends DbRecordModel {
     
-    private $id, $type, $member, $date, $db;    
+    protected $id, $type, $member, $date;
+    private $member_obj;
+    
+    protected static 
+        $db_table = 'games',
+        $db_pk = 'id',
+        $db_fields = array('id','type','member','date'),
+        $sql_order_by_allowed_values = array('id','type','member','date');
+    
     private static 
         $allowed_game_results = array('win-card:1','win-card:2','win-card:3','lost'),
         $reward_texts = array(
             'lost'  => "Du hast leider nichts gewonnen.",
             'won'   => "Du hast <b>gewonnen!</b> <br>Hier dein Gewinn:");
     
-    public function __construct($id, $type, $member, $date) {
-        $this->id = $id;
-        $this->type = $type;
-        $this->member = $member;
-        $this->date = $date;
-        $this->db = Db::getInstance();
+    public function __construct() {
+        parent::__construct();
     }
     
     /**
@@ -33,9 +38,22 @@ class Game {
      * @param string $type - Name of the game (like 'lucky_number')
      * @param int $member_id - Name of the game (like 'lucky_number')
      * 
-     * @return boolean|Game
+     * @return null|Game
      */
     public static function getById($type, $member_id) {
+        
+        $game_data = parent::getWhere("type = '$type' AND  member = ".intval($member_id));
+        
+        if(!is_null($game_data) AND count($game_data) == 1){
+            $game = $game_data[0];
+        }else{
+            $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
+            $game = new Game();
+            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date));
+            $game_id = $game->create();
+            $game->setPropValues(['id'=>$game_id]);
+        }
+        /*
         $game = false;
         $db = Db::getInstance();
         
@@ -55,6 +73,7 @@ class Game {
         }else{
             return false;
         }
+        */
         
         return $game;
     }
@@ -66,6 +85,8 @@ class Game {
      * @return boolean|string - returns either true or the string cotaining the error message
      */
     public function store() {
+        return parent::update();
+        /*
         try {
             $req = $this->db->prepare('UPDATE games SET type = :type, member = :member, date = :date WHERE id = :id');
             if($req->execute(array(':type' => $this->type, ':member' => $this->member->getId(), ':date'=>$this->date, ':id'=>$this->id))){
@@ -76,7 +97,7 @@ class Game {
         }
         catch (Exception $e) {
             return $e->getMessage();
-        }
+        }*/
     }
     
     /**
@@ -118,8 +139,15 @@ class Game {
     public function getType() {
         return $this->type;
     }
-    public function getMember() {
-        return $this->member;
+    public function getMember($mode = 'object') {
+        if($mode == 'object'){
+            if(!$this->member_obj instanceof Member){
+                $this->member_obj = Member::getById($this->member);
+            }
+            return $this->member_obj;
+        }elseif($mode == 'int'){
+            return $this->member;
+        }
     }
     public function getDate() {
         return date(Setting::getByName('date_format'),strtotime($this->date));
@@ -166,7 +194,7 @@ class Game {
                     $game_reward['text'] = self::$reward_texts['won'];
                     $cards_amount = intval(str_replace('win-card:','',$result));
                     $log_text = '[GAME] '.$curr_game->getName();
-                    $cards = Card::createRandomCard($this->member->getId(),$cards_amount,$log_text);
+                    $cards = Card::createRandomCard($this->getMember('object')->getId(),$cards_amount,$log_text);
                     if(!is_array($cards)){
                         $game_reward['cards'][] = $cards;
                     }else{

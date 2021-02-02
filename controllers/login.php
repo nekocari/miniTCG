@@ -2,13 +2,13 @@
 /*
  * Manage Login
  */
-require_once 'models/login.php';
-require_once 'models/card.php';
-require_once 'models/setting.php';
-require_once 'models/carddeck.php';
-require_once 'helper/pagination.php';
-require_once 'models/master.php';
-require_once 'models/member.php';
+require_once PATH.'models/login.php';
+require_once PATH.'models/card.php';
+require_once PATH.'models/setting.php';
+require_once PATH.'models/carddeck.php';
+require_once PATH.'helper/pagination.php';
+require_once PATH.'models/master.php';
+require_once PATH.'models/member.php';
 
 class LoginController {
 	
@@ -96,60 +96,39 @@ class LoginController {
     	
 	    // check form data if exists
 	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep'])){
-	        
-	        $errors = array();
-	        if(trim($_POST['password']) == ''){
-	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_no_password');
-	        }
-	        if($_POST['password'] != $_POST['password_rep']){
-	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_password_not_matching');
-	        }
-	        if(Login::userExists($_POST['username'], $_POST['mail'])){
-	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_username_or_mail_taken');
-	        }
-	        
-	        // if form data is ok and account was created successfully display success message
-	        if(count($errors)==0 AND ($new_user_id = Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail'])) != false){
+	        try{
+    	        $errors = array();
+    	        
+    	        if(trim($_POST['password']) == ''){
+    	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_no_password');
+    	        }
+    	        
+    	        if($_POST['password'] != $_POST['password_rep']){
+    	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_password_not_matching');
+    	        }
+    	        
+    	        if(Login::userExists($_POST['username'], $_POST['mail'])){
+    	            $errors[] = SystemMessages::getSystemMessageText('login_sign_up_username_or_mail_taken');
+    	        }
+    	        // if form data is ok and account was created successfully display success message
+    	        if(count($errors) == 0){
 	            
-	            
-	            // get application mail and name from settings
-	            $app_name = Setting::getByName('app_name')->getValue();
-	            $app_mail = Setting::getByName('app_mail')->getValue();
-	            // set recipient
-	            $recipient  = $_POST['mail'];
-	            // title
-	            $title = 'Deine Anmeldung bei '.$app_name;
-	            // set message
-	            $message = '
-                        <html>
-                        <head>
-                          <title>Deine Anmeldung bei '.$app_name.'</title>
-                        </head>
-                        <body>
-                          <p>Vielen Dank für deine Anmeldung!<br>
-                            Mit dieser Mail erhältst du nocheinmal deine Anmeldedaten.</p>
-                          <p>Benutzername: '.$_POST['username'].'<br>
-                            Passwort: '.$_POST['password'].'</p>
-                        </body>
-                        </html> ';
-	            
-	            // set mail header
-	            $header[] = 'MIME-Version: 1.0';
-	            $header[] = 'Content-type: text/html; charset=UTF-8';
-	            $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
-	            
-	            // send E-Mail
-	            mail($recipient, $title, $message, implode("\r\n", $header));
-	            
-	            Layout::render('login/signup_successfull.php');
-	            
-	        // if form data is NOT ok or account was NOT created display error message
-	        }else{
-	            Layout::render('login/signup_error.php',['errors'=>$errors]);
-	        }
-	    
-	    // display sign up form
+	               Login::newUser($_POST['username'], $_POST['password'] , $_POST['mail']);
+	               Layout::render('login/signup_successfull.php');
+	                
+                
+    	        }else{
+    	            // if form data is NOT ok 
+    	            Layout::render('login/signup_error.php',['errors'=>$errors]);
+    	        }
+    	    }
+            catch(Exception $e){
+                $data['_error'][] = $e->getMessage();
+                Layout::render('login/signup.php',$data);
+            }
+            
 	    }else{
+	        // display sign up form
 	    	Layout::render('login/signup.php');
 	    }
 		

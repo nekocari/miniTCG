@@ -14,7 +14,7 @@
 <table class="table">
 <?php 
 foreach($rights as $right){ 
-	if(!in_array($right->getName(), $member->getRights())){ 
+	if(!in_array($right->getName(), $member_rights)){ 
 ?>
 	<tr>
 		<td>

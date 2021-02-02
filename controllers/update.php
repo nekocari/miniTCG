@@ -6,6 +6,7 @@
 require_once 'models/member.php';
 require_once 'models/admin.php';
 require_once 'models/update.php';
+require_once 'models/update_deck.php';
 require_once 'models/carddeck.php';
 require_once 'models/card.php';
 require_once 'helper/pagination.php';
@@ -21,6 +22,7 @@ class UpdateController {
         
         // create a new instance of admin class
         $admin = new Admin($_SESSION['user']->id);
+        $data = array();
         
         if(in_array('Admin',$admin->getRights()) OR in_array('CardCreator',$admin->getRights())
             OR in_array('ManageUpdates',$admin->getRights())){    
@@ -28,12 +30,16 @@ class UpdateController {
             // action: publish update
             if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'publish'){
                 
-                // try to update database and set for case of success or failure
-                $return = Update::publish($_GET['id']);
-                if($return === true){
+                // try to update database and set msg for case of success or failure
+                
+                try{
+                    $update = Update::getById($_GET['id']);
+                    $update->publish();
                     $data['_success'][] = SystemMessages::getSystemMessageText('update_publish_success');
-                }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('update_publish_failed').' - '.SystemMessages::getSystemMessageText($return);
+                }
+                catch(Exception $e){
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_publish_failed');
+                    $data['_error'][] = $e->getMessage();
                 }
                 
             }
@@ -41,12 +47,12 @@ class UpdateController {
             // action: delete update
             if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'delete'){
                 
-                // try to update database and set for case of success or failure
-                $return = Update::delete($_GET['id']);
-                if($return === true){
+                // try to update database and set msg for case of success or failure
+                $update = Update::getById($_GET['id']);
+                if($update->delete()){
                     $data['_success'][] = SystemMessages::getSystemMessageText('update_delete_success');
                 }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('update_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_delete_failed');
                 }
                 
             }
@@ -95,7 +101,9 @@ class UpdateController {
             if(isset($_POST['addUpdate'], $_POST['decks'])){
                 
                 // create the update in database
-                $update = Update::create();
+                $update = new Update();
+                $update_id = $update->create();
+                $update->setPropValues(['id'=>$update_id]);
                 
                 // if update was successfully created
                 if($update instanceof Update){
@@ -103,9 +111,6 @@ class UpdateController {
                     // link each chosen deck to update
                     foreach($_POST['decks'] as $deck_id){
                         $relation = $update->addDeck($deck_id);
-                        if($relation !== true){
-                            echo $relation;
-                        }
                     }
                     
                     header("Location: ".BASE_URI.Routes::getUri('deck_update'));
@@ -113,7 +118,7 @@ class UpdateController {
                 }else{
                     
                     // set up error message
-                    $data['_error'][] = SystemMessages::getSystemMessageText('update_new_failed').' - '.SystemMessages::getSystemMessageText($update);
+                    $data['_error'][] = SystemMessages::getSystemMessageText('update_new_failed');
                     
                 }
                 
@@ -158,7 +163,7 @@ class UpdateController {
             if(isset($_POST['editUpdate'], $_POST['id'])){
                 
                 // do check in case of decks are to be removed so update is not empty 
-                if((isset($_POST['remove_decks']) AND count($_POST['remove_decks']) == count($update->getDecks()) )
+                if((isset($_POST['remove_decks']) AND count($_POST['remove_decks']) == count($update->getRelatedDecks()) )
                     AND (!isset($_POST['add_decks']) OR  count($_POST['add_decks']) == 0) ){
                     
                     // setup error message
@@ -186,7 +191,7 @@ class UpdateController {
             // ... in case of update is new
             if($update->getStatus() == 'new'){
                 
-                $data['curr_decks'] = $update->getDecks();
+                $data['curr_decks'] = $update->getRelatedDecks();
                 $data['new_decks'] = Carddeck::getNotInUpdate();
             
             // .. in case update is already published

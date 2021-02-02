@@ -6,132 +6,61 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
 require_once PATH.'models/member.php';
+require_once PATH.'helper/Parsedown.php';
 
-class News {
+class News extends DbRecordModel{
     
-    private $id;
-    private $date;
-    private $author;
-    private $title;
-    private $text;
-    private $text_html;
-    private $db;
+    protected $id, $date, $author, $title, $text, $text_html;
+    private $author_obj;
     
-    public function __construct($id, $date, $author, $title, $text, $text_html = '') {
-        $this->id           = $id;
-        $this->date         = $date;
-        $this->author       = $author;
-        $this->title        = $title;
-        $this->text         = $text;
-        if($text_html != ''){
-            $this->text_html= $text_html;
-        }else{
-            $parsedown = new Parsedown();
-            $this->text_html = $parsedown->text($text);
-        }
-        $this->db           = DB::getInstance();
-    }
+    protected static
+        $db_table = 'news_entries',
+        $db_pk = 'id',
+        $db_fields = array('id','date','author','title','text','text_html'),
+        $sql_order_by_allowed_values = array('id','date');
     
-    public static function getAll() {
-        $news = array();
-        $db = DB::getInstance();
-        
-        $req = $db->prepare('SELECT * FROM news_entries ORDER BY date DESC');
-        $req->execute();
-        if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $newsdata){
-                $author = Member::getById($newsdata->author);                
-                $news[] = new News($newsdata->id, $newsdata->date, $author, $newsdata->title, $newsdata->text, $newsdata->text_html);
-            }
-        }
-        return $news;
+    public function __construct() {
+        parent::__construct();
     }
     
     public static function getById($id) {
-        $entry = false;
-        $db = DB::getInstance();
-        
-        $req = $db->prepare('SELECT * FROM news_entries WHERE id = :id');
-        $req->execute(array(':id'=>$id));
-        if($req->rowCount() > 0){
-            $newsdata = $req->fetch(PDO::FETCH_OBJ);
-            $author = Member::getById($newsdata->author);
-            $entry = new News($newsdata->id, $newsdata->date, $author, $newsdata->title, $newsdata->text, $newsdata->text_html);
-        }
-        return $entry;
+        return parent::getByPk($id);
     }
     
+    /**
+     * returns the new news object or false in case of failure
+     * @param string $title 
+     * @param string $text
+     * @return News|boolean
+     */
     public static function add($title, $text){
-        try {
-            if(!empty($title) AND !empty($text)){
-                $parsedown = new Parsedown();
-                $text_html = $parsedown->text($text);
-                $title = strip_tags($title);
-                $db = Db::getInstance();
-                $req = $db->prepare('INSERT INTO news_entries (author,title,text,text_html) VALUES (:author,:title,:text,:text_html)');
-                try{
-                    $req->execute(array(':author'=>$_SESSION['user']->id,':title'=>$title,':text'=>$text,':text_html'=>$text_html));
-                    return true;
-                }
-                catch (PDOException $pdo_e){
-                    return 'Einfügen in DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
-                }
-            }else{
-                throw new Exception('Titel und Text müssen eingegeben werden!');
-            }
-        }
-        catch (Exception $e){
-            return $e->getMessage();
+        
+        if(!empty($title) AND !empty($text)){
+            $parsedown = new Parsedown();
+            $text_html = $parsedown->text($text);
+            $title = strip_tags($title);
+            
+            $entry = new News();
+            $entry->setPropValues(array('author'=>$_SESSION['user']->id,'title'=>$title,'text'=>$text,'text_html'=>$text_html));
+            $entry_id = $entry->create();
+            $entry->setPropValues(['id'=>$entry_id]);
+            
+            return $entry;
+        }else{
+            return false;
         }
     }
     
-    public static function delete($id){
-        try {
-            if(!is_int($id)){
-                $db = Db::getInstance();
-                $req = $db->prepare('DELETE FROM news_entries WHERE id = :id');
-                try{
-                    $req->execute(array(':id'=> $id));
-                    return true;
-                }
-                catch (PDOException $pdo_e){
-                    error_log("news could not be deleted - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
-                    return 9999;
-                }
-            }else{
-                throw new Exception('Parameter ungültig', 2001);
-            }
-        }
-        catch (Exception $e){
-            return $e->getCode();
-        }
-    }
     
-    public static function update($id,$title,$text){
-        try {
-            if(intval($id) AND !empty($title) AND !empty($text)){
-                $parsedown = new Parsedown();
-                $text_html = $parsedown->text($text);
-                $title = strip_tags($title);
-                $db = Db::getInstance();
-                $req = $db->prepare('UPDATE news_entries SET title = :title, text = :text, text_html = :text_html WHERE id = :id');
-                try{
-                    $req->execute(array(':id'=> $id, ':title'=>$title, ':text'=>$text, ':text_html'=>$text_html));
-                    return true;
-                }
-                catch (PDOException $pdo_e){
-                    error_log("news could not be edited - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
-                    return 9999;
-                }
-            }else{
-                throw new Exception('Parameter ungültig', 2001);
-            }
-        }
-        catch (Exception $e){
-            return $e->getCode();
-        }
+    public function update(){
+        $parsedown = new Parsedown();
+        $this->text_html = $parsedown->text($this->text);
+        $this->title = strip_tags($this->title);
+        
+        return parent::update();
     }
     
     public function getId() {
@@ -143,7 +72,14 @@ class News {
     }
     
     public function getAuthor() {
-        return $this->author;
+        if(!$this->author_obj instanceof Member){
+            $this->author_obj = Member::getById($this->author);
+            if(is_null($this->author_obj)){
+                $this->author_obj = new Member();
+                $this->author_obj->setName('? ? ?');
+            }
+        }
+        return $this->author_obj;
     }
     
     public function getTitle() {
@@ -159,44 +95,17 @@ class News {
     }
     
     public static function getLatestEntries($number){
-        try {
-            if(is_int($number)){
-                $news = array();
-                $db = DB::getInstance();
-                $req = $db->prepare('SELECT * FROM news_entries ORDER BY date DESC LIMIT '.$number);
-                try {
-                    $req->execute();
-                    foreach($req->fetchAll(PDO::FETCH_OBJ) as $newsdata){
-                        $author = Member::getById($newsdata->author);
-                        $news[] = new News($newsdata->id, $newsdata->date, $author, $newsdata->title, $newsdata->text, $newsdata->text_html);
-                    }
-                    return $news;
-                }
-                catch (PDOException $pdo_e){
-                    error_log("news could not be inserted - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
-                    return 9999;
-                }
-            }else{
-                throw new Exception('Parmeter ungültig',2001);
-            }
-        }
-        catch (Exception $e){
-            return $e->getCode();
-        }
+        return parent::getAll(['date'=>'DESC',intval($number)]);
     }
     
     public static function display($number){
-        try {
-            $entries = self::getLatestEntries($number);
-            $template = file_get_contents(PATH.'views/templates/news_entry.php');
-            foreach($entries as $entry){
-                echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$entry->getText(),$entry->getDate(),$entry->getAuthor()->getName()), $template);
-            }
+        
+        $entries = self::getLatestEntries($number);
+        $template = file_get_contents(PATH.'views/templates/news_entry.php');
+        foreach($entries as $entry){
+            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$entry->getText(),$entry->getDate(),$entry->getAuthor()->getName()), $template);
         }
-        catch (Exception $e){
-            error_log("could not fetch news - ".$e->getMessage()."\n", 3, ERROR_LOG);
-            return $e->getMessage();
-        }
+            
     }
     
 }

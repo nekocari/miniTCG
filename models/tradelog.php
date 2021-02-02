@@ -6,52 +6,42 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
-class Tradelog {
+
+class Tradelog extends DbRecordModel {
     
-    private $id;
-    private $date;
-    private $member_id;
-    private $text;
-    private $db;
+    protected $id, $date, $member_id, $text;
     private static $query_order_by_options = array('id','date');
     private static $query_order_direction_options = array('ASC','DESC');
+   
+    protected static
+        $db_table = 'tradelog',
+        $db_pk = array('id'),
+        $db_fields = array('id','date','member_id','text'),
+        $sql_order_by_allowed_values = array('id','date');
     
-    public function __construct($id, $date, $member_id, $text) {
-        $this->id           = $id;
-        $this->date         = $date;
-        $this->member_id    = $member_id;
-        $this->text         = $text;
-        $this->db           = DB::getInstance();
+    public function __construct() {
+       parent::__construct();
     }
     
     /**
-     * get all log entries for a member using the member ID
-     * 
-     * @param int $member_id - id of member
-     * @param string $order_by - colum to order by [id|date]
-     * @param string $order - [ASC|DESC]
-     * 
-     * @return boolean|Array(Tradelog)
+     * get all log entries for a member by member_id
+     * @param int $member_id
+     * @param string $order_by
+     * @param string $order
+     * @return Tradelog[]
      */
     public static function getAllByMemberId($member_id, $order_by = 'date', $order = 'DESC') {
-        $entries = false;
-        $db = DB::getInstance();
         
-        if(!in_array($order_by, self::$query_order_by_options)){
-            $order_by = 'date';
+        if(!in_array($order_by, self::$sql_order_by_allowed_values)){
+            $order_by = self::$sql_order_by_allowed_values[0];
         }
-        if(!in_array($order, self::$query_order_direction_options)){
-            $order = 'DESC';
+        if(!in_array($order, self::$sql_direction_allowed_values)){
+            $order = self::$sql_direction_allowed_values[0];
         }
-        $req = $db->prepare('SELECT * FROM tradelog WHERE member_id = :member ORDER BY '.$order_by.' '.$order);
-        $req->execute(array(':member'=>$member_id));
         
-        foreach($req->fetchAll(PDO::FETCH_ASSOC) as $entry){
-            $entry['date'] = date(Setting::getByName('date_format')->getValue(),strtotime($entry['date']));
-            $entries[] = new Tradelog($entry['id'], $entry['date'], $entry['member_id'], $entry['text']);
-        }
-        return $entries;
+        return parent::getWhere('member_id = '.intval($member_id),['date'=>'DESC']);
     }
     
     /**
@@ -63,9 +53,9 @@ class Tradelog {
      * @return boolean
      */
     public static function addEntry($member_id, $text) {
-        $db = DB::getInstance();
-        $req = $db->prepare('INSERT INTO tradelog (member_id,text) VALUES (:member, :text)');
-        return $req->execute(array(':member'=>$member_id, ':text'=>$text));
+        $entry = new Tradelog();
+        $entry->setPropValues(['member_id'=>$member_id,'text'=>$text]);
+        return $entry->create();
     }
     
     /*

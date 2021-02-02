@@ -25,18 +25,21 @@ class NewsController {
             OR in_array('ManageNews',$admin->getRights())){            
             
             if(isset($_POST['action']) AND $_POST['id'] AND $_POST['action'] == 'del_news'){
-                if(($return = News::delete($_POST['id'])) !== true){
-                    $data['_error'][] = SystemMessages::getSystemMessageText('news_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
+                $curr_news = News::getById($_POST['id']);
+                if($curr_news instanceof News AND $curr_news->delete()){
+                    $data['_success'][] = SystemMessages::getSystemMessageText('news_delete_success');
+                }else{
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_delete_failed');
                 }
             }
             
-            if(isset($_GET['pg']) AND intval($_GET['pg'] > 0)){
-                $currPage = $_GET['pg'];
-            }else{
-                $currPage = 1;
+            $currPage = 1; 
+            if(isset($_GET['pg'])){
+                $currPage = intval($_GET['pg']);
             }
             
             $news = News::getAll();
+            
             $pagination = new Pagination($news, 10, $currPage, Routes::getUri('news_index'));
             
             $data = array();
@@ -75,12 +78,12 @@ class NewsController {
                 
             if(isset($_POST['addNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
                 
-                if(($return = News::add($_POST['title'],$_POST['text'])) === true){
+                if(News::add($_POST['title'],$_POST['text']) instanceof News){
                     
                     header("Location: ".BASE_URI.Routes::getUri('news_index'));
                     
                 }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('news_insert_failed').' - '.SystemMessages::getSystemMessageText($return);
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_insert_failed');
                 }
                 
             }
@@ -112,17 +115,23 @@ class NewsController {
             
             $data = array();
             
-            if(isset($_POST['updateNews']) AND isset($_POST['title']) AND isset($_POST['text'])){
-                
-                if(($return = News::update($_POST['id'],$_POST['title'],$_POST['text'])) === true){
-                    
-                    header("Location: ".BASE_URI.Routes::getUri('news_index'));
-                    
+            if(isset($_POST['updateNews']) AND !empty($_POST['id']) AND !empty($_POST['title']) AND !empty($_POST['text'])){
+                $curr_news = News::getById($_POST['id']);
+                if($curr_news instanceof News){
+                    $curr_news->setPropValues(['title'=>$_POST['title'],'text'=>$_POST['text']]);
+                    if($curr_news->update()){
+                        header("Location: ".BASE_URI.Routes::getUri('news_index'));
+                    }else{
+                        $data['_error'][] = SystemMessages::getSystemMessageText('news_update_failed').' - database not updated';
+                    }
                 }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('news_update_failed').' - '.SystemMessages::getSystemMessageText($return);                  
+                    $data['_error'][] = SystemMessages::getSystemMessageText('news_update_failed').' - failed to load news'; 
                 }
                 
+            }elseif(isset($_POST['updateNews'])){
+                $data['_error'][] = SystemMessages::getSystemMessageText('news_update_failed').' - missing data'; 
             }
+            
             $data['entry'] = News::getById($_GET['id']);
             Layout::render('admin/news/edit.php', $data);
             

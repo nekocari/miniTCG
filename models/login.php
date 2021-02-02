@@ -1,4 +1,10 @@
 <?php
+
+
+require_once PATH.'models/member.php';
+require_once PATH.'models/card.php';
+require_once PATH.'models/setting.php';
+
 class Login {
     private $name;
     private $password;
@@ -132,10 +138,10 @@ class Login {
         $db = Db::getInstance();
         $req = $db->prepare('SELECT id FROM members WHERE name LIKE :name OR mail LIKE :mail');
         $req->execute(array(':name'=>$name, ':mail'=>$mail));
-        if($req->rowCount() == 0){
-            return false;
+        if($req->rowCount()){
+            return TRUE;
         }else{
-            return true;
+            return FALSE;
         }
     }
     
@@ -149,25 +155,63 @@ class Login {
      * @return boolean|int
      */
     public static function newUser($name, $pw, $mail) {
-        $db = Db::getInstance();
         
-        $query = 'INSERT INTO members (name, password, mail) VALUES (:name, :password, :mail)';
-        $req = $db->prepare($query);
-        $req->execute(array(':name'=>$name, ':password'=>password_hash($pw,PASSWORD_BCRYPT), ':mail'=>$mail));
-                
-        $user_id = $db->lastInsertId();
-        if($user_id) {
-            // Insert Cards
-            require_once 'models/card.php';
-            require_once 'models/setting.php';
-            $first_cards_num = Setting::getByName('cards_startdeck_num')->getValue();
-            Card::createRandomCard($user_id,$first_cards_num,'Startdeck');
-            // TODO activation code system
-            // TODO send E-Mail            
-            return $user_id;
-        }else{
-            return false;
+        $new_member_data = array(
+            'name' => $name,
+            'mail' => $mail
+        );
+        
+        $new_member = new Member();
+        $new_member->setPropValues($new_member_data);        
+        $member_id = $new_member->create();
+        $new_member->setPropValues(['id'=>$member_id]);
+        $new_member->setPassword($pw);
+        
+        if($member_id != false){
+            
+        
+        
+            $startdeck_size = Setting::getByName('cards_startdeck_num')->getValue();
+            $cards = Card::createRandomCard($member_id,$startdeck_size,'Startdeck');
+            if(count($cards) < 1){
+                throw new Exception('no cards created');
+            }
+            
+            // get application mail and name from settings
+            $app_name = Setting::getByName('app_name')->getValue();
+            $app_mail = Setting::getByName('app_mail')->getValue();
+            // set recipient
+            $recipient  = $mail;
+            // title
+            $title = 'Deine Anmeldung bei '.$app_name;
+            // set message
+            $message = '
+                <html>
+                <head>
+                  <title>Deine Anmeldung bei '.$app_name.'</title>
+                </head>
+                <body>
+                  <p>Vielen Dank für deine Anmeldung!<br>
+                    Mit dieser Mail erhältst du deine Anmeldedaten.</p>
+                  <p>Benutzername: '.$name.'<br>
+                    Passwort: '.$pw.'</p>
+                </body>
+                </html> ';
+            
+            // set mail header
+            $header[] = 'MIME-Version: 1.0';
+            $header[] = 'Content-type: text/html; charset=UTF-8';
+            $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+            
+            // send E-Mail
+            if(!mail($recipient, $title, $message, implode("\r\n", $header))){
+                throw new Exception('Welcome mail not sent.');
+            }
+            
+            return true;
         }
+        
+        return false;
     }
     
     /**

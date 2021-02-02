@@ -211,34 +211,38 @@ class DeckController {
             
             if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'], $_POST['type'])){
                 
-                $update = Carddeck::update($_POST['id'], $_POST['name'], $_POST['creator'], $_POST['subcategory'], $_POST['type']);
-                
-                if($update === true){
-                    
-                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_edit_success');
-                    
-                }else{
-                    
-                    $data['_error'][] = SystemMessages::getSystemMessageText('deck_edit_failed').' - '.SystemMessages::getSystemMessageText($update);
+                $deck = Carddeck::getById($_POST['id']);
+                if($deck instanceof Carddeck){
+                    try{
+                        $prop_values = array(
+                            'name'=>$_POST['name'],
+                            'creator'=>$_POST['creator'],
+                            'type'=>$_POST['type']
+                        );
+                        $deck->setPropValues($prop_values);
+                        if($deck_updated = $deck->update()){
+                        }
+                        if($deck->getSubcategory()->getId() != $_POST['subcategory']){
+                            $relation = DeckSubcategory::getByUniqueKey('deck_id', $deck->getId());
+                            $relation->setPropValues(['subcategory_id'=>$_POST['subcategory']]);
+                            $relation_updated = $relation->update();
+                        }
+                        
+                        $data['_success'][] = SystemMessages::getSystemMessageText('deck_edit_success');
+                    }
+                    catch(Exception $e){
+                        $data['_error'][] = $e->getMessage();
+                    }
                     
                 }
                 
             }
             
-            $data['categories'] = Category::getALL();
-            
-            foreach($data['categories'] as $category){
-                
-                $cat_id = $category->getId();
-                $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
-                
-            }
-            
+            $data['categories'] = Category::getALL();            
             $data['deck_types'] = Carddeck::getAcceptedTypes(); 
-            
             $data['deckdata'] = Carddeck::getById($_GET['id']);
             $data['card_images'] = $data['deckdata']->getImages();
-            $data['memberlist'] = Member::getAll('name', 'ASC');
+            $data['memberlist'] = Member::getAll(['name'=>'ASC']);
             
             Layout::render('admin/deck/edit.php',$data);
             

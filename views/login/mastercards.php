@@ -2,7 +2,7 @@
 
 <p class="text-center">
 	<a class="btn btn-outline-secondary" href="<?php echo Routes::getUri('member_mastercards'); ?>?order_by=deckname">sortiert nach Deckname</a>
-	<a class="btn btn-outline-secondary" href="<?php echo Routes::getUri('member_mastercards'); ?>?order_by=master_date">sortiert nach Datum</a>
+	<a class="btn btn-outline-secondary" href="<?php echo Routes::getUri('member_mastercards'); ?>?order_by=date">sortiert nach Datum</a>
 </p>
 
 <?php foreach($mastered_decks as $deck){ ?>

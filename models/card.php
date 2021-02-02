@@ -6,35 +6,28 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/tradelog.php';
 require_once PATH.'models/member.php';
 
-class Card {
+class Card extends DbRecordModel {
     
-    private $id;
-    private $name;
-    private $deck_id;
-    private $card_no;
-    private $owner;
-    private $status;
-    private $date;
-    private $db;
-    private static $tpl_width;
-    private static $tpl_height;
-    private static $tpl_html;
+    protected $id, $name, $deck, $number, $owner, $status, $date, $owner_obj, $deck_obj;
+    
+    protected static 
+        $db_table = 'cards',
+        $db_pk = 'id',
+        $db_fields = array('id','deck','number','name','owner','status','date'),
+        $sql_order_by_allowed_values = array('id');
+    
+    private static  $tpl_width, $tpl_height, $tpl_html;
+    
     public static $accepted_status = array('new','trade','keep','collect');
     
-    public function __construct($id, $name, $deck_id, $card_no, $owner, $status, $date) {
-        $this->id           = $id;
-        $this->name         = $name;
-        $this->deck_id      = $deck_id;
-        $this->card_no      = $card_no;
-        $this->owner        = $owner;
-        $this->status       = $status;
-        $this->date         = $date;
-        $this->db           = DB::getInstance();
+    public function __construct() {
+        parent::__construct();
         if(is_null(self::$tpl_html)){
             self::$tpl_width = Setting::getByName('cards_template_width')->getValue();
             self::$tpl_height = Setting::getByName('cards_template_height')->getValue();
@@ -43,17 +36,7 @@ class Card {
     }
     
     public static function getById($id) {
-        $card = false;
-        $db = DB::getInstance();
-        
-        $req = $db->prepare('SELECT c.*, m.name as owner_name FROM cards c JOIN members m ON m.id = c.owner WHERE c.id = :id');
-        $req->execute(array(':id'=>$id));
-        if($req->rowCount() > 0){
-            $carddata = $req->fetch(PDO::FETCH_OBJ);
-            $owner = Member::getById($carddata->owner);
-            $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
-        }
-        return $card;
+        return parent::getByPk($id);
     }
     
     public static function changeStatusById($id,$status,$user) {
@@ -83,9 +66,7 @@ class Card {
         
         $req = $db->prepare('SELECT * FROM cards WHERE owner = :user_id AND status = :status ORDER BY name ASC');
         $req->execute(array(':user_id'=>$user_id, ':status'=>$status));
-        foreach($req->fetchAll(PDO::FETCH_OBJ) as $carddata){
-            $owner = Member::getById($carddata->owner);
-            $card = new Card($carddata->id, $carddata->name, $carddata->deck, $carddata->number, $owner, $carddata->status, $carddata->date);
+        foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
             if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
                 $cards[] = $card;
             }
@@ -94,13 +75,7 @@ class Card {
     }
     
     public function store() {
-        $req = $this->db->prepare('UPDATE cards SET name = :name, deck = :deck, number = :number, owner = :owner, status = :status, date = :date WHERE id = :id ');
-        $req->execute(array(':name'=>$this->name, ':deck'=>$this->deck_id, ':number'=>$this->card_no, ':status'=>$this->status, ':owner'=>$this->owner->getId(), ':date'=>$this->date, ':id'=>$this->id));
-        if($req->rowCount() > 0){
-            return true;
-        }else{
-            return false;
-        }
+        return parent::update();
     }
     
     public function getId() {
@@ -116,11 +91,18 @@ class Card {
     }
     
     public function getDeckId() {
-        return $this->deck_id;
+        return $this->deck;
+    }
+    
+    public function getDeck() {
+        if(!$this->deck_obj instanceof Carddeck){
+            $this->deck_obj = Carddeck::getById($this->deck);
+        }
+        return $this->deck_obj;
     }
     
     public function getNumber() {
-        return $this->card_no;
+        return $this->number;
     }
     
     public function getStatus() {
@@ -128,9 +110,16 @@ class Card {
     }
     
     public function getOwner() {
-        return $this->owner;
+        if(!$this->owner_obj instanceof Member){
+            $this->owner_obj = Member::getById($this->owner);
+        }
+        return $this->owner_obj;
     }
     
+    public function getOwnerId(){
+        return $this->owner;
+    }
+        
     public function setStatus($status) {
         if(in_array($status, self::$accepted_status)){
             $this->status = $status;
@@ -141,21 +130,19 @@ class Card {
     }
     
     public function setOwner($member_id) {
-        $this->owner = Member::getById($member_id);
+        $this->owner = $member_id;
+        $this->owner_obj = Member::getById($member_id);
         return true;
     }
     
     public function getDeckname() {
-        $cardname_length = strlen($this->name);
-        $cardnumber_length = strlen($this->card_no);
-        return substr($this->name,0,-$cardnumber_length);
-        return $deck->getDeckname();
+        return $this->getDeck()->getDeckname();
     }
     
     public function getImageUrl() {
         $setting_file_type = Setting::getByName('cards_file_type');
         $deckname = $this->getDeckname();
-        $url = CARDS_FOLDER.$deckname.'/'.$deckname.$this->card_no.'.'.$setting_file_type->getValue();
+        $url = CARDS_FOLDER.$deckname.'/'.$deckname.$this->getNumber().'.'.$setting_file_type->getValue();
         return $url;
     }
     
@@ -199,29 +186,32 @@ class Card {
         
         for($i = 0; $i < $number; $i++){
             // grab deck data randomly
-            $req = $db->query('SELECT id, deckname FROM decks WHERE status = \'public\' ORDER BY RAND() LIMIT 1');
-            $deckdata = $req->fetch(PDO::FETCH_OBJ);
-            // insert created data to insert into DB for a new Card Object
-            $card['number'] = mt_rand(1,$decksize);
-            $card['name'] = $deckdata->deckname.$card['number'];
-            $card['date'] = date('Y-m-d G:i:s');
-            $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
-            $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deckdata->id, ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
-            $card['id'] = $db->lastInsertId();
-            
-            $cards[] = new Card($card['id'], $card['name'], $deckdata->id, $card['number'], $user_id, 'new', $card['date']);
-            
-            $log_text = $tradelog_text.' -> '.$card['name'].' (#'.$card['id'].') erhalten.';
-            Tradelog::addEntry($user_id, $log_text);
+            $req = $db->query('SELECT * FROM decks WHERE status = \'public\' ORDER BY RAND() LIMIT 1');
+            if($req->rowCount() > 0){
+                $deckdata = $req->fetchObject('Carddeck');
+                // insert created data to insert into DB for a new Card Object
+                
+                $random_card['number'] = mt_rand(1,$decksize);
+                $random_card['name'] = $deckdata->getDeckname().$random_card['number'];
+                $card_values = array('owner'=>$user_id,'deck'=>$deckdata->getId(),'number'=>$random_card['number'],'name'=>$random_card['name'],'date'=>date('Y-m-d G:i:s'));
+                
+                $card = new Card();
+                $card->setPropValues($card_values);
+                $card_id = $card->create();
+                $card->setPropValues(['id'=>$card_id]);
+                $cards[] = $card;
+                
+                $log_text = $tradelog_text.' -> '.$card->getName().' (#'.$card->getId().') erhalten.';
+                Tradelog::addEntry($user_id, $log_text);
+            }
         }
         Member::getById($user_id)->checkLevelUp();
-        if($number == 1){ 
-            return $cards[0]; 
-        }else{
-            return $cards;
-        }
+        
+        return $cards;
     }
     
+    
+    // TODO: Refactor
     public static function takeCardsFromUpdate($user_id,$update_id) {
         $cards = array();
         $db = Db::getInstance();
@@ -232,13 +222,18 @@ class Card {
             $db->beginTransaction();
             foreach($update_decks as $deck){
                 // insert created data to insert into DB for a new Card Object
-                $card['number'] = mt_rand(1,$decksize);
-                $card['name'] = $deck->getDeckname().$card['number'];
-                $card['date'] = date('Y-m-d G:i:s');
+                $card_props['number'] = mt_rand(1,$decksize);
+                $card_props['name'] = $deck->getDeckname().$card_props['number'];
+                $card_props['date'] = date('Y-m-d G:i:s');
+                $card_props['deck'] = $deck->getId();
+                $card_props['owner'] = $user_id;
                 
-                $req = $db->prepare('INSERT INTO cards (owner,deck,number,name,date) VALUES (:user_id, :deck_id, :number, :name, :date) ');
-                $req->execute(array(':user_id'=>$user_id, ':deck_id'=>$deck->getId(), ':number'=>$card['number'], ':name'=>$card['name'], ':date'=>$card['date']));
-                $cards[] = new Card($db->lastInsertId(), $card['name'], $deck->getId(), $card['number'], $user_id, 'new', $card['date']);
+                $card = new Card();
+                $card->setPropValues($card_props);
+                $card_id = $card->create();
+                $card->setPropValues(['id'=>$card_id]);
+                
+                $cards[] = $card;
             }
             if(count($cards) > 0){
                 $req = $db->prepare('INSERT INTO updates_members (update_id, member_id) VALUES (:update_id,:user_id) ');
@@ -261,6 +256,12 @@ class Card {
         
     }
     
+    /**
+     * Get Member who owns a specific card with status 'trade' 
+     * @param int $deck_id
+     * @param int $number
+     * @return Member[]
+     */
     public static function findTrader($deck_id, $number){
         
         $db = Db::getInstance();

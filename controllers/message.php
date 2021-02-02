@@ -21,34 +21,44 @@ class MessageController {
         
         // mark messsage as read if formdata was sent
         if(isset($_POST['read'])){
-            if(Message::read($_POST['read'])){
-                $data['_success'][] = SystemMessages::getSystemMessageText('pm_mark_read');
+            try{
+                $msg = Message::getByPk($_POST['read']);
+                if(!is_null($msg)){
+                    $msg->read();
+                    $data['_success'][] = SystemMessages::getSystemMessageText('pm_mark_read');
+                }
+            }
+            catch(Exception $e){
+                $data['_error'][] = $e->getMessage();
             }
         }
         
         // delete message if formdata was sent
         if(isset($_POST['delete'])){
-            if(Message::delete($_POST['delete'])){
-                $data['_success'][] = SystemMessages::getSystemMessageText('pm_deleted');
+            try{
+                $msg = Message::getByPk($_POST['delete']);
+                if(!is_null($msg)){
+                    $msg->delete();
+                    $data['_success'][] = SystemMessages::getSystemMessageText('pm_deleted');
+                }
+            }
+            catch(Exception $e){
+                $data['_error'][] = $e->getMessage();
             }
         }
         
         // current page for pagination 
-        if(isset($_GET['pg']) AND intval($_GET['pg'] > 0)){
-            $currPage = $_GET['pg'];
-        }else{
-            $currPage = 1;
+        $currPage = 1;
+        if(isset($_GET['pg'])){
+            $currPage = intval($_GET['pg']);
         }
         
         // get array of messages or set up an error message in case of failure
         $msgs = Message::getReceivedByMemberId($_SESSION['user']->id);
-        if(!is_array($msgs)){ 
-            $data['_error'][] = $msgs;
-            $msgs = array(); 
-        }
-        
+                
         // set up the pagination and pass values on to view
         $pagination = new Pagination($msgs, 20, $currPage, Routes::getUri('messages_received'));
+        
         $data['msgs'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         

@@ -5,7 +5,7 @@
 
 require_once PATH.'models/login.php';
 require_once PATH.'models/trade.php';
-require_once 'models/card.php';
+require_once PATH.'models/card.php';
 
 class TradeController {
     
@@ -69,11 +69,20 @@ class TradeController {
         // delete a trade offer
         if(isset($_POST['delete']) AND isset($_POST['id']) ){
             
-            // try db update an set messages in case of success or failure
-            if(($return = Trade::delete($_POST['id'])) === true){
-                $data['_success'][] = SystemMessages::getSystemMessageText('trade_delete_success');
-            }else{
-                $data['_error'][] = SystemMessages::getSystemMessageText('trade_delete_failed').' - '.SystemMessages::getSystemMessageText($return);
+            try{
+                $trade = Trade::getById($_POST['id']);
+                if($trade instanceof Trade){
+                    if($trade->delete()){
+                        $data['_success'][] = SystemMessages::getSystemMessageText('trade_delete_success');
+                    }
+                }else{
+                    $data['_error'][] = 'invalid trade id';
+                    error_log('recieved invalid trade id', 3, ERROR_LOG);
+                }
+            }
+            catch (Exception $e){
+                $data['_error'][] = SystemMessages::getSystemMessageText('trade_delete_failed');
+                error_log($e->getMessage(), 3, ERROR_LOG);
             }
         }
         
@@ -99,18 +108,22 @@ class TradeController {
             $data = array();
             // get data of selected card
             $data['requested_card'] = Card::getById($_GET['card']);
+            //var_dump($data);
             
             // form was submited
-            if(isset($_POST['add_trade'])){
+            if(isset($_POST['add_trade']) AND !empty($_POST['offered_card_id'])){
                 
                 // get data of offered card
                 $data['offered_card'] = Card::getById($_POST['offered_card_id']);
                 
                 // try to add the new trade offer to the database and create messages for case of success and failure
-                if(TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text'])){
+                try{
+                    TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text']);
                     $data['_success'][] = SystemMessages::getSystemMessageText('trade_new_success');
-                }else{
+                }
+                catch (Exception $e){
                     $data['_error'][] = SystemMessages::getSystemMessageText('trade_new_failed');
+                    //error_log($e->getMessage(), 3, ERROR_LOG);
                 }
                 
                 Layout::render('trade/add_result.php',$data);

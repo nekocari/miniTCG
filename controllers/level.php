@@ -51,16 +51,18 @@ class LevelController {
             
             if(isset($_POST['addLevel'])){
                 
+                try {
                 $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
-                
-                if($return === true){
-                    
-                    header("Location: ".BASE_URI.Routes::getUri('level_index'));
-                    
-                }else{
-                    
-                    $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').' - '.SystemMessages::getSystemMessageText($return);
-                    
+                header("Location: ".BASE_URI.Routes::getUri('level_index'));
+                }
+                catch(Exception $e){
+                    $error_text = ' - ';
+                    if($e instanceof PDOException){
+                        if($e->getCode() == 23000){
+                            $error_text.= SystemMessages::getSystemMessageText('duplicate_key');
+                        }
+                    }
+                    $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').$error_text;
                 }
             }
             
@@ -87,24 +89,28 @@ class LevelController {
         
         if(in_array('Admin',$admin->getRights()) OR in_array('ManageLevel',$admin->getRights())){
             
+            
             $data = array();
-            $data['level'] = Level::getById($_GET['id']);
+            $level = Level::getById($_GET['id']);
+            
             
             if(isset($_POST['editLevel'])){
                 
-                $return = $data['level']->update($_POST['level'],$_POST['name'], $_POST['cards']);
-                
-                if($return === true){
+                try{
+                    $level->setPropValues(['level'=>$_POST['level'],'name'=>$_POST['name'],'cards'=>$_POST['cards']]);
+                    $level->update();
                     
                     $data['_success'][] = SystemMessages::getSystemMessageText('level_edit_success');
-                    
-                }else{
-                    
-                    $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed').' - '.SystemMessages::getSystemMessageText($return);
-                    
                 }
+                
+                catch (Exception $e){
+                    $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed');
+                    // todo: log exception
+                }
+                
             }
             
+            $data['level'] = $level;
             Layout::render('admin/level/edit.php',$data);
             
         }else{

@@ -6,154 +6,113 @@
  * @author Cari
  *
  */
-require_once 'models/carddeck.php';
-require_once 'models/setting.php';
+require_once PATH.'models/db_record_model.php';
+require_once PATH.'models/update_deck.php';
+require_once PATH.'models/carddeck.php';
+require_once PATH.'models/setting.php';
 
-class Update {
+class Update extends DbRecordModel {
     
-    private $id;
-    private $date;
-    private $status;
-    private $decks = array();
-    private $db;
+    protected $id, $date, $status;
+    
+    private $update_deck_relations, $decks;
+    
+    protected static
+        $db_table = 'updates',
+        $db_pk = 'id',
+        $db_fields = array('id','date','status'),
+        $sql_order_by_allowed_values = array('id','date','status');
     
     
-    public function __construct($id, $date, $status) {
-        $this->id = $id;
-        $this->date = $date;
-        $this->status = $status;
-        $this->decks = Carddeck::getInUpdate($this->id);
-        $this->db = Db::getInstance();
+    public function __construct() {
+        parent::__construct();
     }
     
-    public static function getAll() {
-        try{
-            $updates = array();
-            $db = Db::getInstance();
-            $req = $db->query('SELECT * FROM updates ORDER BY id DESC');
-            foreach($req->fetchAll() as $update){
-                $updates[] = new Update($update['id'],$update['date'],$update['status']);
-            }
-            return $updates;
-        }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
-    }
+    
     
     public static function getById($id) {
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('SELECT * FROM updates WHERE id= :id');
-            $req->execute(array(':id'=>$id));
-            $update = $req->fetch(PDO::FETCH_ASSOC);
-            return new Update($update['id'],$update['date'],$update['status']);
-        }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
+        return parent::getByPk($id);
     }
     
-    public static function create() {
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('INSERT INTO updates (date, status) VALUES(NOW(), \'new\' )');
-            $req->execute();
-            $update_id = $db->lastInsertId();
-            return self::getById($update_id);
+    
+    
+    public function publish() {
+        $decks = $this->getRelatedDecks();
+        
+        foreach($decks as $deck){
+            $deck->setPropValues(['status'=>'public']);
+            $deck->update();
         }
-        catch(PDOException $e){
-            error_log('new update could not be created - '.$e->getMessage(), 3, ERROR_LOG);
-            return 9999;
-        }
+        
+        $this->setPropValues(['status'=>'public']);
+        $this->update();
+        return true;
     }
     
-    public static function delete($id) {
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('DELETE FROM updates WHERE id = :id AND status = \'new\' ');
-            $req->execute(array(':id'=>$id));
-            return true;
-        }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
-    }
-    
-    public static function publish($id) {
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('UPDATE updates SET status = \'public\', date = NOW() WHERE id = :id AND status = \'new\' ');
-            $req->execute(array(':id'=>$id));
-            
-            $req = $db->prepare('SELECT deck_id FROM updates_decks WHERE update_id = :id');
-            $req->execute(array(':id'=>$id));
-            foreach($req->fetchAll(PDO::FETCH_ASSOC) as $deck){
-                $db->query('UPDATE decks SET status = \'public\' WHERE id = '.$deck['deck_id']);
-            }
-            return true;
-        }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
-    }
     
     public function addDeck($deck_id) {
-        $this->decks[] = Carddeck::getById($deck_id);
         
-        try{
-            $req = $this->db->prepare('INSERT INTO updates_decks (deck_id, update_id) VALUES(:deck_id, :update_id) ');
-            $req->execute(array(':update_id'=>$this->id, ':deck_id'=>$deck_id));
-            return true;
+        if(count(UpdateDeck::getRelationsByDeckId($deck_id)) == 0){
+            $deck = Carddeck::getById($deck_id);
+            
+            if($deck instanceof Carddeck){
+                $this->decks = null;
+                
+                $relation = new UpdateDeck();
+                $relation->setPropValues(['deck_id'=>$deck_id,'update_id'=>$this->getId()]);
+                return $relation->create();
+                
+            }else{
+                throw new Exception('deck id is not valid');
+            }
+            
+        }else {
+            throw new Exception('deck is already part of an update');
         }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
+        
+        return false;
         
     }
     
     public function removeDeck($deck_id) {
-        $deck_key = array_search('$deck_id', $this->decks);
-        foreach($this->decks as $key => $deck) {
-            if($deck->getId() == $deck_id){
-                $deck_key = $key;
-                break;
-            }
+        if(array_key_exists($deck_id,$this->getRelatedDecks())){
+            unset($this->decks[$deck_id]);
+            $relation = UpdateDeck::getByUniqueKey('deck_id', $deck_id);
+            return $relation->delete();
+        }else{
+            throw new Exception('deck not found in update');
+            return false;
         }
-        unset($this->decks[$deck_key]);
-        
-        try{
-            $req = $this->db->prepare('DELETE FROM updates_decks WHERE deck_id = :deck_id AND update_id = :update_id ');
-            $req->execute(array(':update_id'=>$this->id, ':deck_id'=>$deck_id));
-            return true;
-        }
-        catch(Exception $e){
-            return $e->getMessage();
-        }
-        
     }
-    
-    public function getDecks() {
-        if(count($this->decks) == 0){
-            $this->decks = Carddeck::getInUpdate($this->id);
+
+    /**
+     * get all decks related to the current update
+     * @return Carddeck[] with deck_id as key
+     */
+    public function getRelatedDecks() {
+        if(is_null($this->decks)){
+            if(is_null($this->update_deck_relations)){
+                $this->update_deck_relations = UpdateDeck::getRelationsByUpdateId($this->getId());
+            }
+            foreach($this->update_deck_relations as $relation){
+                $this->decks[$relation->getDeck()->getId()] = $relation->getDeck();
+            }
         }
         return $this->decks;
     }
     
+    /**
+     * get latest public update
+     * @throws Exception
+     * @return Update|NULL
+     */
     public static function getLatest() {
-        try{
-            $updates = array();
-            $db = Db::getInstance();
-            $req = $db->query('SELECT * FROM updates ORDER BY id DESC LIMIT 1');
-            if($req->rowCount()){
-                $update = $req->fetch(PDO::FETCH_ASSOC);
-                return new Update($update['id'],$update['date'],$update['status']);
-            }else{
-                throw new Exception('Kein Update gefunden');
-            }
-        }
-        catch(Exception $e){
-            return $e->getMessage();
+        $updates = parent::getWhere("status = 'public'",['date'=>'DESC']);
+        if(count($updates) > 0){
+            return $updates[0];
+        }else{
+            throw new Exception('Kein Update gefunden');
+            return null;
         }
     }
     

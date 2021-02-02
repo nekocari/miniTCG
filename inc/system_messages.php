@@ -40,8 +40,12 @@ class SystemMessages {
     
     public static function getSystemMessageText($identifier) {
         $system_message = self::getSystemMessage($identifier);
-        if($system_message !== false){
-            return $system_message->get_text(Setting::getByName('system_message_language')->getValue());
+        if($system_message instanceof SystemMessage){
+            $lang = 'de';
+            if($setting = Setting::getByName('system_message_language')){
+                $lang = $setting->getValue();
+            }
+            return $system_message->get_text($lang);
         }else{
             return 'TEXT MISSING';
         }

@@ -26,7 +26,7 @@
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-key"></i></div>
     			</div>
-        		<input class="form-control" type="password" name="password" id="password" required  minlength="6">
+        		<input class="form-control" type="password" name="password" id="password2" required  minlength="6">
         	</div>
         	<small class="form-text text-muted">mindestens 6 Zeichen</small>
         </div>

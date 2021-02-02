@@ -6,43 +6,30 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/member.php';
+require_once PATH.'models/deck_subcategory.php';
 require_once PATH.'models/setting.php';
 
-class Carddeck {
+class Carddeck extends DbRecordModel {
     
-    private $id;
-    private $name;
-    private $deckname;
-    private $status;
-    private $type;
-    private $creator_id;
-    private $creator_name;
-    private $date;
-    private $category;
-    private $category_name;
-    private $subcategory;
-    private $subcategory_name;
-    private $db;
-    private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
-    private static $allowed_status = array('new','public'); 
-    private static $allowed_types = array('default','puzzle');
+    protected $id, $name, $deckname, $status, $type, $creator, $date;
+    
+    protected static
+    $db_table = 'decks',
+    $db_pk = 'id',
+    $db_fields = array('id','name','deckname','status','type','creator','date'),
+    $sql_order_by_allowed_values = array('id','name','deckname','date');
+    
+    private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj;
     private $date_formate = 'd.m.Y';
     
-    public function __construct($id, $name, $deckname, $status, $type, $date, $creator_id, $creator_name, $category, $subcategory, $category_name, $subcategory_name) {
-        $this->id           = $id;
-        $this->name         = $name;
-        $this->deckname     = $deckname;
-        $this->status       = $status;
-        $this->type      = $type;
-        $this->creator_id   = $creator_id;
-        $this->creator_name = $creator_name;
-        $this->date         = $date;
-        $this->category     = $category;
-        $this->subcategory  = $subcategory;
-        $this->category_name     = $category_name;
-        $this->subcategory_name  = $subcategory_name;
-        $this->db           = DB::getInstance();
+    private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
+    private static $allowed_status = array('public','new'); 
+    private static $allowed_types = array('default','puzzle');
+    
+    public function __construct() {
+        parent::__construct();
         $this->date_formate = Setting::getByName('date_format')->getValue();
     }
     
@@ -50,125 +37,60 @@ class Carddeck {
         return self::$allowed_types;
     }
     
-    public static function getAll() {
-        $decks = array();
-        $db = DB::getInstance();
-        
-        $req = $db->query('SELECT d.*, m.name as creator_name , 
-                        s.id as sub_id, s.name as sub_name, 
-                        c.id as cat_id, c.name as cat_name
-                    FROM decks d
-                    JOIN members m ON m.id = d.creator
-                    JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
-                    ORDER BY d.id DESC');
-        if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name, 
-                                        $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
-            }
-        }
-        return $decks;
-    }
     
-    public static function getAllByStatus($status = 'public') {
-        $decks = array();
-        $db = DB::getInstance();
-        
-        if(!in_array($status,self::$allowed_status)){
-            throw new Exception('Status enthält unerlaubten Wert.');
-        }
-        
-        $req = $db->prepare('SELECT d.*, m.name as creator_name , 
-                        s.id as sub_id, s.name as sub_name, 
-                        c.id as cat_id, c.name as cat_name
-                    FROM decks d
-                    JOIN members m ON m.id = d.creator
-                    JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
-                    WHERE d.status = :status
-                    ORDER BY d.id DESC');
-        $req->execute(array(':status'=>$status));
-        if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
-                                        $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
-            }
-        }
-        return $decks;
-    }
     
     public static function getById($id) {
-        $deck = false;
-        $db = DB::getInstance();
-        
-        $query = 'SELECT d.*, m.name as creator_name , 
-                        s.id as sub_id, s.name as sub_name, 
-                        c.id as cat_id, c.name as cat_name
-                    FROM decks d
-                    JOIN members m ON m.id = d.creator
-                    JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
-                    WHERE d.id = :id';
-        $req = $db->prepare($query);
-        $req->execute(array(':id'=>$id));
-        if($req->rowCount() > 0){
-            $deck = $req->fetch(PDO::FETCH_OBJ);
-            return new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
-            $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
-        }else{
-            return false;
-        }
-        
+        return parent::getByPk($id);
     }
     
-    public static function getBySubcategory($sub_id) {
+        
+    public static function getAllByStatus($status = 'public') {
+        if(!in_array($status,self::$allowed_status)){
+            throw new Exception('Status enthält unerlaubten Wert.');
+            $status = self::$allowed_status[0];
+        }
+        return parent::getWhere("status = '$status'",['id'=>'DESC']);
+    }
+    
+    public static function getBySubcategory($sub_id,$status='public') {
+        if(!in_array($status,self::$allowed_status)){
+            throw new Exception('Status enthält unerlaubten Wert.');
+            $status = self::$allowed_status[0];
+        }
+        
         $decks = array();
         $db = DB::getInstance();
         
-        $query = 'SELECT d.*, m.name as creator_name ,
-                        s.id as sub_id, s.name as sub_name,
-                        c.id as cat_id, c.name as cat_name
+        $query = 'SELECT d.*
                     FROM decks d
-                    JOIN members m ON m.id = d.creator
                     JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
-                WHERE ds.subcategory_id = :sub and d.status = \'public\' ORDER BY d.id ASC';
+                WHERE ds.subcategory_id = :sub and d.status = :status ORDER BY d.id ASC';
         $req = $db->prepare($query);
-        $req->execute(array(':sub'=>$sub_id));
+        $req->execute(array(':sub'=>$sub_id,':status'=>$status));
         if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
-                    $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $deck){
+                $decks[] = $deck;
             }
         }
         return $decks;
     }
     
+    /**
+     * get all decks not related to an update
+     * @return Carddeck[]
+     */
     public static function getNotInUpdate() {
         $decks = array();
         $db = DB::getInstance();
         
-        $query = 'SELECT d.*, m.name as creator_name ,
-                        s.id as sub_id, s.name as sub_name,
-                        c.id as cat_id, c.name as cat_name
+        $query = 'SELECT d.*
                     FROM decks d
-                    JOIN members m ON m.id = d.creator
-                    JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
                     LEFT JOIN updates_decks ud ON ud.deck_id = d.id
                 WHERE ud.update_id IS NULL ORDER BY d.id ASC';
-        $req = $db->prepare($query);
-        $req->execute();
+        $req = $db->query($query);
         if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
-                    $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $deck){
+                $decks[] = $deck;
             }
         }
         return $decks;
@@ -178,43 +100,18 @@ class Carddeck {
         $decks = array();
         $db = DB::getInstance();
         
-        $query = 'SELECT d.*, m.name as creator_name ,
-                        s.id as sub_id, s.name as sub_name,
-                        c.id as cat_id, c.name as cat_name
+        $query = 'SELECT d.*
                     FROM decks d
-                    JOIN members m ON m.id = d.creator
-                    JOIN decks_subcategories ds ON ds.deck_id = d.id
-                    JOIN subcategories s ON s.id = ds.subcategory_id
-                    JOIN categories c ON s.category = c.id
                     LEFT JOIN updates_decks ud ON ud.deck_id = d.id
                 WHERE ud.update_id = :update_id ORDER BY d.id ASC';
         $req = $db->prepare($query);
         $req->execute(array(':update_id'=>$update_id));
         if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_OBJ) as $deck){
-                $decks[] = new Carddeck($deck->id, $deck->name, $deck->deckname, $deck->status, $deck->type, $deck->date, $deck->creator, $deck->creator_name,
-                    $deck->cat_id, $deck->sub_id, $deck->cat_name, $deck->sub_name);
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $deck){
+                $decks[] = $deck;
             }
         }
         return $decks;
-    }
-    
-    public static function update($id, $name, $creator, $subcat, $type='default') {
-        $db = DB::getInstance();
-        try{
-            if(preg_match(self::$naming_pattern, $name)){
-                $req = $db->prepare('UPDATE decks SET name = :name, creator = :creator, type = :type WHERE id = :id');
-                $req->execute(array(':id'=>$id, ':name'=>$name, ':creator'=>$creator, ':type'=>$type));
-                $req = $db->prepare('UPDATE decks_subcategories SET subcategory_id = :sub_cat WHERE deck_id = :id');
-                $req->execute(array(':id'=>$id, ':sub_cat'=>$subcat));
-                return true;
-            }else{
-                throw new Exception('invalid character',1001);
-            }
-        }
-        catch(Exception $e) {
-            return $e->getCode();
-        }
     }
     
     public function getCollectorMembers(){
@@ -280,12 +177,26 @@ class Carddeck {
         return $date;
     }
     
-    public function getCreator() {
-        return $this->creator_id;
+    public function getCreator($mode = 'id') {
+        if($mode == 'id'){
+            return $this->creator;
+        }else{
+            return $this->getCreatorObj();
+        }
+    }
+    
+    public function getCreatorObj(){
+        if(is_null($this->creator_obj)){
+            $this->creator_obj = Member::getById($this->creator);
+        }
+        return $this->creator_obj;
     }
     
     public function getCreatorName() {
-        return $this->creator_name;
+        if($this->getCreatorObj() instanceof Member){
+            return $this->getCreatorObj()->getName();
+        }
+        return 'Unbekannt';
     }
     
     public function getStatus() {
@@ -297,19 +208,36 @@ class Carddeck {
     }
     
     public function getCategory() {
-        return $this->category;
+        if(!$this->category_obj instanceof Category){
+            // TODO:
+            $this->category_obj = Category::getById(1);
+        }
+        return $this->category_obj;
     }
     
+    
     public function getSubcategory() {
-        return $this->subcategory;
+        if(!$this->subcategory_obj instanceof Subcategory){
+            $subcategory_relations = DeckSubcategory::getRelationsByDeckId($this->getId());
+            if(count($subcategory_relations) == 1){
+                $this->subcategory_obj = $subcategory_relations[0]->getSubcategory();
+            }
+        }
+        return $this->subcategory_obj;
     }
     
     public function getCategoryName() {
-        return $this->category_name;
+        if($this->getCategory() instanceof Category){
+            return $this->getCategory()->getName();
+        }
+        return 'Unbekannt';
     }
     
     public function getSubcategoryName() {
-        return $this->subcategory_name;
+        if($this->getSubcategory() instanceof Subcategory){
+            return $this->getSubcategory()->getName();
+        }
+        return 'Unbekannt';
     }
     
     public function getDeckpageUrl() {

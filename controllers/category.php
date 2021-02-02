@@ -27,20 +27,28 @@ class CategoryController {
             
             if(isset($_POST['action']) AND $_POST['id']){
                 
-                if($_POST['action'] == 'del_cat'){
-                    
-                    $return = Category::delete($_POST['id']);
-                    
-                }elseif($_POST['action'] == 'del_subcat'){
-                
-                    $return = Subcategory::delete($_POST['id']);
-                    
+                try {
+                    if($_POST['action'] == 'del_cat'){
+                        $return = Category::getById($_POST['id'])->delete();
+                        
+                    }elseif($_POST['action'] == 'del_subcat'){
+                        $return = Subcategory::getById($_POST['id'])->delete();
+                        
+                    }
                 }
                 
-                if($return !== true){
+                catch(Exception $e){
                     
-                    Layout::render('admin/error.php',['errors'=>array($return)]);
-                    die();
+                    if($e instanceof PDOException){
+                        if($e->getCode() == 23000){
+                            $message = 'Es kann keine Kategorie/Unterkategorie gelöscht werden, solang noch Elemente untergeordnet sind!';
+                        }
+                    }else{
+                        $message = $e->getMessage();
+                    }
+                    
+                    die(Layout::render('admin/error.php',['errors'=>array($message)]));
+                   
                     
                 }
             }

@@ -6,109 +6,68 @@
  * @author Cari
  *
  */
-class Level {
+require_once PATH.'models/db_record_model.php';
+
+class Level extends DbRecordModel {
     
-    private $id;
-    private $level;
-    private $name;
-    private $cards;
+    protected $id, $level, $name, $cards;
+    
+    protected static
+        $db_table = 'level',
+        $db_pk = 'id',
+        $db_fields = array('id','name','level','cards'),
+        $sql_order_by_allowed_values = array('id','name','level','cards');
+    
     private static $naming_pattern = '/[A-Za-z0-9äÄöÖüÜß _\-]+/';
-    private $db;
     
     
-    public function __construct($id, $level, $name, $cards) {
-        $this->id = $id;
-        $this->level = $level;
-        $this->name = $name;
-        $this->cards = $cards;
-        $this->db = Db::getInstance();
+    public function __construct() {
+        parent::__construct();
     }
     
     /**
      * get data of all levels from database
      * 
-     * @param Db $db_conn PDO connection object
-     * 
-     * @return boolean|Level[]
+     * @return Level[]
      */
-    public static function getAll() {
-        $level = array();
-        $db_conn = Db::getInstance();
-    
-        $req = $db_conn->query("SELECT * FROM level ORDER BY level ASC");
-        if($req->execute()){
-            foreach($req->fetchAll() as $data) {
-                $level[$data['level']] = new Level($data['id'], $data['level'], $data['name'], $data['cards']);
-            }
-        }else{
-            return false;
-        }
+    public static function getAll($order_settings = ['level'=>'ASC'], $limit = null) {
+        return parent::getAll($order_settings, $limit);
         
-        return $level;
     }
     
     /**
      * get level data from database using id number
      * 
      * @param int $id Id number of level in database
-     * @param Db $db_conn PDO connection object
      * 
-     * @return boolean|Level 
+     * @return Level|NULL 
      */
     public static function getById($id) {
-        $level = false;
-        $db_conn = Db::getInstance();
-        
-        $req = $db_conn->prepare('SELECT * FROM level WHERE id = :id');
-        if($req->execute(array(':id' => $id))) {
-            if($req->rowCount()) {
-                $data = $req->fetch();
-                $level = new Level($data['id'], $data['level'], $data['name'], $data['cards']);
-            }
-        }else{
-            return false;
-        }
-        
-        return $level;
+        return parent::getByPk($id);
     }
     
+    /**
+     * creates a new Level in db and returns the object
+     * @param int $level
+     * @param string $name
+     * @param int $cards
+     * @throws Exception
+     * @return Level
+     */
     public static function add($level, $name, $cards) {
-        $db_conn = Db::getInstance();
-        try {
+        
             if(preg_match(self::$naming_pattern, $name) AND intval($cards) >= 0){
-                $req = $db_conn->prepare('INSERT INTO level (level, name, cards) VALUES (:level, :name, :cards)');
-                $req->execute(array(':level'=>$level, ':name'=>$name, 'cards'=>$cards));
-                return true;
+                $newlevel = new Level();
+                $newlevel->setPropValues(['level'=>$level,'name'=>$name,'cards'=>$cards]);
+                $level_id = $newlevel->create();
+                $newlevel->setPropValues(['id'=>$level_id]);
+                return $newlevel;
             }else{
                 throw new Exception('Name enthält mindestens ein ungültiges Zeichen.',1001);
             }
-        }
-        catch (PDOException $pdo_e){
-            error_log("could not add new level - ".$pdo_e->getMessage()."\n", 3, ERROR_LOG);
-            return 9999;
-        }
-        catch (Exception $e) {
-            return $e->getCode();
-        }
+        
     }
     
-    public function update($level, $name, $cards) {
-        try {
-            if(preg_match(self::$naming_pattern, $name) AND intval($cards) >= 0 AND intval($level) >= 0){
-                $req = $this->db->prepare('UPDATE level SET level = :level, name = :name, cards = :cards WHERE id = :id');
-                $req->execute(array(':level'=>$level, ':name'=>$name, ':cards'=>$cards, ':id'=>$this->id));
-                $this->name = $name;
-                $this->cards = $cards;
-                $this->level = $level;
-                return true;
-            }else{
-                throw new Exception('Name enthält mindestens ein ungültiges Zeichen.',1001);
-            }
-        }
-        catch (Exception $e) {
-            return $e->getCode();
-        }
-    }
     
     /*
      * Getter
@@ -126,7 +85,20 @@ class Level {
         return $this->id;
     }
     
+    /**
+     * get level matching a number of cards
+     * 
+     * @param int $number
+     * @return Level|NULL
+     */
     public static function getByCardNumber($number) {
+        $level_array = parent::getWhere('cards < '.intval($number),['level'=>'DESC']);
+        if(count($level_array) > 0){
+            return $level_array[0];
+        }else{
+            return null;
+        }
+        /*
         $db = DB::getInstance();
         $req = $db->prepare('SELECT * FROM level WHERE cards < :number ORDER BY level DESC LIMIT 1');
         $req->execute(array(':number'=>$number));
@@ -136,9 +108,22 @@ class Level {
         }else{
             return false;
         }
+        */
     }
     
+    /**
+     * Get next level after current
+     * 
+     * @return Level|NULL
+     */
     public function next() {
+        $level_array = parent::getWhere('level > '.$this->getLevel(),['level'=>'ASC']);
+        if(count($level_array) > 0){
+            return $level_array[0];
+        }else{
+            return null;
+        }
+        /*
         $req = $this->db->prepare('SELECT * FROM level WHERE level > :level ORDER BY level ASC LIMIT 1');
         $req->execute(array(':level'=>$this->getLevel()));
         if($req->rowCount()){
@@ -146,7 +131,7 @@ class Level {
             return new Level($data['id'], $data['level'], $data['name'], $data['cards']);
         }else{
             return false;
-        }
+        }*/
     }
     
 }

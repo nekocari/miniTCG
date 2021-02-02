@@ -1,4 +1,5 @@
 <?php
+error_reporting(-1);
 session_start();
 require_once 'inc/constants.php';
 require_once 'inc/dbconnect.php';

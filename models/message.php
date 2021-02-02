@@ -6,109 +6,69 @@
  * @author Cari
  *
  */
+require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
 require_once PATH.'models/member.php';
+require_once PATH.'helper/Parsedown.php';
 
-class Message {
+class Message extends DbRecordModel {
     
-    private $id;
-    private $date;
-    private $sender;
-    private $recipient;
-    private $text;
-    private $status;
-    private $db;
+    protected $id, $date, $sender, $recipient, $text, $status;
+    
+    private $sender_obj, $recipient_obj;
+    
+    protected static
+        $db_table = 'messages',
+        $db_pk = 'id',
+        $db_fields = array('id','date','sender','recipient','text','status'),
+        $sql_order_by_allowed_values = array('id','date','status','sender','recipient');
     
     private static $accepted_status_values = array('new','all');
     
-    public function __construct($id, $date, $sender, $recipient, $text, $status) {
-        $this->id           = $id;
-        $this->date         = $date;
-        $this->sender       = $sender;
-        $this->recipient    = $recipient;
-        $this->text         = $text;
-        $this->status       = $status;
-        $this->db           = DB::getInstance();
+    
+    public function __construct() {
+        parent::__construct();
     }
     
+    /**
+     * get message objects for member - msg status optional
+     * @param int $id member id
+     * @param string $status new|all
+     * @return Message[]
+     */
     public static function getReceivedByMemberId($id, $status = 'all') {
-        try {
-            $msgs = array();
-            $db = DB::getInstance();
-            
-            if(!in_array($status, self::$accepted_status_values)){ $status = 'all'; }
-            
-            if($status != 'all'){
-                $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id and status = :status ORDER BY date DESC');
-                $req->execute(array(':id'=>$id, ':status'=>$status));
-            }else{
-                $req = $db->prepare('SELECT * FROM messages WHERE recipient = :id ORDER BY date DESC');
-                $req->execute(array(':id'=>$id));
-            }
-            if($req->rowCount() > 0){
-                foreach($req->fetchAll(PDO::FETCH_OBJ) as $msgdata){
-                    if(!is_null($msgdata->sender)){
-                        $sender = Member::getById($msgdata->sender);
-                    }else{
-                        $sender = new Member();
-                        $sender->setName('System');
-                    }
-                    $recipient = Member::getById($msgdata->recipient);    
-                    $msgs[] = new Message($msgdata->id, $msgdata->date, $sender, $recipient, $msgdata->text, $msgdata->status);
-                }
-            }
-            return $msgs;
+        
+        $msgs = array();
+        
+        if(!in_array($status, self::$accepted_status_values)){ 
+            $status = self::$accepted_status_values[0]; 
         }
-        catch (Exception $e) {
-            return $e->getMessage();
+        
+        if($status == 'new'){
+            return parent::getWhere("recipient = ".intval($id)." AND status = 'new'",['date'=>'DESC']);
+        }else{
+            return parent::getWhere('recipient = '.intval($id),['date'=>'DESC']);
         }
     }
     
     public static function add($sender, $recipient, $text){
-        try {
+        
+        // remove HTML
         $text = strip_tags($text);
-        $db = Db::getInstance();
-        $req = $db->prepare('INSERT INTO messages (sender,recipient,text) VALUES (:sender,:recipient,:text)');
-        $req->execute(array(':sender'=>$sender, ':recipient'=>$recipient,':text'=>$text));
-        return true;
-        }
-        catch (PDOException $pdo_e){
-            return 'Einfügen in DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
-        }
-        catch (Exception $e){
-            return $e->getMessage();
-        }
+        
+        $message = new Message();
+        $message->setPropValues(['sender'=>$sender, 'recipient'=>$recipient, 'text'=>$text]);
+        $message_id = $message->create();
+        $message->setPropValues(['id'=>$message_id]);
+        
+        return $message;
     }
     
-    public static function read($id){
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('UPDATE messages SET status = \'read\' WHERE id = :id');
-            $req->execute(array(':id'=> $id));
-            return true;
-        }
-        catch (PDOException $pdo_e){
-            return 'Update der DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
-        }
-        catch (Exception $e){
-            return $e->getMessage();
-        }
+    public function read(){
+        $this->status = 'read';
+        $this->update();
     }
     
-    public static function delete($id){
-        try{
-            $db = Db::getInstance();
-            $req = $db->prepare('DELETE FROM messages WHERE id = :id');
-            $req->execute(array(':id'=> $id));
-            return true;
-        }
-        catch (PDOException $pdo_e){
-            return 'Löschen aus DB fehlgeschlagen. Datenbank meldet:<br>'.$pdo_e->getMessage();
-        }
-        catch (Exception $e){
-            return $e->getMessage();
-        }
-    }
     
     public function getId() {
         return $this->id;
@@ -119,15 +79,26 @@ class Message {
     }
     
     public function getSender() {
-        return $this->sender;
+        if(!$this->sender_obj instanceof Member){
+            $this->sender_obj = Member::getById($this->sender);
+            if(is_null($this->sender_obj)){
+                $this->sender_obj = new Member();
+                $this->sender_obj->setName('System');
+            }
+        }
+        return $this->sender_obj;
     }
     
     public function getRecipient() {
-        return $this->recipient;
+        if(!$this->recipient_obj instanceof Member){
+            $this->recipient_obj = Member::getById($this->recipient);
+        }
+        return $this->recipient_obj;
     }
     
     public function getText() {
-        return $this->text;
+        $parsedown = new Parsedown();
+        return $parsedown->text($this->text);
     }
     
     public function getStatus() {

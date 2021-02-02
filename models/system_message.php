@@ -9,9 +9,7 @@
 
 class SystemMessage {
     
-    private $identifier;
-    private $text_en;
-    private $text_de;
+    private $identifier, $text_en, $text_de;
     private static $accepted_languages = array('de','en');
     
     public function __construct($identifier, $text_en, $text_de) {
