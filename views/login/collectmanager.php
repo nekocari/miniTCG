@@ -10,7 +10,7 @@
 
 <form class="text-center" name="sortCards" method="POST" action="">
 <?php foreach($collections as $deck_id => $collection){ ?>
-	<div class="d-inline-block m-4 text-center">
+	<div class="d-inline-block m-4 text-center <?php if($deckdata[$deck_id]->isPuzzle()){ echo " puzzle-view"; } ?>">
 		<h4><?php echo $deckdata[$deck_id]->getName(); ?></h4>
     	<?php 
     	for($i=1; $i<=$decksize; $i++){  

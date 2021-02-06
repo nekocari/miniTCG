@@ -48,20 +48,33 @@ class Carddeck extends DbRecordModel {
         return parent::getByPk($id);
     }
     
-        
-    public static function getAllByStatus($status = 'public') {
+    /**
+     * get all decks having a certain status
+     * @param string $status
+     * @param array $order
+     * @throws Exception
+     * @return Carddeck[]
+     */
+    public static function getAllByStatus($status = 'public',$order=['deckname'=>'ASC']) {
         if(!in_array($status,self::$allowed_status)){
             throw new Exception('Status enthält unerlaubten Wert.');
             $status = self::$allowed_status[0];
         }
-        return parent::getWhere("status = '$status'",['id'=>'DESC']);
+        return parent::getWhere("status = '$status'",$order);
     }
-    
-    public static function getBySubcategory($sub_id,$status='public') {
+    /**
+     * 
+     * @param int $sub_id id of Subcategory
+     * @param string $status
+     * @throws Exception
+     * @return Carddeck[]
+     */
+    public static function getBySubcategory($sub_id,$status='public',$order=['deckname'=>'ASC']) {
         if(!in_array($status,self::$allowed_status)){
             throw new Exception('Status enthält unerlaubten Wert.');
             $status = self::$allowed_status[0];
         }
+        $order_by = self::buildSqlPart('order_by',$order);
         
         $decks = array();
         $db = DB::getInstance();
@@ -69,7 +82,7 @@ class Carddeck extends DbRecordModel {
         $query = 'SELECT d.*
                     FROM decks d
                     JOIN decks_subcategories ds ON ds.deck_id = d.id
-                WHERE ds.subcategory_id = :sub and d.status = :status ORDER BY d.id ASC';
+                WHERE ds.subcategory_id = :sub and d.status = :status '.$order_by['query_part'];
         $req = $db->prepare($query);
         $req->execute(array(':sub'=>$sub_id,':status'=>$status));
         if($req->rowCount() > 0){

@@ -43,8 +43,8 @@
             		</select>
             	</div>
             	<div class="form-group col-12 col-lg-6">
-            		<label for="type">Art</label>
-            		<select class="form-control" id="type" name="type">
+            		<label for="type">Typ</label>
+            		<select class="form-control" id="type" name="type" required>
             			<?php foreach($deck_types as $type){ ?>
             				<option value="<?php echo $type; ?>"><?php echo $type; ?></option>
             			<?php } ?>

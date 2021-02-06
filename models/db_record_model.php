@@ -39,8 +39,15 @@ class DbRecordModel {
         }
     }
     
+    /**
+     * build sql parts based on array values
+     * @param string $part
+     * @param mixed[] $arg_array
+     * @throws ErrorException
+     * @return array[string 'query_part', mixed[] 'sql_params_arr']
+     */
     protected static function buildSqlPart($part = 'where', $arg_array){
-        $parts_implemented = array('where');
+        $parts_implemented = array('where','order_by');
         
         if(in_array($part, $parts_implemented)){
             
@@ -53,9 +60,18 @@ class DbRecordModel {
                     foreach($arg_array as $field => $value){
                         $placeholder = ':'.$field;
                         $sql_part.= $field.' = '.$placeholder.' AND ';
-                        $sql_params_arr[$placeholder] = $value;  
+                        $sql_params_arr[$placeholder] = $value;
                     }
                     $sql_part = substr($sql_part, 0, -5);
+                    break;
+                case 'order_by' :
+                    $sql_part = ' ORDER BY ';
+                    foreach($arg_array as $field => $direction){
+                        if(in_array($field, static::$sql_order_by_allowed_values) AND in_array($direction, static::$sql_direction_allowed_values)){
+                            $sql_part.= $field.' '.$direction.', ';
+                        }
+                    }
+                    $sql_part = substr($sql_part, 0, -2);
                     break;
             }
             //die(var_dump(array('query_part'=>$sql_part, 'param_array'=>$sql_params_arr)));
@@ -65,6 +81,7 @@ class DbRecordModel {
             throw new ErrorException('defined part is not implemented');
         }
     }
+    
     
     
     /**
