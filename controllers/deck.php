@@ -143,9 +143,11 @@ class DeckController {
                 
             }
             
-            if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory']) AND isset($_FILES)){
+            $data['deck_types'] = Carddeck::getAcceptedTypes(); 
+            
+            if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type']) AND isset($_FILES)){
                 try{
-                    $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory']);
+                    $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory'], $_POST['type']);
                     
                     if(($upload_status = $upload->store()) === true){
                         

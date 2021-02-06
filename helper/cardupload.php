@@ -17,12 +17,9 @@ class CardUpload {
     private static $cards_dir = PATH.CARDS_FOLDER;
     private static $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
-    private $cards_decksize;
-    private $cards_file_type;
-    private $upload_user;
-    private $subcategory;
+    private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type;
     
-    public function __construct($name, $deckname, $files, $upload_user, $subcategory) {
+    public function __construct($name, $deckname, $files, $upload_user, $subcategory, $type) {
         $this->name     = $name;
         $this->deckname = $deckname;
         $this->files    = $files;
@@ -31,6 +28,7 @@ class CardUpload {
         $this->cards_file_type = Setting::getByName('cards_file_type')->getValue();
         $this->upload_user = $upload_user;
         $this->subcategory = $subcategory;
+        $this->type = $type;
     }
     
     /**
@@ -96,8 +94,8 @@ class CardUpload {
         }
         
         // insert deck into DB
-        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator) VALUES (:name, :deckname, :creator)');
-        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user));
+        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator, type) VALUES (:name, :deckname, :creator, :type)');
+        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user,':type'=>$this->type));
         $deck_id = $this->db->lastInsertId();
         
         // insert deck subcategory relation to DB
