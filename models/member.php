@@ -226,29 +226,31 @@ class Member extends DbRecordModel {
      */
     public function checkLevelUp() {
         
+        $current_level = $this->getLevel();
         $reached_level = Level::getByCardNumber($this->getCardCount());
         
-        if($this->getLevel() != $reached_level->getId()){
+        if($current_level != $reached_level->getId()){
             
-            // find next level id and update member data
-            $next_level = Level::getById($this->getLevel())->next();
-            if($next_level != false){
+            $next_level = $this->getLevel('object')->next();
+            
+            if($next_level instanceof Level){
                 
                 $this->setLevel($next_level->getId());
-                $this->store();
+                $this->cards = null;
                 
-                // Gift for level up
-                $levelup_bonus = Setting::getByName('giftcards_for_master');
-                if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
-                    Card::createRandomCard($this->getId(),$levelup_bonus->getValue(),'Level Up!');
-                }
-                Message::add(null, $this->getId(), 'LEVEL UP! Du hast dafür '.$levelup_bonus->getValue().' Karten erhalten.');
-                
-                if($next_level != $reached_level){
-                    $this->checkLevelUp();
+                if($this->store()){
+                    
+                    // Gift for level up
+                    $levelup_bonus = Setting::getByName('giftcards_for_master');
+                    if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
+                        Card::createRandomCard($this->getId(),$levelup_bonus->getValue(),'Level Up!');
+                    }
+                    Message::add(null, $this->getId(), 'LEVEL UP! Du hast, für das Erreichen von Level '.$next_level->getName().', '.$levelup_bonus->getValue().' Karten erhalten.');
+                    
                 }
             }
         }
+        
     }
     
     /**
@@ -349,8 +351,12 @@ class Member extends DbRecordModel {
         return $this->mail;
     }
     
-    public function getLevel() {
-        return $this->level;
+    public function getLevel($mode='id') {
+        if($mode=='id'){
+            return $this->level;
+        }else{
+            return Level::getById($this->level);
+        }
     }
     
     public function getJoinDate() {
