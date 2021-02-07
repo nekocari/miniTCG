@@ -14,7 +14,8 @@ class MemberController {
      */
     public function memberlist() {
         
-         $data['members'] = Member::getGrouped('level','level','ASC');
+         $data['members'] = Member::getGrouped('level','name','ASC');
+         
         $data['level'] = Level::getAll();
         
         Layout::render('member/list.php',$data);
