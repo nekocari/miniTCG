@@ -229,7 +229,7 @@ class Member extends DbRecordModel {
         $current_level = $this->getLevel();
         $reached_level = Level::getByCardNumber($this->getCardCount());
         
-        if($current_level != $reached_level->getId()){
+        if(!is_null($reached_level) AND $current_level != $reached_level->getId()){
             
             $next_level = $this->getLevel('object')->next();
             
