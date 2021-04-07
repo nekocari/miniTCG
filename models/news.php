@@ -95,7 +95,7 @@ class News extends DbRecordModel{
     }
     
     public static function getLatestEntries($number){
-        return parent::getAll(['date'=>'DESC',intval($number)]);
+        return parent::getAll(['date'=>'DESC'],intval($number));
     }
     
     public static function display($number){
