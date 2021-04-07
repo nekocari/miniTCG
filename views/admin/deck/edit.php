@@ -83,7 +83,8 @@
     	<tr>
     		<td>Karten</td>
     		<td>
-    			<?php foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>
+    			<?php // foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>
+    			<?php echo $deckdata->getDeckView().'<br>'.$deckdata->getMasterCard(); ?>
         		<div class="text-right">
         			<a href="<?php echo ROUTES::getUri('card_replace_image');?>?deck_id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
         		</div>
