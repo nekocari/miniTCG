@@ -8,6 +8,7 @@
 
 require_once PATH.'models/setting.php';
 require_once PATH.'models/carddeck.php';
+require_once PATH.'helper/Parsedown.php';
 
 class CardUpload {
     
@@ -17,9 +18,9 @@ class CardUpload {
     private static $cards_dir = PATH.CARDS_FOLDER;
     private static $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
-    private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type;
+    private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type, $description, $description_html;
     
-    public function __construct($name, $deckname, $files, $upload_user, $subcategory, $type) {
+    public function __construct($name, $deckname, $files, $upload_user, $subcategory, $type, $description=null) {
         $this->name     = $name;
         $this->deckname = $deckname;
         $this->files    = $files;
@@ -29,6 +30,9 @@ class CardUpload {
         $this->upload_user = $upload_user;
         $this->subcategory = $subcategory;
         $this->type = $type;
+        $this->description = $description;
+        $parsedown = new Parsedown();
+        $this->description_html = $parsedown->text($this->description);
     }
     
     /**
@@ -94,8 +98,8 @@ class CardUpload {
         }
         
         // insert deck into DB
-        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator, type) VALUES (:name, :deckname, :creator, :type)');
-        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user,':type'=>$this->type));
+        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator, type, description, description_html) VALUES (:name, :deckname, :creator, :type, :description, :description_html)');
+        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user,':type'=>$this->type,':description'=>$this->description,':description_html'=>$this->description_html));
         $deck_id = $this->db->lastInsertId();
         
         // insert deck subcategory relation to DB

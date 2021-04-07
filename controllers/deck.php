@@ -147,7 +147,7 @@ class DeckController {
             
             if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type']) AND isset($_FILES)){
                 try{
-                    $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory'], $_POST['type']);
+                    $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory'], $_POST['type'], $_POST['description']);
                     
                     if(($upload_status = $upload->store()) === true){
                         
@@ -223,6 +223,8 @@ class DeckController {
                         $prop_values = array(
                             'name'=>$_POST['name'],
                             'creator'=>$_POST['creator'],
+                            'description'=>$_POST['description'],
+                            'description_html'=>'',
                             'type'=>$_POST['type']
                         );
                         $deck->setPropValues($prop_values);

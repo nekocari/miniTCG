@@ -52,6 +52,17 @@
             	</div>
             </div>
             
+            <div class="form-row">
+            	<div class="form-group col">
+                	<label for="description">Infotext <br></label>
+                	<textarea class="form-control" name="description" 
+                		placeholder="Infos zum Deck, wie z.B. Quellenangaben... (optional)"></textarea>
+                	<small class="text-muted">Du kannst 
+                		<a href="https://de.wikipedia.org/wiki/Markdown#Auszeichnungsbeispiele" target="_blank">Markdown</a> 
+                		zur Formatierung nutzen!</small>
+                </div>
+            </div>
+            
     	</div>
 	</div>
 

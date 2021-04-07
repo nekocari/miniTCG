@@ -393,5 +393,9 @@ ALTER TABLE `updates_members`
 
 ALTER TABLE `decks`  ADD `type` ENUM('default','puzzle') NOT NULL DEFAULT 'default'  AFTER `status`;  
 ALTER TABLE `messages` CHANGE `sender` `sender` INT(10) UNSIGNED NULL;
+
+
+ALTER TABLE `decks` ADD `description` TEXT NULL AFTER `deckname`, ADD `description_html` TEXT NULL AFTER `description`;
+ALTER TABLE `members` CHANGE `password` `password` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
   
 COMMIT;

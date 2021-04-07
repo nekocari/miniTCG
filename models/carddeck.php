@@ -14,12 +14,12 @@ require_once PATH.'models/master.php';
 
 class Carddeck extends DbRecordModel {
     
-    protected $id, $name, $deckname, $status, $type, $creator, $date;
+    protected $id, $name, $deckname, $status, $type, $creator, $date, $description, $description_html;
     
     protected static
     $db_table = 'decks',
     $db_pk = 'id',
-    $db_fields = array('id','name','deckname','status','type','creator','date'),
+    $db_fields = array('id','name','deckname','status','type','creator','date','description','description_html'),
     $sql_order_by_allowed_values = array('id','name','deckname','date');
     
     private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj;
@@ -188,6 +188,30 @@ class Carddeck extends DbRecordModel {
     public function getDate() {
         $date = date($this->date_formate, strtotime($this->date));
         return $date;
+    }
+    
+    /**
+     * 
+     * @param string $mode [html|default]
+     * @return string
+     */
+    public function getDescription($mode='html') {
+        switch($mode){
+            case 'html':
+                if(empty($this->description_html) AND !empty($this->description)){
+                    $parsedown = new Parsedown();
+                    $this->description_html = $parsedown->text($this->description);
+                    $this->update();
+                }
+                return $this->description_html;
+                break;
+            case 'default':
+                return $this->description;
+                break;
+            default:
+                return null;
+                break;
+        }
     }
     
     public function getCreator($mode = 'id') {

@@ -72,6 +72,15 @@
            	</td>
     	</tr>
     	<tr>
+    		<td>Infotext</td>
+    		<td>
+            	<textarea class="form-control" name="description" placeholder="Infos zum Deck, wie z.B. Quellenangaben... (optional)"><?php echo $deckdata->getDescription('default'); ?></textarea>
+                	<small class="text-muted">Du kannst 
+                		<a href="https://de.wikipedia.org/wiki/Markdown#Auszeichnungsbeispiele" target="_blank">Markdown</a> 
+                		zur Formatierung nutzen!</small>
+			</td>
+    	</tr>
+    	<tr>
     		<td>Karten</td>
     		<td>
     			<?php foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>

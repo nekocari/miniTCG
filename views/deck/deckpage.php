@@ -8,6 +8,9 @@
     		am <i class="fas fa-calendar-alt text-dark"></i> <?php echo $deck->getDate(); ?> <br>
     		in <i class="fas fa-folder text-dark"></i> <?php echo $deck->getCategoryName(); ?> - <?php echo $deck->getSubcategoryName(); ?>
 		</p>
+		<p>
+			<?php echo $deck->getDescription('html'); ?>
+		</p>
 		<p>Sammler: 
 		<?php foreach($deck->getCollectorMembers() as $member){ ?>
     		<a class="btn btn-sm btn-outline-primary" href="<?php echo $member->getProfilLink(); ?>">

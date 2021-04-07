@@ -159,8 +159,15 @@ class Card extends DbRecordModel {
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
     
-    public static function getSerachcardHtml($img_url = NULL) {
-        $url = CARDS_FOLDER.'searchcards/1.png';
+    public static function getSerachcardHtml($mode='default', $number=1) {
+        switch($mode){
+            case 'default':
+                $url = CARDS_FOLDER.'searchcards/default.png';
+                break;
+            default:
+                $url = CARDS_FOLDER.'searchcards/puzzle/'.$number.'.png';
+                break;
+        }
         
         $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
         $replace = array(self::$tpl_width, self::$tpl_height, $url);

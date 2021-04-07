@@ -2,4 +2,5 @@
 .project
 .buildpath
 /img/
+/setup/update_kasu1.sql
 db_changes.txt
