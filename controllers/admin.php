@@ -144,6 +144,7 @@ class AdminController {
                     $memberdata->setName($_POST['Name']);
                     $memberdata->setLevel($_POST['Level']);
                     $memberdata->setMail($_POST['Mail']);
+                    $memberdata->setMoney($_POST['Money']);
                     $memberdata->setInfoText($_POST['Text']);
                     
                     $return = $memberdata->store();

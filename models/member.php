@@ -233,7 +233,7 @@ class Member extends DbRecordModel {
     public function getEditableData($mode = 'user') {
         $filed = array();
         if($mode  == 'admin'){
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Text' => $this->info_text);
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
         }elseif($mode == 'user'){
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->info_text);
         }
