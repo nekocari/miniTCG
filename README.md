@@ -15,8 +15,8 @@ If you are interested in an english translation, please let me know.
 * Upload everything to your webspace using a FTP programm.
 * Run *yourwebsitehere.com*/setup/setup.php
 * Now you should be able to login using the default Admin account.
-* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link on the bottom) and change the Application settings to your liking.
-* Delete the *setup* folder!
+* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link on the bottom center) and change the application settings to your liking.
+* **Delete** the *setup* folder!
 
 
 
@@ -37,10 +37,11 @@ If you are interested in an english translation, please let me know.
   	* size of deck 
   	* name the currency  
   	* etc.
-  * manage Rights for each Member
-  * give Random Cards to Members
-  * edit Member data
-  * delete Accounts
+  * manage Members
+  	* manage Rights 
+  	* give Random Cards
+  	* edit profil data
+  	* delete Accounts
 * Public Functions
   * Homepage
   * display News
@@ -53,6 +54,7 @@ If you are interested in an english translation, please let me know.
   * manage Cards
   * master Decks
   * take Cards from Updates
+  * search Cards
   * buy Cards in a Cardshop
   * Tradelog
   * edit Member data (+ Password change)
@@ -64,7 +66,10 @@ If you are interested in an english translation, please let me know.
    
 ## Features TBA
 * enable messaging between members
+* some sort of "highlighting" for Card managment 
 * admins can reset passwords
+* admins can gift "money"
+* allow comments on news
 * add activation codes into registration process 
 
 

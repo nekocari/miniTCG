@@ -56,8 +56,8 @@ class Shop {
                 $new_sc = new ShopCard();
                 $new_sc->setPropValues($sc_values);
                 $new_sc->create();
-                $this->card_objs[] = $new_sc;
             }
+            $this->card_objs = null;
             return true;
         }else{
             return false;
