@@ -264,7 +264,7 @@ class Member extends DbRecordModel {
             $member_rights = MemberRight::getByMemberId($this->getId());
             $this->rights = array();
             foreach($member_rights as $right){
-                $this->rights[] = $right->getRight();
+                $this->rights[] = $right->getRight()->getName();
             }
         }
         return $this->rights;

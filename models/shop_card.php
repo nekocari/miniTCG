@@ -75,9 +75,15 @@ class ShopCard extends DbRecordModel {
             // create the card and creat new card entry for owner;
             $card = new Card();
             $card->setPropValues(['owner'=>Login::getUser()->getId(),'deck'=>$this->deck_id,'name'=>$this->getName(),'number'=>$this->getNumber(),'date'=>date('Y-m-d H:i:s')]);
-            $card->create();
+            $card_id = $card->create();
+            $card->setPropValues(['id'=>$card_id]);
             // delete from shop
             $this->delete();
+            // create log entry
+            $log_text = 'Shop -> '.$card->getName().' (#'.$card->getId().') gekauft.';
+            Tradelog::addEntry(Login::getUser()->getId(), $log_text);
+            // check for levelup
+            Login::getUser()->checkLevelUp();
             return true;
         }else{
             return false;
