@@ -397,5 +397,11 @@ ALTER TABLE `messages` CHANGE `sender` `sender` INT(10) UNSIGNED NULL;
 
 ALTER TABLE `decks` ADD `description` TEXT NULL AFTER `deckname`, ADD `description_html` TEXT NULL AFTER `description`;
 ALTER TABLE `members` CHANGE `password` `password` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+
+
+ALTER TABLE `members` ADD `money` INT(11) NOT NULL DEFAULT '0' AFTER `level`;
+INSERT INTO `settings` (`name`, `value`, `description`) 
+VALUES ('currency_name', 'Taler', 'Name der virtuellen Währung'), 
+	('currency_icon_path', 'img/icons/mycurrency.png', 'Pfad vom Basispfad aus zur Grafik für Währung');
   
 COMMIT;

@@ -10,6 +10,7 @@ class Login {
     private $password;
     private $db;
     protected $user;
+    private static $user_obj;
     
     public function __construct($db, $name, $password) {
         $this->db		= $db;
@@ -107,14 +108,13 @@ class Login {
     /**
      * get current user data
      *
-     * @return mixed|boolean
+     * @return Member|NULL
      */
-    public function getUser() {
-        if ($this->user){
-            return $this->user;
-        } else {
-            return false;
+    public static function getUser() {
+        if(is_null(self::$user_obj) AND self::loggedIn()){
+            self::$user_obj = Member::getById($_SESSION['user']->id);
         }
+        return self::$user_obj;
     }
     
     /**

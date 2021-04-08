@@ -18,7 +18,7 @@ require_once PATH.'helper/Parsedown.php';
 class Member extends DbRecordModel {
     
     protected 
-        $id, $name, $mail, $info_text, $info_text_html, $level, $join_date, $login_date, $status, $ip;
+        $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
         $password, $cards, $masterd_decks;
@@ -27,7 +27,7 @@ class Member extends DbRecordModel {
     protected static
         $db_table = 'members',
         $db_pk = 'id',
-        $db_fields = array('id','name','mail','info_text','info_text_html','level','join_date','login_date','status','ip'),
+        $db_fields = array('id','name','mail','info_text','info_text_html','level','money','join_date','login_date','status','ip'),
         $sql_order_by_allowed_values = array('id','name','level','join_date','login_date','status');
     
     private static $accepted_group_options = array('level');
@@ -79,19 +79,6 @@ class Member extends DbRecordModel {
      */
     public static function getById($id) {
         return parent::getByPk($id);
-        /*
-        $member = false;
-        $db_conn = Db::getInstance();
-        
-        $req = $db_conn->prepare('SELECT * FROM members WHERE id = :id');
-        if($req->execute(array(':id' => $id))) {
-            
-            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $member){
-                $members[] = $member;
-            }
-        }
-        
-        return $member;*/
     }
     
     /**
@@ -103,20 +90,6 @@ class Member extends DbRecordModel {
      */
     public static function getByMail($mail) {
         return parent::getByUniqueKey('mail', $mail);
-        /*
-        $member = false;
-        $db_conn = Db::getInstance();
-        
-        $req = $db_conn->prepare('SELECT * FROM members WHERE mail = :mail');
-        if($req->execute(array(':mail' => $mail))) {
-            if($req->rowCount() == 1) {               
-                
-                $member = $req->fetchObject(__CLASS__);
-            }
-        }
-        
-        return $member;
-        */
     } 
     
     /**
@@ -359,6 +332,10 @@ class Member extends DbRecordModel {
         }
     }
     
+    public function getMoney() {
+        return $this->money;
+    }
+    
     public function getJoinDate() {
         return $this->join_date;
     }
@@ -387,6 +364,10 @@ class Member extends DbRecordModel {
     public function setLevel($level) {
         $this->level = $level;
     }    
+    
+    public function setMoney($amount){
+        $this->money = intval($amount);
+    }
     
     public function setInfoText($text) {
         $parsedown = new Parsedown();

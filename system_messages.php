@@ -62,6 +62,15 @@
     SystemMessages::addMessage('level_edit_failed', 'changes not saved', 'Ändern fehlgeschlagen.');
     
     
+    // texts used in shop controller --------------------------------------
+    
+    SystemMessages::addMessage('cardshop_card_bought','You successfully bought:','Du hast folgende Karte gekauft:');
+    SystemMessages::addMessage('cardshop_no_money', 'You don\'t own enough money to buy this card', 'Du hast nicht genug Geld um diese Karte zu kaufen');
+    SystemMessages::addMessage('cardshop_card_gone', 'The card of your choice is no longer available.', 'Die gewählte Karte ist nicht mehr verfügbar.');
+    SystemMessages::addMessage('cardshop_buy_error', 'Something went wrong!', 'Etwas ist schiefgelaufen!');
+    
+    
+    
     
     // text used by the login controller -----------------------------
     

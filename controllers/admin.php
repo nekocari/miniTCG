@@ -61,13 +61,13 @@ class AdminController {
                 
                 // go throug all settings and store the values in database
                 foreach($_POST['settings'] as $name => $value){
-                    
-                    $setting = new Setting($name, $value);
-                    $return = $setting->store();
+                                        
+                    $setting = Setting::getByName($name);
+                    $setting->setValue($value);     
                     
                     // create error message in case of failure
-                    if($return !== true){
-                        $data['_errors'][] = $return;
+                    if(!$setting->update()){
+                        $data['_errors'][] = $name." not updated";
                     }
                     
                 }
@@ -80,7 +80,7 @@ class AdminController {
             }
             
             // get all settings form database
-            $data['settings'] = Setting::getAll();
+            $data['settings'] = Setting::getAll(['name'=>'ASC']);
             
             Layout::render('admin/settings.php',$data);
             

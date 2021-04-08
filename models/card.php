@@ -206,17 +206,23 @@ class Card extends DbRecordModel {
                 $random_card['name'] = $deckdata->getDeckname().$random_card['number'];
                 $card_values = array('owner'=>$user_id,'deck'=>$deckdata->getId(),'number'=>$random_card['number'],'name'=>$random_card['name'],'date'=>date('Y-m-d G:i:s'));
                 
-                $card = new Card();
-                $card->setPropValues($card_values);
-                $card_id = $card->create();
-                $card->setPropValues(['id'=>$card_id]);
-                $cards[] = $card;
-                
-                $log_text = $tradelog_text.' -> '.$card->getName().' (#'.$card->getId().') erhalten.';
-                Tradelog::addEntry($user_id, $log_text);
+                if(!is_null($user_id)){
+                    $card = new Card();
+                    $card->setPropValues($card_values);
+                    $card_id = $card->create();
+                    $card->setPropValues(['id'=>$card_id]);
+                    $cards[] = $card;
+                    
+                    $log_text = $tradelog_text.' -> '.$card->getName().' (#'.$card->getId().') erhalten.';
+                    Tradelog::addEntry($user_id, $log_text);
+                }else{
+                    $cards[] = $card_values; 
+                }
             }
         }
-        Member::getById($user_id)->checkLevelUp();
+        if(!is_null($user_id)){
+            Member::getById($user_id)->checkLevelUp();
+        }
         
         return $cards;
     }

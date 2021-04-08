@@ -47,6 +47,8 @@
     
     Routes::addRoute('card_search', 'cardsearch.php', 'card', 'search');
     
+    Routes::addRoute('shop', 'cardshop.php', 'shop', 'shop');
+    
     Routes::addRoute('game', 'games.php', 'game', 'index');
     Routes::addRoute('game_lucky_number', 'games/lucky_number.php', 'game', 'luckyNumber');
     Routes::addRoute('game_head_or_tail', 'games/head_or_tail.php', 'game', 'headOrTail');
