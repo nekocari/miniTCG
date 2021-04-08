@@ -198,6 +198,15 @@ CREATE TABLE `updates_members` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+CREATE TABLE `shop_cards` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `deck_id` int(11) UNSIGNED NOT NULL,
+  `number` tinyint(4) UNSIGNED NOT NULL DEFAULT '1',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `price` smallint(6) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ALTER TABLE `cards`
   ADD PRIMARY KEY (`id`),
   ADD KEY `deck` (`deck`),
@@ -402,6 +411,24 @@ ALTER TABLE `members` CHANGE `password` `password` VARCHAR(255) CHARACTER SET ut
 ALTER TABLE `members` ADD `money` INT(11) NOT NULL DEFAULT '0' AFTER `level`;
 INSERT INTO `settings` (`name`, `value`, `description`) 
 VALUES ('currency_name', 'Taler', 'Name der virtuellen Währung'), 
-	('currency_icon_path', 'img/icons/mycurrency.png', 'Pfad vom Basispfad aus zur Grafik für Währung');
-  
+	('currency_icon_path', 'img/icons/mycurrency.png', 'Pfad vom Basispfad aus zur Grafik für Währung'), 
+	('shop_price_min', '100', 'Mindestpreis der Karten'),  
+	('shop_price_max', '250', 'Maximalpreis der Karten'),  
+	('shop_next_restock', '2021-04-07 21:36:58', 'Nächste Auffüllung des Shops'), 
+	('shop_restock_minutes', '120', 'Wartezeit in Minuten zwischen Shopauffüllung'), 
+	('shop_max_stock', '25', 'maximale Anzahl Karten im Shop');
+
+
+ALTER TABLE `shop_cards`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `deck_id` (`deck_id`);
+
+ALTER TABLE `shop_cards`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `shop_cards`
+  ADD CONSTRAINT `shop_cards_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `shop_cards` ADD `name` VARCHAR(255) NOT NULL AFTER `number`;
+
 COMMIT;
