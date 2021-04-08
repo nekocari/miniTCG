@@ -26,8 +26,7 @@ class TradelogController {
         }
         
         // get all entries
-        $entries = Tradelog::getAllByMemberId($_SESSION['user']->id);
-        if(!$entries){ $entries = array(); }
+        $entries = Tradelog::getAllByMemberId(Login::getUser()->getId());
         
         // set up pagination
         $pagination = new Pagination($entries, 20, $currPage, Routes::getUri('tradelog_member'));        

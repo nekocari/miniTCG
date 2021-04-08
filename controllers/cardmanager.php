@@ -46,7 +46,7 @@ class CardmanagerController {
                 if($new_status != "" AND in_array($new_status, Card::getAcceptedStati()) ){
                     
                     // do the database update
-                    $updated = Card::changeStatusById($card_id,$new_status, $_SESSION['user']->id);
+                    $updated = Card::changeStatusById($card_id,$new_status, Login::getUser()->getId());
                     
                     // if it was not successfull set an error message
                     if($updated == false){
@@ -63,7 +63,7 @@ class CardmanagerController {
         if(isset($_POST['dissolve'])){
             
             // do the database update
-            $updated = Card::dissolveCollection($_POST['dissolve'], $_SESSION['user']->id);
+            $updated = Card::dissolveCollection($_POST['dissolve'], Login::getUser()->getId());
             
             // set messages for case of sucess and for failure
             if($updated === true){
@@ -78,7 +78,7 @@ class CardmanagerController {
         if(isset($_POST['master'])){
             
             // do the database update
-            $updated = Carddeck::master($_POST['master'], $_SESSION['user']->id);
+            $updated = Carddeck::master($_POST['master'], Login::getUser()->getId());
             
             // set messages for case of sucess and for failure
             if($updated === true){
@@ -98,7 +98,7 @@ class CardmanagerController {
         // store vars to be usable in view
         $data['curr_status'] = $status;
         $data['accepted_status'] = Card::getAcceptedStati();
-        $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id,$status);
+        $data['cards'] = Card::getMemberCardsByStatus(Login::getUser()->getId(),$status);
         
         // card status
         if($status != 'collect'){

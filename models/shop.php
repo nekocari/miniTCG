@@ -20,7 +20,7 @@ class Shop {
         $this->shop_max_stock = Setting::getByName('shop_max_stock')->getValue();
     }
     
-    public function getRestockDate($format='d.m.Y H:i') {
+    public function getRestockDate($format='Y-m-d H:i') {
         $datetime = new DateTime($this->next_restock_date);
         return $datetime->format($format);
     }
@@ -32,7 +32,8 @@ class Shop {
         
         if($next_restock_datetime <= $now_datetime AND $this->getCardsSum() < $this->shop_max_stock){  
             // add interval to restock date
-            $this->next_restock_date = $now_datetime->add(new DateInterval('PT'.$this->shop_restock_minutes.'M'))->format('d.m.Y H:i');
+            $next_date = $now_datetime->add(new DateInterval('PT'.$this->shop_restock_minutes.'M'));
+            $this->next_restock_date = $next_date->format('Y-m-d H:i:s');
             // save next restock date in settings
             $setting = Setting::getByName('shop_next_restock');
             $setting->setValue($this->next_restock_date);

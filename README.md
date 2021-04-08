@@ -32,7 +32,11 @@ If you are interested in an english translation, please let me know.
   * manage Level
   * manage News
   * manage Categories (and Subcategories)
-  * manage TCG Settings (like size of decks)
+  * manage TCG Settings
+  	* size of cardimages
+  	* size of deck 
+  	* name the currency  
+  	* etc.
   * manage Rights for each Member
   * give Random Cards to Members
   * edit Member data
@@ -49,6 +53,7 @@ If you are interested in an english translation, please let me know.
   * manage Cards
   * master Decks
   * take Cards from Updates
+  * buy Cards in a Cardshop
   * Tradelog
   * edit Member data (+ Password change)
   * make Trade offers

@@ -30,7 +30,7 @@ class SystemMessages {
      *
      * @return SystemMessage|boolean
      */
-    public static function getSystemMessage($identifier) {
+    private static function getSystemMessage($identifier) {
         if(key_exists($identifier, self::$system_messages)){
             return self::$system_messages[$identifier];
         }else{
@@ -38,6 +38,11 @@ class SystemMessages {
         }
     }
     
+    /**
+     * 
+     * @param string $identifier
+     * @return string
+     */
     public static function getSystemMessageText($identifier) {
         $system_message = self::getSystemMessage($identifier);
         if($system_message instanceof SystemMessage){

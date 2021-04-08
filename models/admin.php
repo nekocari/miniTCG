@@ -8,6 +8,11 @@
  */
 require_once 'member.php';
 
+/**
+ * @deprecated
+ * @author Cari
+ *
+ */
 class Admin extends Member {
     
     private $rights = array();

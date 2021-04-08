@@ -38,7 +38,7 @@ class Game extends DbRecordModel {
      * @param string $type - Name of the game (like 'lucky_number')
      * @param int $member_id - Name of the game (like 'lucky_number')
      * 
-     * @return null|Game
+     * @return Game
      */
     public static function getById($type, $member_id) {
         
@@ -53,27 +53,6 @@ class Game extends DbRecordModel {
             $game_id = $game->create();
             $game->setPropValues(['id'=>$game_id]);
         }
-        /*
-        $game = false;
-        $db = Db::getInstance();
-        
-        $req = $db->prepare('SELECT * FROM games WHERE member = :member_id AND type = :type');
-        if($req->execute(array(':type' => $type, ':member_id' => $member_id))) {
-            if($req->rowCount()) {
-                $data = $req->fetch(PDO::FETCH_OBJ);
-                $member = Member::getById($data->member);
-                $game = new Game($data->id, $data->type, $member, $data->date);
-            }else{
-                $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
-                $req = $db->prepare('INSERT INTO games (member, type, date) VALUES(:member_id,:type,:date)');
-                if($req->execute(array(':type' => $type, ':member_id' => $member_id, ':date' => $date))) {
-                    $game = new Game($db->lastInsertId(), $type, $member_id, $date);
-                }
-            }
-        }else{
-            return false;
-        }
-        */
         
         return $game;
     }
@@ -82,22 +61,10 @@ class Game extends DbRecordModel {
      * stores the current game data into the db
      * 
      * @throws ErrorException
-     * @return boolean|string - returns either true or the string cotaining the error message
+     * @return boolean
      */
     public function store() {
         return parent::update();
-        /*
-        try {
-            $req = $this->db->prepare('UPDATE games SET type = :type, member = :member, date = :date WHERE id = :id');
-            if($req->execute(array(':type' => $this->type, ':member' => $this->member->getId(), ':date'=>$this->date, ':id'=>$this->id))){
-                return true;
-            }else{
-                throw new ErrorException('Datensatz konnte nicht aktualisiert werden.');
-            }
-        }
-        catch (Exception $e) {
-            return $e->getMessage();
-        }*/
     }
     
     /**

@@ -103,7 +103,6 @@ class Update extends DbRecordModel {
     
     /**
      * get latest public update
-     * @throws Exception
      * @return Update|NULL
      */
     public static function getLatest() {
@@ -111,7 +110,6 @@ class Update extends DbRecordModel {
         if(count($updates) > 0){
             return $updates[0];
         }else{
-            throw new Exception('Kein Update gefunden');
             return null;
         }
     }

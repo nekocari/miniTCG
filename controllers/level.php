@@ -17,20 +17,16 @@ class LevelController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        // create a new instance of admin class
-        $admin = new Admin($_SESSION['user']->id);
-        
-        if(in_array('Admin',$admin->getRights()) OR in_array('ManageLevel',$admin->getRights())){
-            
-            $data['level'] = Level::getAll();
-            
-            Layout::render('admin/level/list.php',$data);
-            
-        }else{
-            
-            Layout::render('templates/error_rights.php');
-            
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
+            die(Layout::render('templates/error_rights.php'));
         }
+        
+        $data['level'] = Level::getAll();
+        
+        Layout::render('admin/level/list.php',$data);
+            
     }
     
     /**
@@ -42,37 +38,34 @@ class LevelController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        // create a new instance of admin class
-        $admin = new Admin($_SESSION['user']->id);
-        
-        if(in_array('Admin',$admin->getRights()) OR in_array('ManageLevel',$admin->getRights())){
-            
-            $data = array();
-            
-            if(isset($_POST['addLevel'])){
-                
-                try {
-                $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
-                header("Location: ".BASE_URI.Routes::getUri('level_index'));
-                }
-                catch(Exception $e){
-                    $error_text = ' - ';
-                    if($e instanceof PDOException){
-                        if($e->getCode() == 23000){
-                            $error_text.= SystemMessages::getSystemMessageText('duplicate_key');
-                        }
-                    }
-                    $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').$error_text;
-                }
-            }
-            
-            Layout::render('admin/level/add.php',$data);
-            
-        }else{
-            
-            Layout::render('templates/error_rights.php');
-            
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
+            die(Layout::render('templates/error_rights.php'));
         }
+            
+        $data = array();
+        
+        if(isset($_POST['addLevel'])){
+            
+            try {
+            $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
+            header("Location: ".BASE_URI.Routes::getUri('level_index'));
+            }
+            catch(Exception $e){
+                $error_text = ' - ';
+                if($e instanceof PDOException){
+                    if($e->getCode() == 23000){
+                        $error_text.= SystemMessages::getSystemMessageText('duplicate_key');
+                    }
+                }
+                $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').$error_text;
+            }
+        }
+        
+        Layout::render('admin/level/add.php',$data);
+            
+        
     }
     
     /**
@@ -82,42 +75,38 @@ class LevelController {
         
         if(!isset($_SESSION['user'])){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }        
+        
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
+            die(Layout::render('templates/error_rights.php'));
         }
+            
         
-        // create a new instance of admin class
-        $admin = new Admin($_SESSION['user']->id);
+        $data = array();
+        $level = Level::getById($_GET['id']);
         
-        if(in_array('Admin',$admin->getRights()) OR in_array('ManageLevel',$admin->getRights())){
+        
+        if(isset($_POST['editLevel'])){
             
-            
-            $data = array();
-            $level = Level::getById($_GET['id']);
-            
-            
-            if(isset($_POST['editLevel'])){
+            try{
+                $level->setPropValues(['level'=>$_POST['level'],'name'=>$_POST['name'],'cards'=>$_POST['cards']]);
+                $level->update();
                 
-                try{
-                    $level->setPropValues(['level'=>$_POST['level'],'name'=>$_POST['name'],'cards'=>$_POST['cards']]);
-                    $level->update();
-                    
-                    $data['_success'][] = SystemMessages::getSystemMessageText('level_edit_success');
-                }
-                
-                catch (Exception $e){
-                    $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed');
-                    // todo: log exception
-                }
-                
+                $data['_success'][] = SystemMessages::getSystemMessageText('level_edit_success');
             }
             
-            $data['level'] = $level;
-            Layout::render('admin/level/edit.php',$data);
-            
-        }else{
-            
-            Layout::render('templates/error_rights.php');
+            catch (Exception $e){
+                $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed');
+                // todo: log exception
+            }
             
         }
+        
+        $data['level'] = $level;
+        Layout::render('admin/level/edit.php',$data);
+         
     }
     
 }

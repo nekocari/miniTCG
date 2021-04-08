@@ -21,7 +21,7 @@ class Member extends DbRecordModel {
         $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
-        $password, $cards, $masterd_decks;
+        $password, $cards, $masterd_decks, $rights;
     
         
     protected static
@@ -260,12 +260,14 @@ class Member extends DbRecordModel {
      * @return Right[]
      */
     public function getRights(){
-        $member_rights = MemberRight::getByMemberId($this->getId());
-        $rights = array();
-        foreach($member_rights as $right){
-            $rights[] = $right->getRight();
+        if(is_null($this->rights)){
+            $member_rights = MemberRight::getByMemberId($this->getId());
+            $this->rights = array();
+            foreach($member_rights as $right){
+                $this->rights[] = $right->getRight();
+            }
         }
-        return $rights;
+        return $this->rights;
     }
     
     /**

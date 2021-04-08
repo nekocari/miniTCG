@@ -74,7 +74,7 @@ class ShopCard extends DbRecordModel {
             Login::getUser()->update();
             // create the card and creat new card entry for owner;
             $card = new Card();
-            $card->setPropValues(['owner'=>Login::getUser()->getId(),'deck'=>$this->deck_id,'name'=>$this->getName(),'number'=>$this->getNumber(),'date'=>date('d.m.Y H:i:s')]);
+            $card->setPropValues(['owner'=>Login::getUser()->getId(),'deck'=>$this->deck_id,'name'=>$this->getName(),'number'=>$this->getNumber(),'date'=>date('Y-m-d H:i:s')]);
             $card->create();
             // delete from shop
             $this->delete();
