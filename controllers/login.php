@@ -200,14 +200,19 @@ class LoginController {
     		        $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
     		        
     		        // send E-Mail
-    		        mail($recipient, $title, $message, implode("\r\n", $header));
+    		        try{
+    		            mail($recipient, $title, $message, implode("\r\n", $header));
+    		            //$data['_success'][] = $pw;
+    		            $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
+    		        }
+    		        catch(Exception $e){
+    		            $data['_error'][] = SystemMessages::getSystemMessageText('unknowen_error').'<br>'.$e->getMessage();
+    		        }
     		        
-    		        //$data['_success'][] = $pw;
-    		        $data['_success'][] = SystemMessages::getSystemMessage('login_new_password_success');
     		        
 		        }else{
 		            
-		            $data['_error'][] = SystemMessages::getSystemMessage('login_new_password_success');
+		            $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_success');
 		            
 		        }
 		        
@@ -278,16 +283,32 @@ class LoginController {
 	    
 	    // if form was sent update object data
 	    if(isset($_POST['updateMemberdata'])){
-	        $memberdata->setName($_POST['Name']);
-	        $memberdata->setMail($_POST['Mail']);
-	        $memberdata->setInfoText($_POST['Text']);
-	        
-	        // if data was successfully stored return success message
-	        if(($return = $memberdata->store()) === true){
-	            $data['_success'][] = SystemMessages::getSystemMessageText('user_edit_data_success');
-	        // if update was not successfull return error message
-	        }else{
-	            $data['_error'][] = SystemMessages::getSystemMessageText('user_edit_data_failed').' - database error: '.$return;
+	        try{
+    	        $memberdata->setName($_POST['Name']);
+    	        $memberdata->setMail($_POST['Mail']);
+    	        $memberdata->setInfoText($_POST['Text']);
+	        }
+	        catch(Exception $e){
+	            switch($e->getCode()){
+	                case '8000':
+	                    $data['_info'][] = SystemMessages::getSystemMessageText($e->getCode());
+	                    break;
+	                default:
+	                    $data['_error'][] = SystemMessages::getSystemMessageText('unknowen_error');
+	                    break;
+	            }
+	        }
+	        try{
+	            // if data was successfully stored return success message
+	            if($memberdata->store()){
+	                $data['_success'][] = SystemMessages::getSystemMessageText('user_edit_data_success');
+	                // if update was not successfull return error message
+	            }else{
+	                $data['_error'][] = SystemMessages::getSystemMessageText('user_edit_data_failed');
+	            }
+	        }
+	        catch(Exception $e){
+	            $data['_error'][] = SystemMessages::getSystemMessageText('9999').'<br>'.$e->getMessage();
 	        }
 	    }
 	    
@@ -296,7 +317,7 @@ class LoginController {
 	        
 	        // try updating the password an set up message in case of success an failure
 	        if(($return = Login::setPassword($_POST['password1'],$_POST['password2'])) === true){
-	            $data['_success'][] =SystemMessages::getSystemMessageText('user_edit_pw_success');
+	            $data['_success'][] = SystemMessages::getSystemMessageText('user_edit_pw_success');
 	        }else{
 	            $data['_error'][] = SystemMessages::getSystemMessageText('user_edit_pw_failed').' '.$return;
 	        }

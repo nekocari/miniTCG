@@ -154,6 +154,8 @@
     SystemMessages::addMessage('5003', 'requested card is no longer available', 'Angefragte Karte ist nicht verfügbar.');
     SystemMessages::addMessage('5004', 'offered card is no longer available', 'Angebotene Karte ist nicht verfügbar.');
     
+    SystemMessages::addMessage('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');
+    
     // DB ERRORS
     
     SystemMessages::addMessage('9999', 'database reported an error', 'Datenbank meldet einen Fehler');    

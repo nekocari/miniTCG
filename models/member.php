@@ -342,10 +342,22 @@ class Member extends DbRecordModel {
         return $this->join_date;
     }
     
-    public function getInfoText() {
-        return $this->info_text_html;
+    public function getInfoText($mode='html') {
+        $text = '';
+        switch($mode){
+            case 'html':
+                $text = $this->info_text_html;
+                break;
+            default:
+                $text = $this->info_text;
+                break;
+        }
+        return $text;
     }
     
+    /**
+     * @deprecated
+     */
     public function getInfoTextplain() {
         return $this->text;
     }
@@ -373,8 +385,11 @@ class Member extends DbRecordModel {
     
     public function setInfoText($text) {
         $parsedown = new Parsedown();
-        $this->info_text = $text;
+        $this->info_text = strip_tags($text);
         $this->info_text_html = $parsedown->text($this->info_text);
+        if($this->info_text != $text){
+            throw new Exception('Unerlaubte Elemente wie HTML Code wurden entfernt.','8000');
+        }
     }
     
     public function setPassword($pw){

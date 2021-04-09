@@ -16,7 +16,11 @@
 		     ?>
         	<tr>
         		<td><?php echo $var; ?></td>
-        		<td><textarea class="form-control" name="<?php echo $var; ?>"><?php echo $value; ?></textarea></td>
+        		<td>
+        			<textarea class="form-control" name="<?php echo $var; ?>"><?php echo $value; ?></textarea>
+        			<small>Du kannst <a href="https://de.wikipedia.org/wiki/Markdown#Auszeichnungsbeispiele" target="_blank">Markdown</a> 
+					verwenden um den Text zu formatieren!</small>
+        		</td>
         	</tr>
 		<?php 
 		     
@@ -24,7 +28,7 @@
 		    ?>
         	<tr>
         		<td><?php echo $var; ?></td>
-        		<td><input type="email" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>"></td>
+        		<td><input type="email" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>" required></td>
         	</tr>
 		<?php 
 		     } 
