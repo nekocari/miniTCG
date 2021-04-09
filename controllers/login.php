@@ -226,44 +226,14 @@ class LoginController {
 
 	
 	/**
+	 * @deprecated moved to member controller!
+	 *
 	 * mastercards
 	 */
 	public function mastercards() {
-	    
-	    // if not logged in redirect
-	    if(!Login::loggedIn()){
-	        header("Location: ".BASE_URI.Routes::getUri('signin'));
-	    }
-	    
-	    
-	    // Vars needed
-	    $curr_page = 1;
-	    $order = 'ASC';
-	    $order_by = 'deckname';
-	    
-	    // process post vars if exist
-	    if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
-	        $curr_page = intval($_GET['pg']);
-	    }
-	    if(isset($_GET['order'])){
-	        $order = $_GET['order'];
-	    }
-	    if(isset($_GET['order_by'])){
-	        $order_by = $_GET['order_by'];
-	    }
-	    
-	    // get masterd sets from database
-	    $masters = Master::getMasterdByMember($_SESSION['user']->id,$order_by,$order);
-	    
-	    // pagination
-	    $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards'));
-	    
-	    // set vars accessable in view
-	    $data['mastered_decks'] = $pagination->getElements();
-	    $data['pagination'] = $pagination->getPaginationHtml();
-	    
-	    // render page
-	    Layout::render('login/mastercards.php',$data);
+	    require_once PATH.'controllers/member.php';
+	    $member_controller = new MemberController();
+	    $member_controller->mastercards();
 	}
 	
 	
@@ -279,7 +249,7 @@ class LoginController {
 	    }
 	    
     	// get data of current member
-	    $memberdata = Member::getById($_SESSION['user']->id);
+	    $memberdata = Member::getById(Login::getUser()->getId());
 	    
 	    // if form was sent update object data
 	    if(isset($_POST['updateMemberdata'])){

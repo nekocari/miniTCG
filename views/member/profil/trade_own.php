@@ -14,12 +14,9 @@
 </ul>
 
 <div class="my-4">
-    <div class="alert alert-info" role="alert">
-    	Klicke auf eine Karte um <?php echo $member->getName(); ?> ein Tauschangebot zu machen!
-    </div>
-    <?php foreach($cat_elements as $card){ ?>
-        <a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>"><?php echo $card->getImageHtml(); ?></a>
-	<?php } ?>
+<?php foreach($cat_elements as $card){ ?>
+    <?php echo $card->getImageHtml(); ?>
+<?php } ?>
 </div>
 
 <?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>

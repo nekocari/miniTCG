@@ -40,7 +40,7 @@
     
     Routes::addRoute('member_dashboard', 'member/dashboard.php', 'login', 'dashboard');
     Routes::addRoute('member_cardmanager', 'member/cardmanager.php', 'cardmanager', 'cardmanager');
-    Routes::addRoute('member_mastercards', 'member/mastercards.php', 'login', 'mastercards');
+    Routes::addRoute('member_mastercards', 'member/mastercards.php', 'member', 'mastercards');
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     
     Routes::addRoute('messages_recieved', 'member/inbox.php', 'message', 'received');
