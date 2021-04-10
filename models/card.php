@@ -16,6 +16,8 @@ class Card extends DbRecordModel {
     
     protected $id, $name, $deck, $number, $owner, $status, $date, $owner_obj, $deck_obj;
     
+    private $is_tradeable;
+    
     protected static 
         $db_table = 'cards',
         $db_pk = 'id',
@@ -176,15 +178,18 @@ class Card extends DbRecordModel {
     }
     
     public function isTradeable() {
-        $tradeable = false;
-        if($this->status == 'trade'){
-            $query = 'SELECT count(*) FROM trades WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
-            $trades = $this->db->query($query)->fetchColumn();
-            if($trades == 0){
-                $tradeable = true;
+        if(is_null($this->is_tradeable)){
+            $this->is_tradeable = false;
+            if($this->status == 'trade'){
+                // TODO: make use of: Trade::getWhere($condition)
+                $query = 'SELECT count(*) FROM trades WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
+                $trades = $this->db->query($query)->fetchColumn();
+                if($trades == 0){
+                    $this->is_tradeable = true;
+                }
             }
         }
-        return $tradeable;
+        return $this->is_tradeable;
     }
     
     public static function createRandomCard($user_id,$number=1,$tradelog_text = '') {

@@ -14,7 +14,8 @@
 
 <div>
 <?php foreach($cards as $card){ ?>
-	<div class="d-inline-block text-center m-1">
+	<div class="d-inline-block text-center m-1 card-cardmanager
+	   <?php if($card->missingInKeep()){ echo " card-missing-keep"; } if($card->missingInCollect()){ echo " card-missing-collect"; } ?>">
 		<div>
 			<?php echo $card->getImageHtml(); ?>
 		</div>
@@ -23,12 +24,7 @@
 		</div>
 		<div>
         	<select class="form-control form-control-sm" name="newStatus[<?php echo $card->getId(); ?>]">
-        		<option></option>
-        		<?php 
-        		foreach(array('trade','keep','collect') as $status){ 
-        		  if($curr_status != $status) echo "<option>$status</option>";
-        		} 
-        		?>
+        		<?php echo $card->getSortingOptionsHTML(); ?>
         	</select>
     	</div>
 	</div>

@@ -155,7 +155,7 @@ class Carddeck extends DbRecordModel {
             $req = $db->prepare('DELETE FROM cards WHERE owner = :member AND deck = :deck AND status=\'collect\' ');
             $req->execute(array(':deck'=>$deck, ':member'=>$member));
             if($req->rowCount() != Setting::getByName('cards_decksize')->getValue()){
-                throw new Exception('Das Deck ist nicht komplett!');
+                throw new Exception('Das Deck ist nicht komplett!','');
             }
             // add master
             $req = $db->prepare('INSERT INTO decks_master (deck,member) VALUES (:deck,:member) ');

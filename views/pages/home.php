@@ -4,8 +4,4 @@
 </div>
 
 
-<?php
-
-require_once PATH.'models/news.php'; 
-News::display(3); 
-?>
+<?php News::display(3); ?>

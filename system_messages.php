@@ -146,6 +146,7 @@
     
     SystemMessages::addMessage('1001', 'invalid character', 'Ungültiges Zeichen');
     SystemMessages::addMessage('2001', 'invalid parameter', 'Ungültige Parameter.');
+    SystemMessages::addMessage('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');
     
     // TRADE ERROR CODES
     
@@ -154,7 +155,13 @@
     SystemMessages::addMessage('5003', 'requested card is no longer available', 'Angefragte Karte ist nicht verfügbar.');
     SystemMessages::addMessage('5004', 'offered card is no longer available', 'Angebotene Karte ist nicht verfügbar.');
     
-    SystemMessages::addMessage('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');
+    // CARD MANGAGMENT CODES
+    SystemMessages::addMessage('6000', '', '');
+    SystemMessages::addMessage('6001', '', '');
+    SystemMessages::addMessage('6002', 'card already in collection', 'Karte befindet sich schon in Sammlung.');
+    SystemMessages::addMessage('6003', 'collection is incomplete', 'Sammlung ist unvollständig.');
+    SystemMessages::addMessage('6004', '', '');
+    SystemMessages::addMessage('6005', '', '');
     
     // DB ERRORS
     

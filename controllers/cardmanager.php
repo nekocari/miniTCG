@@ -6,6 +6,7 @@ require_once PATH.'models/login.php';
 require_once PATH.'models/card.php';
 require_once PATH.'models/setting.php';
 require_once PATH.'models/carddeck.php';
+require_once PATH.'models/cardmanager.php';
 require_once PATH.'helper/pagination.php';
 require_once PATH.'models/master.php';
 require_once PATH.'models/member.php';
@@ -26,13 +27,13 @@ class CardmanagerController {
         if(isset($_GET['status']) AND in_array($_GET['status'], Card::getAcceptedStati())){
             $status = $_GET['status'];
             
-            // set $status to new by default
         }else{
+            // set $status to new by default
             $status = 'new';
             
             // a status is given but invalid then set error message
             if(isset($_GET['status'])){
-                $data['_error'][] = SystemMessages::getSystemMessage('cardmanager_status_invalid')." <i>".$_GET['status']."</i>";
+                $data['_error'][] = SystemMessages::getSystemMessageText('cardmanager_status_invalid')." <i>".$_GET['status']."</i>";
             }
         }
         
@@ -96,10 +97,11 @@ class CardmanagerController {
         }
         
         // store vars to be usable in view
+        $cardmanager = new Cardmanager(Login::getUser()->getId(),'join'); // if join runs slow, try using exists
         $data['curr_status'] = $status;
         $data['accepted_status'] = Card::getAcceptedStati();
-        $data['cards'] = Card::getMemberCardsByStatus(Login::getUser()->getId(),$status);
-        
+        $data['cards'] = $cardmanager->getCardsByStatus($status);
+        //var_dump($data['cards']);
         // card status
         if($status != 'collect'){
             

@@ -39,6 +39,25 @@
 	margin: 2px;
 	background-color: rgba(0,0,0,0.2);
 }
+
+.card-cardmanager {
+	border-radius: 0.25rem;
+	border: 1px solid lightgrey;
+	background-color: white;
+	padding: 0.25rem;
+}
+.card-missing-collect {
+	background-color: #f8e2fa;
+	border-color: purple;
+	color: purple;
+}
+
+.card-missing-keep {
+	background-color: #c0dee4;
+	border-color: teal;
+	color: teal;
+}
+
 .puzzle-view > .cardimage {
 		margin: 0;
 }
