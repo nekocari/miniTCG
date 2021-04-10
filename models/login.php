@@ -184,19 +184,8 @@ class Login {
             $recipient  = $mail;
             // title
             $title = 'Deine Anmeldung bei '.$app_name;
-            // set message
-            $message = '
-                <html>
-                <head>
-                  <title>Deine Anmeldung bei '.$app_name.'</title>
-                </head>
-                <body>
-                  <p>Vielen Dank für deine Anmeldung!<br>
-                    Mit dieser Mail erhältst du deine Anmeldedaten.</p>
-                  <p>Benutzername: '.$name.'<br>
-                    Passwort: '.$pw.'</p>
-                </body>
-                </html> ';
+            $message = file_get_contents(PATH.'inc/mail_template_sign_up.php');
+            $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$pw,$app_name], $message);
             
             // set mail header
             $header[] = 'MIME-Version: 1.0';
@@ -205,6 +194,7 @@ class Login {
             
             // send E-Mail
             if(!mail($recipient, $title, $message, implode("\r\n", $header))){
+                //echo $message;
                 throw new Exception('Welcome mail not sent.');
             }
             
@@ -296,7 +286,33 @@ class Login {
         $req->execute(array(':password'=>password_hash($pw,PASSWORD_BCRYPT), ':mail'=>$mail));
         
         if($req->rowCount() == 1){
-            return $pw;
+            
+            // get application mail and name from settings
+            $app_name = Setting::getByName('app_name')->getValue();
+            $app_mail = Setting::getByName('app_mail')->getValue();
+            // get member name
+            $name = Member::getByMail($_POST['mail'])->getName();
+            
+            // set recipient
+            $recipient  = $_POST['mail'];
+            // title
+            $title = 'Neues Passwort für '.$app_name;
+            // set message
+            $message = file_get_contents(PATH.'inc/mail_template_reset_pw.php');
+            $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$pw,$app_name], $message);
+            
+            // set mail header
+            $header[] = 'MIME-Version: 1.0';
+            $header[] = 'Content-type: text/html; charset=UTF-8';
+            $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+            
+            
+            if(!mail($recipient, $title, $message, implode("\r\n", $header))){
+                throw new ErrorException('login_new_password_not_sent');
+                return false;
+            }
+            
+            return true;
         }else{
             return false;
         }

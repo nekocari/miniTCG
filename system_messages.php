@@ -81,6 +81,7 @@
     SystemMessages::addMessage('login_sign_up_username_or_mail_taken', 'username or e-mail is already taken', 'Benutzername oder E-Mailadresse bereits belegt.');
     SystemMessages::addMessage('login_new_password_success', 'a new password was send to your e-mail', 'Neues Passwort wurde an deine E-Mailadresse gesendet.');
     SystemMessages::addMessage('login_new_password_failed', 'no password to reset', 'Passwort nicht zurück gesetzt.');
+    SystemMessages::addMessage('login_new_password_not_sent', 'password was reset, but mail could not be sent', 'Passwort zurück gesetzt, doch Mail konnte nicht gesendet werden.');
     
     // CARDMANAGER
     SystemMessages::addMessage('cardmanager_status_invalid', 'the selected status is invalid:', 'Der übergebene Status ist ungültig:'); // NOTE: status name will be displayed after the text!

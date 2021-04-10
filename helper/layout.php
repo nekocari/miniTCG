@@ -29,7 +29,10 @@ class Layout {
             $tcg_categories = Category::getALL();
             
             // benachrichtigungenerstellen (sidebar)
-            $tcg_notifications = new Notification();;
+            $tcg_notifications = new Notification();
+            
+            // members online
+            $tcg_members_online = new MembersOnline();
             
             
             require_once self::$headerTemplate;

@@ -162,68 +162,32 @@ class LoginController {
         // if is logged in redirect to dashboard
         if(Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
-			
 		}else{
 		    
 	    	$data = array();
 	    	
 		    if(isset($_POST['reset']) AND isset($_POST['mail'])){
-		    		        
 		        // try setting a new random password and store it into $pw
-		        if(($pw = Login::resetPassword($_POST['mail'])) !== false){
-		            // get application mail and name from settings
-		            $app_name = Setting::getByName('app_name')->getValue();
-		            $app_mail = Setting::getByName('app_mail')->getValue();
-		            // get member name
-		            $member_name = Member::getByMail($_POST['mail'])->getName();
-		            
-    		        // set recipient
-    		        $recipient  = $_POST['mail'];
-    		        // title
-    		        $title = 'Neues Passwort für '.$app_name;
-    		        // set message
-    		        $message = '
-                        <html>
-                        <head>
-                          <title>Neues Passwort für '.$app_name.'</title>
-                        </head>
-                        <body>
-                          <p>Für deinen Account wurde ein neues Passwort angefordert. Das alte ist ab sofort ungültig.</p>
-                          <p>Benutzername: '.$member_name.'<br>
-                            neues Passwort: '.$pw.'</p>
-                        </body>
-                        </html> ';
-    		        
-    		        // set mail header
-    		        $header[] = 'MIME-Version: 1.0';
-    		        $header[] = 'Content-type: text/html; charset=UTF-8';
-    		        $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
-    		        
-    		        // send E-Mail
-    		        try{
-    		            mail($recipient, $title, $message, implode("\r\n", $header));
-    		            //$data['_success'][] = $pw;
-    		            $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
-    		        }
-    		        catch(Exception $e){
-    		            $data['_error'][] = SystemMessages::getSystemMessageText('unknowen_error').'<br>'.$e->getMessage();
-    		        }
-    		        
-    		        
-		        }else{
-		            
-		            $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_success');
-		            
+		        try {
+		            if(Login::resetPassword($_POST['mail'])){
+		              $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
+		            }else{
+		              $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_failed');
+		            }
 		        }
-		        
+		        catch(Exception $e){
+		            $sys_msg = SystemMessages::getSystemMessageText($e->getMessage());
+		            if($sys_msg == 'TEXT MISSING'){
+		                $sys_msg = SystemMessages::getSystemMessageText('unknowen_error').'<br>'.$e->getMessage();
+		            }
+		            $data['_error'][] = $sys_msg;
+		        }
 		    }
-		        
+		    
 		    Layout::render('login/lost_password.php', $data);
 	    	
 		}
 	}
-	
-
 	
 	/**
 	 * @deprecated moved to member controller!
