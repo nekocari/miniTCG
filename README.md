@@ -22,51 +22,49 @@ If you are interested in an english translation, please let me know.
 
 ## Current Features
 
-* Login System
-  * Sign Up
-  * Sign In
-  * Sign Out
-* Admin Panel
-  * manage Decks incl. file upload
-  * manage Cardupdates
-  * manage Level
-  * manage News
-  * manage Categories (and Subcategories)
-  * manage TCG Settings
+* login system
+* admin panel
+  * manage decks incl. file upload
+  * manage cardupdates
+  * manage level
+  * manage news
+  * manage categories (and subcategories)
+  * manage app settings
   	* size of cardimages
   	* size of deck 
   	* name the currency  
   	* etc.
-  * manage Members
-  	* manage Rights 
-  	* give Random Cards
+  * manage members
+  	* manage rights 
+  	* gift random cards
   	* edit profil data
-  	* delete Accounts
-* Public Functions
-  * Homepage
-  * display News
-  * Deck list
-  * Member list
-  * display online Members
-* Member Functions
-  * view Decks
-  * Messages (Inbox)
-  * manage Cards
-  * master Decks
-  * take Cards from Updates
-  * search Cards
-  * buy Cards in a Cardshop
-  * Tradelog
-  * edit Member data (+ Password change)
-  * make Trade offers
-  * respond to Trade offers 
-  * delete Account
-  * automated Level Ups
+  	* delete accounts
+* public functions
+  * homepage
+  * display news
+  * deck list
+  * member list
+  * display online members
+* member functions
+  * view decks
+  * messages (inbox)
+  * manage cards
+  	* pre selection keep/collect cards
+  	* highlighting keep/collect cards
+  * master decks
+  * take cards from updates
+  * search cards
+  * buy cards in a cardshop
+  * tradelog
+  * edit member data (+ password change)
+  * make trade offers
+  * respond to trade offers 
+  * delete account
+  * automated level ups
 
    
 ## Features TBA
 * enable messaging between members
-* some sort of "highlighting" for Card managment 
 * admins can reset passwords
 * admins can gift "money"
 * allow comments on news
@@ -76,3 +74,8 @@ If you are interested in an english translation, please let me know.
 ## Authors
 
 * **Carina Patzina** - *Initial work* - [NekoCari](https://github.com/nekocari)
+
+
+## Special Thanks
+Big shoutout to Kasu :3 who's supporting miniTCG by using it for her upcoming tcg!
+[Disciples of Art](https://doa.darkcharms.de/)
