@@ -14,8 +14,8 @@
 
 <div>
 <?php foreach($cards as $card){ ?>
-	<div class="d-inline-block text-center m-1 card-cardmanager
-	   <?php if($card->missingInKeep()){ echo " card-missing-keep"; } if($card->missingInCollect()){ echo " card-missing-collect"; } ?>">
+	<div class="d-inline-block text-center m-1 card-cardmanager <?php if($card->missingInKeep()){ echo " card-missing-keep"; } 
+	   if($card->missingInCollect()){ echo " card-missing-collect"; } if($card->mastered()){ echo " card-mastered"; } ?>">
 		<div>
 			<?php echo $card->getImageHtml(); ?>
 		</div>

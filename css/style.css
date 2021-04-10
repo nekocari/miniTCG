@@ -58,6 +58,10 @@
 	color: teal;
 }
 
+.card-mastered {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
+}
+
 .puzzle-view > .cardimage {
 		margin: 0;
 }

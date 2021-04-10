@@ -10,7 +10,7 @@ require_once PATH.'models/card.php';
 
 class CardCardmanager extends Card {
     
-    protected $keep_flag, $collect_flag, $in_keep_flag, $in_collect_flag;
+    protected $keep_flag, $collect_flag, $mastered_flag, $in_keep_flag, $in_collect_flag;
     
     public function __construct() {
         parent::__construct();
@@ -38,6 +38,13 @@ class CardCardmanager extends Card {
             return true;
         }
     }
+    public function mastered(){
+        if(!$this->mastered_flag){
+            return false;
+        }else{
+            return true;
+        }
+    }
     
     public function getSortingOptions(){
         $options = array();
@@ -51,7 +58,7 @@ class CardCardmanager extends Card {
                     case 'keep':
                         $option['name'] = $status;
                         $option['value'] = $status;
-                        if($this->missingInKeep()){
+                        if($this->missingInKeep() AND $this->status == 'new'){
                             $option['prop_selected'] = true;
                         }else{
                             $option['prop_selected'] = false;
@@ -62,7 +69,7 @@ class CardCardmanager extends Card {
                         if($this->in_collect_flag == 0){
                             $option['name'] = $status;
                             $option['value'] = $status;
-                            if($this->missingInCollect()){
+                            if($this->missingInCollect() AND $this->status == 'new'){
                                 $option['prop_selected'] = true;
                             }else{
                                 $option['prop_selected'] = false;

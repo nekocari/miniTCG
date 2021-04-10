@@ -64,6 +64,7 @@ class Cardmanager {
                     $sql = "SELECT c.*,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status = 'collect' and deck = c.deck) as collect_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status = 'keep' and deck = c.deck) as keep_flag,
+                        	EXISTS (SELECT 1 FROM decks_master WHERE member = c.owner and deck = c.deck) as mastered_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status = 'collect' and deck = c.deck AND number = c.number) as in_collect_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status = 'keep' and deck = c.deck AND number = c.number) as in_keep_flag
                             FROM cards c $join_partial
@@ -71,12 +72,14 @@ class Cardmanager {
                             ORDER BY name ASC";
                     break;
                 default:
-                    $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
+                    $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
                             FROM cards c $join_partial
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".Login::getUser()->getId()." AND status = 'collect')
                                 collect ON collect.deck = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".Login::getUser()->getId()." AND status = 'keep')
                                 keep ON keep.deck = c.deck
+                            LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".Login::getUser()->getId().")
+                                mastered ON mastered.deck = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, number, status, 1 as flag FROM cards WHERE owner = ".Login::getUser()->getId()." AND status = 'collect')
                                 in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
                             LEFT JOIN (SELECT DISTINCT deck, number, status, 1 as flag FROM cards WHERE owner = ".Login::getUser()->getId()." AND status = 'keep')
