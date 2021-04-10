@@ -309,7 +309,7 @@ class AdminController {
             $member = Member::getById($_GET['id']);
             $member_rights = array();
             foreach($member->getRights() as $right){
-                $member_rights[] = $right->getName();
+                $member_rights[] = $right;
             }
             // get all possible rights
             $data['rights'] = Right::getAll();
