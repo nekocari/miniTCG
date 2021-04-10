@@ -2,13 +2,14 @@
 
 <div class="table-responsive">
     <table class="table">
-    	<?php foreach($subcategories as $subcategory){ ?>
+    	<?php foreach($subcategories as $subcategory){ 
+    	    if(count($subcategory->getDecks()) > 0){ ?>
 		<thead class="thead-light">
         	<tr>
         		<th colspan="3"><?php echo $subcategory->getName(); ?></th>
         	</tr>
     	</thead>
-        	<?php foreach($decks[$subcategory->getId()] as $deck){ ?>
+        	<?php foreach($subcategory->getDecks() as $deck){ ?>
         	<tr>
         		<td><?php echo $deck->getId(); ?></td>
         		<td><a class="deckname" href="<?php echo $deck->getDeckpageUrl(); ?>"><?php echo $deck->getDeckname(); ?></a><br>
@@ -17,6 +18,7 @@
         			<small>von <?php echo $deck->getCreatorName(); ?></small></td>
         	</tr>
         	<?php } ?>
-    	<?php } ?>
-    </table>
- </div>
+    	<?php }
+        } ?>
+	</table>
+</div>

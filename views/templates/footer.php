@@ -16,7 +16,7 @@
         			<?php }else{ ?>
         			<!-- Navigation if logged in -->
         			<div class="card my-4">
-        				<div class="card-header">Hallo <b><?php echo $_SESSION['user']->name; ?></b></div>
+        				<div class="card-header">Hallo <b><?php echo Login::getUser()->getName(); ?></b></div>
     					<div class="list-group list-group-flush">
     						<a class="list-group-item" href="<?php echo ROUTES::getUri('member_dashboard');?>">Mitgliedsbereich</a>
             				<a class="list-group-item" href="<?php echo ROUTES::getUri('messages_recieved');?>">Nachrichten (<?php echo $tcg_notifications->getMessageCountNew(); ?>)</a>
@@ -24,6 +24,13 @@
             				<a class="list-group-item" href="<?php echo ROUTES::getUri('signout');?>">Ausloggen</a>
     					</div>
         			</div>
+        			
+					<?php if(count(Login::getUser()->getRights()) > 0){ ?>
+        			<!-- Link to ACP if user has any special rights -->
+					<div class="my-4">
+						<a class="btn btn-block btn-primary text-center" href="<?php echo ROUTES::getUri('admin_dashboard');?>">Administation</a>
+					</div>
+					<?php } ?>
         				
         			<?php } ?>
         			
@@ -41,8 +48,7 @@
 			<!-- Footer -->
 			<div class="text-center">
     			<p><hr>
-    				miniTCG by <a href="http://www.heavenspell.de">Cari</a><br>
-    				<small><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Administration</a></small>
+    				<a href="https://github.com/nekocari/miniTCG/" target="_blank">miniTCG</a> by <a href="https://www.heavenspell.de" target="_blank">Cari</a>
     			</p>
 			</div>
 		

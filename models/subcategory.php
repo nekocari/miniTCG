@@ -12,6 +12,7 @@ require_once PATH.'models/category.php';
 class Subcategory extends Category {
     
     protected $category;
+    private $decks;
     
     protected static
     $db_table = 'subcategories',
@@ -40,6 +41,13 @@ class Subcategory extends Category {
     
     public static function getById($id){
         return parent::getByPk($id);
+    }
+    
+    public function getDecks($status='public',$order_settings=['deckname'=>'ASC']){
+        if(is_null($this->decks)){
+            $this->decks = Carddeck::getBySubcategory($this->getId(),$status,$order_settings);
+        }
+        return $this->decks;
     }
     
    
