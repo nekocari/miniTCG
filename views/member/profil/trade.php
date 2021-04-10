@@ -18,8 +18,24 @@
     	Klicke auf eine Karte um <?php echo $member->getName(); ?> ein Tauschangebot zu machen!
     </div>
     <?php foreach($cat_elements as $card){ ?>
-        <a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>"><?php echo $card->getImageHtml(); ?></a>
+        <div class="d-inline-block card-member-profil <?php if($card->missingInKeep()){ echo " card-missing-keep"; } 
+        if($card->missingInCollect()){ echo " card-missing-collect"; } if($card->mastered()){ echo " card-mastered"; } ?>">
+        	<a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>">
+            	<?php echo $card->getImageHtml(); ?>
+        	</a>
+        	<?php if($card->getPossessionCounter() > 1){ ?>
+    		<span class="badge badge-dark"><?php echo $card->getPossessionCounter(); ?></span>
+    		<?php } ?>
+    </div>
 	<?php } ?>
 </div>
 
+
+<div class="text-center my-2">
+	<small>
+		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in Keep</span>
+		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Collect</span>
+		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
+	</small>
+</div>
 <?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>

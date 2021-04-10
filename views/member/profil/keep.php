@@ -14,9 +14,14 @@
 </ul>
 
 <div class="my-4">
-<?php foreach($cat_elements as $card){
-    echo $card->getImageHtml();
-}?>
+<?php foreach($cat_elements as $card){ ?>
+    <div class="d-inline-block card-member-profil">
+    <?php echo $card->getImageHtml(); ?>
+    	<?php if($card->getPossessionCounter() > 1){ ?>
+    		<span class="badge badge-dark"><?php echo $card->getPossessionCounter(); ?></span>
+    	<?php } ?>
+	</div>
+<?php } ?>
 </div>
 
 <?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>

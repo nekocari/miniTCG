@@ -15,7 +15,12 @@
 
 <div class="my-4">
 <?php foreach($cat_elements as $card){ ?>
-    <?php echo $card->getImageHtml(); ?>
+    <div class="d-inline-block card-member-profil">
+        <?php echo $card->getImageHtml(); ?>
+    	<?php if($card->getPossessionCounter() > 1){ ?>
+    		<span class="badge badge-dark"><?php echo $card->getPossessionCounter(); ?></span>
+    	<?php } ?>
+	</div>
 <?php } ?>
 </div>
 

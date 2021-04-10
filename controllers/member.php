@@ -25,7 +25,7 @@ class MemberController {
      */
     public function profil() {
         
-        if(!isset($_SESSION['user'])){ header('Location: '.BASE_URI.'error_login.php'); }
+        //if(!isset($_SESSION['user'])){ header('Location: '.BASE_URI.'error_login.php'); }
         if(!isset($_GET['id'])){  header('Location: '.BASE_URI.'error.php'); }
             
         
@@ -55,14 +55,14 @@ class MemberController {
                 break;
                 
             case 'trade':
-                $data['cat_elements'] = $data['member']->getCardsByStatus($cat,true);
+                $data['cat_elements'] = $data['member']->getProfilCardsByStatus($cat);
                 break;
             case 'keep':
-                $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
+                $data['cat_elements'] = $data['member']->getProfilCardsByStatus($cat);
                 break;
                 
             case 'collect':
-                $data['cat_elements'] = $data['member']->getCardsByStatus($cat);
+                $data['cat_elements'] = $data['member']->getProfilCardsByStatus($cat);
                 $data['collections'] = array();
                 foreach($data['cat_elements'] as $card){
                     $data['collections'][$card->getDeckId()][$card->getNumber()] = $card;
@@ -80,7 +80,7 @@ class MemberController {
         $data['cat_elements'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         
-        if($cat == 'trade' AND $data['member']->getId() == Login::getUser()->getId()){
+        if($cat == 'trade' AND Login::loggedIn() AND $data['member']->getId() == Login::getUser()->getId()){
             $data['partial_uri'] = PATH.'views/member/profil/'.$cat.'_own.php';
         }else{
             $data['partial_uri'] = PATH.'views/member/profil/'.$cat.'.php';

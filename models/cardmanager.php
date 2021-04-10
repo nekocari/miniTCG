@@ -57,8 +57,8 @@ class Cardmanager {
         
         // check if array element does already exist
         // if not try to get the values from the Database
-        if(!isset($cards[$status][$trade_locked])){
-            $cards[$status][$trade_locked] = array();
+        if(!isset($this->cards[$status][$trade_locked])){
+            $this->cards[$status][$trade_locked] = array();
             switch($this->query_style){
                 case 'exists':
                     $sql = "SELECT c.*,
@@ -92,12 +92,12 @@ class Cardmanager {
             $req = $this->db->query($sql);
             
             foreach($req->fetchALL(PDO::FETCH_CLASS,'CardCardmanager') as $card){
-                $cards[$status][$trade_locked][] = $card;
+                $this->cards[$status][$trade_locked][] = $card;
             }
             
         }
         
         // return an array of card objects
-        return $cards[$status][$trade_locked];
+        return $this->cards[$status][$trade_locked];
     }
 }

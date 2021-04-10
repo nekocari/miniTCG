@@ -42,10 +42,25 @@
 
 .card-cardmanager {
 	border-radius: 0.25rem;
-	border: 1px solid lightgrey;
+	border: 1px solid rgba(0,0,0,0.25);
 	background-color: white;
 	padding: 0.25rem;
 }
+.card-member-profil {
+	border-radius: 0.25rem;
+	border: 1px solid transparent;
+	background-color: transparent;
+	padding: 0.25rem;
+	margin: 0.1rem;
+	position: relative;
+}
+
+.card-member-profil .badge {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
 .card-missing-collect {
 	background-color: #f8e2fa;
 	border-color: purple;
@@ -60,6 +75,7 @@
 
 .card-mastered {
 	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(0,0,0,0.25);
 }
 
 .puzzle-view > .cardimage {

@@ -9,6 +9,7 @@
 
 require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/card.php';
+require_once PATH.'models/card_member_profil.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/master.php';
 require_once PATH.'models/level.php';
@@ -21,7 +22,7 @@ class Member extends DbRecordModel {
         $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
-        $password, $cards, $masterd_decks, $rights;
+        $password, $cards, $masterd_decks, $rights, $profil_cards;
     
         
     protected static
@@ -126,6 +127,15 @@ class Member extends DbRecordModel {
             $this->cards[$status] = Card::getMemberCardsByStatus($this->id, $status, $only_tradeable);
         }
         return $this->cards[$status];
+    }
+    
+    /**
+     */
+    public function getProfilCardsByStatus($status, $only_tradeable = true){
+        if(!isset($this->profil_cards[$status])){
+            $this->profil_cards[$status] = CardMemberProfil::getCardsByStatus($this->getId(), $status);
+        }
+        return $this->profil_cards[$status];
     }
     
     /**
