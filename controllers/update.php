@@ -244,11 +244,11 @@ class UpdateController {
             // get all decks from current update
             $data['update_decks'] = Carddeck::getInUpdate($curr_update->getId());
         
-            Layout::render('login/take_update_cards.php',$data);
+            Layout::render('update/take_update_cards.php',$data);
             
         }else{
             
-            Layout::render('login/no_new_update.php');
+            Layout::render('update/no_new_update.php');
             
         }
     }
