@@ -28,7 +28,11 @@
     		
         		<!-- Content -->
 				<div class="col-12 col-lg-9" id="content">
-				<?php echo $setup_result_message; ?>
+    				<p><?php echo $setup_result_message; ?></p>
+    				
+    				<?php if(isset($errors)){ foreach($errors as $file => $e){ ?>
+        				<!-- <?php  echo 'Fehler --'.$file.' -- '.$e.'';  ?> -->
+        			<?php }} ?>
 				</div>
 				
 			</div>

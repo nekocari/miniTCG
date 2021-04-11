@@ -2,5 +2,5 @@
 .project
 .buildpath
 /img/
-/setup/update_kasu1.sql
+/setup/update_doa/
 db_changes.txt

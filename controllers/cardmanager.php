@@ -119,8 +119,16 @@ class CardmanagerController {
             // store some more vars for the view
             $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
             $data['cards_per_row'] = Setting::getByName('deckpage_cards_per_row')->getValue();
-            $data['searchcard_html'] = Card::getSerachcardHtml();
             $data['collections'] = array();
+            $data['searchcard_html'] = Card::getSearchcardHtml();
+            $data['use_special_puzzle_filler'] = $use_special_puzzle_filler = Setting::getByName('card_filler_use_puzzle')->getValue();
+            for($i = 1; $i <= Setting::getByName('cards_decksize')->getValue(); $i++){
+                if($use_special_puzzle_filler == 0){
+                    $data['searchcard_html_'.$i] = $data['searchcard_html'];
+                }else{
+                    $data['searchcard_html_'.$i] = Card::getSearchcardHtml('puzzle',$i);
+                }
+            }
             
             // go throug the cards an build collection array for each deck
             foreach($data['cards'] as $card){

@@ -161,19 +161,29 @@ class Card extends DbRecordModel {
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
     
-    public static function getSerachcardHtml($mode='default', $number=1) {
+    public static function getSearchcardURL($mode='default', $number=1){
+        if(!in_array($mode,['default','puzzle'])){
+            $mode = 'default';
+        }
         switch($mode){
             case 'default':
-                $url = CARDS_FOLDER.'searchcards/default.png';
+                $url = Setting::getByName('card_filler_general_image')->getValue();
                 break;
-            default:
-                $url = CARDS_FOLDER.'searchcards/puzzle/'.$number.'.png';
+            case 'puzzle':
+                $folder_url = Setting::getByName('card_filler_puzzle_folder')->getValue();
+                if(substr($folder_url,strlen($folder_url)-1,1) != '/'){
+                    $folder_url.= '/';
+                }
+                $url = $folder_url.$number.'.'.Setting::getByName('cards_file_type')->getValue();
                 break;
         }
-        
+        return $url;
+    }
+    
+    public static function getSearchcardHtml($mode='default', $number=1) {
+        $image_url = self::getSearchcardUrl($mode, $number); 
         $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
-        $replace = array(self::$tpl_width, self::$tpl_height, $url);
-        
+        $replace = array(self::$tpl_width, self::$tpl_height, $image_url);
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
     
