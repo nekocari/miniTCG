@@ -431,4 +431,11 @@ ALTER TABLE `shop_cards`
 
 ALTER TABLE `shop_cards` ADD `name` VARCHAR(255) NOT NULL AFTER `number`;
 
+
+-- updates für seachcards
+INSERT INTO `settings` (`name`, `value`, `description`) 
+VALUES ('card_filler_general_image', 'img/searchcards/searchcard.gif', 'Pfad vom Basispfad zur Grafik für gesuchte Karten'), 
+	('card_filler_puzzle_folder', 'img/searchcards/puzzle/', 'Pfad vom Basispfad zum Ordner mit Grafiken für gesuchte Puzzle Karten<br>(Benennung: 1.[Dateityp der Karten] usw.)'),
+	('card_filler_use_puzzle', '0', 'Speziellen Filler für Puzzle Decks verwenden? [1=Ja|0=Nein]');
+
 COMMIT;
