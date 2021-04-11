@@ -22,7 +22,11 @@
     	    if(key_exists($i,$collection)) {
     	        echo $collection[$i]->getImageHtml();
     	    }else{
-    	        echo $searchcard_html;
+    	        if(!$deckdata[$deck_id]->isPuzzle()){
+    	            echo $searchcard_html;
+    	        }else{
+    	            echo ${'searchcard_html_'.$i};
+    	        }
     	    }
     	    if($i%$cards_per_row == 0){ echo '<br>'; }
     	} 
