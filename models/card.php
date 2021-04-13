@@ -148,7 +148,7 @@ class Card extends DbRecordModel {
     public function getImageUrl() {
         $setting_file_type = Setting::getByName('cards_file_type');
         $deckname = $this->getDeckname();
-        $url = CARDS_FOLDER.$deckname.'/'.$deckname.$this->getNumber().'.'.$setting_file_type->getValue();
+        $url = Carddeck::getDecksFolder().$deckname.'/'.$deckname.$this->getNumber().'.'.$setting_file_type->getValue();
         return $url;
     }
     

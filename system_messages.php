@@ -1,6 +1,6 @@
 <?php
     // DO NOT EDIT THIS LINE -----------------
-    require_once 'inc/system_messages.php';
+    require_once 'helper/system_messages.php';
     //----------------------------------------
     
     /*
@@ -68,7 +68,13 @@
     SystemMessages::addMessage('cardshop_no_money', 'You don\'t own enough money to buy this card', 'Du hast nicht genug Geld um diese Karte zu kaufen');
     SystemMessages::addMessage('cardshop_card_gone', 'The card of your choice is no longer available.', 'Die gewählte Karte ist nicht mehr verfügbar.');
     SystemMessages::addMessage('cardshop_buy_error', 'Something went wrong!', 'Etwas ist schiefgelaufen!');
+        
     
+    // texts used in game controller --------------------------------------
+    
+    SystemMessages::addMessage('game_waiting_minutes','minutes waiting time','Minuten warten');
+    SystemMessages::addMessage('game_waiting_tomorrow','wait until tomorrow','warte bis morgen');
+    SystemMessages::addMessage('game_play_now','play now','jetzt spielen');
     
     
     

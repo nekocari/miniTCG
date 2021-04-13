@@ -77,5 +77,6 @@ If you are interested in an english translation, please let me know.
 
 
 ## Special Thanks
-Big shoutout to Kasu :3 who's supporting miniTCG by using it for her upcoming tcg!
+Goes to **Maron** for first testing!
+Big shoutout to **Kasu** :3 who's supporting miniTCG by using it for her upcoming tcg!
 [Disciples of Art](https://doa.darkcharms.de/)

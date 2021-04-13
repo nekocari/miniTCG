@@ -3,8 +3,9 @@
  * Game Controller
  */
 
-require_once 'models/game.php';
-require_once 'models/lucky_game.php';
+require_once PATH.'models/game.php';
+require_once PATH.'models/lucky_game.php';
+require_once PATH.'games_settings.php';
 
 class GameController {
     
@@ -17,30 +18,27 @@ class GameController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }        
         
-        /* Hier ggf. weitere selbst erstellte Spiele einfügen!
-         * type => Name des Spiels wie es in der "games" Tabelle der Datenbank geführt wird. WICHTIG!!
-         * name => Name des Spiels wie es auf der Seite dargestellt wird.
-         * routing => Gib die in der Routen Klasse zuvor festgelegte Kennung für die URL des Spiels an. 
-         */
-        $game_list = array(
-            array('type' =>'lucky_number', 'name'=>'Glückszahl', 'routing'=>'game_lucky_number'),
-            array('type' =>'head_or_tail', 'name'=>'Kopf oder Zahl', 'routing'=>'game_head_or_tail')
-        );
+        $game_list = GAMES_SETTINGS;
         
-        // ab hier nix mehr ändern ;)
         $data['games'] = array();
         
-        foreach($game_list as $entry){
+        foreach($game_list as $type => $entry){
              
-            $entry_game = Game::getById($entry['type'], $_SESSION['user']->id);
+            $entry_game = Game::getById($type, Login::getUser()->getId());
             
-            if($entry_game and $entry_game->isPlayable()){
+            if($entry_game instanceof Game and $entry_game->isPlayable()){
                 
-                $link = '<a href="'.Routes::getUri($entry['routing']).'">jetzt spielen</a>';
+                $link = '<a href="'.Routes::getUri($entry['routing']).'">';
+                $link.= SystemMessages::getSystemMessagetext('game_play_now');
+                $link.= '</a>';
                 
             }else{
                 
-                $link = 'nicht spielbar';
+                if(!$entry_game->isDailyGame()){
+                    $link.= $entry_game->getMinutesToWait().' '.SystemMessages::getSystemMessagetext('game_waiting_minutes');
+                }else{
+                    $link = SystemMessages::getSystemMessagetext('game_waiting_tomorrow');
+                }
                 
             }
             
@@ -56,40 +54,15 @@ class GameController {
      */
     public function luckyNumber() {
         
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }
+        $game_key = 'lucky_number';
+        $name = 'Glückszahl';
+        $description = 'Wähle eine Zahl und mit Glück gewinnst du eine oder sogar zwei Karten!';
+        $choice_type = 'text';
+        $choice_elements = range(1,9);
+        $possible_results = array('win-card:1','win-card:1','win-card:1','win-card:2','win-card:2','lost','lost','lost','lost');
         
-        $game = Game::getById('lucky_number', $_SESSION['user']->id);
-        
-        if($game AND $game->isPlayable()){
-            
-            $numbers = range(1,9); // erstellt ein array von allen zahlen von 1 bis 9
-            $results = array('win-card:1','win-card:1','win-card:1','win-card:2','win-card:2','lost','lost','lost','lost');
-            $lucky_game = new LuckyGame('Glückszahl','Wähle eine Zahl und mit Glück gewinnst du eine oder sogar zwei Karten!','text',$numbers,$results);
-            
-            if(!isset($_POST['play'])){
-                
-                $data['game'] = $lucky_game;
-                
-                Layout::render('game/lucky_game.php',$data);
-                
-            }else{
-                
-                $data['game'] = $lucky_game;
-                $data['reward'] = $game->determineReward($lucky_game);
-                $game->setDate(time());
-                $game->store();
-                
-                Layout::render('game/display_result.php',$data);
-                
-            }
-            
-        }else{
-            
-            Layout::render('game/wait_message.php');
-            
-        }
+        $this->lucky_game($game_key, $name, $description, $choice_type, $choice_elements, $possible_results);
+       
     }
     
     /**
@@ -97,39 +70,46 @@ class GameController {
      */
     public function headOrTail() {
         
+        $game_key = 'head_or_tail';
+        $name = 'Kopf oder Zahl';
+        $description = 'Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.';
+        $choice_type = 'text';
+        $choice_elements = array('Kopf','Zahl');
+        $possible_results = array('win-card:1','lost');
+        
+        $this->lucky_game($game_key, $name, $description, $choice_type, $choice_elements, $possible_results);
+        
+    }
+    
+    /**
+     * 
+     * @param string $game_key - like set in game_settings.php
+     * @param string $name - Angezeigter Name
+     * @param string $description
+     * @param string $choice_type
+     * @param string[] $choice_elements
+     * @param string[] $possible_results
+     */
+    private function lucky_game($game_key,$name, $description, $choice_type, $choice_elements, $possible_results){
+        
         if(!isset($_SESSION['user'])){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
-        $game = Game::getById('head_or_tail', $_SESSION['user']->id);
+        $game = Game::getById($game_key, Login::getUser()->getId());
+        $lucky_game = new LuckyGame($name, $description, $choice_type, $choice_elements, $possible_results);
         
         if($game AND $game->isPlayable()){
-            
-            $choices = array('Kopf','Zahl'); 
-            $results = array('win-card:1','lost');
-            $lucky_game = new LuckyGame('Kopf oder Zahl','Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.','text', $choices, $results);
-            
             if(!isset($_POST['play'])){
-                
                 $data['game'] = $lucky_game;
-                
                 Layout::render('game/lucky_game.php',$data);
-                
             }else{
-                
                 $data['game'] = $lucky_game;
                 $data['reward'] = $game->determineReward($lucky_game);
-                $game->setDate(time());
-                $game->store();
-                
                 Layout::render('game/display_result.php',$data);
-                
             }
-            
         }else{
-            
             Layout::render('game/wait_message.php');
-            
         }
     }
     

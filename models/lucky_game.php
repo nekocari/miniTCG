@@ -35,6 +35,7 @@ class LuckyGame {
             $this->possible_results = $possible_results;
             $this->name = $name;
             $this->description = $description;
+            $this->choice_type = $choice_type;
         }else{
             throw new ErrorException('Choice and Result Count must match!');
         }
@@ -48,11 +49,25 @@ class LuckyGame {
         return $this->description;
     }
     
+    /**
+     * returns als choice elements either as text or image tag
+     * @return string[]
+     */
     public function getChoices() {
-        if($this->choice_type == 'text'){
-            return $this->choice_elements;
-        }else{
-            // TODO return image tags
+        if(!in_array($this->choice_type, self::$allowed_choice_types)){
+            $this->choice_type = self::$allowed_choice_types[0];
+        }
+        switch($this->choice_type){
+            case 'text':
+                return $this->choice_elements;
+                break;
+            case 'image':
+                $elements = array();
+                foreach($this->choice_elements as $element){
+                    $elements[] = '<img src="'.$element.'">';
+                }
+                return $elements;
+                break;
         }
     }
     

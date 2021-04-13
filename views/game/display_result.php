@@ -11,3 +11,7 @@ foreach($reward['cards'] as $card){
     echo $card->getImageHTML();
 } ?>
 </p>
+
+<p class="text-center">
+	<a class="btn btn-secondary" href="javascript:history.go(-2)">zurück zur Übersicht</a>
+</p>

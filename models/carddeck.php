@@ -25,6 +25,7 @@ class Carddeck extends DbRecordModel {
     private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj;
     private $date_formate = 'd.m.Y';
     
+    private static $decks_folder;
     private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
     private static $allowed_status = array('public','new'); 
     private static $allowed_types = array('default','puzzle');
@@ -36,6 +37,17 @@ class Carddeck extends DbRecordModel {
     
     public static function getAcceptedTypes(){
         return self::$allowed_types;
+    }
+    
+    public static function getDecksFolder() {
+        if(is_null(self::$decks_folder)){
+            $folder = Setting::getByName('cards_folder')->getValue();
+            if(substr($folder, strlen($folder)-1,1) != '/'){
+                $folder = $folder.'/';
+            }
+            self::$decks_folder = $folder;
+        }
+        return self::$decks_folder;
     }
     
     
@@ -296,9 +308,9 @@ class Carddeck extends DbRecordModel {
         $setting_cards_decksize = Setting::getByName('cards_decksize')->getValue();
         $deckname = $this->getDeckname();
         for($i = 1; $i <= $setting_cards_decksize; $i++){
-            $urls[$i] = CARDS_FOLDER.$deckname.'/'.$deckname.$i.'.'.$setting_file_type;
+            $urls[$i] = self::getDecksFolder().$deckname.'/'.$deckname.$i.'.'.$setting_file_type;
         }
-        $urls['master'] = CARDS_FOLDER.$deckname.'/'.$deckname.'_master.'.$setting_file_type;
+        $urls['master'] = self::getDecksFolder().$deckname.'/'.$deckname.'_master.'.$setting_file_type;
         return $urls;
     }
     

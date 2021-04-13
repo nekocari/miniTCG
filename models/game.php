@@ -13,7 +13,7 @@ require_once PATH.'models/card.php';
 
 class Game extends DbRecordModel {
     
-    protected $id, $type, $member, $date;
+    protected $id, $type, $member, $date, $wait_minutes;
     private $member_obj;
     
     protected static 
@@ -46,10 +46,11 @@ class Game extends DbRecordModel {
         
         if(!is_null($game_data) AND count($game_data) == 1){
             $game = $game_data[0];
+            $game->setPropValues(array('wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
         }else{
             $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
             $game = new Game();
-            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date));
+            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date,'wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
             $game_id = $game->create();
             $game->setPropValues(['id'=>$game_id]);
         }
@@ -68,33 +69,48 @@ class Game extends DbRecordModel {
     }
     
     /**
-     * compare today with game date
-     * 
-     * checks if the currents games date lies before today
-     * @param int $mins Wartezeit in Minuten
-     * 
+     * check if game is playable
      * @return boolean
      */
-    public function isPlayable($mins=null) {
-        if(is_null($mins)){
-            // Datum heute 0 Uhr festlegen
-            $today_str = date('Y-m-d').' 00:00:00';
-            $compare_time =  strtotime($today_str);
-        }else{
-            // Zeitstempel jetzt
-            $now = time();
-            $secs = 60 * intval($mins); // 60 Sekunden * X Minuten
-            $compare_time = $now-$secs; // jetzt weniger berechnete Wartezeit in Sekunden
-        }
-        
-        // Unixzeitstempel vergleichen letzte game Zeit muss kleiner sein als Vergleichszeit
-        if(strtotime($this->date) <= $compare_time){
+    public function isPlayable() {
+        if($this->getMinutesToWait() <= 0){
             return true;
         }else{
             return false;
         }
     }
     
+    /**
+     * calculate the minutes to wait till game is playable again
+     * @return number
+     */
+    public function getMinutesToWait() {
+        
+        $last_game_time = strtotime($this->date);
+        
+        if($this->wait_minutes === false){
+            $start_today_time = strtotime(date('Y-m-d').' 00:00:00');
+            if($last_game_time < $start_today_time){
+                return 0;
+            }else{
+                return $minutes_to_wait = ceil(($start_today_time + 24*60*60 - time())/60);
+            }
+        }else{
+            return $minutes_to_wait = ceil(($last_game_time + $this->wait_minutes*60 - time())/60);
+        }
+    }
+    
+    /**
+     * returns true if game is only playable once per day
+     * @return boolean
+     */
+    public function isDailyGame(){
+        if($this->wait_minutes !== false){
+            return false;
+        }else{
+            return true;
+        }
+    }
     
     
     /*
@@ -179,6 +195,8 @@ class Game extends DbRecordModel {
                     break;
             }
             
+            $this->setDate(time());
+            $this->store();
             return $game_reward;
             
         }else{

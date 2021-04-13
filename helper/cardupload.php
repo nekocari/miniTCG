@@ -15,7 +15,7 @@ class CardUpload {
     private $name;
     private $deckname;
     private $files = array();
-    private static $cards_dir = PATH.CARDS_FOLDER;
+    private static $cards_dir;
     private static $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
     private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type, $description, $description_html;
@@ -33,6 +33,7 @@ class CardUpload {
         $this->description = $description;
         $parsedown = new Parsedown();
         $this->description_html = $parsedown->text($this->description);
+        self::$cards_dir = PATH.Carddeck::getDecksFolder();
     }
     
     /**

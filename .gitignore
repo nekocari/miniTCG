@@ -1,7 +1,6 @@
 .settings/
 .project
 .buildpath
-/img/cards/*
-/img/searchcards/*
+/img/cards/*/
 /setup/update_doa/
 db_changes.txt
