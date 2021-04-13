@@ -15,22 +15,26 @@
 
 <div class="my-4">
 <?php foreach($collections as $deck_id => $collection){ ?>
-	<div class="d-inline-block m-4 text-center<?php if($deckdata[$deck_id]->isPuzzle()){ echo " puzzle-view"; } ?>">
-		<h4><span class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></span></h4>
-    	<?php 
-    	for($i=1; $i<=$decksize; $i++){  
-    	    if(key_exists($i,$collection)) {
-    	        echo $collection[$i]->getImageHtml();
-    	    }else{
-    	        if(!$deckdata[$deck_id]->isPuzzle()){
-    	            echo $searchcard_html;
-    	        }else{
-    	            echo ${'searchcard_html_'.$i};
-    	        }
-    	    }
-    	    if($i%$cards_per_row == 0){ echo '<br>'; }
-    	} 
-    	?>
+	<div class="table-responsive">
+    	<div class="d-inline-block m-4 text-center <?php if($deckdata[$deck_id]->isPuzzle()){ echo " puzzle-view"; } ?>">
+    		<h4><span class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></span></h4>
+    		<div style="white-space:nowrap;">
+        	<?php 
+        	for($i=1; $i<=$decksize; $i++){  
+        	    if(key_exists($i,$collection)) {
+        	        echo $collection[$i]->getImageHtml();
+        	    }else{
+        	        if(!$deckdata[$deck_id]->isPuzzle()){
+        	            echo $searchcard_html;
+        	        }else{
+        	            echo ${'searchcard_html_'.$i};
+        	        }
+        	    }
+        	    if($i%$cards_per_row == 0){ echo '<br>'; }
+        	} 
+        	?>
+        	</div>
+    	</div>
 	</div>
 <?php } ?>
 </div>

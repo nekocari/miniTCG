@@ -30,6 +30,6 @@
 
 <hr>
 
-<div class="my-4 text-center <?php if($deck->isPuzzle()){ echo "puzzle-view"; } ?>">
+<div class="my-4 text-center table-responsive <?php if($deck->isPuzzle()){ echo "puzzle-view"; } ?>" style="white-space:nowrap;">
 	<?php echo $deck->getDeckView(); ?>
 </div>
