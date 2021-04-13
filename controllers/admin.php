@@ -326,6 +326,67 @@ class AdminController {
         }           
         
     }
+    
+    public function importSql(){
+                
+        // if not logged in redirect to sign in form
+        if(!Login::loggedIn()){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights)){
+                die(Layout::render('templates/error_rights.php'));
+        }
+        
+        $dir = PATH.'import/';
+        $data = array();
+        
+        
+        if(isset($_POST['delete'])){
+            $file = $_POST['delete'];
+            if(file_exists($dir.$file)){
+                unlink($dir.$file);
+                $data['_success'][] = '<p>Datei <b>'.$file.'</b> gelöscht</p>';
+            }else{
+                $data['_error'][] = '<p>Datei <b>'.$file.'</b> konnte nicht gelöscht werden. Datei nicht gefunden.</p>';
+            }
+        }
+        
+        if(isset($_POST['import'])){
+            try{
+                $file = $_POST['import'];
+                $sql = file_get_contents($dir.$file);
+                if($sql != false){
+                    $db = Db::getInstance();
+                    $req = $db->query($sql);
+                    
+                    $data['_success'][] = '<p>Datei <b>'.$file.'</b> eingelesen</p>';
+                    $file = rename($dir.$file, $dir.'IMPORTED_'.$file);
+                    
+                    $req->closeCursor();
+                }else{
+                    $data['_error'][] = '<p>Datei <b>'.$file.'</b> nicht gefunden oder ist leer</p>';
+                }
+            }
+            catch(PDOException $e){
+                $data['_error'][] = '<p>Datei <i>'.$file.'</i> <b>nicht</b> eingelesen.<br>'.$e->getMessage().'</p>';
+            }
+        }
+        
+        
+        // import sql
+        foreach(scandir($dir) as $file){
+            $fnarr = explode('.', $file);
+            if(end($fnarr) == 'sql'){
+                $data['files'][] = $file; 
+            }
+        }
+        
+        Layout::render('admin/import/list.php', $data);
+        
+    }
 
 }
 ?>

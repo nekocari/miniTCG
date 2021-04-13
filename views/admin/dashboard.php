@@ -55,6 +55,7 @@
         			<a class="nav-link" href="<?php echo ROUTES::getUri('category_index');?>">Kategorien</a>
         			<a class="nav-link" href="<?php echo ROUTES::getUri('level_index');?>">Level</a>
         			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_settings');?>">Einstellungen</a>
+        			<a class="nav-link" href="<?php echo ROUTES::getUri('admin_sql_import');?>">SQL Import</a>
         		</nav>
         	</div>
         </div>
