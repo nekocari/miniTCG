@@ -5,7 +5,7 @@
     	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     	
 		<base href="<?php echo BASE_URI; ?>">
-		<title><?php echo Setting::getByName('app_name')->getValue(); ?></title>
+		<title><?php echo $tcg_title; ?></title>
 		
 		<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">

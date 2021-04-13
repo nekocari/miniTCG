@@ -25,6 +25,10 @@ class Layout {
             foreach($values as $key => $val) {
                 $$key = $val;
             }
+            
+            // titel für html head
+            $tcg_title = Setting::getByName('app_name')->getValue();
+            
             // setze für das design benötigte variablen
             $tcg_categories = Category::getALL();
             
