@@ -43,11 +43,12 @@
         					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder"></i> Karten</a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
                             	<!-- PHP Code for the Category List -->
-                            	<?php foreach($tcg_categories as $tcg_category){ ?>
+                            	<?php if(count($tcg_categories)>0){ foreach($tcg_categories as $tcg_category){ ?>
 									<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
 								<?php } ?>
-                            	<!-- Category Liste End -->
                             	<div class="dropdown-divider"></div>
+                            	<?php } ?>
+                            	<!-- Category Liste End -->
                             	<a class="dropdown-item" href="<?php echo ROUTES::getUri('deck_index');?>">Alle</a>
                             </div>
         				</li>

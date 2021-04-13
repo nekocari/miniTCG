@@ -35,6 +35,10 @@ class Carddeck extends DbRecordModel {
         $this->date_formate = Setting::getByName('date_format')->getValue();
     }
     
+    public static function getAcceptedStati(){
+        return self::$allowed_status;
+    }
+    
     public static function getAcceptedTypes(){
         return self::$allowed_types;
     }

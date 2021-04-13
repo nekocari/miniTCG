@@ -53,6 +53,34 @@ class Category extends DbRecordModel {
         return parent::getByPk($id);
     }
     
+    /**
+     * get categories containing decks 
+     * @param array $order_settings
+     * @return Category[]
+     */
+    public static function getNotEmpty($deck_status='public',$order_settings=null) {
+        if(!in_array($deck_status, Carddeck::getAcceptedStati())){
+            $deck_status == Carddeck::getAcceptedStati()[0];
+        }
+        $db = Db::getInstance();
+        $categories = array();
+        $sql = 'SELECT DISTINCT c.* 
+                FROM subcategories sc
+                JOIN categories c ON sc.category = c.id
+                JOIN decks_subcategories dsc ON dsc.subcategory_id = sc.id
+                JOIN decks d ON d.id = dsc.deck_id AND d.status = \''.$deck_status.'\' ';
+        if(is_array($order_settings)){
+            $sql.= parent::buildSqlPart('order_by',$order_setting);
+        }
+        $req = $db->query($sql);
+        if($req->rowCount() > 0){
+            foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $category){
+                $categories[] = $category;
+            }
+        }
+        return $categories;
+    }
+    
     public function getSubcategories(){
         return Subcategory::getByCategory($this->getId());
     }

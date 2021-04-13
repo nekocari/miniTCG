@@ -1,5 +1,6 @@
 <h1>Karten Decks</h1>
 
+<?php if(count($decks) > 0) { ?>
 <div class="table-responsive">
 	<table class="table">
 		<thead class="thead-light">
@@ -24,3 +25,5 @@
 </div>
 
 <?php echo $pagination; ?>
+
+<?php }else{ echo Layout::sysMessage('Es existieren keine veröffentlichten Decks.'); } ?>

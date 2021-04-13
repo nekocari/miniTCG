@@ -30,7 +30,7 @@ class Layout {
             $tcg_title = Setting::getByName('app_name')->getValue();
             
             // setze für das design benötigte variablen
-            $tcg_categories = Category::getALL();
+            $tcg_categories = Category::getNotEmpty();
             
             // benachrichtigungenerstellen (sidebar)
             $tcg_notifications = new Notification();

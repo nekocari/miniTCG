@@ -32,12 +32,6 @@ class DeckController {
         $data['decks'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         
-        if(count($data['decks']) == 0){
-            
-            $data['_error'][] = SystemMessages::getSystemMessageText('deck_no_elements');
-            
-        }
-        
         Layout::render('deck/list.php', $data);
     }
     
