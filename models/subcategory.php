@@ -24,10 +24,7 @@ class Subcategory extends Category {
         parent::__construct();
     }
     
-    public function getCategory() {
-        return $this->category;
-    }
-    public function getCategoryObj() {
+    public function getCategory(){ 
         return Category::getById($this->category);
     }
     

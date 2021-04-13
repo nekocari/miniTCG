@@ -1,6 +1,6 @@
 # miniTCG
 
-A very basic automated Trading Card Game Application written in PHP. 
+An automated Trading Card Game Application written in PHP, covering most of the basics.
 miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 
 (Because of the DSGVO you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
@@ -15,7 +15,7 @@ If you are interested in an english translation, please let me know.
 * Upload everything to your webspace using a FTP programm.
 * Run *yourwebsitehere.com*/setup/setup.php
 * Now you should be able to login using the default Admin account.
-* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link on the bottom center) and change the application settings to your liking.
+* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link in the navigation) and change the application settings to your liking.
 * **Delete** the *setup* folder!
 
 
@@ -71,12 +71,18 @@ If you are interested in an english translation, please let me know.
 * add activation codes into registration process 
 
 
+## Used Libs & Co.
+[Parsedown](https://github.com/erusev/parsedown) by erusev on GitHub  
+Bootstrap 4.1.3 (CDN)  
+jQuery 3.2.1 (CDN)  
+FontAwesome 5.0.6 (CDN)  
+
 ## Authors
 
 * **Carina Patzina** - *Initial work* - [NekoCari](https://github.com/nekocari)
 
 
 ## Special Thanks
-Goes to **Maron** for first testing!
+Goes to **Maron** for first testing!  
 Big shoutout to **Kasu** :3 who's supporting miniTCG by using it for her upcoming tcg!
 [Disciples of Art](https://doa.darkcharms.de/)

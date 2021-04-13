@@ -258,8 +258,7 @@ class Carddeck extends DbRecordModel {
     
     public function getCategory() {
         if(!$this->category_obj instanceof Category){
-            // TODO:
-            $this->category_obj = Category::getById(1);
+            $this->category_obj = $this->getSubcategory()->getCategory();
         }
         return $this->category_obj;
     }

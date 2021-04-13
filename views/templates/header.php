@@ -5,7 +5,7 @@
     	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     	
 		<base href="<?php echo BASE_URI; ?>">
-		<title>miniTCG</title>
+		<title><?php echo Setting::getByName('app_name')->getValue(); ?></title>
 		
 		<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -46,9 +46,9 @@
                             	<?php foreach($tcg_categories as $tcg_category){ ?>
 									<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
 								<?php } ?>
+                            	<!-- Category Liste End -->
                             	<div class="dropdown-divider"></div>
                             	<a class="dropdown-item" href="<?php echo ROUTES::getUri('deck_index');?>">Alle</a>
-                            	<!-- Category Liste End -->
                             </div>
         				</li>
         			</ul>

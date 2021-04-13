@@ -42,7 +42,7 @@ class CardUpload {
      */
     private function mkDir() {
         if(!mkdir(self::$cards_dir.$this->deckname, 0777) ){
-            throw new Exception('Ordner existiert bereits.');
+            throw new Exception('Ordner konnte nicht anglegt werden.');
         }
     }
     
