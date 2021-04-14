@@ -14,7 +14,7 @@ require_once PATH.'models/card.php';
 class Game extends DbRecordModel {
     
     protected $id, $type, $member, $date, $wait_minutes;
-    private $member_obj;
+    private $member_obj, $reward_texts = array('lost' => null, 'won' => null);
     
     protected static 
         $db_table = 'games',
@@ -22,14 +22,12 @@ class Game extends DbRecordModel {
         $db_fields = array('id','type','member','date'),
         $sql_order_by_allowed_values = array('id','type','member','date');
     
-    private static 
-        $allowed_game_results = array('win-card:1','win-card:2','win-card:3','lost'),
-        $reward_texts = array(
-            'lost'  => "Du hast leider nichts gewonnen.",
-            'won'   => "Du hast <b>gewonnen!</b> <br>Hier dein Gewinn:");
+    private static $allowed_game_results = array('win-card:','win-money:','lost');
     
     public function __construct() {
         parent::__construct();
+        $this->reward_texts['won'] = SystemMessages::getSystemMessageText('game_won');
+        $this->reward_texts['lost'] = SystemMessages::getSystemMessageText('game_lost');
     }
     
     /**
@@ -59,6 +57,7 @@ class Game extends DbRecordModel {
     }
     
     /**
+     * @deprecated
      * stores the current game data into the db
      * 
      * @throws ErrorException
@@ -158,26 +157,27 @@ class Game extends DbRecordModel {
     }
     
     
-    public function determineReward($curr_game){
+    public function determineReward($result){
         
         // get result code of the current specific game
-        $result = $curr_game->getResult();
+        if($result instanceof LuckyGame){
+            $result = $result->getResult();
+        }
         
-        // pattern for return value
-        $game_reward = array('type'=>'','text'=>'','cards'=>array());
-        
-        if(in_array($result,self::$allowed_game_results)){
+        $result_action = preg_replace('/\d+/', '', $result);
+        $result_amount = str_replace($result_action, '', $result);
+                
+        if(in_array($result_action,self::$allowed_game_results)){
             
-            switch($result){
+            // pattern for return value
+            $game_reward = array('type'=>'','text'=>'','cards'=>array());
             
-                case 'win-card:1':
-                case 'win-card:2':
-                case 'win-card:3':
+            switch($result_action){
+                case 'win-card:':
                     $game_reward['type'] = 'won';
-                    $game_reward['text'] = self::$reward_texts['won'];
-                    $cards_amount = intval(str_replace('win-card:','',$result));
-                    $log_text = '[GAME] '.$curr_game->getName();
-                    $cards = Card::createRandomCard($this->getMember('object')->getId(),$cards_amount,$log_text);
+                    $game_reward['text'] = $this->reward_texts['won'];
+                    $log_text = '[GAME] '.GAMES_SETTINGS[$this->type]['name'];
+                    $cards = Card::createRandomCard($this->getMember('int'),$result_amount,$log_text);
                     if(!is_array($cards)){
                         $game_reward['cards'][] = $cards;
                     }else{
@@ -185,18 +185,33 @@ class Game extends DbRecordModel {
                     }
                     break;
                     
+                case 'win-money:':
+                    // get name of currency
+                    $currency_name = Setting::getByName('currency_name')->getValue();
+                    // set values for result page
+                    $game_reward['type'] = 'won';
+                    $game_reward['text'] = $this->reward_texts['won'];
+                    $game_reward['money'] = $result_amount.' '.$currency_name;
+                    // create log text
+                    $log_text = '[GAME] '.GAMES_SETTINGS[$this->type]['name'].' -> ';
+                    $log_text.= $result_amount.' '.$currency_name.' ';
+                    $log_text.= SystemMessages::getSystemMessageText('translate_recieved');
+                    // add money to member balance with log text
+                    $this->getMember()->addMoney($result_amount,$log_text);
+                    $this->getMember()->update();
+                    break;
+                    
                 case 'lost':
                     $game_reward['type'] = 'lost';
-                    $game_reward['text'] = self::$reward_texts['lost'];
+                    $game_reward['text'] = $this->reward_texts['lost'];
                     break;
                     
                 default:
                     return false;
                     break;
             }
-            
             $this->setDate(time());
-            $this->store();
+            $this->update();
             return $game_reward;
             
         }else{

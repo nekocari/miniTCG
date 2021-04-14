@@ -1,5 +1,5 @@
-<?php Layout::sysMessage('Du musst noch warten bevor du dieses Spiel wieder spielen kannst.','error'); ?>
+<?php Layout::sysMessage('Du musst noch warten, bevor du dieses Spiel wieder spielen kannst.','info'); ?>
 
 <p class="text-center">
-	<a class="btn btn-secondary" href="javascript:history.go(-1)">zurück zur Übersicht</a>
+	<a class="btn btn-dark" href="javascript:history.go(-1)">zurück zur Übersicht</a>
 </p>

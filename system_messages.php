@@ -62,19 +62,23 @@
     SystemMessages::addMessage('level_edit_failed', 'changes not saved', 'Ändern fehlgeschlagen.');
     
     
+    
     // texts used in shop controller --------------------------------------
     
     SystemMessages::addMessage('cardshop_card_bought','You successfully bought:','Du hast folgende Karte gekauft:');
     SystemMessages::addMessage('cardshop_no_money', 'You don\'t own enough money to buy this card', 'Du hast nicht genug Geld um diese Karte zu kaufen');
     SystemMessages::addMessage('cardshop_card_gone', 'The card of your choice is no longer available.', 'Die gewählte Karte ist nicht mehr verfügbar.');
     SystemMessages::addMessage('cardshop_buy_error', 'Something went wrong!', 'Etwas ist schiefgelaufen!');
-        
+    
+    
     
     // texts used in game controller --------------------------------------
     
     SystemMessages::addMessage('game_waiting_minutes','minutes waiting time','Minuten warten');
     SystemMessages::addMessage('game_waiting_tomorrow','wait until tomorrow','warte bis morgen');
     SystemMessages::addMessage('game_play_now','play now','jetzt spielen');
+    SystemMessages::addMessage('game_won','You <b>won!</b> <br>This is your price:','Du hast <b>gewonnen!</b> <br>Hier dein Gewinn:'); // price displayed afterwards
+    SystemMessages::addMessage('game_lost','Sorry, you did not win this time.','Du hast leider nichts gewonnen.');
     
     
     
@@ -151,6 +155,7 @@
     
     // GENERAL - stuff like custom error codes
     
+    SystemMessages::addMessage('translate_recieved', 'recieved', 'erhalten');
     SystemMessages::addMessage('1001', 'invalid character', 'Ungültiges Zeichen');
     SystemMessages::addMessage('2001', 'invalid parameter', 'Ungültige Parameter.');
     SystemMessages::addMessage('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');

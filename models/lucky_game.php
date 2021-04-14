@@ -64,7 +64,7 @@ class LuckyGame {
             case 'image':
                 $elements = array();
                 foreach($this->choice_elements as $element){
-                    $elements[] = '<img src="'.$element.'">';
+                    $elements[$element] = '<img src="'.$element.'">';
                 }
                 return $elements;
                 break;

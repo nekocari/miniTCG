@@ -34,6 +34,9 @@ class Tradelog extends DbRecordModel {
      */
     public static function getAllByMemberId($member_id, $order_by = 'date', $order = 'DESC') {
         
+        // flush entries older than 3 months
+        $sql = "DELETE FROM ".self::$db_table." WHERE date < (DATE_SUB(CURDATE(), INTERVAL 3 MONTH))";
+        
         if(!in_array($order_by, self::$sql_order_by_allowed_values)){
             $order_by = self::$sql_order_by_allowed_values[0];
         }
@@ -50,7 +53,7 @@ class Tradelog extends DbRecordModel {
      * @param int $member_id - id of member
      * @param string $text - text to add to entry
      * 
-     * @return boolean
+     * @return int
      */
     public static function addEntry($member_id, $text) {
         $entry = new Tradelog();

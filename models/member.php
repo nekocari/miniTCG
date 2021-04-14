@@ -321,6 +321,25 @@ class Member extends DbRecordModel {
     }
     
     /**
+     * adds set amount to member money balance
+     * @param int $amount - has to be positive!
+     * @throws ErrorException
+     * @return boolean
+     */
+    public function addMoney($amount,$log_text=null){
+        if(is_numeric($amount) AND intval($amount) > 0){
+            $this->setMoney($this->getMoney() + intval($amount));
+            if(!is_null($log_text)){
+                Tradelog::addEntry($this->getId(), $log_text);
+            }
+            return true;
+        }else{
+            throw new ErrorException('amount has to be a positiv number');
+            return false;
+        }
+    }
+    
+    /**
      * BASIC GETTER FUNCTIONS
      */
     

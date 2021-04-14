@@ -4,14 +4,13 @@
 
 <p class="text-center"><?php echo $reward['text']; ?></p>
 
-<p class="text-center">
-<?php 
+<div class="text-center">
+	<?php if(isset($reward['cards'])){ foreach($reward['cards'] as $card){ echo $card->getImageHTML(); }} ?>
+</div>
+<div class="text-center h3">
+	<?php if(isset($reward['money'])){ echo $reward['money']; } ?>
+</div>
 
-foreach($reward['cards'] as $card){
-    echo $card->getImageHTML();
-} ?>
-</p>
-
 <p class="text-center">
-	<a class="btn btn-secondary" href="javascript:history.go(-2)">zurück zur Übersicht</a>
+	<a class="btn btn-dark" href="javascript:history.go(-2)">zurück zur Übersicht</a>
 </p>

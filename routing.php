@@ -1,22 +1,20 @@
 <?php
+    /* do not change this line */
     require_once 'inc/routes.php';
-    
-    Routes::addRoute('homepage', '', 'pages', 'home');
-    Routes::addRoute('not_found', 'error.php', 'pages', 'notFound');
-    Routes::addRoute('login_error', 'error_login.php', 'pages', 'notLoggedIn');
-    
-    /**
+    /*
      * add your own routes here! 
      * =========================
      * 
      * How to add a new route:
      * 
-     * Routes::addRoute('IDENTIFYER','URL','controller','action');
-     * IDENTIFYER   -> a unique key for the route, which can be used to create links within the app to the right url
+     * Routes::addRoute('IDENTIFIER','URL','controller','action');
+     * IDENTIFIER   -> a unique key for the route, which can be used to create links within the app to the right url
      * URL          -> the url of your new page in the browser
      * CONTROLLER   -> for simple html pages you can use the pages controller and add your own action (a method) to it.
      * ACTION       -> method within the controller that will be executed; where your page is put together using the Layout::render() method
      */
+    
+    
     Routes::addRoute('faq', 'faq.php', 'pages', 'faq'); // empty template for you to fill
     Routes::addRoute('imprint', 'imprint.php', 'pages', 'imprint'); // empty template for you to fill
     
@@ -25,6 +23,11 @@
      * DO NOT EDIT BELOW THIS LINE - unless you know what you are doing!
      *********************************************************************
      */
+    
+    
+    Routes::addRoute('homepage', '', 'pages', 'home');
+    Routes::addRoute('not_found', 'error.php', 'pages', 'notFound');
+    Routes::addRoute('login_error', 'error_login.php', 'pages', 'notLoggedIn');
     
     Routes::addRoute('deck_index', 'decks.php', 'deck', 'index');
     Routes::addRoute('deck_by_category', 'decks/category.php', 'deck', 'category');

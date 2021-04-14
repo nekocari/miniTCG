@@ -35,7 +35,7 @@ class GameController {
             }else{
                 
                 if(!$entry_game->isDailyGame()){
-                    $link.= $entry_game->getMinutesToWait().' '.SystemMessages::getSystemMessagetext('game_waiting_minutes');
+                    $link = $entry_game->getMinutesToWait().' '.SystemMessages::getSystemMessagetext('game_waiting_minutes');
                 }else{
                     $link = SystemMessages::getSystemMessagetext('game_waiting_tomorrow');
                 }
@@ -50,18 +50,58 @@ class GameController {
     }
     
     /**
+     * default behavior of a lucky game
+     * @param string $game_key - like set in game_settings.php
+     * @param string $name - Angezeigter Name
+     * @param string $description
+     * @param string $choice_type
+     * @param string[] $choice_elements
+     * @param string[] $possible_results
+     */
+    private function lucky_game($game_key,$description, $choice_type, $choice_elements, $possible_results){
+        // redirect if not logged in
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // create the game object
+        $game = Game::getById($game_key, Login::getUser()->getId());
+        // create a lucky game object
+        $lucky_game = new LuckyGame(GAMES_SETTINGS[$game_key]['name'], $description, $choice_type, $choice_elements, $possible_results);
+        
+        // check if a game object was created and the game is playable
+        if($game instanceof Game AND $game->isPlayable()){
+            
+            // post request not sent?
+            if(!isset($_POST['play'])){
+                // display the default lucky game page
+                $data['game'] = $lucky_game;
+                Layout::render('game/lucky_game.php',$data);
+            }else{
+                // request was sent determine the reward
+                $data['game'] = $lucky_game;
+                $data['reward'] = $game->determineReward($lucky_game->getResult());
+                // display the result to the user, using the default game result page
+                Layout::render('game/display_result.php',$data);
+            }
+        }else{
+            Layout::render('game/wait_message.php');
+        }
+    }
+    
+    /**
      * lucky number
      */
     public function luckyNumber() {
         
-        $game_key = 'lucky_number';
-        $name = 'Glückszahl';
-        $description = 'Wähle eine Zahl und mit Glück gewinnst du eine oder sogar zwei Karten!';
-        $choice_type = 'text';
-        $choice_elements = range(1,9);
-        $possible_results = array('win-card:1','win-card:1','win-card:1','win-card:2','win-card:2','lost','lost','lost','lost');
+        $game_key = 'lucky_number'; // key as in /game_settings.php
+        $description = 'Wähle eine Zahl und mit Glück gewinnst du eine oder sogar zwei Karten!'; // text for game detail page
+        $choice_type = 'text'; // [text|image]
+        $choice_elements = range(1,9); // user choices
+        $possible_results = array('win-card:1','win-card:1','win-card:2','win-money:500','win-card:2','win-money:250','lost','lost','lost'); // possible results
+        // NOTE: amount of choices and results needs to be the same!
         
-        $this->lucky_game($game_key, $name, $description, $choice_type, $choice_elements, $possible_results);
+        $this->lucky_game($game_key, $description, $choice_type, $choice_elements, $possible_results);
        
     }
     
@@ -70,48 +110,23 @@ class GameController {
      */
     public function headOrTail() {
         
-        $game_key = 'head_or_tail';
-        $name = 'Kopf oder Zahl';
-        $description = 'Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.';
-        $choice_type = 'text';
-        $choice_elements = array('Kopf','Zahl');
-        $possible_results = array('win-card:1','lost');
+        $game_key = 'head_or_tail'; // key as in /game_settings.php
+        $description = 'Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.'; // text for game detail page
+        $choice_type = 'text'; // [text|image]
+        $choice_elements = array('Kopf','Zahl'); // user choices
+        $possible_results = array('win-card:1','lost'); // possible results
+        // NOTE: amount of choices and results needs to be the same!
         
-        $this->lucky_game($game_key, $name, $description, $choice_type, $choice_elements, $possible_results);
+        $this->lucky_game($game_key, $description, $choice_type, $choice_elements, $possible_results);
         
     }
     
-    /**
-     * 
-     * @param string $game_key - like set in game_settings.php
-     * @param string $name - Angezeigter Name
-     * @param string $description
-     * @param string $choice_type
-     * @param string[] $choice_elements
-     * @param string[] $possible_results
+    /*
+     * add your own lucky game:
+     * - copy and edit one of the example games and change the variable values
+     * - add new route in /routing.php
+     * - make sure you addes your game to /games_settings.php 
      */
-    private function lucky_game($game_key,$name, $description, $choice_type, $choice_elements, $possible_results){
-        
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }
-        
-        $game = Game::getById($game_key, Login::getUser()->getId());
-        $lucky_game = new LuckyGame($name, $description, $choice_type, $choice_elements, $possible_results);
-        
-        if($game AND $game->isPlayable()){
-            if(!isset($_POST['play'])){
-                $data['game'] = $lucky_game;
-                Layout::render('game/lucky_game.php',$data);
-            }else{
-                $data['game'] = $lucky_game;
-                $data['reward'] = $game->determineReward($lucky_game);
-                Layout::render('game/display_result.php',$data);
-            }
-        }else{
-            Layout::render('game/wait_message.php');
-        }
-    }
     
 }
 ?>
