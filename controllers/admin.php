@@ -250,10 +250,14 @@ class AdminController {
             $log_text = SystemMessages::getSystemMessageText('admin_gift_money_log_text').' -> ';
             $log_text.= intval($_POST['addMoney']).' '.$currency_name.' ('.strip_tags($_POST['text']).')';
             
-            // add money update member data and set success message
+            // add money,update member data, send a pm, and set success message
             if($member->addMoney(intval($_POST['addMoney']),$log_text)){
                 $member->update();
-                $data['_success'][] = SystemMessages::getSystemMessageText('admin_gift_money_success')." ".$currency_name;
+                
+                // add a message for user
+                Message::add(null, $member->getId(), $log_text);
+                
+                $data['_success'][] = SystemMessages::getSystemMessageText('admin_gift_money_success')." ".intval($_POST['addMoney']).' '.$currency_name;
             }else{
                 // set error message
                 $data['_error'][] = SystemMessages::getSystemMessageText('admin_gift_money_failed');
