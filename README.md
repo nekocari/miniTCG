@@ -75,7 +75,7 @@ If you are interested in an english translation, please let me know.
 [Parsedown](https://github.com/erusev/parsedown) by erusev on GitHub  
 Bootstrap 4.1.3 (CDN)  
 jQuery 3.2.1 (CDN)  
-FontAwesome 5.0.6 (CDN)  
+FontAwesome 5.15.3 (CDN)  
 
 ## Authors
 

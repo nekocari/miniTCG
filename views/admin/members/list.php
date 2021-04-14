@@ -31,6 +31,8 @@
             				<i class="fas fa-pencil-alt"></i> Daten bearbeiten</a>  
             			<a class="dropdown-item" href="<?php echo ROUTES::getUri('admin_member_gift_cards');?>?id=<?php echo $member->getId(); ?>">
             				<i class="fas fa-plus"></i> Karten geben</a>   
+            			<a class="dropdown-item" href="<?php echo ROUTES::getUri('admin_member_gift_money');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-hand-holding-usd"></i> <?php echo $currency_name; ?> geben</a>   
             			<!-- 
             			<a class="dropdown-item" href="<?php echo ROUTES::getUri('');?>?id=<?php echo $member->getId(); ?>">
             				<i class="fas fa-key"></i> Passwort zurücksetzen</a>     

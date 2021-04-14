@@ -111,6 +111,7 @@ class AdminController {
         
         $data['members'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
+        $data['currency_name'] = Setting::getByName('currency_name')->getValue();
         
         Layout::render('admin/members/list.php',$data);
         
@@ -214,8 +215,57 @@ class AdminController {
         
     }
     
-   
     
+    
+    /**
+     * Member Gift Money
+     */
+    public function giftMoney(){
+        
+        // if not logged in redirect to sign in form
+        if(!Login::loggedIn()){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights) AND
+            !in_array('ManageMembers',$user_rights) ){
+                die(Layout::render('templates/error_rights.php'));
+        }
+
+        // get current member data
+        $data['member'] = $member = Member::getById($_GET['id']);
+        if(!$member instanceof Member){
+            header("Location: ".BASE_URI.Routes::getUri('not_found'));
+        }
+        
+        // get currency name for later use in view and log text
+        $data['currency_name'] = $currency_name = Setting::getByName('currency_name')->getValue();
+        
+        // if add money form as sent
+        if(isset($_POST['addMoney']) and intval($_POST['addMoney']) and isset($_POST['text'])){
+            
+            // put together text for tradelog
+            $log_text = SystemMessages::getSystemMessageText('admin_gift_money_log_text').' -> ';
+            $log_text.= intval($_POST['addMoney']).' '.$currency_name.' ('.strip_tags($_POST['text']).')';
+            
+            // add money update member data and set success message
+            if($member->addMoney(intval($_POST['addMoney']),$log_text)){
+                $member->update();
+                $data['_success'][] = SystemMessages::getSystemMessageText('admin_gift_money_success')." ".$currency_name;
+            }else{
+                // set error message
+                $data['_error'][] = SystemMessages::getSystemMessageText('admin_gift_money_failed');
+            }
+        }
+        
+        Layout::render('admin/members/gift_money.php',$data);
+        
+    }
+        
+        
+        
     /**
      * Member Gift Cards
      */

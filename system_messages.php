@@ -37,8 +37,13 @@
     
     // GIFT CARDS
     SystemMessages::addMessage('admin_gift_cards_success', 'credit successfull:', 'Gutschrift erfolgt:'); // NOTE the cards will be listet afterwards
-    SystemMessages::addMessage('admin_gift_cards_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');    
+    SystemMessages::addMessage('admin_gift_cards_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');
     SystemMessages::addMessage('admin_gift_cards_log_text', 'manual credit', 'manuelle GUTSCHRIFT');
+    
+    // GIFT MONEY
+    SystemMessages::addMessage('admin_gift_money_success', 'credit successfull:', 'Gutschrift erfolgt:'); // NOTE the amount will be listet afterwards
+    SystemMessages::addMessage('admin_gift_money_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');
+    SystemMessages::addMessage('admin_gift_money_log_text', 'manual credit', 'manuelle GUTSCHRIFT');
     
     
     
