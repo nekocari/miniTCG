@@ -35,7 +35,7 @@
             		<select class="form-control" id="category" name="subcategory" required>
             			<?php foreach($categories as $category){ ?>
             			<optgroup label="<?php echo $category->getName(); ?>">
-            				<?php foreach($subcategories[$category->getId()] as $subcategory){ ?>
+            				<?php foreach($category->getSubcategories() as $subcategory){ ?>
             				<option value="<?php echo $subcategory->getId(); ?>"><?php echo $subcategory->getName(); ?></option>
             				<?php } ?>
             			</optgroup>

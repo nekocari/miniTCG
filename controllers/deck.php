@@ -131,13 +131,6 @@ class DeckController {
         
         $data['categories'] = Category::getALL();
         
-        foreach($data['categories'] as $category){
-            
-            $cat_id = $category->getId();
-            $data['subcategories'][$cat_id] = Subcategory::getByCategory($cat_id);
-            
-        }
-        
         $data['deck_types'] = Carddeck::getAcceptedTypes(); 
         
         if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type']) AND isset($_FILES)){
@@ -154,8 +147,22 @@ class DeckController {
                     
                 }
             }
+            catch(PDOException $e){
+                switch($e->getCode()){
+                    case 23000: 
+                        $error_text = SystemMessages::getSystemMessageText('admin_upload_duplicate_key');
+                        break;
+                    default: 
+                        $error_text = SystemMessages::getSystemMessageText(9999).'<br>'.$e->getMessage();
+                        break;
+                }
+                $data['_error'][] = $error_text;
+            }
             catch(Exception $e){
-                die($e->getMessage());
+                if($error_text = SystemMessages::getSystemMessageText($e->getMessage()) == 'TEXT MISSING'){
+                    $error_text = $e->getMessage();
+                }
+                $data['_error'][] = $error_text;
             }
             
         }

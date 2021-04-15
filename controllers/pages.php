@@ -1,7 +1,8 @@
 <?php
 /*
  * Controller for static html pages
- * home is an exception because of the news ;) 
+ * home is a bad exception because of the news ;) 
+ * news will get their own controller in the future!
  */
 
 require_once PATH.'models/news.php';
@@ -32,7 +33,7 @@ class PagesController {
      * - change "action" to be a unique method name within this class file
      * - set the path ("folder_within_views/your_page.php") 
      *   so it points to your file within the views folder
-     * - don't forget to add a new route in routing.php of your root folder!
+     * - don't forget to add a new route in routing.php in your root folder!
      */ 
     public function action() {
         Layout::render('folder_within_views/your_page.php');

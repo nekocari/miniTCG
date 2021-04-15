@@ -1,3 +1,5 @@
+
+
 <?php
     // DO NOT EDIT THIS LINE -----------------
     require_once 'helper/system_messages.php';
@@ -45,6 +47,11 @@
     SystemMessages::addMessage('admin_gift_money_failed', 'credit failed', 'Gutschrift fehlgeschlagen.');
     SystemMessages::addMessage('admin_gift_money_log_text', 'manual credit', 'manuelle GUTSCHRIFT');
     
+    // CARDUPLOAD
+    SystemMessages::addMessage('admin_upload_duplicate_key', 'a deck with the same id or deckname alerady exists', 'Ein Deck mit selbem Kürzel oder selber ID existiert bereits.');
+    SystemMessages::addMessage('admin_upload_file_count_error', 'number of files does not match required file count', 'Anzahl der Dateien enspricht nicht der Vorgabe.');
+    SystemMessages::addMessage('admin_upload_file_incomplete','incomplete transfer of files','Die Dateien sind unvollständig.');
+    SystemMessages::addMessage('admin_upload_file_failed','an error occured while uploading the files','Es gab einen Fehler beim Upload der Bilder.');
     
     
     // texts used in the deck controller ------------------------------
@@ -160,7 +167,13 @@
     
     // GENERAL - stuff like custom error codes
     
+    SystemMessages::addMessage('input_invalid_character', 'input contains invalid character', 'Eingabe enthält ungültige Zeichen.');
+    SystemMessages::addMessage('file_typ_invalid','invalid file type detected','Ungültiger Dateityp gefunden.');
+    SystemMessages::addMessage('mkdir_failed', 'folder could not be created', 'Ordner konnte nicht anglegt werden.');
+    SystemMessages::addMessage('dir_exists', 'folder already exists', 'Ordner existiert bereits');
+    SystemMessages::addMessage('file_exists', 'file already exists', 'Datei existiert bereits');
     SystemMessages::addMessage('translate_recieved', 'recieved', 'erhalten');
+    
     SystemMessages::addMessage('1001', 'invalid character', 'Ungültiges Zeichen');
     SystemMessages::addMessage('2001', 'invalid parameter', 'Ungültige Parameter.');
     SystemMessages::addMessage('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');
@@ -182,6 +195,6 @@
     
     // DB ERRORS
     
-    SystemMessages::addMessage('9999', 'database reported an error', 'Datenbank meldet einen Fehler');    
+    SystemMessages::addMessage('9999', 'database reports an error', 'Datenbank meldet einen Fehler');
     
 ?>
