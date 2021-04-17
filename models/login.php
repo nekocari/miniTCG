@@ -2,6 +2,7 @@
 
 
 require_once PATH.'models/member.php';
+require_once PATH.'models/member_activation_code.php';
 require_once PATH.'models/card.php';
 require_once PATH.'models/setting.php';
 
@@ -24,18 +25,26 @@ class Login {
      */
     public function login() {    
         if(!isset($_SESSION['user'])){
-            $req = $this->db->prepare('SELECT id, name, password as pw FROM members WHERE name LIKE :username');
+            $req = $this->db->prepare('SELECT id, name, status, password as pw FROM members WHERE name LIKE :username');
             $req->execute(array(':username' => $this->name));
             
             if($req->rowCount() == 1) {
                 $this->user = $req->fetch(PDO::FETCH_OBJ);
+                if($this->user->status != 'default'){
+                    throw new Exception('login_account_not_active');
+                    return false;
+                }
                 if(password_verify($this->password, $this->user->pw)) {
                     $this->user->pw = null;
                     $_SESSION['user'] = $this->user;
                     // update db field - last login to now
                     $this->db->query('UPDATE members SET login_date = NOW(), ip = \''.$_SERVER['REMOTE_ADDR'].'\' WHERE id = '.$this->user->id);
                     return true;
+                }else{
+                    throw new Exception('login_sign_in_failed');
                 }
+            }else{
+                throw new Exception('login_sign_in_failed');
             }
         }
         return false;
@@ -167,10 +176,15 @@ class Login {
         $new_member->setPropValues(['id'=>$member_id]);
         $new_member->setPassword($pw);
         
+        
         if($member_id != false){
             
-        
-        
+            // create activation code and store it in db
+            $activation_code = self::getRandomActivationCode(12);
+            $member_code = new MemberActivationCode();
+            $member_code->setPropValues(['member_id'=>$member_id,'code'=>$activation_code]);
+            $member_code->create();
+                    
             $startdeck_size = Setting::getByName('cards_startdeck_num')->getValue();
             $cards = Card::createRandomCard($member_id,$startdeck_size,'Startdeck');
             if(count($cards) < 1){
@@ -180,12 +194,17 @@ class Login {
             // get application mail and name from settings
             $app_name = Setting::getByName('app_name')->getValue();
             $app_mail = Setting::getByName('app_mail')->getValue();
+            $base_uri = BASE_URI;
+            if(substr($base_uri, strlen($base_uri)-1) != '/'){ $base_uri.= '/'; }
+            $activation_url = $base_uri.Routes::getUri('login_activation').'?user='.$member_id.'&code='.$member_code->getCode();
             // set recipient
             $recipient  = $mail;
             // title
             $title = 'Deine Anmeldung bei '.$app_name;
             $message = file_get_contents(PATH.'inc/mail_template_sign_up.php');
-            $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$pw,$app_name], $message);
+            $message_search = ['{{MEMBERNAME}}','{{PASSWORD}}','{{ACTIVATION-URL}}','{{APPNAME}}'];
+            $message_replace = [$name,$pw,$activation_url,$app_name];
+            $message = str_replace($message_search, $message_replace, $message);
             
             // set mail header
             $header[] = 'MIME-Version: 1.0';
@@ -204,26 +223,6 @@ class Login {
         return false;
     }
     
-    /**
-     * TODO! 
-     * activates account by deleting the activation code
-     * 
-     * @param string $code the activation code
-     * @param int $user id of user
-     * 
-     * @return boolean
-     */
-    public static function activateAccount($code,$user) {
-        $user = intval($user);
-        $db = Db::getInstance();
-        $req = $db->prepare("DELETE FROM activation WHERE member = :user AND code = :code");
-        $req->execute(array(':user'=>$user,':code'=>$code));
-        if($req->rowCount() == 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
     
     /**
      * Creates a random Code for account activation
@@ -286,46 +285,6 @@ class Login {
         }else{
             return false;
         }
-        
-        /*
-        $pw = self::getRandomActivationCode();
-        
-        $query = 'UPDATE members SET password = :password WHERE mail = :mail ';
-        $req = $db->prepare($query);
-        $req->execute(array(':password'=>password_hash($pw,PASSWORD_BCRYPT), ':mail'=>$mail));
-        
-        if($req->rowCount() == 1){
-            
-            // get application mail and name from settings
-            $app_name = Setting::getByName('app_name')->getValue();
-            $app_mail = Setting::getByName('app_mail')->getValue();
-            // get member name
-            $name = Member::getByMail($_POST['mail'])->getName();
-            
-            // set recipient
-            $recipient  = $_POST['mail'];
-            // title
-            $title = 'Neues Passwort für '.$app_name;
-            // set message
-            $message = file_get_contents(PATH.'inc/mail_template_reset_pw.php');
-            $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$pw,$app_name], $message);
-            
-            // set mail header
-            $header[] = 'MIME-Version: 1.0';
-            $header[] = 'Content-type: text/html; charset=UTF-8';
-            $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
-            
-            
-            if(!mail($recipient, $title, $message, implode("\r\n", $header))){
-                throw new ErrorException('login_new_password_not_sent');
-                return false;
-            }
-            
-            return true;
-        }else{
-            return false;
-        }
-        */
     }
     
     

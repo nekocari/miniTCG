@@ -51,6 +51,7 @@
     Routes::addRoute('signup', 'signup.php', 'login', 'signup');
     Routes::addRoute('signin', 'signin.php', 'login', 'signin');
     Routes::addRoute('signout', 'signout.php', 'login', 'signout');
+    Routes::addRoute('login_activation', 'activation.php', 'login', 'activate');
     Routes::addRoute('lost_password', 'lost_password.php', 'login', 'password');
     Routes::addRoute('edit_userdata', 'member/userdata.php', 'login', 'editUserdata');
     Routes::addRoute('delete_account', 'member/delete_account.php', 'login', 'deleteAccount');

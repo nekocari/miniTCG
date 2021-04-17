@@ -31,7 +31,9 @@ class Member extends DbRecordModel {
         $db_fields = array('id','name','mail','info_text','info_text_html','level','money','join_date','login_date','status','ip'),
         $sql_order_by_allowed_values = array('id','name','level','join_date','login_date','status');
     
-    private static $accepted_group_options = array('level');
+        private static 
+            $accepted_group_options = array('level'),
+            $accepted_status_options = array('pending','default','suspended');
     
     public function __construct() {
         parent::__construct();
@@ -430,18 +432,31 @@ class Member extends DbRecordModel {
     
     public function setName($name) {
         $this->name = $name;
+        return true;
     }
     
     public function setMail($mail) {
         $this->mail = $mail;
+        return true;
     }
     
     public function setLevel($level) {
         $this->level = $level;
+        return true;
     }    
     
     public function setMoney($amount){
         $this->money = intval($amount);
+        return true;
+    }
+    
+    public function setStatus($status){
+        if(in_array($status, self::$accepted_status_options)){
+            $this->status = $status;
+            return true;
+        }else{
+            return false;
+        }
     }
     
     public function setInfoText($text) {
@@ -451,6 +466,7 @@ class Member extends DbRecordModel {
         if($this->info_text != $text){
             throw new Exception('Unerlaubte Elemente wie HTML Code wurden entfernt.','8000');
         }
+        return true;
     }
     
     public function setPassword($pw){

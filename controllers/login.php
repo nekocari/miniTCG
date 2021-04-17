@@ -38,10 +38,11 @@ class LoginController {
 		    // try to login with post data
 			$login = new Login(Db::getInstance(), $_POST['username'],  $_POST['password']);
 			
-			if(!$login->login()){
-			    
-			    $data['_error'][] = SystemMessages::getSystemMessageText('login_sign_in_failed');
-			    
+			try {
+			    $login->login();
+			}
+			catch(Exception $e){
+			    $data['_error'][] = SystemMessages::getSystemMessageText($e->getMessage());
 			}
 		}
 		
@@ -144,13 +145,37 @@ class LoginController {
 	        header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 	    }
 	    
+	    $is_activated = false;
+	    $data = array();
+	    
 	    // process form data
-		if(isset($_GET['code']) AND isset($_GET['user']) AND Login::activateAccount($_GET['code'], $_GET['user'])){
-			Layout::render('login/activation_true.php');
-			
-		// no form data or data is invalid
+		if(isset($_GET['code']) AND isset($_GET['user'])){
+		    
+		    $activation = MemberActivationCode::getByMemberId(intval($_GET['user']));
+		    if($activation instanceof MemberActivationCode AND $activation->getCode() == $_GET['code']){
+		        if($activation->delete()){
+    		        $member = Member::getById(intval($_GET['user']));
+    		        $member->setStatus('default');
+    		        if($member->update()){
+    		            $is_activated = true;
+    		        }
+		        }else{
+		            // code not deleted
+		            $data['_error'][] = 'Code wurde nicht gelöscht';
+		        }
+		    }else{
+		        // code ungültig
+		        $data['_error'][] = 'Code ist ungültig';
+		    }			
+		}elseif(!empty($_POST)){
+		    // daten unvollständig
+		    $data['_error'][] = 'Daten nicht vollständig';
+		}
+		
+		if($is_activated){
+		    Layout::render('login/activation_true.php');
 		}else{
-		    Layout::render('login/activation_false.php');
+		    Layout::render('login/activation_false.php',$data);
 		}
 	}
     

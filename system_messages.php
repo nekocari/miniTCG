@@ -99,6 +99,7 @@
     // text used by the login controller -----------------------------
     
     // LOGIN
+    SystemMessages::addMessage('login_account_not_active', 'account is not active', 'Account ist nicht aktiv.');
     SystemMessages::addMessage('login_sign_in_failed', 'userdata invalid', 'Benutzerdaten sind ungültig.');
     SystemMessages::addMessage('login_sign_up_no_password', 'please set a password', 'Passwort muss gesetzt werden!');
     SystemMessages::addMessage('login_sign_up_password_not_matching', 'passwords do not match', 'Passwörter stimmen nicht überein');
