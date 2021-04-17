@@ -442,4 +442,8 @@ VALUES ('card_filler_general_image', 'img/searchcards/searchcard.gif', 'Pfad vom
 INSERT INTO `settings` (`name`, `value`, `description`) 
 VALUES ('cards_folder', 'img/cards', 'Pfad an dem die Ordner mit den Kartenbildern liegen');
 	
+-- updates enable messages between members
+ALTER TABLE `messages` ADD `deleted` ENUM('sender','recipient') NULL DEFAULT NULL AFTER `status`;
+ALTER TABLE `messages` CHANGE `sender` `sender_id` INT(10) UNSIGNED NULL DEFAULT NULL, CHANGE `recipient` `recipient_id` INT(10) UNSIGNED NOT NULL;
+	
 COMMIT;
