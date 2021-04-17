@@ -144,6 +144,7 @@ class AdminController {
                 $memberdata->setMail($_POST['Mail']);
                 $memberdata->setMoney($_POST['Money']);
                 $memberdata->setInfoText($_POST['Text']);
+                $memberdata->setStatus($_POST['Status']);
                 
                 $return = $memberdata->store();
                 
@@ -167,7 +168,7 @@ class AdminController {
         }
         
         if($memberdata){
-            
+            $data['accepted_stati'] = Member::getAcceptedStati();
             $data['memberdata'] = $memberdata->getEditableData('admin');
             
             Layout::render('admin/members/edit.php',$data);

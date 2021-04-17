@@ -40,6 +40,10 @@ class Member extends DbRecordModel {
     }
     
     
+    public static function getAcceptedStati(){
+        return self::$accepted_status_options;
+    }
+    
     /**
      * get data of all members in an array grouped by a col from database
      *
@@ -245,7 +249,7 @@ class Member extends DbRecordModel {
     public function getEditableData($mode = 'user') {
         $filed = array();
         if($mode  == 'admin'){
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Level' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Status' => $this->status, 'Level' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
         }elseif($mode == 'user'){
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->info_text);
         }

@@ -13,15 +13,22 @@
 	<tbody>
 		<?php 
 		foreach($memberdata as $var => $value){ 
-		     if($var != 'Text') {
+		     if($var != 'Text' AND $var != 'Status') {
 		?>
         	<tr>
         		<td><?php echo $var; ?></td>
         		<td><input type="text" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>"></td>
         	</tr>
-		<?php 
-		     }elseif($var == 'Text'){
-		     ?>
+		<?php }elseif($var == 'Status'){ ?>
+        	<tr>
+        		<td><?php echo $var; ?></td>
+        		<td><select class="form-control" name="<?php echo $var; ?>">
+        		<?php foreach($accepted_stati as $status){ ?>
+        			<option value="<?php echo $status; ?>" <?php if($value == $status){ echo 'selected'; } ?>><?php echo $status; ?></option>
+        		<?php } ?>
+        		</select></td>
+        	</tr>
+		<?php }elseif($var == 'Text'){ ?>
         	<tr>
         		<td><?php echo $var; ?></td>
         		<td><textarea class="form-control" name="<?php echo $var; ?>"><?php echo $value; ?></textarea></td>
