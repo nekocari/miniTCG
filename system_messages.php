@@ -123,8 +123,14 @@
     
     // texts used by the message controller ------------------------------
     
+    SystemMessages::addMessage('pm_not_found', 'message not found', 'Nachricht wurde nicht gefunden.');
     SystemMessages::addMessage('pm_mark_read', 'message marked as read', 'Nachricht als gelesen markiert.');
+    SystemMessages::addMessage('pm_mark_read_failure', 'message could not be marked as read', 'Nachricht konnte nicht als gelesen markiert werden.');
     SystemMessages::addMessage('pm_deleted', 'message deleted', 'Nachricht wurde gelöscht.');
+    SystemMessages::addMessage('pm_delete_failure', 'message not deleted', 'Nachricht konnte nicht gelöscht werden.');
+    SystemMessages::addMessage('pm_send_success', 'message sent', 'Nachricht wurde gesendet.');
+    SystemMessages::addMessage('pm_send_failure', 'message not sent', 'Nachricht wurde nicht gesendet.');
+    SystemMessages::addMessage('pm_missing_input', 'the input is incomplete', 'Die Eingabe ist unvollständig.');
     
     
     
@@ -173,6 +179,7 @@
     SystemMessages::addMessage('dir_exists', 'folder already exists', 'Ordner existiert bereits');
     SystemMessages::addMessage('file_exists', 'file already exists', 'Datei existiert bereits');
     SystemMessages::addMessage('translate_recieved', 'recieved', 'erhalten');
+    SystemMessages::addMessage('unexpected_error', 'unexpected error', 'unerwarteter Fehler');
     
     SystemMessages::addMessage('1001', 'invalid character', 'Ungültiges Zeichen');
     SystemMessages::addMessage('2001', 'invalid parameter', 'Ungültige Parameter.');

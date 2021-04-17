@@ -3,8 +3,8 @@
 <div class="text-right"><a class="btn btn-primary" href="<?php echo Routes::getUri('messages_write')?>">neue Nachricht</a></div>
 
 <ul class="nav nav-tabs">
-	<li class="nav-tab"><a class="nav-link active" href="<?php echo Routes::getUri('messages_recieved')?>">Eingang</a></li>
-	<li class="nav-tab"><a class="nav-link" href="<?php echo Routes::getUri('messages_sent')?>">Ausgang</a></li>
+	<li class="nav-tab"><a class="nav-link" href="<?php echo Routes::getUri('messages_recieved')?>">Eingang</a></li>
+	<li class="nav-tab"><a class="nav-link active" href="<?php echo Routes::getUri('messages_sent')?>">Ausgang</a></li>
 </ul>
 
 
@@ -13,13 +13,13 @@
 	<div class="card-header">
 		<div class="row">
     		<div class="col">
-    			<?php if($msg->isNew()){ ?><span class="badge badge-primary">New</span><?php } ?>
-    			<?php echo $msg->getSender()->getName(); ?> &bull; <?php echo $msg->getDate(); ?>
+    			<a href="<?php echo $msg->getRecipient()->getProfilLink(); ?>"><?php echo $msg->getRecipient()->getName(); ?></a> 
+    			&bull; <?php echo $msg->getDate(); ?>
     		</div>
     		<div class="col text-right">
         		<form class="m-0 p-0" method="POST" action="">
         			<?php if($msg->isNew()){ ?>
-        			<button class="btn btn-sm btn-primary" name="read" value="<?php echo $msg->getId(); ?>"><small>gelesen markieren</small></button>
+        			<button disabled class="btn btn-sm btn-secondary"><small>ungelesen</small></button>
         			<?php }else{ ?>
         			<button class="btn btn-sm" disabled><small>gelesen</small></button>
         			<?php } ?>

@@ -60,6 +60,8 @@
     Routes::addRoute('member_cardupdate', 'member/cardupdate.php', 'update', 'take');
     
     Routes::addRoute('messages_recieved', 'member/inbox.php', 'message', 'received');
+    Routes::addRoute('messages_sent', 'member/outbox.php', 'message', 'sent');
+    Routes::addRoute('messages_write', 'member/new_message.php', 'message', 'write');
     
     Routes::addRoute('card_search', 'cardsearch.php', 'card', 'search');
     
