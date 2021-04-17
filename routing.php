@@ -42,6 +42,7 @@
     Routes::addRoute('admin_member_search', 'admin/members/search.php', 'admin', 'searchMember');
     Routes::addRoute('admin_member_edit', 'admin/members/edit.php', 'admin', 'editMember');
     Routes::addRoute('admin_member_manage_rights', 'admin/members/manage_rights.php', 'admin', 'manageRights');
+    Routes::addRoute('admin_member_reset_password', 'admin/members/reset_password.php', 'admin', 'resetPassword');
     Routes::addRoute('admin_member_gift_cards', 'admin/members/gift_cards.php', 'admin', 'giftCards');
     Routes::addRoute('admin_member_gift_money', 'admin/members/gift_money.php', 'admin', 'giftMoney');
     Routes::addRoute('admin_deck_index', 'admin/deck/list.php', 'deck', 'adminDeckList');

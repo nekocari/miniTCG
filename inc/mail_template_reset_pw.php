@@ -4,7 +4,7 @@
     </head>
     <body>
       <p>Für deinen Account wurde ein neues Passwort angefordert. <br>
-      	Das alte ist ab sofort ungültig.</p>
+      	Das alte Passwort ist ab sofort ungültig.</p>
       	
       <p>Benutzername: {{MEMBERNAME}}<br>
         neues Passwort: {{PASSWORD}}</p>

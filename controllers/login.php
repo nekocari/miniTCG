@@ -169,10 +169,15 @@ class LoginController {
 		    if(isset($_POST['reset']) AND isset($_POST['mail'])){
 		        // try setting a new random password and store it into $pw
 		        try {
-		            if(Login::resetPassword($_POST['mail'])){
-		              $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
+		            $member = Member::getByMail($_POST['mail']);
+		            if($member instanceof Member){
+    		            if($member->resetPassword()){
+    		              $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
+    		            }else{
+    		              $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_failed');
+    		            }
 		            }else{
-		              $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_failed');
+		                throw new Exception('login_new_password_failed');
 		            }
 		        }
 		        catch(Exception $e){

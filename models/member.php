@@ -339,6 +339,38 @@ class Member extends DbRecordModel {
         }
     }
     
+    public function resetPassword(){
+        if(Login::loggedIn() AND in_array('Admin',Login::getUser()->getRights()) OR !Login::loggedIn() ){
+          
+            $random_code = Login::getRandomActivationCode();            
+            
+            if($this->setPassword($random_code)){
+                // set mail vars
+                $app_name = Setting::getByName('app_name')->getValue();
+                $app_mail = Setting::getByName('app_mail')->getValue();
+                $name = $this->getName();
+                $recipient  = $this->getMail();
+                $title = 'Neues Passwort für '.$app_name;
+                // get mail tpl and replace placeholders
+                $message = file_get_contents(PATH.'inc/mail_template_reset_pw.php');
+                $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$random_code,$app_name], $message);
+                // set mail header
+                $header[] = 'MIME-Version: 1.0';
+                $header[] = 'Content-type: text/html; charset=UTF-8';
+                $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+                // send mail
+                if(!mail($recipient, $title, $message, implode("\r\n", $header))){
+                    throw new ErrorException('login_new_password_not_sent');
+                    return false;
+                }
+                return true;
+            }else{
+                return false;
+            }
+            
+        }
+    }
+    
     /**
      * BASIC GETTER FUNCTIONS
      */

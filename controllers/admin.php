@@ -382,6 +382,51 @@ class AdminController {
         
     }
     
+    
+    public function resetPassword(){
+        
+        // if not logged in redirect to sign in form
+        if(!Login::loggedIn()){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights)){
+            die(Layout::render('templates/error_rights.php'));
+        }
+        
+        if(isset($_GET['id']) AND ($member = Member::getById($_GET['id'])) instanceof Member){
+            
+            $data = array();
+            $data['member'] = $member;
+            
+            if(isset($_POST['reset'])){
+                try{
+                    if($member->resetPassword()){
+                        $data['_success'][] = SystemMessages::getSystemMessageText('admin_pw_reset_success');
+                    }else{
+                        $data['_error'][] = SystemMessages::getSystemMessageText('admin_pw_reset_failure');
+                    }
+                }
+                catch(Exception $e){
+                    $text = SystemMessages::getSystemMessageText($e->getMessage());
+                    if($text != 'TEXT MISSING'){
+                        $data['_error'][] = $text;
+                    }else{
+                        $data['_error'][] = SystemMessages::getSystemMessageText('unexpected_error'); 
+                    }
+                }
+            }
+            
+            Layout::render('admin/members/reset_password.php',$data);
+            
+        }else{
+            header("Location: ".BASE_URI.Routes::getUri('not_found'));
+        }
+        
+    }
+    
     public function importSql(){
                 
         // if not logged in redirect to sign in form

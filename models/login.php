@@ -279,6 +279,15 @@ class Login {
     public static function resetPassword($mail) {
         $db = Db::getInstance();
         
+        $member = Member::getByMail($mail);
+        
+        if($member instanceof Member){
+            return $member->resetPassword();
+        }else{
+            return false;
+        }
+        
+        /*
         $pw = self::getRandomActivationCode();
         
         $query = 'UPDATE members SET password = :password WHERE mail = :mail ';
@@ -316,7 +325,9 @@ class Login {
         }else{
             return false;
         }
+        */
     }
+    
     
 }
 ?>

@@ -301,6 +301,7 @@ class DbRecordModel {
             }
         }else{
             throw new ErrorException('db table is not set or db fields are not set');
+            return false;
         }
     }
     

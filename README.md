@@ -37,7 +37,9 @@ If you are interested in an english translation, please let me know.
   * manage members
   	* manage rights 
   	* gift random cards
+  	* gift money
   	* edit profil data
+  	* reset passwords
   	* delete accounts
 * public functions
   * homepage
@@ -47,7 +49,10 @@ If you are interested in an english translation, please let me know.
   * display online members
 * member functions
   * view decks
-  * messages (inbox)
+  * messages
+  	* write 
+  	* inbox
+  	* outbox
   * manage cards
   	* pre selection keep/collect cards
   	* highlighting keep/collect cards
@@ -64,9 +69,6 @@ If you are interested in an english translation, please let me know.
 
    
 ## Features TBA
-* enable messaging between members
-* admins can reset passwords
-* admins can gift "money"
 * allow comments on news
 * add activation codes into registration process 
 

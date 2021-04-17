@@ -36,6 +36,8 @@
     SystemMessages::addMessage('admin_edit_user_failed', 'userdata not saved', 'Daten nicht aktualisiert.');
     SystemMessages::addMessage('admin_delete_user_success', 'user completly deleted', 'Die Mitgliedsdaten wurden komplett gelöscht.');
     SystemMessages::addMessage('admin_delete_user_failed', 'no userdata deleted', 'Es wurden keine Daten gelöscht.');
+    SystemMessages::addMessage('admin_pw_reset_success', 'password was reset and mailed to user', 'Passwort zurückgesetzt und an User gemailt.');
+    SystemMessages::addMessage('admin_pw_reset_failed', 'password could not be reset', 'Passwort konnte nicht zurückgesetzt werden.');
     
     // GIFT CARDS
     SystemMessages::addMessage('admin_gift_cards_success', 'credit successfull:', 'Gutschrift erfolgt:'); // NOTE the cards will be listet afterwards
