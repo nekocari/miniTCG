@@ -83,11 +83,15 @@
 }
 
 #main-area {
-		flex-direction: row;
-	}
+	flex-direction: column-reverse;
+}
+
 
 @media (min-width: 992px) { 
 	#main-area {
 		flex-direction: row-reverse;
+	}
+	#nav .collapse {
+		display:block;
 	}
 }

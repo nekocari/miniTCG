@@ -11,11 +11,13 @@
 <form class="text-center row" name="sortCards" method="POST" action="">
 <?php foreach($collections as $deck_id => $collection){ ?>
     
-    	<div class="col-lg col-sm-12 text-center <?php if($deckdata[$deck_id]->isPuzzle()){ echo " puzzle-view"; } ?>">
+    	<div class="col-lg col-sm-12 text-center mb-4">
     	
-    		<h4><?php echo $deckdata[$deck_id]->getName(); ?></h4>
+    		<h4><a href="<?php echo $deckdata[$deck_id]->getDeckpageUrl(); ?>" class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></a></h4>
+    		<div><?php echo $deckdata[$deck_id]->getName(); ?></div>
+    		
     		<div class="table-responsive">
-            	<div style="white-space: nowrap;">
+            	<div style="white-space: nowrap;" class="<?php if($deckdata[$deck_id]->isPuzzle()){ echo "puzzle-view"; } ?>">
             	<!-- display the card images or searchcard if card is not in collection -->
             	<?php 
             	for($i=1; $i<=$decksize; $i++){  
@@ -32,17 +34,17 @@
             	} 
             	?>
             	</div>
-        	
-            	<!-- action buttons - master or dissolve -->
-        		<p>
-        		<?php if(count($collection) == $decksize) { ?>
-        			<button class="btn btn-success btn-small" name="master" value="<?php echo $deck_id; ?>">Mastercard abholen</button>
-        		<?php }else{ ?>
-        			<button class="btn btn-danger btn-small" name="dissolve" value="<?php echo $deck_id; ?>">Sammlung auflösen</button>
-        		<?php } ?>
-        		</p>	
     		
         	</div>
+    	
+        	<!-- action buttons - master or dissolve -->
+    		<p class="m-1">
+    		<?php if(count($collection) == $decksize) { ?>
+    			<button class="btn btn-success btn-small" name="master" value="<?php echo $deck_id; ?>">Mastercard abholen</button>
+    		<?php }else{ ?>
+    			<button class="btn btn-danger btn-small" name="dissolve" value="<?php echo $deck_id; ?>">Sammlung auflösen</button>
+    		<?php } ?>
+    		</p>	
     		
     	</div>
 <?php } ?>
