@@ -10,7 +10,19 @@ If you are interested in an english translation, please let me know.
 
 **The Application is still under development!**
 
-## How to setup
+---
+
+## Table of contents
+[How to Setup](#how-to-setup)  
+[Current Features](#current-features)    
+[Features TBA](#features-tba)  
+[Used Libs & Co.](#used-libs--co)    
+[Authors](#authors)  
+[Special Thangs](#special-thanks)  
+
+---
+
+## How to Setup
 * Go to inc/constants.php and set the constants for the App. See comments in the file for details.
 * Upload everything to your webspace using a FTP programm.
 * Run *yourwebsitehere.com*/setup/setup.php
@@ -70,7 +82,9 @@ If you are interested in an english translation, please let me know.
    
 ## Features TBA
 * allow comments on news
-* add activation codes into registration process 
+* highlighting of needed cards in shop
+* add decks without uploading files
+* sort & search options for lists
 
 
 ## Used Libs & Co.

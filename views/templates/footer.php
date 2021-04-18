@@ -48,6 +48,7 @@
 			<!-- Footer -->
 			<div class="text-center">
     			<p><hr>
+    				<a href="<?php echo Routes::getUri('faq'); ?>">FAQ</a> &bull; <a href="<?php echo Routes::getUri('imprint'); ?>">Impressum</a><br> 
     				<a href="https://github.com/nekocari/miniTCG/" target="_blank">miniTCG</a> by <a href="https://www.heavenspell.de" target="_blank">Cari</a>
     			</p>
 			</div>
