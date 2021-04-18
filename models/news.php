@@ -9,12 +9,13 @@
 require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
 require_once PATH.'models/member.php';
+require_once PATH.'models/update.php';
 require_once PATH.'helper/Parsedown.php';
 
 class News extends DbRecordModel{
     
     protected $id, $date, $author, $title, $text, $text_html;
-    private $author_obj;
+    private $author_obj, $update_obj;
     
     protected static
         $db_table = 'news_entries',
@@ -102,10 +103,87 @@ class News extends DbRecordModel{
         
         $entries = self::getLatestEntries($number);
         $template = file_get_contents(PATH.'views/templates/news_entry.php');
+        $template_update = file_get_contents(PATH.'views/templates/news_entry_cardupdate.php');
         foreach($entries as $entry){
-            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$entry->getText(),$entry->getDate(),$entry->getAuthor()->getName()), $template);
+            $news_text = $entry->getText();
+            if($entry->hasUpdate('public')){
+                $update_content = SystemMessages::getSystemMessageText('news_update_not_logged_in');
+                if(Login::loggedIn()){
+                    $update_content = '';
+                    foreach($entry->getRelatedUpdate('public')->getRelatedDecks() as $deck){
+                        $update_content.= $deck->getMasterCard();
+                    }
+                }
+                
+                $news_text.= str_replace('[UPDATECONTENT]',$update_content,$template_update);
+            }
+            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$news_text,$entry->getDate(),$entry->getAuthor()->getName()), $template);
+            
         }
             
+    }
+    
+    /**
+     * returns an update object if news is related to one
+     * @return Update|NULL
+     */
+    public function getRelatedUpdate($status='all') {
+        if(is_null($this->update_obj)){
+            $sql = 'SELECT u.* FROM updates_news un JOIN updates u ON u.id = un.update_id WHERE un.news_id = :news_id ';
+            if($status == 'public'){
+                $sql.= ' AND u.status = \'public\' ';
+            }
+            $req = $this->db->prepare($sql);
+            $req->execute([':news_id'=>$this->getId()]);
+            if($req->rowCount() == 1){
+                $this->update_obj = $req->fetchObject('Update');
+            }
+        }
+        return $this->update_obj;
+    }
+    
+    /**
+     * deletes an news update relation entry
+     * @return boolean
+     */
+    public function removeUpdate($update_id) {
+        $sql = 'DELETE FROM updates_news WHERE news_id = :news_id AND update_id = :update_id';
+        $req = $this->db->prepare($sql);
+        $req->execute([':news_id'=>$this->getId(),':update_id'=>intval($update_id)]);
+        if($req->rowCount() > 0){
+            $this->update_obj = null;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * creates an news update relation entry
+     * @return boolean
+     */
+    public function addUpdate($update_id) {
+        $sql = 'INSERT INTO updates_news (news_id, update_id) VALUES (:news_id, :update_id)';
+        $req = $this->db->prepare($sql);
+        $req->execute([':news_id'=>$this->getId(),':update_id'=>intval($update_id)]);
+        if($req->rowCount() > 0){
+            $this->update_obj = null;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * checks if there is an update related to this news
+     * @return boolean
+     */
+    public function hasUpdate($status='all') {
+        if(is_null($this->getRelatedUpdate($status))){
+            return false;
+        }else{
+            return true;
+        }
     }
     
 }

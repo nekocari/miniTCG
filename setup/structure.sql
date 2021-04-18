@@ -467,5 +467,23 @@ CREATE TABLE IF NOT EXISTS `members_activation_code` (
 ALTER TABLE `members_activation_code`
   ADD CONSTRAINT `members_activation_code_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+
+--
+-- Tabellenstruktur für Tabelle `update_news`
+--
+
+CREATE TABLE IF NOT EXISTS `updates_news` (
+  `update_id` int(10) UNSIGNED NOT NULL,
+  `news_id` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`news_id`),
+  UNIQUE KEY `update` (`update_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--
+-- Constraints der Tabelle `updates_news`
+--
+ALTER TABLE `updates_news` ADD FOREIGN KEY (`news_id`) REFERENCES `news_entries`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; 
+ALTER TABLE `updates_news` ADD FOREIGN KEY (`update_id`) REFERENCES `updates`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 	
 COMMIT;

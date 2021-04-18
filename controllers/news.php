@@ -132,5 +132,53 @@ class NewsController {
             
     }
     
+    
+    public function linkedUpdate(){
+       
+        // redirect if not logged in
+        if(!isset($_SESSION['user'])){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // check if user has required rights
+        $user_rights = Login::getUser()->getRights();
+        if(!in_array('Admin',$user_rights) AND
+            !in_array('CardCreator',$user_rights) AND
+            !in_array('ManageNews',$user_rights) ){
+                die(Layout::render('templates/error_rights.php'));
+        } 
+        
+        // get current news entry
+        if(!isset($_GET['id']) OR !$news = News::getById($_GET['id'])){
+            header("Location: ".BASE_URI.Routes::getUri('not_found'));
+        }
+        
+        $data = array();
+        
+        // process post data
+        // add update
+        if(isset($_POST['add'])){
+            if($news->hasUpdate()){
+                $news->removeUpdate($news->getRelatedUpdate()->getId());
+            }
+            if($news->addUpdate($_POST['add'])){
+                // success
+            }
+        }
+        
+        // remove update
+        if(isset($_POST['remove'])){
+            if($news->removeUpdate($_POST['remove'])){
+                // success
+            }
+        }
+        
+        // get currently linked 
+        $data['linked_update'] = $news->getRelatedUpdate();
+        $data['unlinked_updates'] = Update::getUnlinkedToNews();
+        
+        Layout::render('admin/news/linked_update.php', $data);
+    }
+    
 }
 ?>

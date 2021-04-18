@@ -81,6 +81,7 @@
     Routes::addRoute('news_index', 'admin/news/list.php','news', 'index');
     Routes::addRoute('news_add', 'admin/news/add.php','news', 'add');
     Routes::addRoute('news_edit', 'admin/news/edit.php','news', 'edit');
+    Routes::addRoute('news_link_update', 'admin/news/update.php','news', 'linkedUpdate');
     
     Routes::addRoute('level_index', 'admin/level.php', 'level', 'level');
     Routes::addRoute('level_add', 'admin/level/add.php', 'level', 'addLevel');
