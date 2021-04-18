@@ -13,12 +13,26 @@
 	</div>
 	<div class="card-body text-center">
 		<div>
-			<?php echo $trade->getRequestedCard()->getImageHTML(); ?>
+			<div class="text-center d-inline-block">
+				<div class="d-inline-block card-member-profil">
+    				<?php echo $trade->getRequestedCard()->getImageHTML(); ?>
+                </div>
+            </div>
 			<i class="fas fa-sync-alt h1"></i>
-			<?php echo $trade->getOfferedCard()->getImageHTML(); ?>
+			<div class="text-center d-inline-block">
+				<div class="d-inline-block card-member-profil <?php 
+    				if($trade->getOfferedCard()->missingInKeep()){ echo " card-missing-keep"; } 
+    				if($trade->getOfferedCard()->missingInCollect()){ echo " card-missing-collect"; } 
+    				if($trade->getOfferedCard()->mastered()){ echo " card-mastered"; } ?>">
+    				<?php echo $trade->getOfferedCard()->getImageHTML(); ?>
+                </div>
+            </div>
 		</div>
-		<div>Deine <span class="text-uppercase"><?php echo $trade->getRequestedCard()->getName(); ?></span> gegen 
-			<span class="text-uppercase"><?php echo $trade->getOfferedCard()->getName(); ?></span> von <?php echo $trade->getOfferer()->getName(); ?></div>
+		<div>
+			Deine <span class="text-uppercase"><?php echo $trade->getRequestedCard()->getName(); ?></span> gegen 
+			<span class="text-uppercase"><?php echo $trade->getOfferedCard()->getName(); ?></span> von <?php echo $trade->getOfferer()->getName(); ?>
+		</div>
+			
 		<div class="text-muted font-italic">Nachricht: "<?php echo $trade->getText(); ?>"</div>
 	</div>
 	<div class="card-footer text-center">
@@ -34,3 +48,11 @@
 <?php } ?>
 
 <?php if(count($trades) == 0){ Layout::sysMessage('Du hast keine Tauschanfragen erhalten.'); } ?>
+
+<div class="text-center my-2">
+	<small>
+		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in Keep</span>
+		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Collect</span>
+		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
+	</small>
+</div>

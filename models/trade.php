@@ -261,8 +261,8 @@ class Trade extends DbRecordModel {
         return $this->offerer_obj;
     }
     public function getOfferedCard() {
-        if(!$this->offered_card_obj instanceof Card){
-            $this->offered_card_obj = Card::getById($this->offered_card);
+        if(!$this->offered_card_obj instanceof CardCardmanager){
+            $this->offered_card_obj = Card::getById($this->offered_card)->getFlaggedCard($this->recipient);
         }
         return $this->offered_card_obj;
     }
@@ -273,8 +273,8 @@ class Trade extends DbRecordModel {
         return $this->recipient_obj;
     }
     public function getRequestedCard() {
-        if(!$this->requested_card_obj instanceof Card){
-            $this->requested_card_obj = Card::getById($this->requested_card);
+        if(!$this->requested_card_obj instanceof CardCardmanager){
+            $this->requested_card_obj = Card::getById($this->requested_card)->getFlaggedCard($this->offerer);
         }
         return $this->requested_card_obj;
     }

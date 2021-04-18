@@ -15,21 +15,27 @@
 	<div class="col-12 col-md-6">
 		<h4>Karte anbieten</h4>
 		
-		<div id="offered_card">
+		<div class="text-center" id="offered-card">
 			<?php echo $searchcardurl; ?>
 		</div>
 		
-		<div class="text-center">
-			<p><select class="form-control" id="offered_card_id" name="offered_card_id">
-                	<option value="">Karte auswählen</option>
-                    <?php foreach($cards as $card){ ?>
-                    <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>"><?php echo $card->getName(); ?></option>
-                    <?php } ?>
-                </select>
-            </p>
-            <p><textarea class="form-control" name="text" maxlength="250"
-            	placeholder="Nachricht (optional)"></textarea><p>
+		<div class="text-center m-2">
+			<select class="form-control" id="offered-card-id" name="offered_card_id">
+            	<option value="">Karte auswählen</option>
+                <?php foreach($cards as $card){ ?>
+                <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
+                	<?php echo $card->getName().' ('.$card->getPossessionCounter().')'; ?>
+                	<?php if($card->missingInKeep()){ echo ' [KEEP]'; } ?>
+                	<?php if($card->missingInCollect()){ echo ' [COLLECT]'; } ?>
+                	<?php if($card->mastered()){ echo ' [masterd]'; } ?>
+                </option>
+                <?php } ?>
+            </select>   
         </div>
+	</div>
+	
+	<div class="col-12 my-2 px-4">
+        <textarea class="form-control" name="text" maxlength="250" placeholder="Nachricht (optional)"></textarea>
 	</div>
 	
 </div>
@@ -45,13 +51,17 @@
 </form>
 
 <script>
-let offerSelect = document.getElementById('offered_card_id');
+let offerSelect = document.getElementById('offered-card-id');
+offerSelect.addEventListener("change", changeImage);
 function changeImage(){ 
 	let selected = offerSelect.selectedOptions;
-	let imgUrl = selected[0].getAttribute('data-url');
-	let offeredCard = document.getElementById('offered_card').getElementsByClassName('cardimage');
-	offeredCard[0].style.backgroundImage = "url('"+imgUrl+"')";
-	console.log(offeredCard[0]);
+	if(selected.length == 1){
+    	let imgUrl = selected[0].getAttribute('data-url');
+    	let offeredCard = document.getElementById('offered-card').getElementsByClassName('cardimage');
+    	offeredCard[0].style.backgroundImage = "url('"+imgUrl+"')";
+    	
+	}else{
+		console.log('more than one selected option found for #offered_card'); 
+	}
 }
-offerSelect.addEventListener("change", changeImage);
 </script>
