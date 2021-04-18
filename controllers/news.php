@@ -40,7 +40,7 @@ class NewsController {
             $currPage = intval($_GET['pg']);
         }
         
-        $news = News::getAll();
+        $news = News::getAll(['date'=>'DESC']);
         
         $pagination = new Pagination($news, 10, $currPage, Routes::getUri('news_index'));
         

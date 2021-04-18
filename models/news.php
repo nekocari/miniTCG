@@ -106,6 +106,10 @@ class News extends DbRecordModel{
         $template_update = file_get_contents(PATH.'views/templates/news_entry_cardupdate.php');
         foreach($entries as $entry){
             $news_text = $entry->getText();
+            $news_author = $entry->getAuthor()->getName();
+            if(!is_null($entry->getAuthor()->getProfilLink())){
+                $news_author = '<a href="'.$entry->getAuthor()->getProfilLink().'">'.$news_author.'</a>';
+            }
             if($entry->hasUpdate('public')){
                 $update_content = SystemMessages::getSystemMessageText('news_update_not_logged_in');
                 if(Login::loggedIn()){
@@ -117,7 +121,7 @@ class News extends DbRecordModel{
                 
                 $news_text.= str_replace('[UPDATECONTENT]',$update_content,$template_update);
             }
-            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$news_text,$entry->getDate(),$entry->getAuthor()->getName()), $template);
+            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$news_text,$entry->getDate(),$news_author), $template);
             
         }
             
