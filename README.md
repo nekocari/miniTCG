@@ -18,7 +18,7 @@ If you are interested in an english translation, please let me know.
 [Features TBA](#features-tba)  
 [Used Libs & Co.](#used-libs--co)    
 [Authors](#authors)  
-[Special Thangs](#special-thanks)  
+[Special Thanks](#special-thanks)  
 
 ---
 
