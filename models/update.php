@@ -35,6 +35,17 @@ class Update extends DbRecordModel {
     }
     
     
+    public static function getUnlinkedToNews(){
+        $db = Db::getInstance();
+        $updates = array();
+        
+        $sql = "SELECT u.* FROM updates u LEFT JOIN updates_news un ON u.id = un.update_id WHERE un.news_id IS NULL";
+        $req = $db->query($sql);
+        foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $update){
+            $updates[] = $update;
+        }
+        return $updates;
+    }
     
     public function publish() {
         $decks = $this->getRelatedDecks();

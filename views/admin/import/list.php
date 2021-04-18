@@ -10,6 +10,7 @@
 <div class="alert alert-primary">Hier kannst du die SQL Dateien aus dem Ordner "import" einlesen, 
 um z.B. nach einem Update der App deine Datenbank zu aktualisieren.</div>
 
+<div class="table-responsive">
 <table class="table table-striped">
 	<thead>
     	<tr>
@@ -19,7 +20,7 @@ um z.B. nach einem Update der App deine Datenbank zu aktualisieren.</div>
 	</thead>
 	<tbody>
 <?php foreach($files as $file){ ?>
-    	<tr>
+    	<tr style="white-space:nowrap">
     		<td><?php echo $file; ?></td>
     		<td>
     			<form class="text-right" method="POST" action="">
@@ -33,3 +34,4 @@ um z.B. nach einem Update der App deine Datenbank zu aktualisieren.</div>
 <?php } ?>
 	</tbody>
 </table>
+</div>

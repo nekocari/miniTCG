@@ -151,7 +151,7 @@ class Trade extends DbRecordModel {
                         break;
                         
                     case 'declined':
-                        $msg_text = 'ANFRAGE ABGELEHNT! '.$this->getRecipient()->getName().' tauscht '.
+                        $msg_text = 'ANFRAGE ABGELEHNT! ['.$this->getRecipient()->getName().']('.$this->getRecipient()->getProfilLink().') tauscht '.
                                 strtoupper($this->getRequestedCard()->getName()).' nicht gegen deine '.
                                 strtoupper($this->getOfferedCard()->getName()).'.';
                         break;
@@ -161,7 +161,7 @@ class Trade extends DbRecordModel {
                     $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
                 }
                 
-                Message::add($this->getRecipient()->getId(), $this->getOfferer()->getId(), $msg_text);
+                Message::add(Null, $this->getOfferer()->getId(), $msg_text);
                 
                 return true;
             }
@@ -203,7 +203,7 @@ class Trade extends DbRecordModel {
                     if($req->rowCount() == 1){
                         
                         // send message to inform offerer
-                        $msg_text = 'ANFRAGE ANGENOMMEN! '.$this->getRecipient()->getName().' hat '.
+                        $msg_text = 'ANFRAGE ANGENOMMEN! ['.$this->getRecipient()->getName().']('.$this->getRecipient()->getProfilLink().') hat '.
                             strtoupper($this->getRequestedCard()->getName()).' gegen deine '.
                             strtoupper($this->getOfferedCard()->getName()).' getauscht.';
                         
@@ -211,7 +211,7 @@ class Trade extends DbRecordModel {
                             $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
                         }
                         
-                        Message::add($this->getRecipient()->getId(), $this->getOfferer()->getId(), $msg_text);
+                        Message::add(NULL, $this->getOfferer()->getId(), $msg_text);
                         
                         // create Tradelog entry for offerer
                         $text = 'Du hast '.strtoupper($this->getOfferedCard()->getName()).' gegen '.strtoupper($this->getRequestedCard()->getName()).
@@ -261,8 +261,8 @@ class Trade extends DbRecordModel {
         return $this->offerer_obj;
     }
     public function getOfferedCard() {
-        if(!$this->offered_card_obj instanceof Card){
-            $this->offered_card_obj = Card::getById($this->offered_card);
+        if(!$this->offered_card_obj instanceof CardCardmanager){
+            $this->offered_card_obj = Card::getById($this->offered_card)->getFlaggedCard($this->recipient);
         }
         return $this->offered_card_obj;
     }
@@ -273,8 +273,8 @@ class Trade extends DbRecordModel {
         return $this->recipient_obj;
     }
     public function getRequestedCard() {
-        if(!$this->requested_card_obj instanceof Card){
-            $this->requested_card_obj = Card::getById($this->requested_card);
+        if(!$this->requested_card_obj instanceof CardCardmanager){
+            $this->requested_card_obj = Card::getById($this->requested_card)->getFlaggedCard($this->offerer);
         }
         return $this->requested_card_obj;
     }

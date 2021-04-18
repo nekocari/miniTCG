@@ -139,6 +139,7 @@
     
     // texts used by the news controller ----------------------------------
     
+    SystemMessages::addMessage('news_update_not_logged_in', 'login to see update decks', 'Einloggen um Update zu sehen.');
     SystemMessages::addMessage('news_delete_failed', 'news could not be deleted', 'News konnte nicht gelöscht werden.');
     SystemMessages::addMessage('news_insert_failed', 'news could not be inserted', 'News konnte nicht gespeichert werden.');
     SystemMessages::addMessage('news_update_failed', 'news could not be updated', 'Änderung konnte nicht gespeichert werden.');

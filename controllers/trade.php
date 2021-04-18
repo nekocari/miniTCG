@@ -49,7 +49,7 @@ class TradeController {
         }
         
         // fetch current trade offers from database
-        $data['trades'] = Trade::getRecievedByMemberId($_SESSION['user']->id);
+        $data['trades'] = Trade::getRecievedByMemberId(Login::getUser()->getId());
         
         Layout::render('trade/recieved.php',$data);
     }
@@ -123,7 +123,7 @@ class TradeController {
                 }
                 catch (Exception $e){
                     $data['_error'][] = SystemMessages::getSystemMessageText('trade_new_failed');
-                    //error_log($e->getMessage(), 3, ERROR_LOG);
+                    error_log($e->getMessage().'\n', 3, ERROR_LOG);
                 }
                 
                 Layout::render('trade/add_result.php',$data);
@@ -132,15 +132,15 @@ class TradeController {
             }else{
                 
                 // check if trade user is not logged in user
-                if($data['requested_card']->getOwner()->getId() != $_SESSION['user']->id){
-                    
+                if($data['requested_card']->getOwner()->getId() != Login::getUser()->getId()){
+                    $data['searchcardurl'] = Card::getSearchcardHtml();
                     // get all tradeable cards from logged in user 
-                    $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade', true);
+                    $data['cards'] = CardMemberProfil::getCardsByStatus(Login::getUser()->getId(),'trade',$data['requested_card']->getOwner()->getId());
                     Layout::render('trade/add.php',$data);
                     
                 }else{
                     
-                    // set up error message in case user is logged in user
+                    // error message in case user is logged in user
                     $data['_error'][] = SystemMessages::getSystemMessageText('trade_with_self');
                     Layout::render('templates/error.php', $data);
                     

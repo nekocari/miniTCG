@@ -7,7 +7,7 @@
 
 <h1>Mitgliederliste</h1>
 
-
+<div class="table-responsive">
 <table class="table table-striped">
 	<thead>
     	<tr>
@@ -19,7 +19,7 @@
 	</thead>
 	<tbody>
 <?php foreach($members as $member){ ?>
-    	<tr>
+    	<tr style="white-space:nowrap">
     		<td><?php echo $member->getId(); ?></td>
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
     		<td><?php echo $member->getMail(); ?></td>
@@ -44,5 +44,5 @@
 <?php } ?>
 	</tbody>
 </table>
-
+</div>
 <?php echo $pagination; ?>

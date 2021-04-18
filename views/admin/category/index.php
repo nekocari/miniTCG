@@ -16,12 +16,12 @@
 		<div class="row">
 			<form class="col px-1 m-0" method="POST" action="">
 				<button class="btn btn-danger btn-sm del-link" onclick="return confirm('Kategorie <?php echo $category->getName(); ?> wirklich löschen?');">
-					<i class="fas fa-times"></i> löschen</button>
+					<i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span></button>
 				<input type="hidden" name="action" value="del_cat">
 				<input type="hidden" name="id" value="<?php echo $category->getId(); ?>">
 			</form>
 			<a class="btn btn-primary btn-sm" href="<?php echo ROUTES::getUri('category_edit');?>?id=<?php echo $category->getId(); ?>">
-				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
+				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 		</div>
 	</div>
 	
@@ -32,12 +32,12 @@
 			<div class="row">
     			<form class="col px-1 m-0" method="POST" action="">
     				<button class="btn btn-danger btn-sm del-link" onclick="return confirm('Unterkategorie <?php echo $subcategory->getName(); ?> wirklich löschen?');">
-    					<i class="fas fa-times"></i> löschen</button>
+    					<i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span></button>
     				<input type="hidden" name="action" value="del_subcat">
     				<input type="hidden" name="id" value="<?php echo $subcategory->getId(); ?>">
     			</form>
     			<a class="btn btn-primary btn-sm" href="<?php echo ROUTES::getUri('subcategory_edit');?>?id=<?php echo $subcategory->getId(); ?>">
-    				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
+    				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 			</div>
 		</li>
 		<?php } } ?>

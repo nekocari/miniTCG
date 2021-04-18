@@ -7,6 +7,7 @@
 
 <h1>Liste aller Karten</h1>
 
+<div class="table-responsive">
 <table class="table table-striped table-sm">
 	<thead>
 		<tr>
@@ -18,7 +19,7 @@
 	</thead>
 	<tbody>
 	<?php foreach($carddecks as $deck){ ?>
-		<tr>
+		<tr style="white-space:nowrap">
 			<td><?php echo $deck->getId(); ?></td>
 			<td>
 				<span class="deckname"><?php echo $deck->getDeckname(); ?></span>
@@ -27,10 +28,11 @@
 			</td>
 			<td><?php echo $deck->getCreatorName(); ?><br><small><?php echo $deck->getDate(); ?></small></td>
 			<td class="text-right">
-    			<a class="btn btn-link" href="<?php echo ROUTES::getUri('deck_edit');?>?id=<?php echo $deck->getId(); ?>">
-    				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
+    			<a class="btn btn-sm btn-primary" href="<?php echo ROUTES::getUri('deck_edit');?>?id=<?php echo $deck->getId(); ?>">
+    				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 			</td>
 		</tr>
 	<?php } ?>
 	</tbody>
 </table>
+</div>
