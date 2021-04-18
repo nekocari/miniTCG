@@ -133,7 +133,7 @@ class TradeController {
                 
                 // check if trade user is not logged in user
                 if($data['requested_card']->getOwner()->getId() != $_SESSION['user']->id){
-                    
+                    $data['searchcardurl'] = Card::getSearchcardHtml();
                     // get all tradeable cards from logged in user 
                     $data['cards'] = Card::getMemberCardsByStatus($_SESSION['user']->id, 'trade', true);
                     Layout::render('trade/add.php',$data);

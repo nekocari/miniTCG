@@ -14,11 +14,16 @@
 
 	<div class="col-12 col-md-6">
 		<h4>Karte anbieten</h4>
+		
+		<div id="offered_card">
+			<?php echo $searchcardurl; ?>
+		</div>
+		
 		<div class="text-center">
-			<p><select class="form-control" name="offered_card_id">
+			<p><select class="form-control" id="offered_card_id" name="offered_card_id">
                 	<option value="">Karte auswählen</option>
                     <?php foreach($cards as $card){ ?>
-                    <option value="<?php echo $card->getId(); ?>"><?php echo $card->getName(); ?></option>
+                    <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>"><?php echo $card->getName(); ?></option>
                     <?php } ?>
                 </select>
             </p>
@@ -38,3 +43,15 @@
 </p>
 
 </form>
+
+<script>
+let offerSelect = document.getElementById('offered_card_id');
+function changeImage(){ 
+	let selected = offerSelect.selectedOptions;
+	let imgUrl = selected[0].getAttribute('data-url');
+	let offeredCard = document.getElementById('offered_card').getElementsByClassName('cardimage');
+	offeredCard[0].style.backgroundImage = "url('"+imgUrl+"')";
+	console.log(offeredCard[0]);
+}
+offerSelect.addEventListener("change", changeImage);
+</script>
