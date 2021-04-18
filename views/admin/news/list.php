@@ -32,7 +32,7 @@
     				<input type="hidden" name="action" value="del_news">
     				<input type="hidden" name="id" value="<?php echo $entry->getId(); ?>">
     				
-        			<a class="btn btn-sm btn-dark" href="<?php echo ROUTES::getUri('news_edit');?>?id=<?php echo $entry->getId(); ?>">
+        			<a class="btn btn-sm btn-dark" href="<?php echo ROUTES::getUri('news_link_update');?>?id=<?php echo $entry->getId(); ?>">
         				<i class="fas fa-plus"></i> <span class="d-none d-md-inline">Update</span></a>
     				
         			<a class="btn btn-sm btn-primary" href="<?php echo ROUTES::getUri('news_edit');?>?id=<?php echo $entry->getId(); ?>">
