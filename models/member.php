@@ -193,7 +193,15 @@ class Member extends DbRecordModel {
      * @return int
      */
     public function getMasterCount(){
-        return count($this->getMasteredDecks());
+        $master_counter = 0;
+        if(!is_null($this->masterd_decks)){
+            $master_counter = count($this->getMasteredDecks());
+        }else{
+            $sql = "SELECT COUNT(*) FROM ".Master::getDbTableName()." WHERE member = ".$this->getId();
+            $req = $this->db->query($sql);
+            $master_counter = $req->fetchColumn();
+        }
+        return $master_counter;
     }
     
     /**
@@ -202,11 +210,9 @@ class Member extends DbRecordModel {
      * @return int - number of cards in total
      */
     public function getCardCount(){
-        $counter = 0;
-        $counter+= count($this->getCardsByStatus('trade'));
-        $counter+= count($this->getCardsByStatus('collect'));
-        $counter+= count($this->getCardsByStatus('new'));
-        $counter+= count($this->getCardsByStatus('keep'));
+        $sql = "SELECT COUNT(*) FROM ".Card::getDbTableName()." WHERE owner = ".$this->getId();
+        $req = $this->db->query($sql);
+        $counter = $req->fetchColumn();
         return $counter;
     }
     
@@ -215,8 +221,9 @@ class Member extends DbRecordModel {
      */
     public function checkLevelUp() {
         
+        echo $card_count_with_master = $this->getCardCount() + ($this->getMasterCount() * Setting::getByName('cards_decksize')->getValue());
         $current_level = $this->getLevel();
-        $reached_level = Level::getByCardNumber($this->getCardCount());
+        $reached_level = Level::getByCardNumber($card_count_with_master);
         
         if(!is_null($reached_level) AND $current_level != $reached_level->getId()){
             

@@ -21,6 +21,21 @@ class DbRecordModel {
     
     
     /**
+     * returns name of related table in database
+     * @throws ErrorException
+     * @return String|NULL
+     */
+    public static function getDbTableName(){
+        if(isset(static::$db_table)){
+            return static::$db_table;
+        }else{
+            throw new ErrorException('table name for '.get_called_class().' not set');
+            return null;
+        }
+    }
+    
+    
+    /**
      * sets an objects propertys using an array
      * @param mixed $array - property_name => value
      * @throws ErrorException
