@@ -1,13 +1,18 @@
 @charset "UTF-8";
 
-@import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed|Roboto');
+@import url('https://fonts.googleapis.com/css?family=Antonio|Roboto');
+
+:root{ 
+	--def-border-radius: 0.5rem;
+}
 
 .navbar-brand {
 	font-style: italic;
+	font-size: 1.5rem;
 }
 
 .navbar-brand .tcg {
-	color: #007bff;
+	color: var(--primary);
 	font-weight: bold;
 }
 
@@ -16,8 +21,20 @@
 	font-size: 0.8rem;
 }
 
+body{
+	font-family: Roboto;
+}
+
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-	font-family: Barlow Semi Condensed;
+	font-family: Antonio;
+	margin-bottom: 1rem;
+	letter-spacing: 0.15rem;
+}
+
+.breadcrumb {
+	background: transparent;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .deckname {
@@ -62,36 +79,37 @@
 }
 
 .card-missing-collect {
-	background-color: #f8e2fa;
-	border-color: purple;
-	color: purple;
+	background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5) 100%);
+	background-color: var(--primary);
+	border-color: var(--primary);
 }
 
 .card-missing-keep {
-	background-color: #c0dee4;
-	border-color: teal;
-	color: teal;
+	background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5) 100%);
+	background-color: var(--secondary);
+	border-color: var(--secondary);
 }
 
 .card-mastered {
-	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
-	border-color: rgba(0,0,0,0.25);
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(0,0,0,0.05);
+}
+.card-mastered.card-missing-keep, .card-mastered.card-missing-collect {
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45), rgba(255,255,255,0.45) 6px, rgba(255,255,255,0.5) 6px, rgba(255,255,255,0.5) 12px);
+	border-color: rgba(0,0,0,0.05);
 }
 
 .puzzle-view > .cardimage {
 		margin: 0;
 }
 
-#main-area {
-	flex-direction: column-reverse;
-}
+.border-rounded{ border-radius: var(--def-border-radius);  }
+.border-tl-rounded{ border-top-left-radius: var(--def-border-radius);  }
+.border-bl-rounded{ border-bottom-left-radius: var(--def-border-radius);  }
+.border-tr-rounded{ border-top-right-radius: var(--def-border-radius);  }
+.border-br-rounded{ border-bottom-right-radius: var(--def-border-radius);  } 
 
 
 @media (min-width: 992px) { 
-	#main-area {
-		flex-direction: row-reverse;
-	}
-	#nav .collapse {
-		display:block;
-	}
+	
 }
