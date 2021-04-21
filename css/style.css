@@ -1,9 +1,17 @@
 @charset "UTF-8";
 
-@import url('https://fonts.googleapis.com/css?family=Antonio|Roboto');
+@import url('https://fonts.googleapis.com/css?family=ABeeZee|Roboto');
 
 :root{ 
 	--def-border-radius: 0.5rem;
+}
+body { font-size: .97rem; }
+
+.navbar-toggler{
+	border: 0;
+}
+.navbar-toggler:focus {
+	outline: 0;
 }
 
 .navbar-brand {
@@ -26,9 +34,9 @@ body{
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-	font-family: Antonio;
+	font-family: ABeeZee;
 	margin-bottom: 1rem;
-	letter-spacing: 0.15rem;
+	letter-spacing: -.1rem;
 }
 
 .breadcrumb {
@@ -54,7 +62,7 @@ body{
 	background-repeat: no-repeat;
 	background-position: center center;
 	margin: 2px;
-	background-color: rgba(0,0,0,0.2);
+	background-color: rgba(0,0,0,0.1);
 }
 
 .card-cardmanager {
@@ -91,7 +99,7 @@ body{
 }
 
 .card-mastered {
-	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 6px, transparent 6px, transparent 12px);
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
 	border-color: rgba(0,0,0,0.05);
 }
 .card-mastered.card-missing-keep, .card-mastered.card-missing-collect {
