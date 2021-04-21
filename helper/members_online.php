@@ -23,14 +23,16 @@ class MembersOnline {
      * @return array(Member) - Returns an array of Member Objects
      */
     public function getOnlineMembers() {
-        $query = "DELETE FROM members_online WHERE date < (NOW() - INTERVAL 5 MINUTE)";
-        $this->db->query($query);
-        
-        $query = "SELECT m.* FROM members_online mo JOIN members m ON m.id = mo.member ORDER BY m.name ASC";
-        $req = $this->db->query($query);
-        if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
-                $this->members[] = $member;
+        if($this->members == null){
+            $query = "DELETE FROM members_online WHERE date < (NOW() - INTERVAL 5 MINUTE)";
+            $this->db->query($query);
+            
+            $query = "SELECT m.* FROM members_online mo JOIN members m ON m.id = mo.member ORDER BY m.name ASC";
+            $req = $this->db->query($query);
+            if($req->rowCount() > 0){
+                foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
+                    $this->members[] = $member;
+                }
             }
         }
         return $this->members;

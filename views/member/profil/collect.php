@@ -13,14 +13,18 @@
   </li>
 </ul>
 
+
 <div class="my-4">
 <?php foreach($collections as $deck_id => $collection){ ?>
-	<div class="table-responsive">
-    	<div class="d-inline-block m-4 text-center <?php if($deckdata[$deck_id]->isPuzzle()){ echo " puzzle-view"; } ?>">
-    		<h4><span class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></span></h4>
-    		<div style="white-space:nowrap;">
-        	<?php 
-        	for($i=1; $i<=$decksize; $i++){  
+	
+	<div class="col-lg col-sm-12 mb-4 text-center">
+	
+    	<h4><a href="<?php echo $deckdata[$deck_id]->getDeckpageUrl(); ?>" class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></a></h4>
+    	<div><?php echo $deckdata[$deck_id]->getName(); ?></div>
+    	
+    	<div class="table-responsive">
+    		<div style="white-space:nowrap;" class="<?php if($deckdata[$deck_id]->isPuzzle()){ echo "puzzle-view"; } ?>">
+        	<?php for($i=1; $i<=$decksize; $i++){  
         	    if(key_exists($i,$collection)) {
         	        echo $collection[$i]->getImageHtml();
         	    }else{
@@ -31,8 +35,7 @@
         	        }
         	    }
         	    if($i%$cards_per_row == 0){ echo '<br>'; }
-        	} 
-        	?>
+        	} ?>
         	</div>
     	</div>
 	</div>

@@ -19,48 +19,55 @@
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  
+		
 	</head>
 	<body>
-		<!-- Main Navigation -->
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        	<div class="container">
-        		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small>v0.1</small></a>
+        
+        					
+					
+    <!-- page wrapper -->
+    <div id="page-wrapper" class="container p-0 my-sm-4 d-flex flex-wrap-reverse">
+    
+    	<!-- left -->
+    	<div id="main" class="col">
         	
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                	<span class="navbar-toggler-icon"></span>
-                </button>
-    			
-    			<div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-        				<li class="nav-item">
-        					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home"></i> Startseite</a>
-        				</li>
-        				<li class="nav-item">
-        					<a class="nav-link" href="<?php echo ROUTES::getUri('member_index');?>"><i class="fas fa-users"></i> Mitglieder</a>
-        				</li>
-        				<li class="nav-item dropdown">
-        					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder"></i> Karten</a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
-                            	<!-- PHP Code for the Category List -->
-                            	<?php if(count($tcg_categories)>0){ foreach($tcg_categories as $tcg_category){ ?>
-									<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
-								<?php } ?>
-                            	<div class="dropdown-divider"></div>
-                            	<?php } ?>
-                            	<!-- Category Liste End -->
-                            	<a class="dropdown-item" href="<?php echo ROUTES::getUri('deck_index');?>">Alle</a>
-                            </div>
-        				</li>
-        			</ul>
-    			</div>
+        	
+        	<!-- Main Navigation -->
+        	<div id="main-nav">
+                <nav class="navbar navbar-expand-sm navbar-light px-0 py-3">  
+                	<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small>v0.1</small></a>      	
+                    
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    	<span class="navbar-toggler-icon"></span>
+                    </button>
+        			
+        			<div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+            				<li class="nav-item">
+            					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home text-primary"></i> Startseite</a>
+            				</li>
+            				<li class="nav-item">
+            					<a class="nav-link" href="<?php echo ROUTES::getUri('member_index');?>"><i class="fas fa-users text-primary"></i> Mitglieder</a>
+            				</li>
+            				<li class="nav-item dropdown">
+            					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder text-primary"></i> Karten</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
+                                	<!-- PHP Code for the Category List -->
+                                	<?php if(count($tcg_categories)>0){ foreach($tcg_categories as $tcg_category){ ?>
+        								<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
+        							<?php } ?>
+                                	<div class="dropdown-divider"></div>
+                                	<?php } ?>
+                                	<!-- Category Liste End -->
+                                	<a class="dropdown-item" href="<?php echo ROUTES::getUri('deck_index');?>">Alle</a>
+                                </div>
+            				</li>
+            			</ul>
+        			</div>
+                </nav>
         	</div>
-        </nav>
-        
-        
-        <!-- Center of Layout -->
-		<div class="container">
-    		<div id="main-area" class="row my-4">
-    		
-        		<!-- Content -->
-				<div class="col-12 col-lg-9" id="content">
+        	<!-- END Main Navigation -->
+        	
+        	
+    		<!-- Content -->
+        	<div id="content">

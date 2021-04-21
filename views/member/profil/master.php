@@ -13,10 +13,13 @@
   </li>
 </ul>
 
-<div class="my-4">
-<?php foreach($cat_elements as $master_deck){
-    echo $master_deck->getMasterCard();
-}?>
+<div class="my-4 text-center">
+<?php foreach($cat_elements as $master_deck){ ?>
+	<span class="d-inline-block text-center m-1">
+    	<?php echo $master_deck->getMasterCard(); ?><br>
+    	<a class="deckname" href="<?php echo $master_deck->getDeckpageUrl(); ?>"><?php echo $master_deck->getDeckname(); ?></a>
+    </span>
+<?php } ?>
 </div>
 
 <?php if(count($cat_elements) == 0){ Layout::sysMessage('Keine Karten in dieser Kategorie'); } ?>
