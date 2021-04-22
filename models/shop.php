@@ -19,7 +19,7 @@ class Shop {
         $this->shop_max_stock = Setting::getByName('shop_max_stock')->getValue();
     }
     
-    public function getRestockDate($format='Y-m-d H:i') {
+    public function getRestockDate($format='d.m.Y H:i') {
         $datetime = new DateTime($this->next_restock_date);
         return $datetime->format($format);
     }
@@ -73,7 +73,18 @@ class Shop {
     
     public function getCards($order_settings=null) {
         if(!is_array($this->card_objs)){
-            $this->card_objs = ShopCard::getAll($order_settings);
+            $this->card_objs = array();
+            $cards = ShopCard::getAll($order_settings);
+            if(Login::loggedIn()){
+                foreach($cards as $card){
+                    // workaround to user flag method is to remove the id and later add it back in
+                    $card_id = $card->getId();
+                    $card->setPropValues(['id'=>null]);
+                    $card->flag(Login::getUser()->getId());
+                    $card->setPropValues(['id'=>$card_id]);
+                    $this->card_objs[] = $card;
+                }
+            }
             $this->cards_sum = count($this->card_objs);
         }
         return $this->card_objs;

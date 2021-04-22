@@ -7,7 +7,7 @@
  *
  */
 require_once PATH.'models/carddeck.php';
-require_once PATH.'models/card_cardmanager.php';
+require_once PATH.'models/card_flagged.php';
 require_once PATH.'models/member.php';
 
 class Cardmanager {
@@ -91,7 +91,7 @@ class Cardmanager {
             
             $req = $this->db->query($sql);
             
-            foreach($req->fetchALL(PDO::FETCH_CLASS,'CardCardmanager') as $card){
+            foreach($req->fetchALL(PDO::FETCH_CLASS,'CardFlagged') as $card){
                 $this->cards[$status][$trade_locked][] = $card;
             }
             

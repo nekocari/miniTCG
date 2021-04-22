@@ -8,7 +8,7 @@
  */
 require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/setting.php';
-require_once PATH.'models/card.php';
+require_once PATH.'models/card_flagged.php';
 require_once PATH.'models/member.php';
 require_once PATH.'models/message.php';
 
@@ -261,8 +261,10 @@ class Trade extends DbRecordModel {
         return $this->offerer_obj;
     }
     public function getOfferedCard() {
-        if(!$this->offered_card_obj instanceof CardCardmanager){
-            $this->offered_card_obj = Card::getById($this->offered_card)->getFlaggedCard($this->recipient);
+        if(!$this->offered_card_obj instanceof CardFlagged){
+            $card = new CardFlagged();
+            $card->setPropValues(['id'=>$this->offered_card]);
+            $this->offered_card_obj = $card->flag($this->recipient);
         }
         return $this->offered_card_obj;
     }
@@ -273,8 +275,10 @@ class Trade extends DbRecordModel {
         return $this->recipient_obj;
     }
     public function getRequestedCard() {
-        if(!$this->requested_card_obj instanceof CardCardmanager){
-            $this->requested_card_obj = Card::getById($this->requested_card)->getFlaggedCard($this->offerer);
+        if(!$this->requested_card_obj instanceof CardFlagged){
+            $card = new CardFlagged();
+            $card->setPropValues(['id'=>$this->requested_card]);
+            $this->requested_card_obj = $card->flag($this->offerer);;
         }
         return $this->requested_card_obj;
     }

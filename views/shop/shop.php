@@ -13,7 +13,8 @@
     <form name="shop-cards" class="shop-cards d-flex flex-wrap justify-content-around" method="POST" action="">
     	<?php foreach($s_cards as $s_card){ ?>
         	<div class="card shop-card m-2 text-center">
-        		<div class="shop-card-image p-1">
+            	<div class="d-inline-block mb-0 shop-card-image <?php if($s_card->missingInKeep()){ echo " card-missing-keep"; } 
+                if($s_card->missingInCollect()){ echo " card-missing-collect"; } if($s_card->mastered()){ echo " card-mastered"; } ?>">
 					<?php echo $s_card->getImageHTML(); ?>
         		</div>
         		<div class="p-1">
@@ -30,12 +31,6 @@
         <?php } ?>
     </form>
     
-<?php }else{ ?>
-	<!-- Information falls keine Karten vorhanden sind -->
-	
-	<div class="alert alert-info" role="alert">
-		Alle Karten sind <i>ausverkauft!</i> <br>
-		Neue Lieferung voraussichtlich am <b><?php echo $shop_next_restock_date; ?></b>
-	</div>
-	
-<?php } ?>
+
+<!-- Information falls keine Karten vorhanden sind -->
+<?php }else{ Layout::sysMessage('Alle Karten sind <i>ausverkauft!</i> <br> Neue Lieferung voraussichtlich am <b>'.$shop_next_restock_date.'</b>'); } ?>

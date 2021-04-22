@@ -135,7 +135,7 @@ class TradeController {
                 if($data['requested_card']->getOwner()->getId() != Login::getUser()->getId()){
                     $data['searchcardurl'] = Card::getSearchcardHtml();
                     // get all tradeable cards from logged in user 
-                    $data['cards'] = CardMemberProfil::getCardsByStatus(Login::getUser()->getId(),'trade',$data['requested_card']->getOwner()->getId());
+                    $data['cards'] = CardFlagged::getCardsByStatus(Login::getUser()->getId(),'trade',$data['requested_card']->getOwner()->getId());
                     Layout::render('trade/add.php',$data);
                     
                 }else{

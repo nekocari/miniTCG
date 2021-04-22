@@ -318,6 +318,9 @@ class Card extends DbRecordModel {
         return $trader;
     }
     
+    /**
+     * @deprecated
+     */
     public function getFlaggedCard($compare_user_id){
         $card = new CardCardmanager();
         $card->setPropValues(['id'=>$this->id]);

@@ -70,13 +70,17 @@ body{
 	background-color: white;
 	padding: 0.25rem;
 }
-.card-member-profil {
+.card-member-profil, .shop-card-image {
 	border-radius: 0.25rem;
 	border: 1px solid transparent;
 	background-color: transparent;
 	padding: 0.25rem;
 	margin: 0.1rem;
 	position: relative;
+}
+
+.card-link {
+	display: contents;
 }
 
 .card-member-profil .badge {

@@ -8,8 +8,7 @@
  */
 
 require_once PATH.'models/db_record_model.php';
-require_once PATH.'models/card.php';
-require_once PATH.'models/card_member_profil.php';
+require_once PATH.'models/card_flagged.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/master.php';
 require_once PATH.'models/level.php';
@@ -139,7 +138,7 @@ class Member extends DbRecordModel {
      */
     public function getProfilCardsByStatus($status, $only_tradeable = true){
         if(!isset($this->profil_cards[$status])){
-            $this->profil_cards[$status] = CardMemberProfil::getCardsByStatus($this->getId(), $status);
+            $this->profil_cards[$status] = CardFlagged::getCardsByStatus($this->getId(), $status, true);
         }
         return $this->profil_cards[$status];
     }

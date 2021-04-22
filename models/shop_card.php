@@ -10,11 +10,14 @@ require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/carddeck.php';
 require_once PATH.'models/setting.php';
 
-class ShopCard extends DbRecordModel {
+class ShopCard extends CardFlagged {
     
+    /*
     protected $id, $deck_id, $number, $price, $date, $name;
     
     private $deck_obj;
+    */
+    protected $price, $deck_id;
     
     protected static
         $db_table = 'shop_cards',
@@ -24,19 +27,9 @@ class ShopCard extends DbRecordModel {
     
     public function __construct() {
         parent::__construct();
+        $this->deck = $this->deck_id;
     }
-    
-    public function getDeck() {
-        if(!$this->deck_obj instanceof Carddeck){
-            $this->deck_obj = Carddeck::getById($this->deck_id);
-        }
-        return $this->deck_obj;
-    }
-    
-    public function getId() {
-        return $this->id;
-    }
-    
+        
     public function getDate() {
         return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
     }
@@ -44,27 +37,13 @@ class ShopCard extends DbRecordModel {
     public function getPrice() {
         return $this->price;
     }
-    
-    public function getNumber() {
-        return $this->number;
-    }
-    
-    public function getName() {
-        return $this->name;
-    }
-    
+       
     public function isBuyable() {
         if(Login::loggedIn() and Login::getUser()->getMoney() >= $this->getPrice()){
             return true;
         }else{
             return false;
         }
-    }
-    
-    public function getImageHTML(){
-        $card = new Card();
-        $card->setPropValues(['deck'=>$this->deck_id,'name'=>$this->getName(),'number'=>$this->getNumber()]);
-        return $card->getImageHtml();
     }
     
     public function buy(){
