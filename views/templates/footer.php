@@ -20,8 +20,8 @@
     		
     			<!-- Navigation if NOT logged in -->  
             	<?php if(!Login::loggedIn()) { ?>  	
-    			<div class="h5 m-0 mb-lg-2 d-flex d-lg-block justify-content-between">
-    				<span>Hallo <b>Gast</b></span>
+    			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
+    				<span class="h5 m-0 text-nowrap">Hallo <b>Gast</b></span>
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
     					<small><?php echo count($tcg_members_online->getOnlineMembers()); ?> Mitglieder online</small>
     				</button>
@@ -39,8 +39,8 @@
     			
     			<!-- Navigation if logged in -->
     			<?php }else{ ?>
-    			<div class="h5 m-0 mb-lg-2 d-flex d-lg-block justify-content-between align-items-center">
-    				<span>Hallo <b><?php echo Login::getUser()->getName(); ?></b></span>
+    			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
+    				<span class="h5 m-0 text-nowrap">Hallo <b><?php echo Login::getUser()->getName(); ?></b></span>
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 my-2 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
     					<small><?php echo count($tcg_members_online->getOnlineMembers()); ?> Mitglieder online</small>
     				</button></div>

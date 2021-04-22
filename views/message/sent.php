@@ -32,6 +32,6 @@
 </div>
 <?php } ?>
 
-<?php if(count($msgs) == 0){ Layout::sysMessage('Keine  Nachrichten'); } ?>
-
 <?php echo $pagination; ?>
+
+<div class="my-4"><?php if(count($msgs) == 0){ Layout::sysMessage('Keine  Nachrichten'); } ?></div>

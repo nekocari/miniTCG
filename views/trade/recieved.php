@@ -47,7 +47,7 @@
 </div>
 <?php } ?>
 
-<?php if(count($trades) == 0){ Layout::sysMessage('Du hast keine Tauschanfragen erhalten.'); } ?>
+<div class="my-4"><?php if(count($trades) == 0){ Layout::sysMessage('Du hast keine Tauschanfragen erhalten.'); } ?></div>
 
 <div class="text-center my-2">
 	<small>

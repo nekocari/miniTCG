@@ -5,7 +5,6 @@
 :root{ 
 	--def-border-radius: 0.5rem;
 }
-body { font-size: .97rem; }
 
 .navbar-toggler{
 	border: 0;
@@ -35,7 +34,6 @@ body{
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
 	font-family: ABeeZee;
-	margin-bottom: 1rem;
 	letter-spacing: -.1rem;
 }
 

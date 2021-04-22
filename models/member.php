@@ -218,7 +218,7 @@ class Member extends DbRecordModel {
      */
     public function checkLevelUp() {
         
-        echo $card_count_with_master = $this->getCardCount() + ($this->getMasterCount() * Setting::getByName('cards_decksize')->getValue());
+        $card_count_with_master = $this->getCardCount() + ($this->getMasterCount() * Setting::getByName('cards_decksize')->getValue());
         $current_level = $this->getLevel();
         $reached_level = Level::getByCardNumber($card_count_with_master);
         

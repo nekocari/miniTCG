@@ -10,9 +10,9 @@
 <?php if(count($s_cards) > 0){ ?>
     <!-- Zeige Karten an wenn vorhanden -->
     
-    <form name="shop-cards" class="shop-cards" method="POST" action="">
+    <form name="shop-cards" class="shop-cards d-flex flex-wrap justify-content-around" method="POST" action="">
     	<?php foreach($s_cards as $s_card){ ?>
-        	<div class="card shop-card d-inline-block m-2 text-center">
+        	<div class="card shop-card m-2 text-center">
         		<div class="shop-card-image p-1">
 					<?php echo $s_card->getImageHTML(); ?>
         		</div>

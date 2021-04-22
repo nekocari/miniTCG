@@ -14,7 +14,8 @@
 		<div class="row">
     		<div class="col">
     			<?php if($msg->isNew()){ ?><span class="badge badge-primary">New</span><?php } ?>
-    			<?php echo $msg->getSender()->getName(); ?> &bull; <?php echo $msg->getDate(); ?>
+    			<a href="<?php echo $msg->getSender()->getProfilLink(); ?>"><?php echo $msg->getSender()->getName(); ?></a> 
+    			&bull; <?php echo $msg->getDate(); ?>
     		</div>
     		<div class="col text-right">
         		<form class="m-0 p-0" method="POST" action="">
@@ -32,6 +33,6 @@
 </div>
 <?php } ?>
 
-<?php if(count($msgs) == 0){ Layout::sysMessage('Keine  Nachrichten'); } ?>
-
 <?php echo $pagination; ?>
+
+<div class="my-4"><?php if(count($msgs) == 0){ Layout::sysMessage('Keine  Nachrichten'); } ?></div>
