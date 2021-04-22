@@ -51,7 +51,7 @@ class MemberController {
         switch($cat){
             
             case 'master':
-                $data['cat_elements'] = $data['member']->getMasteredDecks();
+                $data['cat_elements'] = $data['member']->getMasteredDecks(true);
                 break;
                 
             case 'trade':
@@ -120,18 +120,20 @@ class MemberController {
         if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
             $curr_page = intval($_GET['pg']);
         }
-        if(isset($_GET['order'])){
-            $order = $_GET['order'];
-        }
         if(isset($_GET['order_by'])){
             $order_by = $_GET['order_by'];
         }
+        if(isset($_GET['order'])){
+            $order = $_GET['order'];
+        }elseif($order_by == 'date'){
+            $order = 'DESC';
+        }
         
         // get masterd sets from database
-        $masters = Master::getMasterdByMember($_SESSION['user']->id,$order_by,$order);
+        $masters = Master::getMasterdByMember($_SESSION['user']->id,false,[$order_by=>$order]);
         
         // pagination
-        $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards'));
+        $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards').'?order_by='.$order_by);
         
         // set vars accessable in view
         $data['mastered_decks'] = $pagination->getElements();

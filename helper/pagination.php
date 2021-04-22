@@ -139,7 +139,7 @@ class Pagination {
     		}
     	
     		if($this->hasNext()){
-    			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.'?pg='.($this->getCurr()+1).'">&rsaquo;</a></li>';
+    			$html.= '<li class="page-item"><a class="page-link" href="'.$this->link.$this->getParameter().($this->getCurr()+1).'">&rsaquo;</a></li>';
     		}else{
     			$html.= '<li class="page-item disabled"><a class="page-link">&rsaquo;</a></li>';
     		}

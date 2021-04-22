@@ -149,10 +149,10 @@ class Member extends DbRecordModel {
      * 
      * @return Carddeck[]
      */
-    public function getMasteredDecks() {
+    public function getMasteredDecks($grouped = false) {
         if(!isset($this->mastered_decks)){
             $this->mastered_decks = array();
-            $masters = Master::getMasterdByMember($this->id);
+            $masters = Master::getMasterdByMember($this->id,$grouped);
             
             foreach($masters as $master){
                 $this->mastered_decks[] = $master->getDeck(); 

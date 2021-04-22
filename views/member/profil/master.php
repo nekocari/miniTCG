@@ -17,7 +17,8 @@
 <?php foreach($cat_elements as $master_deck){ ?>
 	<span class="d-inline-block text-center m-1">
     	<?php echo $master_deck->getMasterCard(); ?><br>
-    	<a class="deckname" href="<?php echo $master_deck->getDeckpageUrl(); ?>"><?php echo $master_deck->getDeckname(); ?></a>
+    	<a class="deckname" href="<?php echo $master_deck->getDeckpageUrl(); ?>"><?php echo $master_deck->getDeckname(); ?></a><br>
+    	<?php echo $master_deck->getDate(); ?>
     </span>
 <?php } ?>
 </div>
