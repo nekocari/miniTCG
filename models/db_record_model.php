@@ -98,6 +98,17 @@ class DbRecordModel {
     }
     
     
+    public static function getCount($condition = null){
+        $db = Db::getInstance();
+        
+        $sql = 'SELECT COUNT(*) FROM '.static::$db_table;
+        if(!is_null($condition)){
+            $sql.= ' WHERE '.$condtion;
+        }
+        $req = $db->query($sql);
+        return $req->fetchColumn();
+    }
+    
     
     /**
      * get record from database using pk

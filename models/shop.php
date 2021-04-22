@@ -6,7 +6,6 @@
  * @author Cari
  *
  */
-require_once PATH.'models/db_record_model.php';
 require_once PATH.'models/shop_card.php';
 require_once PATH.'models/setting.php';
 
@@ -33,7 +32,7 @@ class Shop {
         if($next_restock_datetime <= $now_datetime AND $this->getCardsSum() < $this->shop_max_stock){  
             // add interval to restock date
             $next_date = $now_datetime->add(new DateInterval('PT'.$this->shop_restock_minutes.'M'));
-            $this->next_restock_date = $next_date->format('Y-m-d H:i:s');
+            $this->next_restock_date = $next_date->format('c');
             // save next restock date in settings
             $setting = Setting::getByName('shop_next_restock');
             $setting->setValue($this->next_restock_date);
@@ -65,8 +64,9 @@ class Shop {
     }
     
     public function getCardsSum() {
+        
         if(is_null($this->cards_sum)){
-            $this->getCards();
+            $this->cards_sum = ShopCard::getCount();
         }
         return $this->cards_sum;
     }
