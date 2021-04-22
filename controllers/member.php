@@ -115,6 +115,7 @@ class MemberController {
         $curr_page = 1;
         $order = 'ASC';
         $order_by = 'deckname';
+        $grouped = true;
         
         // process post vars if exist
         if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
@@ -126,11 +127,12 @@ class MemberController {
         if(isset($_GET['order'])){
             $order = $_GET['order'];
         }elseif($order_by == 'date'){
+            $grouped = false;
             $order = 'DESC';
         }
         
         // get masterd sets from database
-        $masters = Master::getMasterdByMember($_SESSION['user']->id,false,[$order_by=>$order]);
+        $masters = Master::getMasterdByMember($_SESSION['user']->id,$grouped,[$order_by=>$order]);
         
         // pagination
         $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards').'?order_by='.$order_by);
@@ -138,6 +140,7 @@ class MemberController {
         // set vars accessable in view
         $data['mastered_decks'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
+        $data['curr_order'] = $order_by;
         
         // render page
         Layout::render('member/mastercards.php',$data);

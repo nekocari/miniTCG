@@ -153,10 +153,7 @@ class Member extends DbRecordModel {
         if(!isset($this->mastered_decks)){
             $this->mastered_decks = array();
             $masters = Master::getMasterdByMember($this->id,$grouped);
-            
-            foreach($masters as $master){
-                $this->mastered_decks[] = $master->getDeck(); 
-            }
+            $this->mastered_decks = $masters;
         }
         return $this->mastered_decks;
     }

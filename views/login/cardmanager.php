@@ -2,7 +2,7 @@
 
 <p class="text-center">
 <?php foreach($accepted_status as $status){ ?>
-	<a class="btn btn-outline-secondary" href="<?php echo Routes::getUri('member_cardmanager')."?status=$status"; ?>"><?php echo strtoupper($status); ?></a>
+	<a class="btn btn-outline-dark" href="<?php echo Routes::getUri('member_cardmanager')."?status=$status"; ?>"><?php echo strtoupper($status); ?></a>
 <?php } ?>
 </p>
 
@@ -20,7 +20,7 @@
 			<?php echo $card->getImageHtml(); ?>
 		</div>
 		<div>
-			<?php echo $card->getName(); ?>
+			<small><?php echo $card->getName(); ?></small>
 		</div>
 		<div>
         	<select class="form-control form-control-sm" name="newStatus[<?php echo $card->getId(); ?>]">

@@ -24,11 +24,13 @@
             	    if(key_exists($i,$collection)) {
             	        echo $collection[$i]->getImageHtml();
             	    }else{
+            	        echo '<a href="'.Routes::getUri('card_search').'?deck='.$deck_id.'&number='.$i.'" class="card-link">';
             	        if(!$deckdata[$deck_id]->isPuzzle()){
             	           echo $searchcard_html;
             	        }else{
             	           echo ${'searchcard_html_'.$i};
             	        }
+            	        echo '</a>';
             	    }
             	    if($i%$cards_per_row == 0){ echo '<br>'; }
             	} 

@@ -14,11 +14,18 @@
 </ul>
 
 <div class="my-4 text-center">
-<?php foreach($cat_elements as $master_deck){ ?>
+<?php foreach($cat_elements as $mastercard){ ?>
 	<span class="d-inline-block text-center m-1">
-    	<?php echo $master_deck->getMasterCard(); ?><br>
-    	<a class="deckname" href="<?php echo $master_deck->getDeckpageUrl(); ?>"><?php echo $master_deck->getDeckname(); ?></a><br>
-    	<?php echo $master_deck->getDate(); ?>
+		<span class="d-inline-block card-member-profil">
+			<?php echo $mastercard->getDeck()->getMasterCard(); ?>
+        	<?php if($mastercard->getPossessionCounter() > 1){ ?>
+        		<span class="badge badge-dark"><?php echo $mastercard->getPossessionCounter(); ?></span>
+        	<?php } ?>
+		</span>
+		<br>
+    	<a class="deckname" href="<?php echo $mastercard->getDeck()->getDeckpageUrl(); ?>"><?php echo $mastercard->getDeck()->getDeckname(); ?></a>
+    	<br>
+    	<small><?php echo $mastercard->getDate(); ?></small>
     </span>
 <?php } ?>
 </div>

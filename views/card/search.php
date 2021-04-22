@@ -13,7 +13,9 @@
 			<td>
 				<select name="deck_id" class="form-control">
 					<?php foreach($decks as $deck){ ?>
-						<option value="<?php echo $deck->getId(); ?>"><?php echo $deck->getDeckname(); ?></option>
+						<option value="<?php echo $deck->getId(); ?>" <?php if(isset($_GET['deck']) AND $deck->getId() == $_GET['deck']){ echo 'selected'; } ?>>
+							<?php echo $deck->getDeckname(); ?>
+						</option>
 					<?php } ?>
 				</select>
 			</td>
@@ -23,7 +25,7 @@
 			<td>
 				<select name="number" class="form-control">
 					<?php for($i = 1; $i <= $decksize; $i++){ ?>
-						<option><?php echo $i; ?></option>
+						<option <?php if(isset($_GET['number']) AND $i == $_GET['number']){ echo 'selected'; } ?>><?php echo $i; ?></option>
 					<?php } ?>
 				</select>
 			</td>

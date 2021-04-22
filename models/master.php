@@ -15,7 +15,7 @@ class Master extends DbRecordModel {
     
     protected $id, $deck, $member, $date;
     
-    private $deck_obj, $member_obj;
+    private $deck_obj, $member_obj, $counter;
     
     protected static
         $db_table = 'decks_master',
@@ -38,7 +38,7 @@ class Master extends DbRecordModel {
         }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
         
-        $query = 'SELECT MIN(dm.date), dm.* 
+        $query = 'SELECT MIN(dm.date), dm.*, COUNT(dm.id) as counter
                 FROM decks_master dm
                 JOIN decks d ON d.id = dm.deck
                 WHERE dm.member = :member_id '.$sql_group.' '.$sql_order['query_part'];
@@ -94,5 +94,9 @@ class Master extends DbRecordModel {
     
     public function getDate() {
         return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
+    }
+    
+    public function getPossessionCounter(){
+        return $this->counter;
     }
 }

@@ -63,6 +63,7 @@ body{
 	background-position: center center;
 	margin: 2px;
 	background-color: rgba(0,0,0,0.1);
+	vertical-align: bottom;
 }
 
 .card-cardmanager {
@@ -107,7 +108,7 @@ body{
 	border-color: rgba(0,0,0,0.05);
 }
 
-.puzzle-view > .cardimage {
+.puzzle-view .cardimage {
 		margin: 0;
 }
 
