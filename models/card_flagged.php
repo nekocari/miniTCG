@@ -197,7 +197,7 @@ class CardFlagged extends Card {
         
         $req = $db->query($sql);
         
-        foreach($req->fetchALL(PDO::FETCH_CLASS,'CardMemberProfil') as $card){
+        foreach($req->fetchALL(PDO::FETCH_CLASS,__CLASS__) as $card){
             $cards[] = $card;
         }
         
