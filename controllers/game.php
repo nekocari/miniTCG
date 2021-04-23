@@ -14,7 +14,7 @@ class GameController {
      */
     public function index() {
         
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }        
         
@@ -60,7 +60,7 @@ class GameController {
      */
     private function lucky_game($game_key,$description, $choice_type, $choice_elements, $possible_results){
         // redirect if not logged in
-        if(!isset($_SESSION['user'])){
+        if(!Login::loggedIn()){
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
@@ -79,7 +79,7 @@ class GameController {
                 Layout::render('game/lucky_game.php',$data);
             }else{
                 // request was sent determine the reward
-                $data['game'] = $lucky_game;
+                $data['game_name'] = $lucky_game->getName();
                 $data['reward'] = $game->determineReward($lucky_game->getResult());
                 // display the result to the user, using the default game result page
                 Layout::render('game/display_result.php',$data);
@@ -87,6 +87,52 @@ class GameController {
         }else{
             Layout::render('game/wait_message.php');
         }
+    }
+    
+    /**
+     * trade in
+     */
+    public function tradeIn() {
+        
+        // redirect if not logged in
+        if(!Login::loggedIn()){
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
+        }
+        
+        // create the game object
+        $game_key = 'trade_in';
+        $game_name = GAMES_SETTINGS[$game_key]['name'];
+        $game = Game::getById($game_key, Login::getUser()->getId());
+        
+        // check if a game object was created and the game is playable
+        if($game instanceof Game AND $game->isPlayable()){
+            // post request not sent?
+            if(!isset($_POST['play']) OR !isset($_POST['card'])){
+                $data['game'] = $game;
+                $data['cards'] = Login::getUser()->getDuplicateCards('trade');
+                Layout::render('game/trade_in.php',$data);
+            }else{ 
+                // request was sent 
+                $card = Card::getById($_POST['card']);
+                if($card instanceof Card AND Login::getUser()->getId() == $card->getOwnerId()){
+                    $card->delete();
+                    Tradelog::addEntry(Login::getUser()->getId(), '[GAME] '.$game_name.' -> <strike>'.$card->getName().'</strike>');
+                    $data['game_name'] = $game_name;
+                    $data['reward'] = $game->determineReward('win-card:1');
+                }else{
+                    // user does not own card - redirect to start point
+                    unset($_POST['card']);
+                    $this->tradeIn();
+                    exit;
+                }
+                
+                // display the result to the user, using the default game result page
+                Layout::render('game/display_result.php',$data);
+            }
+        }else{
+            Layout::render('game/wait_message.php');
+        }
+        
     }
     
     /**

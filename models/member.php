@@ -143,6 +143,10 @@ class Member extends DbRecordModel {
         return $this->profil_cards[$status];
     }
     
+    public function getDuplicateCards($status = 'trade'){
+        return Card::getDuplicatesByMemberId($this->getId(),$status);
+    }
+    
     /**
      * Uses Carddeck Method getMasterdByMember to get this members masterd decks
      * 

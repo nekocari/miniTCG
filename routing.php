@@ -72,6 +72,7 @@
     Routes::addRoute('game', 'games.php', 'game', 'index');
     Routes::addRoute('game_lucky_number', 'games/lucky_number.php', 'game', 'luckyNumber');
     Routes::addRoute('game_head_or_tail', 'games/head_or_tail.php', 'game', 'headOrTail');
+    Routes::addRoute('game_trade_in', 'games/trade_in.php', 'game', 'tradeIn');
     
     Routes::addRoute('tradelog_member', 'member/tradelog.php', 'tradelog', 'overview');
     Routes::addRoute('trades_recieved', 'member/trades_recieved.php', 'trade', 'recieved');

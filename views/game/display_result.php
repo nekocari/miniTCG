@@ -1,4 +1,4 @@
-<h1><?php echo $game->getName(); ?></h1>
+<h1><?php echo $game_name; ?></h1>
 
 <h2>Ergebnis</h2>
 

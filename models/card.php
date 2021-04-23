@@ -22,7 +22,7 @@ class Card extends DbRecordModel {
         $db_table = 'cards',
         $db_pk = 'id',
         $db_fields = array('id','deck','number','name','owner','status','date'),
-        $sql_order_by_allowed_values = array('id');
+        $sql_order_by_allowed_values = array('id','name');
     
     private static  $tpl_width, $tpl_height, $tpl_html;
     
@@ -43,6 +43,21 @@ class Card extends DbRecordModel {
     
     public static function getById($id) {
         return parent::getByPk($id);
+    }
+    
+    public static function getDuplicatesByMemberId($member_id, $status = 'trade', $order_settings = ['name'=>'ASC']){
+        $db = Db::getInstance();
+        $duplicates = array();
+        
+        $sql_where = self::buildSqlPart('where',['owner'=>$member_id,'status'=>$status]);
+        $sql_order = self::buildSqlPart('order_by',$order_settings);
+        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part']." GROUP BY name ".$sql_order['query_part'];
+        $req = $db->prepare($sql);
+        $req->execute($sql_where['param_array']);
+        foreach ($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
+            $duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
+        }
+        return $duplicates;
     }
     
     public static function changeStatusById($id,$status,$user) {
@@ -316,15 +331,6 @@ class Card extends DbRecordModel {
         }
         
         return $trader;
-    }
-    
-    /**
-     * @deprecated
-     */
-    public function getFlaggedCard($compare_user_id){
-        $card = new CardCardmanager();
-        $card->setPropValues(['id'=>$this->id]);
-        return $card->flag($compare_user_id);
     }
     
 }

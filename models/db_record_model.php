@@ -59,7 +59,7 @@ class DbRecordModel {
      * @param string $part
      * @param mixed[] $arg_array
      * @throws ErrorException
-     * @return array[string 'query_part', mixed[] 'sql_params_arr']
+     * @return array[string 'query_part', mixed[] 'param_array']
      */
     protected static function buildSqlPart($part = 'where', $arg_array = array()){
         $parts_implemented = array('where','order_by');

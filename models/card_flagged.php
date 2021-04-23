@@ -117,8 +117,9 @@ class CardFlagged extends Card {
             
             $req = $this->db->query($sql);
             $card = $req->fetch(PDO::FETCH_ASSOC);
-            
-            $this->setPropValues($card);
+            if($card !== false){
+                $this->setPropValues($card);
+            }
             
             
         }else{
