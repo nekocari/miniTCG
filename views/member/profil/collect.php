@@ -14,10 +14,10 @@
 </ul>
 
 
-<div class="my-4">
+<div class="my-4 row">
 <?php foreach($collections as $deck_id => $collection){ ?>
 	
-	<div class="col-lg col-sm-12 mb-4 text-center">
+	<div class="col-lg col-sm-12 text-center mb-4">
 	
     	<h4><a href="<?php echo $deckdata[$deck_id]->getDeckpageUrl(); ?>" class="deckname"><?php echo $deckdata[$deck_id]->getDeckname(); ?></a></h4>
     	<div><?php echo $deckdata[$deck_id]->getName(); ?></div>

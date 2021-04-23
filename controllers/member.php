@@ -84,8 +84,14 @@ class MemberController {
                 break;
         }
         
-        $pagination = new Pagination($data['cat_elements'], 35, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
-        $data['cat_elements'] = $pagination->getElements();
+        
+        if($cat != 'collect'){
+            $pagination = new Pagination($data['cat_elements'], 30, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
+            $data['cat_elements'] = $pagination->getElements();
+        }else{
+            $pagination = new Pagination($data['collections'], 4, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
+            $data['collections'] = $pagination->getElements();
+        }
         $data['pagination'] = $pagination->getPaginationHtml();
         
         if($cat == 'trade' AND Login::loggedIn() AND $data['member']->getId() == Login::getUser()->getId()){

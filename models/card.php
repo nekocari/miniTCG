@@ -51,7 +51,7 @@ class Card extends DbRecordModel {
         
         $sql_where = self::buildSqlPart('where',['owner'=>$member_id,'status'=>$status]);
         $sql_order = self::buildSqlPart('order_by',$order_settings);
-        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part']." GROUP BY name ".$sql_order['query_part'];
+        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part']." GROUP BY name HAVING counter > 1 ".$sql_order['query_part'];
         $req = $db->prepare($sql);
         $req->execute($sql_where['param_array']);
         foreach ($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
