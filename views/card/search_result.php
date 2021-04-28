@@ -27,6 +27,6 @@
 </table>
 <?php }else{
 
-    Layout::sysMessage('Leider bietete keiner diese Karte zum Tausch.');
+    Layout::sysMessage('Leider bietet keiner diese Karte zum Tausch.');
     
 } ?>

@@ -94,12 +94,11 @@ class CardFlagged extends Card {
                                 	EXISTS (SELECT 1 FROM decks_master WHERE member = ".$compare_user_id." and deck = c.deck) as mastered_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status = 'collect' and deck = c.deck AND number = c.number) as in_collect_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status = 'keep' and deck = c.deck AND number = c.number) as in_keep_flag
-                                    FROM cards.c
-                                    WHERE c.deck = ".$this->deck." AND c.number = ".$this->number;
+                                    FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c ";
                         break;
                     default:
                         $sql = "SELECT collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
-                                    FROM cards c
+                                    FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status = 'collect')
                                         collect ON collect.deck = c.deck
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status = 'keep')
@@ -109,8 +108,7 @@ class CardFlagged extends Card {
                                     LEFT JOIN (SELECT DISTINCT deck, number, status, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status = 'collect')
                                         in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
                                     LEFT JOIN (SELECT DISTINCT deck, number, status, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status = 'keep')
-                                        in_keep ON in_keep.deck = c.deck AND in_keep.number = c.number
-                                    WHERE c.deck = ".$this->deck." AND c.number = ".$this->number;
+                                        in_keep ON in_keep.deck = c.deck AND in_keep.number = c.number ";
                         break;
                 }
             }
