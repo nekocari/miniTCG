@@ -1,4 +1,4 @@
-# miniTCG
+# miniTCG 
 
 An automated Trading Card Game Application written in PHP, covering most of the basics.
 miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
@@ -9,6 +9,8 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 If you are interested in an english translation, please let me know.
 
 **The Application is still under development!**
+
+
 
 ---
 
@@ -70,11 +72,14 @@ If you are interested in an english translation, please let me know.
   	* highlighting keep/collect cards
   * master decks
   * take cards from updates
-  * search cards
+  * search cards / filler cards
+        * individual for normal and puzzle decks
   * buy cards in a cardshop
+        * with highlighting of needed cards
   * tradelog
   * edit member data (+ password change)
   * make trade offers
+        * including highlighing
   * respond to trade offers 
   * delete account
   * automated level ups
@@ -82,9 +87,13 @@ If you are interested in an english translation, please let me know.
    
 ## Features TBA
 * allow comments on news
-* highlighting of needed cards in shop
 * add decks without uploading files
 * sort & search options for lists
+* customizable card category settings
+* routing more user-friendly (database)
+* individual deck type settings
+* buyable random cards in shop
+* tagging of decks in addition to categorization 
 
 
 ## Used Libs & Co.
