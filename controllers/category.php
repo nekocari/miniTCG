@@ -164,7 +164,7 @@ class CategoryController {
             
         }
         
-        $category = Category::getById($subcategory->getCategory());
+        $category = Category::getById($subcategory->getCategory()->getId());
         $categories = Category::getALL();
         
         Layout::render('admin/category/edit_subcategory.php',['category'=>$category,'subcategory'=>$subcategory,'categories'=>$categories]);
