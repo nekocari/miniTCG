@@ -17,14 +17,14 @@
 		<!-- Main Navigation -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         	<div class="container">
-        		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small>v0.1</small> SETUP</a>
+        		<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small><?php echo APP_VERSION; ?></small> SETUP</a>
         	</div>
         </nav>
         
         
         <!-- Center of Layout -->
 		<div class="container">
-    		<div id="main-area" class="row my-4">
+    		<div id="main-area" class="row my-4 justify-content-around">
     		
         		<!-- Content -->
 				<div class="col-12 col-lg-9" id="content">
@@ -41,7 +41,7 @@
 			<div class="text-center">
     			<p><hr>
     				miniTCG by <a href="http://www.heavenspell.de">Cari</a><br>
-    				<small><a href="<?php echo ROUTES::getUri('admin_dashboard');?>">Administration</a></small>
+    				<small><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Administration</a></small>
     			</p>
 			</div>
 		
