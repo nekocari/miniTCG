@@ -18,6 +18,7 @@
     	<tr>
     		<th>ID</th>
     		<th>Status</th>
+    		<th>Decks</th>
     		<th>Datum</th>
     		<th></th>
     	</tr>
@@ -25,16 +26,19 @@
     	<?php foreach($updates as $update){ ?>
     		<tr>
     			<td><?php echo $update->getId(); ?></td>
-    			<td><?php echo $update->getStatus(); ?></td>
+    			<td><span class="badge <?php if(!$update->isPublic()){ echo 'badge-primary'; }else{ echo 'badge-secondary'; } ?>">
+    				<?php echo ucfirst($update->getStatus()); ?></span>
+    			</td>
+    			<td><?php echo $update->getDeckCount(); ?></td>
     			<td><?php echo $update->getDate(); ?></td>
     			<td class="text-right">
     				<?php if($update->getStatus() == 'new'){ ?>
     				<a class="btn btn-success btn-sm" href="<?php echo RoutesDb::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=publish">
-    				freischalten</a>
+    				<i class="fas fa-unlock"></i> <span class="d-none d-md-inline">freischalten</span></a>
     				<a class="btn btn-danger btn-sm" href="<?php echo RoutesDb::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=delete">
-    				löschen</a>
+    				<i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span></a>
     				<a class="btn btn-primary btn-sm" href="<?php echo RoutesDb::getUri('deck_update_edit'); ?>?id=<?php echo $update->getId(); ?>">
-    				<i class="fas fa-pencil-alt"></i> bearbeiten</a>
+    				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
     				<?php } ?>
     			</td>
     		</tr>

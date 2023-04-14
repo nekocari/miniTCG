@@ -9,22 +9,34 @@ class Pagination {
   	
 	private $elements;
 	private $totalItems;
-	private $itemsPerPage;
-	private $currPage;
+	private $itemsPerPage = 10;
+	private $currPage = 1;
 	private $offset;
 	private $link;
 	private $parameterName;
 	private $css_class = 'pagination-sm justify-content-center';
 
 
-    public function __construct($elements, $itemsPerPage, $currPage, $link, $offset=2, $parameterName='pg') {
+    public function __construct($elements, $itemsPerPage, $link, $offset=2, $parameterName='pg') {
 		$this->elements	    = $elements;
 		$this->itemsPerPage	= $itemsPerPage;
-		$this->currPage		= $currPage;
 		$this->offset		= $offset;
 		$this->link			= $link;
 		$this->parameterName= $parameterName;
 		$this->totalItems   = count($elements);
+    }
+    
+    public function getParameterName() {
+    	return $this->parameterName;
+    }
+    
+    public function setCurrPage($page) {
+    	if(is_numeric($page) AND intval($page) > 0 ){
+    		$this->currPage = $page;
+    		return true;
+    	}else{
+    		return false;
+    	}
     }
 
     /**

@@ -11,7 +11,7 @@ class Update extends DbRecordModel {
     
     protected $id, $date, $status;
     
-    private $update_deck_relations, $decks;
+    private $update_deck_relations, $unliked_decks, $decks;
     
     protected static
         $db_table = 'updates',
@@ -24,13 +24,19 @@ class Update extends DbRecordModel {
         parent::__construct();
     }
     
-    
-    
+    /**
+     * 
+     * @param int $id
+     * @return Update|NULL
+     */
     public static function getById($id) {
         return parent::getByPk($id);
     }
     
-    
+    /**
+     * returns all updates not linked to any news entry yet
+     * @return Update[]
+     */
     public static function getUnlinkedToNews(){
         $db = Db::getInstance();
         $updates = array();
@@ -41,6 +47,19 @@ class Update extends DbRecordModel {
             $updates[] = $update;
         }
         return $updates;
+    }
+    
+    /**
+     * get latest public update
+     * @return Update|NULL
+     */
+    public static function getLatest() {
+    	$updates = parent::getWhere("status = 'public'",['date'=>'DESC']);
+    	if(count($updates) > 0){
+    		return $updates[0];
+    	}else{
+    		return null;
+    	}
     }
     
     public function publish() {
@@ -54,6 +73,13 @@ class Update extends DbRecordModel {
         $this->setPropValues(['status'=>'public']);
         $this->update();
         return true;
+    }
+    
+    public function isPublic(){
+    	if($this->getStatus() == 'public'){
+    		return true;
+    	}
+    	return false;
     }
     
     
@@ -96,9 +122,9 @@ class Update extends DbRecordModel {
      * get all decks related to the current update
      * @return Carddeck[] with deck_id as key
      */
-    public function getRelatedDecks() {
-        if(is_null($this->decks)){
-            if(is_null($this->update_deck_relations)){
+    public function getRelatedDecks($refresh = false) {
+        if(is_null($this->decks) OR $refresh){
+        	if(is_null($this->update_deck_relations) OR $refresh){
                 $this->update_deck_relations = UpdateDeck::getRelationsByUpdateId($this->getId());
             }
             foreach($this->update_deck_relations as $relation){
@@ -108,24 +134,24 @@ class Update extends DbRecordModel {
         return $this->decks;
     }
     
+    public function getDeckCount() {
+    	return count($this->getRelatedDecks());
+    }
+    
     /**
-     * get latest public update
-     * @return Update|NULL
+     * Decks not linked to any update
+     * @return Carddeck[]
      */
-    public static function getLatest() {
-        $updates = parent::getWhere("status = 'public'",['date'=>'DESC']);
-        if(count($updates) > 0){
-            return $updates[0];
-        }else{
-            return null;
-        }
+    public function getUnlinkedDecks(){
+    	return Carddeck::getNotInUpdate();
     }
     
     /*
      * Getter
      */
-    public function getDate() {
-        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
+    public function getDate($timezone = DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->date, new DateTimeZone($timezone));
+        return $date->format(Setting::getByName('date_format')->getValue());
     }
     public function getStatus() {
         return $this->status;

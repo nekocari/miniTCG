@@ -68,7 +68,7 @@ class Tradelog extends DbRecordModel {
         return $this->id;
     }
     public function getDate($formated=true, $timezone=DEFAULT_TIMEZONE) {
-    	$format = Setting::getByName('date_format')->getValue();
+    	$format = Setting::getByName('date_format')->getValue().' - H:i ';
     	$date_time = new DateTime($this->date,new DateTimeZone($timezone));
         return $date_time->format($format);
     }

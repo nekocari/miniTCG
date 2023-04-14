@@ -11,7 +11,7 @@
 <form method="POST" action="">
 		<h4> Decks entfernen</h4>
 	<div class="row">
-	<?php foreach($curr_decks as $deck){ ?>
+	<?php foreach($update->getRelatedDecks() as $deck){ ?>
 		<div class="col-12 col-md-6 col-lg-4 text-center">
     		<div><?php echo $deck->getMasterCard(); ?></div>
     		<p><input type="checkbox" name="remove_decks[]" value="<?php echo $deck->getId();?>">
@@ -21,7 +21,7 @@
 	</div>
 		<h4>Decks hinzufügen</h4>
 	<div class="row">
-	<?php foreach($new_decks as $deck){ ?>
+	<?php foreach($update->getUnlinkedDecks() as $deck){ ?>
 		<div class="col-12 col-md-6 col-lg-4 text-center">
     		<div><?php echo $deck->getMasterCard(); ?></div>
     		<p><input type="checkbox" name="add_decks[]" value="<?php echo $deck->getId();?>">
@@ -32,6 +32,8 @@
 
 	<p class="text-center">
 		<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('deck_update');?>">zurück zur Liste</a> 
+		<?php if(!$update->isPublic()){ ?>
 		&bull; <input class="btn btn-primary" type="submit" name="editUpdate" value="speichern"></p>
 		<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+		<?php } ?>
 </form>

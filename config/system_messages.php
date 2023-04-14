@@ -11,7 +11,7 @@
      * Example:
      * --------
      * $sys_msg_text_handler->addCode('some_text_name', ['en'=>'your english text here', 'de'=>'your german text here']);
-     *                                              	   |<--- ENGLISH TEXT --->|  	   |<--- GERMAN TEXT --->|
+     *                                              	   	   |<--- ENGLISH TEXT --->|  	   |<--- GERMAN TEXT --->|
      * 
      * Make sure to only change the parts wehre the example marks ENGLISH TEXT and/or GERMAN TEXT. 
      * Do not delete the ' at the start and end of your text. And do not use ' somewhere inside of your text!
@@ -298,21 +298,48 @@
     $sys_msg_text_handler->addCode('trade_new_failed', 'offer could not be sent, because at least one card is no longer available', 'Anfrage konnte nicht gestellt werden. Mindestens eine der Karten ist nicht mehr verfügbar.');
     $sys_msg_text_handler->addCode('trade_with_self', 'you can not trade with yourself', 'Du kannst nicht mit dir selbst tauschen.');
     
-    
+    */
     
     // texts used by the update controller ---------------------------------
     
-    $sys_msg_text_handler->addCode('update_publish_success', 'decks in update published', 'Decks im Update wurden freigeschaltet.');
-    $sys_msg_text_handler->addCode('update_publish_failed', 'decks could not be published', 'Decks nicht freigeschaltet.');
-    $sys_msg_text_handler->addCode('update_delete_success', 'update successfully deleted', 'Update wurde gelöscht.');
-    $sys_msg_text_handler->addCode('update_delete_failed', 'update could not be deleted', 'Update kann nicht gelöscht werden.');
-    $sys_msg_text_handler->addCode('update_new_failed', 'update could not be saved', 'Update nicht angelegt.');
-    $sys_msg_text_handler->addCode('update_no_deck', 'there needs to be at least one deck in an update', 'Ein Update muss mindestens ein Deck enthalten.');
-    $sys_msg_text_handler->addCode('update_edit_published', 'an update can not be edited after is was published', 'Ein veröffentlichtes Update kann nicht mehr bearbeitet werden.');
-    $sys_msg_text_handler->addCode('update_take_failed', 'no cards received', 'Keine Karten erhalten!');
-    $sys_msg_text_handler->addCode('update_take_success', 'cards received - they are in category <i>NEW</i>', 'Karten erhalten. Bitte schau unter <i>NEW</i>.');
+    $sys_msg_text_handler->addCode('update_publish_success', [
+    		'en'=>'decks in update published', 
+    		'de'=>'Decks im Update wurden freigeschaltet.'
+    ]);
+    $sys_msg_text_handler->addCode('update_publish_failed', [
+    		'en'=>'decks could not be published',
+    		'de'=>'Decks nicht freigeschaltet.'
+    		]);
+    $sys_msg_text_handler->addCode('update_delete_success', [
+    		'en'=>'update successfully deleted',
+    		'de'=>'Update wurde gelöscht.'
+    		]);
+    $sys_msg_text_handler->addCode('update_delete_failed', [
+    		'en'=>'update could not be deleted',
+    		'de'=>'Update kann nicht gelöscht werden.'
+    		]);
+    $sys_msg_text_handler->addCode('update_new_failed', [
+    		'en'=>'update could not be saved',
+    		'de'=>'Update nicht angelegt.'
+    		]);
+    $sys_msg_text_handler->addCode('update_no_deck', [
+    		'en'=>'there needs to be at least one deck in an update',
+    		'de'=>'Ein Update muss mindestens ein Deck enthalten.'
+    		]);
+    $sys_msg_text_handler->addCode('update_edit_published', [
+    		'en'=>'an update can not be edited after is was published',
+    		'de'=>'Ein veröffentlichtes Update kann nicht mehr bearbeitet werden.'
+    		]);
+    $sys_msg_text_handler->addCode('update_take_failed', [
+    		'en'=>'no cards received',
+    		'de'=>'Keine Karten erhalten!'
+    		]);
+    $sys_msg_text_handler->addCode('update_take_success', [
+    		'en'=>'Cards received - Have a look in your <i>CARDMANAGER</i>.',
+    		'de'=>'Karten erhalten. Sieh in den <i>Kartenmanager</i>.'
+    		]);
     
-    
+    /*
     
     // GENERAL - stuff like custom error codes
     
