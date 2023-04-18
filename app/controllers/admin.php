@@ -104,7 +104,7 @@ class AdminController extends AppController {
     		$route = new Route();
     		$route->setPropValues($_POST);
     		if(!is_null($route->create())){
-    			header("Location: ".BASE_URI.RoutesDb::getUri('admin_routes_edit')."?new=true&id=".$route->getIdentifier());
+    			header("Location: ".BASE_URI.Routes::getUri('admin_routes_edit')."?new=true&id=".$route->getIdentifier());
     		}
     	}
     	
@@ -145,7 +145,55 @@ class AdminController extends AppController {
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
-    	$this->layout()->render('admin/card_status/index.php',['categories'=>CardStatus::getAll(['id'=>'ASC'])]);
+    	$card_status_arr = CardStatus::getAll(['position'=>'ASC']);
+    	
+    	if(!empty($_POST)){
+    		try{
+	    		foreach($card_status_arr as $card_status){
+	    			if($card_status instanceof CardStatus){
+		    			// update tradeable
+		    			if(isset($_POST['tradeable'][$card_status->getId()])){
+		    				$card_status->setTradeable(1);
+		    			}else{
+		    				$card_status->setTradeable(0);
+		    			}
+		    			// update visibility
+		    			if(isset($_POST['public'][$card_status->getId()])){
+		    				$card_status->setPublic(1);
+		    			}else{
+		    				$card_status->setPublic(0);
+		    			}
+		    			// update new
+		    			if(isset($_POST['new']) AND $_POST['new'] == $card_status->getId() ){
+		    				$card_status->setNew(1);
+		    			}else{
+		    				$card_status->setNew(0);
+		    			}
+		    			// update collections
+		    			if(isset($_POST['collections']) AND $_POST['collections'] == $card_status->getId() ){
+		    				$card_status->setCollections(1);
+		    			}else{
+		    				$card_status->setCollections(0);
+		    			}
+		    			// update name
+		    			if(!empty($_POST['name'][$card_status->getId()])){
+		    				$card_status->setName($_POST['name'][$card_status->getId()]);
+		    			}
+		    			// update position
+		    			if(!empty($_POST['position'][$card_status->getId()])){
+		    				$card_status->setPosition(intval($_POST['position'][$card_status->getId()]));
+		    			}
+		    			$card_status->update();
+	    			}
+	    		}
+    			$this->layout()->addSystemMessage('success','changes_saved');
+    		}
+    		catch(ErrorException $e){
+    			$this->layout()->addSystemMessage('error','0',[],$e->getMessage());
+    		}
+    	}
+    	
+    	$this->layout()->render('admin/card_status/index.php',['categories'=>$card_status_arr]);
     	
     }
     public function addCardStatus() {
@@ -153,17 +201,6 @@ class AdminController extends AppController {
     	$this->redirectNotAuthorized();
     	
     	$this->layout()->render('admin/card_status/add.php');
-    	
-    }
-    public function editCardStatus() {
-    	$this->auth()->setRequirements('roles', ['Admin']);
-    	$this->redirectNotAuthorized();
-    	
-    	if(isset($_GET['id']) AND ($category = CardStatus::getById($_GET['id'])) instanceof CardStatus){
-    		$this->layout()->render('admin/card_status/edit.php',['category'=>$category]);
-    	}else{
-    		$this->redirectNotFound();
-    	}
     }
     
     
@@ -184,7 +221,7 @@ class AdminController extends AppController {
             $currPage = $_GET['pg']; 
         }
         
-        $pagination = new Pagination($members, 10, $currPage, RoutesDb::getUri('admin_member_index'));
+        $pagination = new Pagination($members, 10, $currPage, Routes::getUri('admin_member_index'));
         
         $data['members'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
@@ -294,7 +331,7 @@ class AdminController extends AppController {
         // get current member data
         $data['member'] = $member = Member::getById($_GET['id']);
         if(!$member instanceof Member){
-            header("Location: ".BASE_URI.RoutesDb::getUri('not_found'));
+            header("Location: ".BASE_URI.Routes::getUri('not_found'));
         }
         
         // get currency name for later use in view and log text
@@ -311,7 +348,7 @@ class AdminController extends AppController {
             if($member->addMoney(intval($_POST['addMoney']),$log_code,$log_text)){
                 $member->update();
                 // Log
-                Tradelog::addEntry($member->getId(),$log_code, $log_text);
+                Tradelog::addEntry($member,$log_code, $log_text);
                 
                 // add a message for user
                 Message::add(null, $member->getId(), SystemMessageTextHandler::getInstance()->getTextByCode($log_code,$member->getLang()).$log_text);
@@ -345,24 +382,24 @@ class AdminController extends AppController {
         // if add card form was sent
         if(isset($_POST['addCards']) and intval($_POST['addCards']) and isset($_POST['text'])){
             
-            // put together text for tradelog
-        	$sys_msg = new SystemMessage('success', 'admin_gift_cards_log_text',array(),' ('.strip_tags($_POST['text']).')');
-            $log_text = $sys_msg->getText($member->getLang());
             // create the set number of random cards
-            $data['cards'] = Card::createRandomCard($member->getId(),$_POST['addCards'],$log_text);
+            $cards = Card::createrandomCards($member,intval($_POST['addCards']));
             
             // if cards were created 
-            if(is_array($data['cards']) AND count($data['cards']) > 0){
+            if(is_array($cards) AND count($cards) > 0){
                 
                 // add all cardnames into a string
                 $cardnames = '';
-                foreach($data['cards'] as $card){
+                foreach($cards as $card){
                     $cardnames.= $card->getName().", ";
                 }
                 $cardnames = substr($cardnames, 0, -2);
                 
+                // create Tradelog Entry
+                Tradelog::addEntry($member, 'admin_gift_cards_log_text', $cardnames.' ('.strip_tags($_POST['text']).')');
                 // add a message for user
-                Message::add(null, $member->getId(), $log_text." -> ".$cardnames);
+                $msg_text = SystemMessageTextHandler::getInstance()->getTextByCode('admin_gift_cards_log_text',$member->getLang());
+                Message::add(null, $member->getId(), $msg_text.$cardnames);
                 
                 // set success message
                 $this->layout()->addSystemMessage('success', 'admin_gift_cards_success', array(), $cardnames);
@@ -454,7 +491,7 @@ class AdminController extends AppController {
             $this->layout()->render('admin/members/reset_password.php',$data);
             
         }else{
-            header("Location: ".BASE_URI.RoutesDb::getUri('not_found'));
+            header("Location: ".BASE_URI.Routes::getUri('not_found'));
         }
         
     }

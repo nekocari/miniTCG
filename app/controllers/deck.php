@@ -19,7 +19,7 @@ class DeckController extends AppController{
         }
         
         $decks = Carddeck::getAllByStatus('public',['deckname'=>'ASC']);
-        $pagination = new Pagination($decks, 10, $currPage, RoutesDb::getUri('deck_index'));
+        $pagination = new Pagination($decks, 10, $currPage, Routes::getUri('deck_index'));
         
         $data = array();
         $data['decks'] = $pagination->getElements();
@@ -74,61 +74,40 @@ class DeckController extends AppController{
      * Deck Upload
      */
     public function deckUpload() {
-            	
-    	$this->redirectNotLoggedIn();
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('CardCreator',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	
+    	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
+    	$this->redirectNotAuthorized();
             
-        $setting_decksize = Setting::getByName('cards_decksize');
-        
-        if($setting_decksize instanceof Setting){
-            
-            $data['settings']['decksize'] = $setting_decksize->getValue();
-            
-        }else{
-            
-            $data['_error'][] = $setting_decksize;
-            
-        }
-        
         $data['categories'] = Category::getALL();
-        
-        $data['deck_types'] = Carddeck::getAcceptedTypes(); 
+        $data['deck_types'] = DeckType::getAll(['name'=>'ASC']); 
+        $data['max_deck_size'] = DeckType::getMaxSize();
         
         if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type']) AND isset($_FILES)){
             try{
-                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $_SESSION['user']->id, $_POST['subcategory'], $_POST['type'], $_POST['description']);
+                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $this->login()->getUserId(), $_POST['subcategory'], $_POST['type'], $_POST['description']);
                 
                 if(($upload_status = $upload->store()) === true){
                     
-                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_upload_success');
+                    $this->layout()->addSystemMessage('success','deck_upload_success');
                     
                 }else{
                 
-                    $data['_error'][] = SystemMessages::getSystemMessageText('deck_upload_failed').' - '.$upload_status;
+                    $this->layout()->addSystemMessage('error','deck_upload_failed',[],' - '.$upload_status);
                     
                 }
             }
             catch(PDOException $e){
                 switch($e->getCode()){
-                    case 23000: 
-                        $error_text = SystemMessages::getSystemMessageText('admin_upload_duplicate_key');
+                	case 23000:
+                		$this->layout()->addSystemMessage('error','admin_upload_duplicate_key');
                         break;
-                    default: 
-                        $error_text = SystemMessages::getSystemMessageText(9999).'<br>'.$e->getMessage();
+                	default:
+                		$this->layout()->addSystemMessage('error',9999,[],'<br>'.$e->getMessage());
                         break;
                 }
-                $data['_error'][] = $error_text;
             }
             catch(Exception $e){
-                if($error_text = SystemMessages::getSystemMessageText($e->getMessage()) == 'TEXT MISSING'){
-                    $error_text = $e->getMessage();
-                }
-                $data['_error'][] = $error_text;
+            	$this->layout()->addSystemMessage('error','0',[],'<br>'.$e->getMessage());
             }
             
         }
@@ -142,13 +121,8 @@ class DeckController extends AppController{
      */
     public function adminDeckList() {
     	
-    	$this->redirectNotLoggedIn();
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('CardCreator',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
+    	$this->redirectNotAuthorized();
             
         $data['carddecks'] = Carddeck::getAll();
         $data['badge_css']['new'] = 'badge-primary';
@@ -163,39 +137,26 @@ class DeckController extends AppController{
      */
     public function deckEdit() {
     	
-    	$this->redirectNotLoggedIn();
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('CardCreator',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
+    	$this->redirectNotAuthorized();
             
-        if(isset($_POST['updateDeckdata'],$_POST['id'], $_POST['name'], $_POST['creator'], $_POST['type'])){
+        if(isset($_POST['updateDeckdata'],$_POST['id'])){
             
             $deck = Carddeck::getById($_POST['id']);
             if($deck instanceof Carddeck){
                 try{
-                    $prop_values = array(
-                        'name'=>$_POST['name'],
-                        'creator'=>$_POST['creator'],
-                        'description'=>$_POST['description'],
-                        'description_html'=>'',
-                        'type'=>$_POST['type']
-                    );
-                    $deck->setPropValues($prop_values);
-                    if($deck_updated = $deck->update()){
-                    }
+                    $deck->setPropValues($_POST);
+                    $deck->update();
                     if($deck->getSubcategory()->getId() != $_POST['subcategory']){
                         $relation = DeckSubcategory::getByUniqueKey('deck_id', $deck->getId());
                         $relation->setPropValues(['subcategory_id'=>$_POST['subcategory']]);
-                        $relation_updated = $relation->update();
+                        $relation->update();
                     }
                     
-                    $data['_success'][] = SystemMessages::getSystemMessageText('deck_edit_success');
+                    $this->layout()->addSystemMessage('success','deck_edit_success');
                 }
                 catch(Exception $e){
-                    $data['_error'][] = $e->getMessage();
+                	$this->layout()->addSystemMessage('error','unknown_error',[], $e->getMessage());
                 }
                 
             }
@@ -205,7 +166,6 @@ class DeckController extends AppController{
         $data['categories'] = Category::getALL();            
         $data['deck_types'] = Carddeck::getAcceptedTypes(); 
         $data['deckdata'] = Carddeck::getById($_GET['id']);
-        $data['card_images'] = $data['deckdata']->getImages();
         $data['memberlist'] = Member::getAll(['name'=>'ASC']);
         
         $this->layout()->render('admin/deck/edit.php',$data);

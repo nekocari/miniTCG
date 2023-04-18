@@ -9,14 +9,14 @@
 
 class Update extends DbRecordModel {
     
-    protected $id, $date, $status;
+    protected $id, $date, $utc, $status;
     
     private $update_deck_relations, $unliked_decks, $decks;
     
     protected static
         $db_table = 'updates',
         $db_pk = 'id',
-        $db_fields = array('id','date','status'),
+        $db_fields = array('id','date','utc','status'),
         $sql_order_by_allowed_values = array('id','date','status');
     
     
@@ -150,7 +150,8 @@ class Update extends DbRecordModel {
      * Getter
      */
     public function getDate($timezone = DEFAULT_TIMEZONE) {
-    	$date = new DateTime($this->date, new DateTimeZone($timezone));
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
         return $date->format(Setting::getByName('date_format')->getValue());
     }
     public function getStatus() {

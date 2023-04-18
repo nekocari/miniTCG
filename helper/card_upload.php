@@ -6,9 +6,6 @@
  * 
  */
 
-require_once PATH.'models/setting.php';
-require_once PATH.'models/carddeck.php';
-require_once PATH.'helper/Parsedown.php';
 
 class CardUpload {
     
@@ -18,18 +15,18 @@ class CardUpload {
     private static $cards_dir;
     private static $accepted_file_types = array("image/png", "image/jpeg", "image/gif");
     private $db;
-    private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type, $description, $description_html;
+    private $cards_decksize, $cards_file_type, $upload_user, $subcategory, $type_id, $description, $description_html;
     
-    public function __construct($name, $deckname, $files, $upload_user, $subcategory, $type, $description=null) {
+    public function __construct($name, $deckname, $files, $upload_user, $subcategory, $type_id, $description=null) {
         $this->name     = $name;
         $this->deckname = $deckname;
         $this->files    = $files;
         $this->db       = Db::getInstance();
-        $this->cards_decksize = Setting::getByName('cards_decksize')->getValue();
+        $this->cards_decksize = DeckType::getById($type_id)->getSize();
         $this->cards_file_type = Setting::getByName('cards_file_type')->getValue();
         $this->upload_user = $upload_user;
         $this->subcategory = $subcategory;
-        $this->type = $type;
+        $this->type_id = $type_id;
         $this->description = $description;
         $parsedown = new Parsedown();
         $this->description_html = $parsedown->text($this->description);
@@ -89,10 +86,8 @@ class CardUpload {
         if(!preg_match('/[A-za-z0-9\-_]+/', $this->deckname)){
             throw new Exception('input_invalid_character');
         }
-        if(count($this->files) != ($this->cards_decksize + 1)){
-            throw new Exception('admin_upload_file_count_error');
-        }
-        foreach($this->files as $file){
+        for($i = 1; $i <= $this->cards_decksize; $i++){
+        	$file = $this->files['card_'.$i];
             if($file['name'] == ''){
                 throw new Exception('admin_upload_file_incomplete');
             }
@@ -115,8 +110,8 @@ class CardUpload {
         $this->validate(); // validate data
         
         // insert deck into DB
-        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator, type, description, description_html) VALUES (:name, :deckname, :creator, :type, :description, :description_html)');
-        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user,':type'=>$this->type,':description'=>$this->description,':description_html'=>$this->description_html));
+        $req = $this->db->prepare('INSERT INTO decks (name, deckname, creator, type_id, description, description_html) VALUES (:name, :deckname, :creator, :type_id, :description, :description_html)');
+        $req->execute(array(':name'=>$this->name,':deckname'=>$this->deckname,':creator'=>$this->upload_user,':type_id'=>$this->type_id,':description'=>$this->description,':description_html'=>$this->description_html));
         $deck_id = $this->db->lastInsertId();
         
         // insert deck subcategory relation to DB
@@ -128,22 +123,22 @@ class CardUpload {
         
         // move each file in newly created subfoler
         foreach($this->files as $key => $file){
-             
-            // create new file path
-            $filename = $this->deckname.str_replace('card_', '', $key).".".$this->cards_file_type;
-            $file_path = self::$cards_dir.$this->deckname.'/'.$filename;
-            
-            if(!file_exists($file_path)){
-                // move file from temp to new dir
-                if(move_uploaded_file($file['tmp_name'], $file_path)){
-                    chmod($file_path, 0644);
-                }else{
-                    throw new Exception('admin_upload_file_failed');
-                }
-            }else {
-                throw new Exception('file_exists');
-            }
-            
+        	if($file['name'] != ''){
+	            // create new file path
+	            $filename = $this->deckname.str_replace('card_', '', $key).".".$this->cards_file_type;
+	            $file_path = self::$cards_dir.$this->deckname.'/'.$filename;
+	            
+	            if(!file_exists($file_path)){
+	                // move file from temp to new dir
+	                if(move_uploaded_file($file['tmp_name'], $file_path)){
+	                    chmod($file_path, 0644);
+	                }else{
+	                    throw new Exception('admin_upload_file_failed');
+	                }
+	            }else {
+	                throw new Exception('file_exists');
+	            }
+        	}
         }
         
         return true;    
@@ -155,23 +150,23 @@ class CardUpload {
         
         $file_type =  Setting::getByName('cards_file_type')->getValue();
         $filename = $deck->getDeckname().$card_number.".".$file_type;
-        $file_path = self::$cards_dir.$deck->getDeckname().'/'.$filename;
+        $file_path = PATH.Carddeck::getDecksFolder().$deck->getDeckname().'/'.$filename;
         
-        if(file_exists($file_path)){
-            // delete old file
-            unlink($file_path);
-            // move file from temp to new dir
-            if(move_uploaded_file($file['tmp_name'], $file_path)){
-                chmod($file_path, 0644);
-                return true;
-            }else{
-                throw new Exception('unable to store file');
-                return false;
-            }
-        }else {
-            throw new Exception('file not found: '.$file_path);
-            return false;
+        if($file['name'] != ''){        	
+        	if(file_exists($file_path)){
+        		// delete old file
+        		unlink($file_path);
+        	}
+        	// move file from temp to new dir
+        	if(move_uploaded_file($file['tmp_name'], $file_path)){
+        		chmod($file_path, 0644);
+        		return true;
+			}else{
+        		throw new Exception('admin_upload_file_failed');
+        		return false;
+			}
         }
+        
     }
     
 }

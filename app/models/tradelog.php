@@ -9,14 +9,14 @@
 
 class Tradelog extends DbRecordModel {
     
-    protected $id, $date, $member_id, $sys_msg_code, $text;
+    protected $id, $date, $utc, $member_id, $sys_msg_code, $text;
     private static $query_order_by_options = array('id','date');
     private static $query_order_direction_options = array('ASC','DESC');
    
     protected static
         $db_table = 'tradelog',
         $db_pk = 'id',
-        $db_fields = array('id','date','member_id','sys_msg_code','text'),
+        $db_fields = array('id','date','utc','member_id','sys_msg_code','text'),
         $sql_order_by_allowed_values = array('id','date');
     
     public function __construct() {
@@ -49,14 +49,15 @@ class Tradelog extends DbRecordModel {
     /**
      * Add an entry to a members tradelog
      * 
-     * @param int $member_id - id of member
+     * @param Member $member - member obj
      * @param string $text - text to add to entry
      * 
      * @return int
      */
-    public static function addEntry($member_id, $sys_msg_code, $text=null) {
+    public static function addEntry($member, $sys_msg_code, $text=null) {
+    	$date = new DateTime('NOW');
         $entry = new Tradelog();
-        $entry->setPropValues(['member_id'=>$member_id,'sys_msg_code'=>$sys_msg_code,'text'=>$text]);
+        $entry->setPropValues(['member_id'=>$member->getId(),'sys_msg_code'=>$sys_msg_code,'text'=>$text,'utc'=>$date->format('c')]);
         return $entry->create();
     }
     
@@ -68,9 +69,9 @@ class Tradelog extends DbRecordModel {
         return $this->id;
     }
     public function getDate($formated=true, $timezone=DEFAULT_TIMEZONE) {
-    	$format = Setting::getByName('date_format')->getValue().' - H:i ';
-    	$date_time = new DateTime($this->date,new DateTimeZone($timezone));
-        return $date_time->format($format);
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+    	return $date->format(Setting::getByName('date_format')->getValue().' - H:i ');
     }
     public function getSystemMessageCode() {
     	return $this->sys_msg_code;

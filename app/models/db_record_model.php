@@ -285,7 +285,11 @@ abstract class DbRecordModel {
             $values = '';
             $property_values = array();
             
-            foreach($this as $key => $value){
+            foreach($this as $key => $value){            	
+            	if($key == 'utc' AND empty($value)){
+            		$date = new DateTime('now');
+            		$value = $date->format('c');
+            	}
                 if(in_array($key,static::$db_fields) AND !is_null($value)){
                     $properties.= $key.', ';
                     $values.= '?, ';
@@ -297,7 +301,6 @@ abstract class DbRecordModel {
             
             $sql = 'INSERT INTO '.static::$db_table.' ('.$properties.') VALUES ('.$values.') ';
             $req = $this->db->prepare($sql);
-            
             $req->execute($property_values);
             
             if(property_exists($this, 'id')){

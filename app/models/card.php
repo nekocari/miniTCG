@@ -9,14 +9,14 @@
 
 class Card extends DbRecordModel {
     
-    protected $id, $name, $deck, $number, $owner, $status, $status_id, $date, $owner_obj, $deck_obj;
+    protected $id, $name, $deck, $number, $owner, $status_id, $date, $utc, $owner_obj, $deck_obj, $status;
     
     private $is_tradeable;
     
     protected static 
         $db_table = 'cards',
         $db_pk = 'id',
-        $db_fields = array('id','deck','number','name','owner','status','status_id','date'),
+        $db_fields = array('id','deck','number','name','owner','status_id','date', 'utc'),
         $sql_order_by_allowed_values = array('id','name');
     
     private static  $tpl_width, $tpl_height, $tpl_html, $accepted_stati, $accepted_stati_obj;
@@ -39,9 +39,13 @@ class Card extends DbRecordModel {
     	return self::$accepted_stati;
     }
     
+    /**
+     * 
+     * @return CardStatus[]
+     */
     public static function getAcceptedStatiObj(){
     	if(is_null(self::$accepted_stati_obj)){
-    		$stati = CardStatus::getAll();
+    		$stati = CardStatus::getAll(['position'=>'ASC']);
     		foreach($stati as $status){
     			self::$accepted_stati_obj[$status->getId()] = $status;
     		}
@@ -49,6 +53,11 @@ class Card extends DbRecordModel {
     	return self::$accepted_stati_obj;
     }
     
+    /**
+     * 
+     * @param int $id
+     * @return Card|NULL
+     */
     public static function getById($id) {
         return parent::getByPk($id);
     }
@@ -101,6 +110,9 @@ class Card extends DbRecordModel {
         return $req->execute(array(':status'=>$status,':id'=>$id,':user'=>$user));
     }
     
+    /**
+     * @deprecated
+     */
     public static function dissolveCollection($deck_id,$user) {
         $db = DB::getInstance();
         $new_status_id = CardStatus::getWhere(['new'=>1])[0];
@@ -108,19 +120,26 @@ class Card extends DbRecordModel {
         return $req->execute(array(':status_id'=>$new_status_id,':deck_id'=>$deck_id,':user'=>$user));
     }
     
-    // TODO: rework
-    public static function getMemberCardsByStatus($user_id, $status, $only_tradeable = false) {
-        $cards = array();
-        $db = DB::getInstance();
-        
-        $req = $db->prepare('SELECT * FROM cards WHERE owner = :user_id AND status = :status ORDER BY name ASC');
-        $req->execute(array(':user_id'=>$user_id, ':status'=>$status));
-        foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
-            if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
-                $cards[] = $card;
-            }
-        }
-        return $cards;
+    /**
+     * 
+     * @param int $member_id
+     * @param int $status_id
+     * @param boolean $only_tradeable
+     * @return Card[]
+     */
+    public static function getMemberCardsByStatus($member_id, $status_id, $only_tradeable = false) {
+    	$cards_db = self::getWhere(['owner'=>$member_id,'status_id'=>$status_id],['name'=>'ASC']);
+    	$cards = array();
+    	foreach($cards_db as $card){
+    		if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
+    			if(!key_exists($card->getName(), $cards)){
+    				$cards[$card->getName()] = $card;
+    			}else{
+    				$cards[$card->getName()]->possession_counter++;
+    			}
+    		}
+    	}
+    	return $cards;
     }
     
     /*
@@ -181,9 +200,9 @@ class Card extends DbRecordModel {
         return $this->owner;
     }
         
-    public function setStatus($status) {
-        if(in_array($status, self::getAcceptedStati())){
-            $this->status = $status;
+    public function setStatusId($status_id) {
+        if(array_key_exists($status_id, self::getAcceptedStati())){
+            $this->status_id = $status_id;
             return true;
         }else{
             return false;
@@ -262,49 +281,71 @@ class Card extends DbRecordModel {
         return $this->is_tradeable;
     }
     
-    //TODO: rework random card function completly
-    public static function createRandomCard($user_id,$number=1,$sys_text_code=null) {
-        if(intval($number) < 0){ 
-            throw new Exception('Keine gültige Anzahl übergeben!');
-        }
-        $cards = array();
-        $decksize = Setting::getByName('cards_decksize')->getValue();
-        $db = DB::getInstance();
-        
-        for($i = 0; $i < $number; $i++){
-            // grab deck data randomly
-            $req = $db->query('SELECT * FROM decks WHERE status = \'public\' ORDER BY RAND() LIMIT 1');
-            if($req->rowCount() > 0){
-                $deckdata = $req->fetchObject('Carddeck');
-                // insert created data to insert into DB for a new Card Object
-                
-                $random_card['number'] = mt_rand(1,$decksize);
-                $random_card['name'] = $deckdata->getDeckname().$random_card['number'];
-                $card_values = array('owner'=>$user_id,'deck'=>$deckdata->getId(),'number'=>$random_card['number'],'name'=>$random_card['name'],'date'=>date('Y-m-d G:i:s'));
-                
-                if(!is_null($user_id)){
-                    $card = new Card();
-                    $card->setPropValues($card_values);
-                    $card_id = $card->create();
-                    $card->setPropValues(['id'=>$card_id]);
-                    $cards[] = $card;
-                    
-                    $log_text = ' -> '.$card->getName().' (#'.$card->getId().') erhalten.';
-                    Tradelog::addEntry($user_id, $sys_text_code, $log_text);
-                }else{
-                    $cards[] = $card_values; 
-                }
-            }
-        }
-        if(!is_null($user_id)){
-            Member::getById($user_id)->checkLevelUp();
-        }
-        
-        return $cards;
+    /**
+     * checks if a card already exits
+     * @param Member $member
+     * @param Card $card
+     * @param CardStatus $status
+     * @return boolean
+     */
+    public static function existsInStatus($member,$card,$status) {
+    	if(count(Card::getWhere(['owner'=>$member->getId(),'deck'=>$card->getDeckId(),'number'=>$card->getNumber(),'status_id'=>$status->getId()])) > 0){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    /**
+     * creates a new card
+     * @param Member $member might be NULL than no DB entry will be created
+     * @param Int $deck_id
+     * @param int $number
+     * @param string $name optional
+     * @return Card
+     */
+    public static function createNewCard($member,$deck_id,$number,$name=null){
+    	$date = new DateTime('now');
+    	$status_id = CardStatus::getNew()->getId();
+    	$card = new Card();
+    	if(is_null($name)){
+    		$name = Carddeck::getById($deck_id)->getDeckname().$number;
+    	}
+    	$card->setPropValues(['deck'=>$deck_id,'number'=>$number,'name'=>$name,'owner'=>$member->getId(),'status_id'=>$status_id,'utc'=>$date->format('c')]);
+    	if($member instanceof Member){
+    		$card->create();
+    	}
+    	return $card;
+    }
+    
+    /**
+     * Creates random Card objects 
+     * @param Member $member - might be NULL than no DB entry will be created
+     * @param int $amount
+     * @throws ErrorException
+     * @return Card[]
+     */
+    public static function createRandomCards($member,$amount){
+    	$cards = array();
+    		if(is_int($amount) and $amount > 0){
+    			$decks = Carddeck::getRandom(true,$amount);
+    			foreach($decks as $deck){
+    				$deck_size = $deck->getType()->getSize();;
+    				$number = mt_rand(1,$deck_size);
+    				$cards[] = Card::createNewCard($member, $deck->getId(), $number);
+    			}
+    		}else{
+    			throw new ErrorException('second parameter needs to be a positiv integer');
+    		}
+    	return $cards;
     }
     
     
-    // TODO: Refactor
+    
+    // TODO: Refactor - > move to update model class
+    /**
+     * @deprecated
+     */
     public static function takeCardsFromUpdate($user_id,$update_id) {
         $cards = array();
         $db = Db::getInstance();

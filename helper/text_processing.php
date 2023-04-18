@@ -64,7 +64,7 @@ class TextProcessing {
         if(!in_array($lang,SUPPORTED_LANGUAGES)){
             $lang = 'en';
         }
-        $format = AppSetting::getByName('date_format')->getValue();
+        $format = Setting::getByName('date_format')->getValue();
         
         $date = new DateTime('today');
         $date->setTimezone(new DateTimeZone($timezone));

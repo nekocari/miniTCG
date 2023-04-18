@@ -9,12 +9,12 @@
 
 class Carddeck extends DbRecordModel {
     
-    protected $id, $name, $deckname, $status, $type, $type_id, $creator, $date, $description, $description_html;
+    protected $id, $name, $deckname, $status, $type, $type_id, $creator, $date, $utc, $description, $description_html;
     
     protected static
     $db_table = 'decks',
     $db_pk = 'id',
-    $db_fields = array('id','name','deckname','status','type','type_id','creator','date','description','description_html'),
+    $db_fields = array('id','name','deckname','status','type','type_id','creator','date','utc','description','description_html'),
     $sql_order_by_allowed_values = array('id','name','deckname','date');
     
     private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj, $type_obj;
@@ -76,6 +76,33 @@ class Carddeck extends DbRecordModel {
      */
     public static function getById($id) {
         return parent::getByPk($id);
+    }
+    
+    /**
+     * Returns a Random Deck
+     * @param boolean $public
+     * @param int $amount
+     * @return Carddeck[]
+     */
+    public static function getRandom($public=true,$amount=1) {
+    	$decks = array();
+    	$amount = max(1,intval($amount));
+    	$sql = "SELECT * FROM ".self::$db_table;
+    	if($public){
+    		$sql.= " WHERE status = 'public' ";
+    	}
+		$sql.= "ORDER BY RAND() LIMIT $amount";
+    	$db = DB::getInstance();
+    	$req = $db->query($sql);
+    	if($req->rowCount() > 0){
+    		foreach($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $deck){
+    			$decks[] = $deck;
+    		}
+    	}
+    	if(count($decks)<$amount){
+    		$decks = array_merge($decks, self::getRandom($public,$amount-count($decks)));
+    	}
+    	return $decks;
     }
     
     /**
@@ -274,6 +301,10 @@ class Carddeck extends DbRecordModel {
     	return $this->type_id;
     }
     
+    /**
+     * returns type of current deck
+     * @return DeckType|NULL
+     */
     public function getType() {
     	if(!$this->type_obj instanceof DeckType){
     		$this->type_obj = DeckType::getById($this->getTypeId());	
@@ -318,12 +349,12 @@ class Carddeck extends DbRecordModel {
     }
     
     public function getDeckpageUrl() {
-        return RoutesDb::getUri('deck_detail_page').'?id='.$this->id;
+        return Routes::getUri('deck_detail_page').'?id='.$this->id;
     }
     
     public function isPuzzle(){
         $is_puzzle = false;
-        if($this->getType() == 'puzzle'){
+        if($this->getType()->getName() == 'puzzle'){
             $is_puzzle = true;
         }
         return $is_puzzle;

@@ -2,14 +2,14 @@
 
 <ul class="nav nav-tabs">
 	<li class="nav-item"><a class="nav-link active">Erhalten</a></li>
-	<li class="nav-item"><a class="nav-link" href="<?php echo RoutesDb::getUri('trades_sent'); ?>">Gesendet</a></li>
+	<li class="nav-item"><a class="nav-link" href="<?php echo Routes::getUri('trades_sent'); ?>">Gesendet</a></li>
 </ul>
 
 <?php foreach($trades as $trade){ ?>
 <div class="card my-4">
 	<div class="card-header text-muted text-right font-italic">
 		<small>von <a class="font-weight-bold" href="<?php echo $trade->getOfferer()->getProfilLink(); ?>"><?php echo $trade->getOfferer()->getName(); ?></a> 
-			am <?php echo $trade->getDate(); ?></small>
+			am <?php echo $trade->getDate($this->login->getUser()->getTimezone()); ?></small>
 	</div>
 	<div class="card-body text-center">
 		<div>

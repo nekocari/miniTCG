@@ -1,5 +1,5 @@
 <div class="jumbotron">
-	<h1 class="display-4">miniTCG</h1>
+	<h1 class="display-4">mini<span class="text-primary">TCG</span></h1>
 	<p>Eine kleine Trading Card Game Applikation in PHP</p>
 </div>
 

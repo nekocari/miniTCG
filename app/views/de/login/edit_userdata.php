@@ -1,5 +1,6 @@
-<h1>Nutzerdaten bearbeiten</h1>
+<h1>Nutzerdaten</h1>
 
+<h2>Profildaten</h2>
 <form method="post" action="">
 <table class="table table-striped">
 	<tbody>
@@ -27,7 +28,7 @@
 		}elseif($var == 'Mail'){
 		    ?>
         	<tr>
-        		<td><?php echo $var; ?></td>
+        		<td><?php echo $var; ?><br><small class="text-muted">nicht öffentlich</small></td>
         		<td><input type="email" class="form-control" name="<?php echo $var; ?>" value="<?php echo $value; ?>" required></td>
         	</tr>
 		<?php 
@@ -39,6 +40,41 @@
 
 <p class="text-center mx-2">
 	<input class="btn btn-primary" type="submit" name="updateMemberdata" value="speichern">
+</p>
+</form>
+
+
+
+<h1>Einstellungen</h1>
+
+<form method="post" action="">
+<table class="table table-striped">
+	<tbody>
+		<tr>
+			<td>Zeitzone</td>
+			<td>
+				<select class="form-control" name="timezone" required>
+					<?php foreach(DateTimeZone::listIdentifiers() as $zone){ ?>
+					<option <?php if($zone == $member->getTimezone()){ echo 'selected'; } ?>><?php echo $zone; ?></option>
+					<?php }?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Sprache</td>
+			<td>
+				<select class="form-control" name="lang" required>
+					<?php foreach(SUPPORTED_LANGUAGES as $key=>$lang){ ?>
+					<option value="<?php echo $key; ?>" <?php if($key == $member->getLang()){ echo 'selected'; } ?>><?php echo $lang; ?></option>
+					<?php }?>
+				</select>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p class="text-center mx-2">
+	<input class="btn btn-primary" type="submit" name="updateSettings" value="speichern">
 </p>
 </form>
 

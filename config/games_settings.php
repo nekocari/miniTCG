@@ -1,8 +1,8 @@
 <?php
 
 define('GAMES_SETTINGS', array(
-    'lucky_number' => array('name'=>'Glückszahl', 'routing'=>'game_lucky_number', 'wait_minutes'=>30),
-    'head_or_tail' => array('name'=>'Kopf oder Zahl', 'routing'=>'game_head_or_tail', 'wait_minutes'=>false),
+    'lucky_number' => array('name'=>'Glückszahl', 'routing'=>'game_lucky_number', 'wait_minutes'=>0),
+    'head_or_tail' => array('name'=>'Kopf oder Zahl', 'routing'=>'game_head_or_tail', 'wait_minutes'=>0),
     'trade_in' => array('name'=>'Tausch Mich', 'routing'=>'game_trade_in', 'wait_minutes'=>0)
 ));
 

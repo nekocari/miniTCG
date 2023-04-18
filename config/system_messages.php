@@ -19,7 +19,7 @@
      * 
      * You can add your own texts (or even possibly another language...)
      * 
-     * This will NOT work:
+     * Note, that something like this will NOT work:
      * $sys_msg_text_handler->addCode('some_text_name', your english text, your german text);
      * 
      */
@@ -149,6 +149,16 @@
     ]);
     
     
+    // texts used in deck type controller -----------------------------
+    
+    $sys_msg_text_handler->addCode('template_not_found',[
+    		'en'=>'Template not found.',
+    		'de'=>'Template Pfad nicht gefunden'
+    ]);
+    
+    
+    
+    
     // texts used in the deck controller ------------------------------
     
     // DECK DISPLAY
@@ -157,13 +167,23 @@
     		'de'=>'Keine Decks zum Anzeigen.'
     ]);
     
+    // CARD UPLOAD (Replace)
+    $sys_msg_text_handler->addCode('card_upload_success', [
+    		'en'=>'card successfully uploaded',
+    		'de'=>'Karte wurde erfolgreich hochgeladen.'
+    ]);
+    $sys_msg_text_handler->addCode('card_upload_failed', [
+    		'en'=>'upload not completed',
+    		'de'=>'Upload nicht abgeschlossen'
+    ]);
+    
     // DECK UPLOAD
     $sys_msg_text_handler->addCode('deck_upload_success', [
-    		'en'=>'deck successfully uploaded', 
+    		'en'=>'deck successfully uploaded',
     		'de'=>'Deck wurde erfolgreich hochgeladen.'
     ]);
     $sys_msg_text_handler->addCode('deck_upload_failed', [
-    		'en'=>'upload not completed', 
+    		'en'=>'upload not completed',
     		'de'=>'Upload nicht abgeschlossen'
     ]);
     $sys_msg_text_handler->addCode('deck_edit_success', [
@@ -232,49 +252,135 @@
     		'en'=>'Sorry, you did not win this time.',
     		'de'=>'Du hast leider nichts gewonnen.'
     ]);
+    $sys_msg_text_handler->addCode('game_won_log_text',[
+    		'en'=>'Game won: ',
+    		'de'=>'Spiel gewonnen: '
+    ]);
     
-    /*
+    
     
     // text used by the login controller -----------------------------
     
     // LOGIN
-    $sys_msg_text_handler->addCode('login_account_not_active', 'account is not active', 'Account ist nicht aktiv.');
-    $sys_msg_text_handler->addCode('login_sign_in_failed', 'userdata invalid', 'Benutzerdaten sind ungültig.');
-    $sys_msg_text_handler->addCode('login_sign_up_no_password', 'please set a password', 'Passwort muss gesetzt werden!');
-    $sys_msg_text_handler->addCode('login_sign_up_password_not_matching', 'passwords do not match', 'Passwörter stimmen nicht überein');
-    $sys_msg_text_handler->addCode('login_sign_up_username_or_mail_taken', 'username or e-mail is already taken', 'Benutzername oder E-Mailadresse bereits belegt.');
-    $sys_msg_text_handler->addCode('login_new_password_success', 'a new password was send to your e-mail', 'Neues Passwort wurde an deine E-Mailadresse gesendet.');
-    $sys_msg_text_handler->addCode('login_new_password_failed', 'no password to reset', 'Passwort nicht zurück gesetzt.');
-    $sys_msg_text_handler->addCode('login_new_password_not_sent', 'password was reset, but mail could not be sent', 'Passwort zurück gesetzt, doch Mail konnte nicht gesendet werden.');
+    $sys_msg_text_handler->addCode('login_account_not_active', [
+    		'en'=>'account is not active', 
+    		'de'=>'Account ist nicht aktiv.'
+    ]);
+    $sys_msg_text_handler->addCode('login_sign_in_failed', [
+    		'en'=>'userdata invalid', 
+    		'de'=>'Benutzerdaten sind ungültig.'
+    ]);
+    $sys_msg_text_handler->addCode('login_sign_up_no_password', [
+    		'en'=>'please set a password', 
+    		'de'=>'Passwort muss gesetzt werden!'
+    ]);
+    $sys_msg_text_handler->addCode('login_sign_up_password_not_matching', [
+    		'en'=>'passwords do not match', 
+    		'de'=>'Passwörter stimmen nicht überein'
+    ]);
+    $sys_msg_text_handler->addCode('login_sign_up_username_or_mail_taken', [
+    		'en'=>'username or e-mail is already taken', 
+    		'de'=>'Benutzername oder E-Mailadresse bereits belegt.'
+    ]);
+    $sys_msg_text_handler->addCode('login_new_password_success', [
+    		'en'=>'a new password was send to your e-mail', 
+    		'de'=>'Neues Passwort wurde an deine E-Mailadresse gesendet.'
+    ]);
+    $sys_msg_text_handler->addCode('login_new_password_failed', [
+    		'en'=>'no password to reset', 
+    		'de'=>'Passwort nicht zurück gesetzt.'
+    ]);
+    $sys_msg_text_handler->addCode('login_new_password_not_sent', [
+    		'en'=>'password was reset, but mail could not be sent', 
+    		'de'=>'Passwort zurück gesetzt, doch Mail konnte nicht gesendet werden.'
+    ]);
+    $sys_msg_text_handler->addCode('starter_cards_log_text', [
+    		'en'=>'Starter cards recieved -> ',
+    		'de'=>'starter Karten erhalten -> '
+	]);
     
     // CARDMANAGER
-    $sys_msg_text_handler->addCode('cardmanager_status_invalid', 'the selected status is invalid:', 'Der übergebene Status ist ungültig:'); // NOTE: status name will be displayed after the text!
-    $sys_msg_text_handler->addCode('cardmanager_move_card_failed', 'card not moved:', 'Karte nicht verschoben:'); // NOTE: card name will be displayed after the text
-    $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_success', 'collection dissolved - the cards were moved to <i>NEW</i>', 'Sammlung aufgelöst. Die Karten sind nun wieder unter <i>NEW</i>');
-    $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_failed', 'collection could not be dissolved', 'Sammlung konnte nicht aufgelöst werden.');
-    $sys_msg_text_handler->addCode('cardmanager_master_deck_success', 'you masterd a deck', 'Sammlung gemastert!');
-    $sys_msg_text_handler->addCode('cardmanager_master_deck_failed', 'collection can not be masterd', 'Sammlung konnte nicht gemastert werden.');
+    $sys_msg_text_handler->addCode('cardmanager_status_invalid', [
+    		'en'=>'the selected status is invalid:', 
+    		'de'=>'Der übergebene Status ist ungültig:'
+    ]); // NOTE: status name will be displayed after the text!
+    $sys_msg_text_handler->addCode('cardmanager_move_card_failed', [
+    		'en'=>'card not moved:', 
+    		'de'=>'Karte nicht verschoben:'
+    ]); // NOTE: card name will be displayed after the text
+    $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_success', [
+    		'en'=>'collection dissolved - the cards need to be sorted again.', 
+    		'de'=>'Sammlung aufgelöst. Die Karten müssen erneut sortiert werden.'
+    ]);
+    $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_failed', [
+    		'en'=>'collection could not be dissolved', 
+    		'de'=>'Sammlung konnte nicht aufgelöst werden.'
+    ]);
+    $sys_msg_text_handler->addCode('cardmanager_master_deck_success', [
+    		'en'=>'you masterd a deck', 
+    		'de'=>'Sammlung gemastert!'
+    ]);
+    $sys_msg_text_handler->addCode('cardmanager_master_deck_failed', [
+    		'en'=>'collection can not be masterd', 
+    		'de'=>'Sammlung konnte nicht gemastert werden.'
+    ]);
     
     // USERDATA EDIT
-    $sys_msg_text_handler->addCode('user_edit_data_success','userdata updated','Daten wurden gespeichert.');
-    $sys_msg_text_handler->addCode('user_edit_data_failed','userdata not updated','Daten nicht aktualisiert.');
-    $sys_msg_text_handler->addCode('user_edit_pw_success','password saved','Passwort wurde gespeichert.');
-    $sys_msg_text_handler->addCode('user_edit_pw_failed','password not saved, error:','Passwort nicht aktualisiert. Folgender Fehler trat auf:'); // NOTE: more information about why it failed follows automaticaly
+    $sys_msg_text_handler->addCode('user_edit_data_success',[
+    		'en'=>'userdata updated',
+    		'de'=>'Daten wurden gespeichert.'
+    ]);
+    $sys_msg_text_handler->addCode('user_edit_data_failed',[
+    		'en'=>'userdata not updated',
+    		'de'=>'Daten nicht aktualisiert.'
+    ]);
+    $sys_msg_text_handler->addCode('user_edit_pw_success',[
+    		'en'=>'password saved',
+    		'de'=>'Passwort wurde gespeichert.'
+    ]);
+    $sys_msg_text_handler->addCode('user_edit_pw_failed',[
+    		'en'=>'password not saved, error:',
+    		'de'=>'Passwort nicht aktualisiert. Folgender Fehler trat auf:'
+    ]); // NOTE: more information about why it failed follows automaticaly
     
     
     
     // texts used by the message controller ------------------------------
     
-    $sys_msg_text_handler->addCode('pm_not_found', 'message not found', 'Nachricht wurde nicht gefunden.');
-    $sys_msg_text_handler->addCode('pm_mark_read', 'message marked as read', 'Nachricht als gelesen markiert.');
-    $sys_msg_text_handler->addCode('pm_mark_read_failure', 'message could not be marked as read', 'Nachricht konnte nicht als gelesen markiert werden.');
-    $sys_msg_text_handler->addCode('pm_deleted', 'message deleted', 'Nachricht wurde gelöscht.');
-    $sys_msg_text_handler->addCode('pm_delete_failure', 'message not deleted', 'Nachricht konnte nicht gelöscht werden.');
-    $sys_msg_text_handler->addCode('pm_send_success', 'message sent', 'Nachricht wurde gesendet.');
-    $sys_msg_text_handler->addCode('pm_send_failure', 'message not sent', 'Nachricht wurde nicht gesendet.');
-    $sys_msg_text_handler->addCode('pm_missing_input', 'the input is incomplete', 'Die Eingabe ist unvollständig.');
+    $sys_msg_text_handler->addCode('pm_not_found', [
+    		'en'=>'message not found',
+    		'de'=>'Nachricht wurde nicht gefunden.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_mark_read', [
+    		'en'=>'message marked as read',
+    		'de'=>'Nachricht als gelesen markiert.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_mark_read_failure', [
+    		'en'=>'message could not be marked as read',
+    		'de'=>'Nachricht konnte nicht als gelesen markiert werden.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_deleted', [
+    		'en'=>'message deleted',
+    		'de'=>'Nachricht wurde gelöscht.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_delete_failure', [
+    		'en'=>'message not deleted',
+    		'de'=>'Nachricht konnte nicht gelöscht werden.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_send_success', [
+    		'en'=>'message sent',
+    		'de'=>'Nachricht wurde gesendet.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_send_failure', [
+    		'en'=>'message not sent',
+    		'de'=>'Nachricht wurde nicht gesendet.'
+    ]);
+    $sys_msg_text_handler->addCode('pm_missing_input', [
+    		'en'=>'the input is incomplete',
+    		'de'=>'Die Eingabe ist unvollständig.'
+    ]);
     
-    
+    /*
     
     // texts used by the news controller ----------------------------------
     
@@ -283,22 +389,52 @@
     $sys_msg_text_handler->addCode('news_insert_failed', 'news could not be inserted', 'News konnte nicht gespeichert werden.');
     $sys_msg_text_handler->addCode('news_update_failed', 'news could not be updated', 'Änderung konnte nicht gespeichert werden.');
     
-    
+    */
     
     // texts used by the trade controller ----------------------------------
     
-    $sys_msg_text_handler->addCode('trade_decline_success', 'trade was declined', 'Tauschanfrage wurde abgelehnt.');
-    $sys_msg_text_handler->addCode('trade_decline_failed', 'trade could not be declined', 'Tauschanfrage konnte nicht abgeleht werden.');
-    $sys_msg_text_handler->addCode('trade_accept_success', 'trade was accepted', 'Tauschanfrage wurde angenommen.');
-    $sys_msg_text_handler->addCode('trade_accept_failed', 'trade could not be accepted', 'Tauschanfrage konnte nicht angenommen werden.');
-    $sys_msg_text_handler->addCode('trade_card_new_info', 'you will find the folling card in <i>NEW</i>:', 'Du findest die folgende Karte unter <i>NEW</i>:');
-    $sys_msg_text_handler->addCode('trade_delete_success', 'trade successfully deleted', 'Tauschangebot wurde gelöscht.');
-    $sys_msg_text_handler->addCode('trade_delete_failed', 'trade could not be deleted', 'Tauschangebot konnte nicht zurückgezogen werden.');
-    $sys_msg_text_handler->addCode('trade_new_success', 'offer was sent', 'Taschanfrage wurde gesendet!');
-    $sys_msg_text_handler->addCode('trade_new_failed', 'offer could not be sent, because at least one card is no longer available', 'Anfrage konnte nicht gestellt werden. Mindestens eine der Karten ist nicht mehr verfügbar.');
-    $sys_msg_text_handler->addCode('trade_with_self', 'you can not trade with yourself', 'Du kannst nicht mit dir selbst tauschen.');
+    $sys_msg_text_handler->addCode('trade_decline_success',  [
+    		'en'=>'trade was declined',
+    		'de'=>'Tauschanfrage wurde abgelehnt.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_decline_failed',  [
+    		'en'=>'trade could not be declined',
+    		'de'=>'Tauschanfrage konnte nicht abgeleht werden.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_accept_success',  [
+    		'en'=>'trade was accepted',
+    		'de'=>'Tauschanfrage wurde angenommen.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_accept_failed',  [
+    		'en'=>'trade could not be accepted',
+    		'de'=>'Tauschanfrage konnte nicht angenommen werden.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_card_new_info',  [
+    		'en'=>'you will find the folling card your card manager:',
+    		'de'=>'Du findest die folgende Karte im Karten Manager:'
+    ]);
+    $sys_msg_text_handler->addCode('trade_delete_success',  [
+    		'en'=>'trade successfully deleted',
+    		'de'=>'Tauschangebot wurde gelöscht.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_delete_failed',  [
+    		'en'=>'trade could not be deleted',
+    		'de'=>'Tauschangebot konnte nicht zurückgezogen werden.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_new_success',  [
+    		'en'=>'offer was sent',
+    		'de'=>'Taschanfrage wurde gesendet!'
+    ]);
+    $sys_msg_text_handler->addCode('trade_new_failed',  [
+    		'en'=>'offer could not be sent, because at least one card is no longer available',
+    		'de'=>'Anfrage konnte nicht gestellt werden. Mindestens eine der Karten ist nicht mehr verfügbar.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_with_self',  [
+    		'en'=>'you can not trade with yourself',
+    		'de'=>'Du kannst nicht mit dir selbst tauschen.'
+    ]);
     
-    */
+    
     
     // texts used by the update controller ---------------------------------
     
@@ -339,10 +475,16 @@
     		'de'=>'Karten erhalten. Sieh in den <i>Kartenmanager</i>.'
     		]);
     
-    /*
+    
     
     // GENERAL - stuff like custom error codes
     
+    $sys_msg_text_handler->addCode('level_up_info', [
+    		'en' => 'You just reached a new level and recieved the following as a gift: ',
+    		'de' => 'Du hast soeben ein neues Level erreicht und folgendes Geschenk erhalten: '
+    ]);
+    
+    /*
     $sys_msg_text_handler->addCode('input_invalid_character', 'input contains invalid character', 'Eingabe enthält ungültige Zeichen.');
     $sys_msg_text_handler->addCode('file_typ_invalid','invalid file type detected','Ungültiger Dateityp gefunden.');
     $sys_msg_text_handler->addCode('mkdir_failed', 'folder could not be created', 'Ordner konnte nicht anglegt werden.');

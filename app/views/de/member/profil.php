@@ -17,6 +17,17 @@
       </div>
     </div>
 <?php } ?>
+
+<ul class="nav nav-tabs">
+	<?php foreach(Card::getAcceptedStatiObj() as $status){ if($status->isPublic()){ ?>
+  <li class="nav-item">
+    <a class="nav-link <?php if($cat == $status){ echo 'active'; } ?>" href="<?php echo $member->getProfilLink().'&cat='.$status->getId(); ?>"><?php echo $status->getName(); ?> Karten</a>
+  </li>
+  	<?php }} ?>
+  <li class="nav-item">
+    <a class="nav-link <?php if($cat == 'master'){ echo 'active'; } ?>" href="<?php echo $member->getProfilLink().'&cat=master'; ?>">Master Karten</a>
+  </li>
+</ul>
         
 <?php include $this->partial($partial_uri); ?>
 

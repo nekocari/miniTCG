@@ -39,7 +39,7 @@ class LoginController extends AppController {
 		
 		// if logged in redirect to dashboard
 		if($this->login()->isloggedIn()){
-		    header("Location: ".BASE_URI.RoutesDb::getUri('member_dashboard'));
+		    header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}
 		
 	    $this->layout()->render('login/signin.php',$data);
@@ -63,7 +63,7 @@ class LoginController extends AppController {
 		    }else{
 		        
 		        // on failure redirect to dashboard
-		        header("Location: ".BASE_URI.RoutesDb::getUri('member_dashboard'));
+		        header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		        
 		    }
 		    
@@ -81,18 +81,18 @@ class LoginController extends AppController {
         
         // if logged in redirect to dashboard 
         if($this->login()->isloggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('member_dashboard'));
+            header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
     	}
     	
 	    // check form data if exists
-	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep'])){
+	    if(isset($_POST['username']) AND isset($_POST['mail']) AND isset($_POST['password']) AND isset($_POST['password_rep']) AND isset($_POST['lang'])){
 	        try{
-	        	$this->login()->createUse($_POST['username'], $_POST['mail'], $_POST['password'], $_POST['password_rep'], $_POST['lang'] );
+	        	$this->login()->createUser($_POST['username'], $_POST['mail'], $_POST['password'], $_POST['password_rep'], $_POST['lang'] );
 	            $this->layout()->render('login/signup_successfull.php');
 	        }
-            catch(Exception $e){
-                $data['_error'][] = $e->getMessage();
-                $this->layout()->render('login/signup.php',$data);
+	        catch(Exception $e){;
+	        	$this->layout()->addSystemMessage('error', '0',[],$e->getMessage());
+                $this->layout()->render('login/signup.php');
             }
             
 	    }else{
@@ -109,41 +109,25 @@ class LoginController extends AppController {
 	    
 	    // is logged in redirect to dashboard
 	    if($this->login()->isloggedIn()){
-	        header("Location: ".BASE_URI.RoutesDb::getUri('member_dashboard'));
+	        header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 	    }
-	    
-	    $is_activated = false;
-	    $data = array();
 	    
 	    // process form data
 		if(isset($_GET['code']) AND isset($_GET['user'])){
-		    
-		    $activation = MemberActivationCode::getByMemberId(intval($_GET['user']));
-		    if($activation instanceof MemberActivationCode AND $activation->getCode() == $_GET['code']){
-		        if($activation->delete()){
-    		        $member = Member::getById(intval($_GET['user']));
-    		        $member->setStatus('default');
-    		        if($member->update()){
-    		            $is_activated = true;
-    		        }
-		        }else{
-		            // code not deleted
-		            $data['_error'][] = 'Code wurde nicht gelöscht';
-		        }
-		    }else{
-		        // code ungültig
-		        $data['_error'][] = 'Code ist ungültig';
-		    }			
-		}elseif(!empty($_POST)){
-		    // daten unvollständig
-		    $data['_error'][] = 'Daten nicht vollständig';
-		}
-		
-		if($is_activated){
-		    $this->layout()->render('login/activation_true.php');
+			try{
+				if($this->login()->activateAccount($_GET['code'],$_GET['user'])){
+					$this->layout()->render('login/activation_true.php');
+				}else{
+					$this->layout()->render('login/activation_false.php');
+				}
+			}
+			catch(ErrorException $e){
+				$this->layout()->addSystemMessage('error', '0',[],$e->getMessage());
+				$this->layout()->render('login/activation_false.php');
+			}
 		}else{
-		    $this->layout()->render('login/activation_false.php',$data);
-		}
+			$this->redirectNotFound();
+		}		
 	}
     
 	/**
@@ -153,7 +137,7 @@ class LoginController extends AppController {
         
         // if is logged in redirect to dashboard
         if($this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('member_dashboard'));
+            header("Location: ".BASE_URI.Routes::getUri('member_dashboard'));
 		}else{
 		    
 	    	$data = array();
@@ -164,9 +148,9 @@ class LoginController extends AppController {
 		            $member = Member::getByMail($_POST['mail']);
 		            if($member instanceof Member){
     		            if($member->resetPassword()){
-    		              $data['_success'][] = SystemMessages::getSystemMessageText('login_new_password_success');
+    		              $this->layout()->addSystemMessage('success','login_new_password_success');
     		            }else{
-    		              $data['_error'][] = SystemMessages::getSystemMessageText('login_new_password_failed');
+    		              $this->layout()->addSystemMessage('error','login_new_password_failed');
     		            }
 		            }else{
 		                throw new Exception('login_new_password_failed');
@@ -207,43 +191,54 @@ class LoginController extends AppController {
 	    
     	// get data of current member
 	    $memberdata = $this->login()->getUser();
+	    $membersettings = $memberdata->getSettings();
 	    
-	    // if form was sent update object data
+	    // data
 	    if(isset($_POST['updateMemberdata'])){
-	        try{
-    	        $memberdata->setName($_POST['Name']);
-    	        $memberdata->setMail($_POST['Mail']);
-    	        $memberdata->setInfoText($_POST['Text']);
-	        }
-	        catch(Exception $e){
-	            switch($e->getCode()){
-	            	case '8000':
-	            		$this->layout()->addSystemMessage('error', '8000');
-	                    break;
-	                default:
-	                	$this->layout()->addSystemMessage('error', 'unknowen_error');
-	                    break;
-	            }
-	        }
-	        try{
-	            // if data was successfully stored return success message
-	        	if($memberdata->store()){
-	        		$this->layout()->addSystemMessage('success', 'user_edit_data_success');
-	                // if update was not successfull return error message
-	            }else{
-	            	$this->layout()->addSystemMessage('error', 'user_edit_data_failed');
-	            }
-	        }
-	        catch(Exception $e){
-	        	$this->layout()->addSystemMessage('error', '9999', array(), $e->getMessage());
-	        }
+	    	try{
+	    		$memberdata->setName($_POST['Name']);
+	    		$memberdata->setMail($_POST['Mail']);
+	    		$memberdata->setInfoText($_POST['Text']);
+	    	}
+	    	catch(Exception $e){
+	    		switch($e->getCode()){
+	    			case '8000':
+	    				$this->layout()->addSystemMessage('error', '8000');
+	    				break;
+	    			default:
+	    				$this->layout()->addSystemMessage('error', 'unknowen_error');
+	    				break;
+	    		}
+	    	}
+	    	try{
+	    		if($memberdata->update()){
+	    			$this->layout()->addSystemMessage('success', 'user_edit_data_success');
+	    		}else{
+	    			$this->layout()->addSystemMessage('error', 'user_edit_data_failed');
+	    		}
+	    	}
+	    	catch(Exception $e){
+	    		$this->layout()->addSystemMessage('error', '9999', array(), $e->getMessage());
+	    	}
+	    }
+	    // Settings
+	    if(isset($_POST['updateSettings'])){
+	    	try{
+	    		$membersettings->setLang($_POST['lang']);
+	    		$membersettings->setTimezone($_POST['timezone']);
+	    		$membersettings->update();
+	    		$this->layout()->addSystemMessage('success', 'user_edit_settings_success');
+	    	}
+	    	catch(Exception $e){
+	    		$this->layout()->addSystemMessage('error', 'unknown_error', array(), $e->getMessage());
+	    	}
 	    }
 	    
 	    // password change form was submitted
 	    if(isset($_POST['changePassword'])){
 	        
 	        // try updating the password an set up message in case of success an failure
-	    	if(($return = $this->login()->getUser()->updatePassword($_POST['password1'],$_POST['password2'])) === true){
+	    	if($this->login()->getUser()->updatePassword($_POST['password1'],$_POST['password2'])){
 	    		$this->layout()->addSystemMessage('success', 'user_edit_pw_success');
 	    	}else{
 	    		$this->layout()->addSystemMessage('error', 'user_edit_pw_failed');
@@ -251,7 +246,8 @@ class LoginController extends AppController {
 	    }
 	    
 	    // store the editable data into var
-	    $data['memberdata'] = $memberdata->getEditableData('user');	    
+	    $data['memberdata'] = $memberdata->getEditableData();	
+	    $data['member'] = $this->login()->getUser();
 	    $this->layout()->render('login/edit_userdata.php',$data);
 	    
 	}

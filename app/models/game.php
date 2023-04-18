@@ -9,13 +9,13 @@
 
 class Game extends DbRecordModel {
     
-    protected $id, $type, $member, $date, $wait_minutes;
+    protected $id, $type, $member, $date, $utc, $wait_minutes;
     private $member_obj, $reward_texts = array('lost' => null, 'won' => null);
     
     protected static 
         $db_table = 'games',
         $db_pk = 'id',
-        $db_fields = array('id','type','member','date'),
+        $db_fields = array('id','type','member','date','utc'),
         $sql_order_by_allowed_values = array('id','type','member','date');
     
     private static $allowed_game_results = array('win-card:','win-money:','lost');
@@ -162,7 +162,7 @@ class Game extends DbRecordModel {
         }
         
         $result_action = preg_replace('/\d+/', '', $result);
-        $result_amount = str_replace($result_action, '', $result);
+        $result_amount = intval(str_replace($result_action, '', $result));
                 
         if(in_array($result_action,self::$allowed_game_results)){
             
@@ -173,8 +173,14 @@ class Game extends DbRecordModel {
                 case 'win-card:':
                     $game_reward['type'] = 'won';
                     $game_reward['text'] = $this->reward_texts['won'];
-                    $log_text = '[GAME] '.GAMES_SETTINGS[$this->type]['name'];
-                    $cards = Card::createRandomCard($this->getMember('int'),$result_amount,$log_text);
+                    $cards = Card::createRandomCards($this->getMember(), $result_amount);
+                    // Tradelog
+                    foreach($cards as $card){
+                    		$cardnames = $card->getName().' (#'.$card->getId().'), ';
+                    }
+                    $cardnames = substr($cardnames,0,-2);
+                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',GAMES_SETTINGS[$this->type]['name'].' -> '.$cardnames);
+                    
                     if(!is_array($cards)){
                         $game_reward['cards'][] = $cards;
                     }else{
@@ -189,13 +195,11 @@ class Game extends DbRecordModel {
                     $game_reward['type'] = 'won';
                     $game_reward['text'] = $this->reward_texts['won'];
                     $game_reward['money'] = $result_amount.' '.$currency_name;
-                    // create log text
-                    $log_text = '[GAME] '.GAMES_SETTINGS[$this->type]['name'].' -> ';
-                    $log_text.= $result_amount.' '.$currency_name.' ';
-                    $log_text.= SystemMessages::getSystemMessageText('translate_recieved');
-                    // add money to member balance with log text
-                    $this->getMember()->addMoney($result_amount,$log_text);
+                    // add money to member balance 
+                    $this->getMember()->addMoney($result_amount);
                     $this->getMember()->update();
+                    //Tradelog
+                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',GAMES_SETTINGS[$this->type]['name'].' -> '.$game_reward['money']);
                     break;
                     
                 case 'lost':

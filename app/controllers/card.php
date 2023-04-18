@@ -27,14 +27,9 @@ class CardController extends AppController {
     
     
     function replaceImage(){
-        
-    	$this->redirectNotLoggedIn();
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('CardCreator',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	
+    	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
+    	$this->redirectNotAuthorized();
         
         
         if(!empty($_GET['deck_id'])){
@@ -44,7 +39,7 @@ class CardController extends AppController {
             if($deck instanceof Carddeck){
                 
                 $data['deck'] = $deck;
-                $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
+                $data['decksize'] = $deck->getSize();
                 $data['card_keys'] = range(1,$data['decksize']);
                 array_push($data['card_keys'], '_master');
                 
@@ -54,9 +49,9 @@ class CardController extends AppController {
                             $upload = CardUpload::replaceCardImage($deck->getId(), $_POST['number'], $_FILES['file']);
                         
                             if($upload){
-                                $data['_success'][] = SystemMessages::getSystemMessageText('deck_upload_success');
+                                $this->layout()->addSystemMessage('success','card_upload_success');
                             }else{
-                                $data['_error'][] = SystemMessages::getSystemMessageText('deck_upload_failed');
+                                $this->layout()->addSystemMessage('error','card_upload_failed');
                             }
                         }
                         catch(Exception $e){

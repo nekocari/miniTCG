@@ -33,21 +33,21 @@ class MessageController extends AppController {
                     // check if message is a valid Message object
                     if($message instanceof Message){
                         // set success message text
-                        $data['_success'][] = SystemMessages::getSystemMessageText('pm_send_success');
+                        $this->layout()->addSystemMessage('success','pm_send_success');
                     }else{
                         // log error
                         error_log('Message::add() returned wrong type:'.gettype($message).'\n', 3, ERROR_LOG);
                         // error message text
-                        $data['_error'][] = SystemMessages::getSystemMessageText('unexpected_error');
+                        $this->layout()->addSystemMessage('error','unexpected_error');
                     }
                 }
                 catch(Exception $e){
                     // erro message text
-                    $data['_error'][] = SystemMessages::getSystemMessageText('pm_send_failure')."<br>".$e->getMessage();
+                    $this->layout()->addSystemMessage('error','pm_send_failure')."<br>".$e->getMessage();
                 }
             }else{
                 // error message text
-                $data['_error'][] = SystemMessages::getSystemMessageText('pm_missing_input');
+                $this->layout()->addSystemMessage('error','pm_missing_input');
             }
         }
         
@@ -79,11 +79,6 @@ class MessageController extends AppController {
         if(count($_POST)){
             $data = $this->processPostAction();
         }
-        // current page for pagination
-        $currPage = 1;
-        if(isset($_GET['pg'])){
-            $currPage = intval($_GET['pg']);
-        }
         
         // determine user type 
         if(!in_array($category,['recieved','sent'])){
@@ -98,7 +93,7 @@ class MessageController extends AppController {
         $msgs = Message::getByMemberId($this->login()->getUser()->getId(), $user_type);
         
         // set up the pagination and pass values on to view
-        $pagination = new Pagination($msgs, $max_elements, $currPage, RoutesDb::getUri('messages_'.$category));
+        $pagination = new Pagination($msgs, $max_elements, Routes::getUri('messages_'.$category));    
         
         $data['msgs'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
@@ -118,34 +113,32 @@ class MessageController extends AppController {
         }
         
         if(isset($_POST['delete'])){
-            $action = 'delete';
+            $action = 'deleteForUser';
             $post_id = $_POST['delete'];
             $success_msg_key = 'pm_deleted';
             $failure_msg_key = 'pm_delete_failure';
         }
         switch($action){
             case 'read':
-            case 'delete':
+            case 'deleteForUser':
                 try{
                     $msg = Message::getByPk($post_id);
                     if($msg instanceof Message){
-                        $result = $msg->{$action}();
-                        //var_dump($result);
+                        $result = $msg->{$action}($this->login());
                         if($result){
-                            $data['_success'][] = SystemMessages::getSystemMessageText($success_msg_key);
+                            $this->layout()->addSystemMessage('success',$success_msg_key);
                         }else{
-                            $data['_error'][] = SystemMessages::getSystemMessageText($failure_msg_key);
+                            $this->layout()->addSystemMessage('error',$failure_msg_key);
                         }
                     }else{
-                        $data['_error'][] = SystemMessages::getSystemMessageText('pm_not_found');
+                        $this->layout()->addSystemMessage('error','pm_not_found');
                     }
                 }
                 catch(Exception $e){
-                    $data['_error'][] = SystemMessages::getSystemMessageText('unexpected_error').'<br>'.$e->getMessage();
+                    $this->layout()->addSystemMessage('error','unexpected_error').'<br>'.$e->getMessage();
                 }
                 break;
         }
-        return $data;
     }
     
 }

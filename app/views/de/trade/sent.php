@@ -1,7 +1,7 @@
 <h1>Tauschanfragen</h1>
 
 <ul class="nav nav-tabs">
-	<li class="nav-item"><a class="nav-link" href="<?php echo RoutesDb::getUri('trades_recieved'); ?>">Erhalten</a></li>
+	<li class="nav-item"><a class="nav-link" href="<?php echo Routes::getUri('trades_recieved'); ?>">Erhalten</a></li>
 	<li class="nav-item"><a class="nav-link active">Gesendet</a></li>
 </ul>
 
@@ -9,7 +9,7 @@
 <div class="card my-4">
 	<div class="card-header text-muted text-right font-italic">
 		<small>an <a class="font-weight-bold" href="<?php echo $trade->getRecipient()->getProfilLink(); ?>"><?php echo $trade->getRecipient()->getName(); ?></a> 
-			am <?php echo $trade->getDate(); ?></small>
+			am <?php echo $trade->getDate($this->login->getUser()->getTimezone()); ?></small>
 	</div>
 	<div class="card-body text-center">
 		<div>

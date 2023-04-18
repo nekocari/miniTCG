@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_deck_index');?>">Karten</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_deck_index');?>">Karten</a></li>
     <li class="breadcrumb-item active" aria-current="page">hochladen</li>
   </ol>
 </nav>
@@ -46,7 +46,7 @@
             		<label for="type">Typ</label>
             		<select class="form-control" id="type" name="type" required>
             			<?php foreach($deck_types as $type){ ?>
-            				<option value="<?php echo $type; ?>"><?php echo $type; ?></option>
+            				<option value="<?php echo $type->getId(); ?>"><?php echo $type->getName(); ?></option>
             			<?php } ?>
             		</select>
             	</div>
@@ -71,7 +71,7 @@
 			Karten
 		</div>
 		<div class="card-body form-row">
-    		<?php for($i = 1; $i <= $settings['decksize']; $i++){ ?>
+    		<?php for($i = 1; $i <= $max_deck_size; $i++){ ?>
     		<div class="col-12 col-lg-6 form-group">
     			<label for="file<?php echo $i; ?>">Karte <?php echo $i; ?></label>
     			<input class="form-control form-control-sm" type="file" id="file<?php echo $i; ?>" name="card_<?php echo $i; ?>">

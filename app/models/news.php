@@ -9,13 +9,13 @@
 
 class News extends DbRecordModel{
     
-    protected $id, $date, $author, $title, $text, $text_html;
+    protected $id, $date, $utc, $author, $title, $text, $text_html;
     private $author_obj, $update_obj;
     
     protected static
         $db_table = 'news_entries',
         $db_pk = 'id',
-        $db_fields = array('id','date','author','title','text','text_html'),
+        $db_fields = array('id','date','utc','author','title','text','text_html'),
         $sql_order_by_allowed_values = array('id','date');
     
     public function __construct() {
@@ -32,24 +32,21 @@ class News extends DbRecordModel{
      * @param string $text
      * @return News|boolean
      */
-    public static function add($autor, $title, $text){
-        
+    public static function add($autor, $title, $text){        
         if($autor instanceof Member AND !empty($title) AND !empty($text)){
             $parsedown = new Parsedown();
             $text_html = $parsedown->text($text);
-            $title = strip_tags($title);
+            $title = $parsedown->text(strip_tags($title));
+            $date = new DateTime('now');
             
             $entry = new News();
-            $entry->setPropValues(array('author'=>$autor->getId(),'title'=>$title,'text'=>$text,'text_html'=>$text_html));
-            $entry_id = $entry->create();
-            $entry->setPropValues(['id'=>$entry_id]);
-            
+            $entry->setPropValues(array('author'=>$autor->getId(),'title'=>$title,'utc'=>$date->format('c'),'text'=>$text,'text_html'=>$text_html));
+            $entry->create();
             return $entry;
         }else{
             return false;
         }
     }
-    
     
     public function update(){
         $parsedown = new Parsedown();
@@ -63,8 +60,10 @@ class News extends DbRecordModel{
         return $this->id;
     }
     
-    public function getDate() {
-        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
+    public function getDate($timezone = DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+        return $date->format(Setting::getByName('date_format')->getValue().' H:i');
     }
     
     public function getAuthor() {
@@ -129,7 +128,7 @@ class News extends DbRecordModel{
     private static function getEntryTemplate($lang) {
     	$filename = PATH.'app/views/'.$lang.'/templates/news_entry.php';
     	if(!file_exists($filename)){
-    		$lang = SUPPORTED_LANGUAGES[0];
+    		$lang = key(SUPPORTED_LANGUAGES);
     	}
     	return file_get_contents(PATH.'app/views/'.$lang.'/templates/news_entry.php');
     }
@@ -137,7 +136,7 @@ class News extends DbRecordModel{
     private static function getUpdateTemplate($lang) {
     	$filename = PATH.'app/views/'.$lang.'/templates/news_entry_cardupdate.php';
     	if(!file_exists($filename)){
-    		$lang = SUPPORTED_LANGUAGES[0];
+    		$lang = key(SUPPORTED_LANGUAGES);
     	}
     	return file_get_contents(PATH.'app/views/'.$lang.'/templates/news_entry_cardupdate.php');
     }

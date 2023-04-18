@@ -2,7 +2,7 @@
 /*
  * Manager Class for basic Routing
  */
-class RoutesDb {
+class Routes {
     
 	private $db;
 	private static $instance;
@@ -32,7 +32,7 @@ class RoutesDb {
     
     public static function getInstance($db){
     	if(is_null(self::$instance)){
-    		self::$instance = new RoutesDb($db);
+    		self::$instance = new Routes($db);
     	}
     	return self::$instance;
     }

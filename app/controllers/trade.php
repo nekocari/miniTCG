@@ -26,9 +26,9 @@ class TradeController extends AppController {
             
             // try db update an set messages in case of success or failure
             if(($return = $trade->decline($_POST['text'])) === true){
-                $data['_success'][] = SystemMessages::getSystemMessageText('trade_decline_success');
+            	$this->layout()->addSystemMessage('success','trade_decline_success');
             }else{
-                $data['_error'][] = SystemMessages::getSystemMessageText('trade_decline_failed').' - '.SystemMessages::getSystemMessageText($return);
+                $this->layout()->addSystemMessage('error','trade_decline_failed').' - '.SystemMessages::getSystemMessageText($return);
             }
         }
         
@@ -39,10 +39,10 @@ class TradeController extends AppController {
             
             // try db update an set messages in case of success or failure
             if(($return = $trade->accept($_POST['text'])) === true){
-                $data['_success'][] = SystemMessages::getSystemMessageText('trade_accept_success').' - '.SystemMessages::getSystemMessageText('trade_card_new_info').
+                $this->layout()->addSystemMessage('success','trade_accept_success').' - '.SystemMessages::getSystemMessageText('trade_card_new_info').
                                       strtoupper($trade->getOfferedCard()->getName());
             }else{
-                $data['_error'][] = SystemMessages::getSystemMessageText('trade_accept_failed').' - '.SystemMessages::getSystemMessageText($return);
+                $this->layout()->addSystemMessage('error','trade_accept_failed').' - '.SystemMessages::getSystemMessageText($return);
             }
         }
         
@@ -57,7 +57,6 @@ class TradeController extends AppController {
      */
     public function sent() {
         
-        $data = array();
         
         // delete a trade offer
         if(isset($_POST['delete']) AND isset($_POST['id']) ){
@@ -66,23 +65,23 @@ class TradeController extends AppController {
                 $trade = Trade::getById($_POST['id']);
                 if($trade instanceof Trade){
                     if($trade->delete()){
-                        $data['_success'][] = SystemMessages::getSystemMessageText('trade_delete_success');
+                        $this->layout()->addSystemMessage('success','trade_delete_success');
                     }
                 }else{
-                    $data['_error'][] = 'invalid trade id';
+                	$this->layout()->addSystemMessage('error','unexpected_error');
                     error_log('recieved invalid trade id', 3, ERROR_LOG);
                 }
             }
             catch (Exception $e){
-                $data['_error'][] = SystemMessages::getSystemMessageText('trade_delete_failed');
+                $this->layout()->addSystemMessage('error','trade_delete_failed');
                 error_log($e->getMessage(), 3, ERROR_LOG);
             }
         }
         
         // get all sent trades
-        $data['trades'] = Trade::getSentByMemberId($this->login()->getUserId());
+        $trades= Trade::getSentByMemberId($this->login()->getUserId());
         
-        $this->layout()->render('trade/sent.php',$data);
+        $this->layout()->render('trade/sent.php',['trades'=>$trades]);
     }
     
     /**
@@ -107,10 +106,10 @@ class TradeController extends AppController {
                 // try to add the new trade offer to the database and create messages for case of success and failure
                 try{
                     TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text']);
-                    $data['_success'][] = SystemMessages::getSystemMessageText('trade_new_success');
+                    $this->layout()->addSystemMessage('success','trade_new_success');
                 }
                 catch (Exception $e){
-                    $data['_error'][] = SystemMessages::getSystemMessageText('trade_new_failed');
+                    $this->layout()->addSystemMessage('error','trade_new_failed');
                     error_log($e->getMessage().'\n', 3, ERROR_LOG);
                 }
                 
@@ -129,7 +128,7 @@ class TradeController extends AppController {
                 }else{
                     
                     // error message in case user is logged in user
-                    $data['_error'][] = SystemMessages::getSystemMessageText('trade_with_self');
+                    $this->layout()->addSystemMessage('error','trade_with_self');
                     $this->layout()->render('templates/error.php', $data);
                     
                 }
@@ -139,7 +138,7 @@ class TradeController extends AppController {
         }else{
             
             // display an error message
-            $data['_error'][] = SystemMessages::getSystemMessageText('2001');
+            $this->layout()->addSystemMessage('error','2001');
             $this->layout()->render('templates/error.php', $data);
             
         }

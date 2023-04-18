@@ -41,7 +41,7 @@
 			<div class="text-center">
     			<p><hr>
     				miniTCG by <a href="http://www.heavenspell.de">Cari</a><br>
-    				<small><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Administration</a></small>
+    				<small><a href="<?php echo Routes::getUri('admin_dashboard');?>">Administration</a></small>
     			</p>
 			</div>
 		

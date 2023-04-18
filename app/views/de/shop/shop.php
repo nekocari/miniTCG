@@ -13,8 +13,8 @@
     <form name="shop-cards" class="shop-cards d-flex flex-wrap justify-content-around" method="POST" action="">
     	<?php foreach($s_cards as $s_card){ ?>
         	<div class="card shop-card m-2 text-center">
-            	<div class="d-inline-block mb-0 shop-card-image <?php if($s_card->missingInKeep()){ echo " card-missing-keep"; } 
-                if($s_card->missingInCollect()){ echo " card-missing-collect"; } if($s_card->mastered()){ echo " card-mastered"; } ?>">
+            	<div class="d-inline-block mb-0 shop-card-image <?php if($s_card->missingInKeep() AND !$s_card->owned()){ echo " card-missing-keep"; } 
+            	if($s_card->missingInCollect() AND !$s_card->owned()){ echo " card-missing-collect"; } if($s_card->mastered()){ echo " card-mastered"; } ?>">
 					<?php echo $s_card->getImageHTML(); ?>
         		</div>
         		<div class="p-1">
@@ -22,7 +22,7 @@
             		<div class="shop-card-price"><?php echo $s_card->getPrice(); ?> <?php echo $currency_name; ?></div>
             		<div class="shop-card-action">
             			<button class="btn btn-primary btn-sm" value="<?php echo $s_card->getId(); ?>" 
-            			name="buy_card" <?php if(!$s_card->isBuyable()){ ?>disabled<?php } ?>>
+            			name="buy_card" <?php if(!$s_card->isBuyable($this->login)){ ?>disabled<?php } ?>>
             				<i class="fas fa-shopping-cart"></i> kaufen
             			</button>
             		</div>

@@ -16,7 +16,11 @@ class PagesController extends AppController {
     }
     
     public function notLoggedIn() {
-        $this->layout()->render('templates/error_login.php');
+    	$this->layout()->render('templates/error_login.php');
+    }
+    
+    public function accessDenied() {
+    	$this->layout()->render('templates/error_rights.php');
     }
     
     public function faq() {

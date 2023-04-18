@@ -23,78 +23,68 @@ class MemberController extends AppController {
      */
     public function profil() {
         
-    	//$this->redirectNotLoggedIn(); // uncomment to make profils only accessable when logged in
+    	$this->redirectNotLoggedIn(); // comment this line to make profils accessable when not logged in
         if(!isset($_GET['id'])){  $this->redirectNotFound(); }
             
         
-        // get user or relocate to error page
-        $data['member'] = Member::getById(intval($_GET['id']));
-        if($data['member'] == false){ $this->redirectNotFound(); }
+        // get user or redirect to error page
+        $member = Member::getById(intval($_GET['id']));
+        if(!$member instanceof Member){ $this->redirectNotFound(); }
+        $cat_elements = $collections = NULL;
         
-        // current page for pagination
-        if(isset($_GET['pg']) AND intval($_GET['pg'])>0 ){
-            $currPage = $_GET['pg'];
-        }else{
-            $currPage = 1;
-        }
         
         // check category for partial
-        if(isset($_GET['cat']) AND in_array($_GET['cat'], array('master','trade','keep','collect')) ){
-            $cat = $_GET['cat'];
+        $accepted_stati = Card::getAcceptedStatiObj();
+        if(isset($_GET['cat']) AND array_key_exists($_GET['cat'], $accepted_stati) ){
+        	$cat = $accepted_stati[$_GET['cat']];
+        }elseif(isset($_GET['cat']) AND $_GET['cat'] == 'master'){
+        	$cat = 'master';
         }else{
-            $cat = 'trade';
+        	$cat = CardStatus::getTradeable()[0];
         }
         
         // get elements for partial
-        switch($cat){
-            
+        switch($cat){            
             case 'master':
-                $data['cat_elements'] = $data['member']->getMasteredDecks(true);
+            	$cat_elements = $member->getMasteredDecks(true);
+            	$pagination = new Pagination($cat_elements, 30,$member->getProfilLink().'&cat=master');
+            	$partial_uri = 'member/profil/master.php';
                 break;
-                
-            case 'trade':
-            case 'keep':
-                $data['cat_elements'] = $data['member']->getProfilCardsByStatus($cat, $this->login()->getUserId());
-                break;
-                
-            case 'collect':
-            	$data['cat_elements'] = $data['member']->getProfilCardsByStatus($cat, $this->login()->getUserId());
-                $data['collections'] = array();
-                foreach($data['cat_elements'] as $card){
-                    $data['collections'][$card->getDeckId()][$card->getNumber()] = $card;
-                    if(!isset($data['deckdata'][$card->getDeckId()])){
-                        $data['deckdata'][$card->getDeckId()] = Carddeck::getById($card->getDeckId());
-                    }
-                }
-                $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
-                $data['cards_per_row'] = Setting::getByName('deckpage_cards_per_row')->getValue();
-                $data['searchcard_html'] = Card::getSearchcardHtml();
-                $data['use_special_puzzle_filler'] = $use_special_puzzle_filler = Setting::getByName('card_filler_use_puzzle')->getValue();
-                for($i = 1; $i <= Setting::getByName('cards_decksize')->getValue(); $i++){
-                    if($use_special_puzzle_filler == 0){
-                        $data['searchcard_html_'.$i] = $data['searchcard_html'];
-                    }else{
-                        $data['searchcard_html_'.$i] = Card::getSearchcardHtml('puzzle',$i);
-                    }
-                }
-                break;
+            default:
+            	$cat_elements = $member->getProfilCardsByStatus($cat->getId(), true);            	
+            	if(!$cat->isCollections()){
+            		// not collections
+            		$pagination = new Pagination($cat_elements, 30,$member->getProfilLink().'&cat='.$cat->getId());
+            		if($this->login()->isLoggedIn()){
+            			$cat_elements = NULL;
+            			foreach($pagination->getElements() as $element){
+            				$cat_elements[] = $element->flag($this->login()->getUserId());
+            			}
+            		}else{
+            			$cat_elements = $pagination->getElements();
+            		}
+            		if($cat->isTradeable() AND $this->login()->isloggedIn() AND $member->getId() != $this->login()->getUser()->getId()){
+            			$partial_uri = 'member/profil/tradeable.php';
+            		}else{
+            			$partial_uri = 'member/profil/not_tradeable.php';
+            		}
+            	}else{
+            		// for collections
+            		$pagination = new Pagination($collections, 4, $member->getProfilLink().'&cat='.$cat->getId());
+            		$collections = $pagination->getElements();
+            		$partial_uri = 'member/profil/collect.php';
+            	}
+            	break;
         }
         
-        
-        if($cat != 'collect'){
-            $pagination = new Pagination($data['cat_elements'], 30, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
-            $data['cat_elements'] = $pagination->getElements();
-        }else{
-            $pagination = new Pagination($data['collections'], 4, $currPage, $data['member']->getProfilLink().'&cat='.$cat);
-            $data['collections'] = $pagination->getElements();
-        }
-        $data['pagination'] = $pagination->getPaginationHtml();
-        
-        if($cat == 'trade' AND $this->login()->isloggedIn() AND $data['member']->getId() == $this->login()->getUser()->getId()){
-            $data['partial_uri'] = 'member/profil/'.$cat.'_own.php';
-        }else{
-            $data['partial_uri'] = 'member/profil/'.$cat.'.php';
-        }
+        $data = [
+        		'member'=>$member,
+        		'cat'=>$cat,
+        		'cat_elements'=>$cat_elements,
+        		'collections'=>$collections,
+        		'partial_uri'=>$partial_uri,
+        		'pagination'=>$pagination->getPaginationHtml()
+        ];
         
         $this->layout()->render('member/profil.php',$data);
           
@@ -133,7 +123,7 @@ class MemberController extends AppController {
         $masters = Master::getMasterdByMember($_SESSION['user']->id,$grouped,[$order_by=>$order]);
         
         // pagination
-        $pagination = new Pagination($masters, 20, $curr_page, RoutesDb::getUri('member_mastercards').'?order_by='.$order_by);
+        $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards').'?order_by='.$order_by);
         
         // set vars accessable in view
         $data['mastered_decks'] = $pagination->getElements();

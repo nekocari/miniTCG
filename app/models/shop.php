@@ -69,16 +69,16 @@ class Shop {
         return $this->cards_sum;
     }
     
-    public function getCards($order_settings=null) {
+    public function getCards($login,$order_settings=null) {
         if(!is_array($this->card_objs)){
             $this->card_objs = array();
             $cards = ShopCard::getAll($order_settings);
-            if(Login::loggedIn()){
+            if($login->isLoggedIn()){
                 foreach($cards as $card){
                     // workaround to user flag method is to remove the id and later add it back in
                     $card_id = $card->getId();
                     $card->setPropValues(['id'=>null]);
-                    $card->flag($this->login()->getUser()->getId());
+                    $card->flag($login->getUser()->getId());
                     $card->setPropValues(['id'=>$card_id]);
                     $this->card_objs[] = $card;
                 }

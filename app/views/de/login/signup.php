@@ -39,6 +39,19 @@
         		<input class="form-control" type="password" name="password_rep" id="password" required  minlength="6">
         	</div>
         </div>
+        <div class="form-group">
+        	<label for="language">Sprache:</label>
+        	<div class="input-group">
+        		<div class="input-group-prepend">
+    				<div class="input-group-text"><i class="fas fa-language"></i></div>
+    			</div>
+        		<select class="form-control" name="lang" id="language" required>
+        			<?php foreach(SUPPORTED_LANGUAGES as $key => $lang){ ?>
+        				<option value="<?php echo $key; ?>"><?php echo $lang; ?></option>
+        			<?php } ?>
+        		</select>
+        	</div>
+        </div>
 		<input class="btn btn-primary" type="submit" name="signup" value="Registrierung senden">
 	</div>
 </form>

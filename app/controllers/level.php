@@ -11,16 +11,11 @@ class LevelController extends AppController {
      * Level overview
      */
     public function level() {
-        
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
-        }
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->auth()->setRequirements('rights', ['ManageLevel']);
+    	$this->redirectNotAuthorized();
         
         $data['level'] = Level::getAll();
         
@@ -32,16 +27,11 @@ class LevelController extends AppController {
      * Level add
      */
     public function addLevel() {
-        
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
-        }
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->auth()->setRequirements('rights', ['ManageLevel']);
+    	$this->redirectNotAuthorized();
             
         $data = array();
         
@@ -49,7 +39,7 @@ class LevelController extends AppController {
             
             try {
             $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
-            header("Location: ".BASE_URI.RoutesDb::getUri('level_index'));
+            header("Location: ".BASE_URI.Routes::getUri('level_index'));
             }
             catch(Exception $e){
                 $error_text = ' - ';
@@ -58,7 +48,7 @@ class LevelController extends AppController {
                         $error_text.= SystemMessages::getSystemMessageText('duplicate_key');
                     }
                 }
-                $data['_error'][] = SystemMessages::getSystemMessageText('level_add_failed').$error_text;
+                $this->layout()->addSystemMessage('error','level_add_failed').$error_text;
             }
         }
         
@@ -71,16 +61,11 @@ class LevelController extends AppController {
      * Level edit
      */
     public function editLevel() {
-        
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
-        }        
-        
-        // check if user has required rights
-        $user_rights = $this->login()->getUser()->getRights();
-        if(!in_array('Admin',$user_rights) AND !in_array('ManageLevel',$user_rights) ){
-            die($this->layout()->render('templates/error_rights.php'));
-        }
+    	
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->auth()->setRequirements('rights', ['ManageLevel']);
+    	$this->redirectNotAuthorized();
             
         
         $data = array();
@@ -93,11 +78,11 @@ class LevelController extends AppController {
                 $level->setPropValues(['level'=>$_POST['level'],'name'=>$_POST['name'],'cards'=>$_POST['cards']]);
                 $level->update();
                 
-                $data['_success'][] = SystemMessages::getSystemMessageText('level_edit_success');
+                $this->layout()->addSystemMessage('success','level_edit_success');
             }
             
             catch (Exception $e){
-                $data['_error'][] = SystemMessages::getSystemMessageText('level_edit_failed');
+                $this->layout()->addSystemMessage('error','level_edit_failed');
                 // todo: log exception
             }
             

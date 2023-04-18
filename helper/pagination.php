@@ -24,6 +24,7 @@ class Pagination {
 		$this->link			= $link;
 		$this->parameterName= $parameterName;
 		$this->totalItems   = count($elements);
+		$this->checkForCurrPage();
     }
     
     public function getParameterName() {
@@ -32,10 +33,16 @@ class Pagination {
     
     public function setCurrPage($page) {
     	if(is_numeric($page) AND intval($page) > 0 ){
-    		$this->currPage = $page;
+    		$this->currPage = intval($page);
     		return true;
     	}else{
     		return false;
+    	}
+    }
+    
+    public function checkForCurrPage() {
+    	if(isset($_GET[$this->getParameterName()])){
+    		$this->setCurrPage($_GET[$this->getParameterName()]);
     	}
     }
 

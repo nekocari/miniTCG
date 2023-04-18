@@ -1,13 +1,13 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
     <li class="breadcrumb-item active" aria-current="page">Routing</li>
   </ol>
 </nav>
 
 <h1>Routing Übersicht</h1>
 
-<p class="text-center"><a class="btn btn-primary" href="<?php echo RoutesDb::getUri('admin_routes_add');?>">neue Route anlegen</a></p>
+<p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_routes_add');?>">neue Route anlegen</a></p>
 
 <div class="table-responsive">
 <table class="table table-striped">
@@ -36,7 +36,7 @@
     				<input type="hidden" name="id" value="<?php echo $entry->getIdentifier(); ?>">
     				
     				
-        			<a class="btn btn-sm btn-primary" href="<?php echo RoutesDb::getUri('admin_routes_edit');?>?id=<?php echo $entry->getIdentifier(); ?>">
+        			<a class="btn btn-sm btn-primary" href="<?php echo Routes::getUri('admin_routes_edit');?>?id=<?php echo $entry->getIdentifier(); ?>">
         				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 				</form>
     		</td>
@@ -46,4 +46,4 @@
 </table>
 </div>
 
-<p class="text-center"><a class="btn btn-primary" href="<?php echo RoutesDb::getUri('admin_routes_add');?>">neue Route anlegen</a></p>
+<p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_routes_add');?>">neue Route anlegen</a></p>

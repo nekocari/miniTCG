@@ -1,12 +1,12 @@
 <h1>Karten Verwalten</h1>
 
 <p class="text-center">
-<?php foreach($accepted_status as $status){ ?>
-	<a class="btn btn-outline-dark" href="<?php echo RoutesDb::getUri('member_cardmanager')."?status=$status"; ?>"><?php echo strtoupper($status); ?></a>
+<?php foreach(Card::getAcceptedStatiObj() as $status){ ?>
+	<a class="btn btn-outline-dark" href="<?php echo Routes::getUri('member_cardmanager')."?status=".$status->getId(); ?>"><?php echo strtoupper($status->getName()); ?></a>
 <?php } ?>
 </p>
 
-<h2>Kategorie: <?php echo strtoupper($curr_status); ?></h2>
+<h2>Kategorie: <?php echo strtoupper($cardmanager->getStatus()->getName()); ?></h2>
 
 <form name="sortCards" method="POST" action="">
 
@@ -36,4 +36,13 @@
 <?php if(count($cards) == 0){ $this->renderMessage('info','In dieser Kategorie befinden sich derzeit keine Karten.'); }else{ ?>
 <p class="text-center"><button class="btn btn-primary" role="submit" name="changeCardStatus" value="1">Karten einsortieren</button></p>
 <?php } ?>
+
 </form>
+
+<div class="text-center my-2">
+	<small>
+		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in nicht tauschbar</span>
+		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Sammlung</span>
+		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
+	</small>
+</div>

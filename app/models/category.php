@@ -39,7 +39,7 @@ class Category extends DbRecordModel {
     }
     
     public function getLinkUrl() {
-        return RoutesDb::getUri('deck_by_category').'?id='.$this->id;
+        return Routes::getUri('deck_by_category').'?id='.$this->id;
     }
     
     public function store() {

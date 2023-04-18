@@ -11,7 +11,7 @@ class App {
 	private $controller, $action, $identifier, $routes, $vars, $controller_obj;
 	
 	public function __construct(){
-		$this->routes = RoutesDb::getInstance(Db::getInstance());
+		$this->routes = Routes::getInstance(Db::getInstance());
 		$this->autoloading();
 	}
 	
@@ -21,8 +21,8 @@ class App {
         if(isset($_GET['uri'])) {
         	$this->parseUri($_GET['uri']);
         }else{
-        	$this->controller =   RoutesDb::getController('homepage');
-        	$this->action =       RoutesDb::getAction('homepage');
+        	$this->controller =   Routes::getController('homepage');
+        	$this->action =       Routes::getAction('homepage');
         }
         
         $this->display();     
@@ -38,8 +38,8 @@ class App {
     
     private function parseUri($uri){
     	if(($this->identifier = $this->routes->getRouteKeyByUri($uri)) != false){ 
-    		$this->controller =   RoutesDb::getController($this->identifier);
-    		$this->action =       RoutesDb::getAction($this->identifier);
+    		$this->controller =   Routes::getController($this->identifier);
+    		$this->action =       Routes::getAction($this->identifier);
     	}else{
     		/* do NOT use in production - JUST TO TEST
     		$uri_parts = explode('/', $uri);
@@ -49,7 +49,7 @@ class App {
     		} */
     	}
     	if(!$this->controller OR !$this->action){ 
-    		header('Location: '.BASE_URI.RoutesDb::getUri('not_found')); 
+    		header('Location: '.BASE_URI.Routes::getUri('not_found')); 
     	}
     }
     
@@ -83,12 +83,12 @@ class App {
     		if(method_exists($this->controller_obj, $this->action)){
     			call_user_func_array(array($this->controller_obj,$this->action), $this->routes->getVars());
     		}else{
-    			die('action '.$this->action.' not found');
-    			header('Location: '.BASE_URI.RoutesDb::getUri('not_found'));
+    			die('action '.$this->action.' not found in controller '.$this->controller);
+    			header('Location: '.BASE_URI.Routes::getUri('not_found'));
     		}
     	}else{
     		die('controller '.$this->controller.' not found');
-    		header('Location: '.BASE_URI.RoutesDb::getUri('not_found'));
+    		header('Location: '.BASE_URI.Routes::getUri('not_found'));
     	}
     }
     

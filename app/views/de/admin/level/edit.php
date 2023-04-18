@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('level_index');?>">Level</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('level_index');?>">Level</a></li>
     <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
   </ol>
 </nav>
@@ -29,7 +29,7 @@
     </table>
 
 	<p class="text-center">
-		<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('level_index');?>">zurück zur Liste</a> 
+		<a class="btn btn-dark" href="<?php echo Routes::getUri('level_index');?>">zurück zur Liste</a> 
 		&bull; <input class="btn btn-primary" type="submit" name="editLevel" value="speichern">
 		<input type="hidden" name="id" value="<?php echo $level->getId(); ?>">
 	</p>

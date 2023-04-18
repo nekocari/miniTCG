@@ -44,17 +44,12 @@ class Layout {
     	$js_files = array(),
     	$css_files = array(),
     	$breadcrumbs = array(),
-    	$login, $dashboard_options, $members_online, $notifications;
+    	$login;
     
         
     public function __construct($login) {
         $this->login = $login;
-        //$this->dashboard_options = DashboardOptions::getInstance();
-        //$this->members_online = MemberOnline::getVisible($this->login->getUser(),['date'=>'DESC']);
         $this->setLanguage();
-        if($this->login->isLoggedIn()){
-        	//$this->notifications = new NotificationList($this->login->getUser());
-    	}
     }
     
     private function __clone(){}
@@ -180,10 +175,10 @@ class Layout {
     	
         if($lang == null){
             // using personalized settings if logged in
-            if($this->login->isloggedIn() AND is_array($this->supported_languages) AND in_array($this->login->getUser()->getLang(), $this->supported_languages)){
+            if($this->login->isloggedIn() AND is_array($this->supported_languages) AND key_exists($this->login->getUser()->getLang(), $this->supported_languages)){
                 $this->lang = $this->login->getUser()->getLang();
             // use broswer settings if possible
-            }elseif(is_array($this->supported_languages) AND in_array($browser_lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2), $this->supported_languages)){
+            }elseif(is_array($this->supported_languages) AND key_exists($browser_lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2), $this->supported_languages)){
                 $this->lang = $browser_lang;
             // as default use the first supported language
             }else{
@@ -194,7 +189,7 @@ class Layout {
                 }
             }
             
-        }elseif(in_array($lang, $this->supported_languages)){
+        }elseif(key_exists($lang, $this->supported_languages)){
             $this->lang = $lang;
         }
         

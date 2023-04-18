@@ -4,67 +4,67 @@
 
 <div class="row">
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('member_cardmanager');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('member_cardmanager');?>">
 			<i class="fas fa-folder-open h1"></i><br>
 			Karten Manager
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('trades_recieved');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('trades_recieved');?>">
 			<i class="fas fa-exchange-alt h1"></i><br>
 			Tauschanfragen
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('messages_recieved');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('messages_recieved');?>">
 			<i class="fas fa-envelope-open h1"></i><br>
 			Nachrichten
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('member_mastercards');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('member_mastercards');?>">
 			<i class="fas fa-trophy h1"></i><br>
 			Master Karten
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('member_cardupdate');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('member_cardupdate');?>">
 			<i class="fas fa-star h1"></i><br>
 			Update Karten
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('game');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('game');?>">
 			<i class="fas fa-gamepad h1"></i><br>
 			Spiele
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('shop');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('shop');?>">
 			<i class="fas fa-shopping-cart h1"></i><br>
 			Karten Shop
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('card_search');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('card_search');?>">
 			<i class="fas fa-search h1"></i><br>
 			Karte Suchen
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('tradelog_member');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('tradelog_member');?>">
 			<i class="fas fa-book h1"></i><br>
 			Tradelog
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('edit_userdata');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('edit_userdata');?>">
 			<i class="fas fa-user h1"></i><br>
 			Profil Daten
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
-		<a class="btn btn-outline-secondary w-100" href="<?php echo RoutesDb::getUri('delete_account');?>">
+		<a class="btn btn-outline-secondary w-100" href="<?php echo Routes::getUri('delete_account');?>">
 			<i class="fas fa-trash-alt h1"></i><br>
 			Benutzerkonto löschen
 		</a>
@@ -75,6 +75,6 @@
 
 <div class="row">
 	<div class="col text-center m-4">
-    	<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('signout');?>">AUSLOGGEN</a>
+    	<a class="btn btn-dark" href="<?php echo Routes::getUri('signout');?>">AUSLOGGEN</a>
     </div>
 </div>

@@ -2,7 +2,7 @@
 
 <p class="text-center">
 <?php foreach($level as $lv){ if(isset($members[$lv->getId()])){ ?>
-	<a href="<?php echo RoutesDb::getUri('member_index'); ?>#<?php echo $lv->getLevel(); ?>" class="btn btn-outline-dark"><?php echo $lv->getName(); ?></a>
+	<a href="<?php echo Routes::getUri('member_index'); ?>#<?php echo $lv->getLevel(); ?>" class="btn btn-outline-dark"><?php echo $lv->getName(); ?></a>
 <?php } } ?>
 </p>
 

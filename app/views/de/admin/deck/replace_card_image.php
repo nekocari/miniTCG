@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_deck_index');?>">Karten</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('deck_edit')."?id=".$deck->getId();?>">bearbeiten</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_deck_index');?>">Karten</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('deck_edit')."?id=".$deck->getId();?>">bearbeiten</a></li>
     <li class="breadcrumb-item active" aria-current="page">Bilddatei ersetzen</li>
   </ol>
 </nav>
@@ -31,7 +31,7 @@
 </table>
 
 <p class="text-center mx-2">
-	<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('deck_edit')."?id=".$deck->getId();?>">zurück zum Deck</a> &bull;
+	<a class="btn btn-dark" href="<?php echo Routes::getUri('deck_edit')."?id=".$deck->getId();?>">zurück zum Deck</a> &bull;
 	<input class="btn btn-primary" type="submit" name="replace_card" value="ersetzen">
 	<input type="hidden" name="deck_id" value="<?php echo $deck->getId(); ?>">
 </p>

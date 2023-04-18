@@ -1,12 +1,12 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
     <li class="breadcrumb-item active" aria-current="page">Kategorien</li>
   </ol>
 </nav>
 
 
-<p class="text-left"><a href="<?php echo RoutesDb::getUri('category_add');?>" class="btn btn-primary">Kategorie anlegen</a></p>
+<p class="text-left"><a href="<?php echo Routes::getUri('category_add');?>" class="btn btn-primary">Kategorie anlegen</a></p>
 
 
 <?php foreach($categories as $category){ ?>
@@ -20,7 +20,7 @@
 				<input type="hidden" name="action" value="del_cat">
 				<input type="hidden" name="id" value="<?php echo $category->getId(); ?>">
 			</form>
-			<a class="btn btn-primary btn-sm" href="<?php echo RoutesDb::getUri('category_edit');?>?id=<?php echo $category->getId(); ?>">
+			<a class="btn btn-primary btn-sm" href="<?php echo Routes::getUri('category_edit');?>?id=<?php echo $category->getId(); ?>">
 				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 		</div>
 	</div>
@@ -36,13 +36,13 @@
     				<input type="hidden" name="action" value="del_subcat">
     				<input type="hidden" name="id" value="<?php echo $subcategory->getId(); ?>">
     			</form>
-    			<a class="btn btn-primary btn-sm" href="<?php echo RoutesDb::getUri('subcategory_edit');?>?id=<?php echo $subcategory->getId(); ?>">
+    			<a class="btn btn-primary btn-sm" href="<?php echo Routes::getUri('subcategory_edit');?>?id=<?php echo $subcategory->getId(); ?>">
     				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 			</div>
 		</li>
 		<?php } } ?>
 		<li class="list-group-item">
-			<form method="POST" action="<?php echo RoutesDb::getUri('subcategory_add');?>?id=<?php echo $category->getId(); ?>">
+			<form method="POST" action="<?php echo Routes::getUri('subcategory_add');?>?id=<?php echo $category->getId(); ?>">
 				<input type="hidden" name="category" value="<?php echo $category->getId(); ?>">
         		<button class="btn btn-primary btn-sm">Unterkategorie anlegen</button>
         	</form>

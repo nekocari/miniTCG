@@ -15,7 +15,7 @@ class GameController extends AppController {
     public function index() {
         $sys_msgs = SystemMessageTextHandler::getInstance();
         if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }        
         
         $game_list = GAMES_SETTINGS;
@@ -28,7 +28,7 @@ class GameController extends AppController {
             
             if($entry_game instanceof Game and $entry_game->isPlayable()){
                 
-                $link = '<a href="'.RoutesDb::getUri($entry['routing']).'">';
+                $link = '<a href="'.Routes::getUri($entry['routing']).'">';
                 $link.= $sys_msgs->getTextByCode('game_play_now',$this->login()->getUser()->getLang());
                 $link.= '</a>';
                 
@@ -61,7 +61,7 @@ class GameController extends AppController {
     private function lucky_game($game_key,$description, $choice_type, $choice_elements, $possible_results){
         // redirect if not logged in
         if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
         // create the game object
@@ -96,7 +96,7 @@ class GameController extends AppController {
         
         // redirect if not logged in
         if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
         // create the game object
@@ -116,7 +116,7 @@ class GameController extends AppController {
                 $card = Card::getById($_POST['card']);
                 if($card instanceof Card AND $this->login()->getUser()->getId() == $card->getOwnerId()){
                     $card->delete();
-                    Tradelog::addEntry($this->login()->getUser()->getId(), '[GAME] '.$game_name.' -> <strike>'.$card->getName().'</strike>');
+                    Tradelog::addEntry($this->login()->getUser(), '[GAME] '.$game_name.' -> <strike>'.$card->getName().'</strike>');
                     $data['game_name'] = $game_name;
                     $data['reward'] = $game->determineReward('win-card:1');
                 }else{

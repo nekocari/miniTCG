@@ -1,10 +1,10 @@
 <h1>Nachrichten</h1>
 
-<div class="text-right"><a class="btn btn-primary" href="<?php echo RoutesDb::getUri('messages_write')?>">neue Nachricht</a></div>
+<div class="text-right"><a class="btn btn-primary" href="<?php echo Routes::getUri('messages_write')?>">neue Nachricht</a></div>
 
 <ul class="nav nav-tabs">
-	<li class="nav-tab"><a class="nav-link" href="<?php echo RoutesDb::getUri('messages_recieved')?>">Eingang</a></li>
-	<li class="nav-tab"><a class="nav-link active" href="<?php echo RoutesDb::getUri('messages_sent')?>">Ausgang</a></li>
+	<li class="nav-item"><a class="nav-link" href="<?php echo Routes::getUri('messages_recieved')?>">Eingang</a></li>
+	<li class="nav-item"><a class="nav-link active" href="<?php echo Routes::getUri('messages_sent')?>">Ausgang</a></li>
 </ul>
 
 
@@ -14,7 +14,7 @@
 		<div class="row">
     		<div class="col">
     			<a href="<?php echo $msg->getRecipient()->getProfilLink(); ?>"><?php echo $msg->getRecipient()->getName(); ?></a> 
-    			&bull; <?php echo $msg->getDate(); ?>
+    			&bull; <?php echo $msg->getDate($this->login->getUser()->getTimezone()); ?>
     		</div>
     		<div class="col text-right">
         		<form class="m-0 p-0" method="POST" action="">

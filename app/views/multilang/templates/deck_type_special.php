@@ -1,5 +1,5 @@
 <div class="deck-special">
-<table class="m-auto">
+<table class="m-auto table-borderless table-default">
 	<tr>
 		<td>[1]</td>
 		<td>[2]</td>

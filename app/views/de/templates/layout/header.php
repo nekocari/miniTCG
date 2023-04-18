@@ -11,7 +11,7 @@
 		<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     	<!-- Custom CSS -->
-		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" type="text/css" href="public/css/style.css">
 		
 		<!-- Fontawesome -->
 		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
@@ -48,7 +48,7 @@
             					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home text-primary"></i> Startseite</a>
             				</li>
             				<li class="nav-item">
-            					<a class="nav-link" href="<?php echo RoutesDb::getUri('member_index');?>"><i class="fas fa-users text-primary"></i> Mitglieder</a>
+            					<a class="nav-link" href="<?php echo Routes::getUri('member_index');?>"><i class="fas fa-users text-primary"></i> Mitglieder</a>
             				</li>
             				<li class="nav-item dropdown">
             					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder text-primary"></i> Karten</a>
@@ -60,7 +60,7 @@
                                 	<div class="dropdown-divider"></div>
                                 	<?php } ?>
                                 	<!-- Category Liste End -->
-                                	<a class="dropdown-item" href="<?php echo RoutesDb::getUri('deck_index');?>">Alle</a>
+                                	<a class="dropdown-item" href="<?php echo Routes::getUri('deck_index');?>">Alle</a>
                                 </div>
             				</li>
             			</ul>

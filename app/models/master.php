@@ -9,14 +9,14 @@
 
 class Master extends DbRecordModel {
     
-    protected $id, $deck, $member, $date;
+    protected $id, $deck, $member, $date, $utc;
     
     private $deck_obj, $member_obj, $counter;
     
     protected static
         $db_table = 'decks_master',
         $db_pk = 'id',
-        $db_fields = array('id','member','deck','date'),
+        $db_fields = array('id','member','deck','date','utc'),
         $sql_order_by_allowed_values = array('id','member_name','name','master_date','deckname','date');
     
     public function __construct() {
@@ -88,8 +88,10 @@ class Master extends DbRecordModel {
         return $this->member_obj;
     }
     
-    public function getDate() {
-        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
+    public function getDate($timezone=DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+        return $date->format(Setting::getByName('date_format')->getValue());
     }
     
     public function getPossessionCounter(){

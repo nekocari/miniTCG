@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard')?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('deck_update')?>">Updates</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard')?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('deck_update')?>">Updates</a></li>
     <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
   </ol>
 </nav>
@@ -31,7 +31,7 @@
 	</div>
 
 	<p class="text-center">
-		<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('deck_update');?>">zurück zur Liste</a> 
+		<a class="btn btn-dark" href="<?php echo Routes::getUri('deck_update');?>">zurück zur Liste</a> 
 		<?php if(!$update->isPublic()){ ?>
 		&bull; <input class="btn btn-primary" type="submit" name="editUpdate" value="speichern"></p>
 		<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">

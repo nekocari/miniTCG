@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
     <li class="breadcrumb-item active" aria-current="page">Level</li>
   </ol>
 </nav>
@@ -27,11 +27,11 @@
     		<td><?php echo $lv->getName(); ?></td>
     		<td><?php echo $lv->getCards(); ?></td>
     		<td class="text-right">
-    			<a href="<?php echo RoutesDb::getUri('level_edit');?>?id=<?php echo $lv->getId(); ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i> bearbeiten</a>
+    			<a href="<?php echo Routes::getUri('level_edit');?>?id=<?php echo $lv->getId(); ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i> bearbeiten</a>
     		</td>
     	</tr>
 <?php } ?>
 	</tbody>
 </table>
 </div>
-<p class="text-center"><a class="btn btn-primary" href="<?php echo RoutesDb::getUri('level_add');?>">neues Level anlegen</a></p>
+<p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('level_add');?>">neues Level anlegen</a></p>

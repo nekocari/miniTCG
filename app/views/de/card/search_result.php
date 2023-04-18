@@ -20,7 +20,7 @@
 		<tr>
 			<td><?php echo $member->getId(); ?></td>
 			<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
-			<td><a href="<?php echo RoutesDb::getUri('trade');?>?card=<?php echo $card_id; ?>">Tauschangebot</a></td>
+			<td><a href="<?php echo Routes::getUri('trade');?>?card=<?php echo $card_id; ?>">Tauschangebot</a></td>
 		</tr>
 	<?php } ?>
 	</tbody>

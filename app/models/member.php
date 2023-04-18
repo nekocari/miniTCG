@@ -158,12 +158,16 @@ class Member extends DbRecordModel {
     }
     
     /**
+     * retuns an array of flaggable cards
+     * @param int $status_id
+     * @param boolean $only_tradeable
+     * @return CardFlagged[]
      */
-    public function getProfilCardsByStatus($status, $only_tradeable = true, $compare_user_id = NULL){
-        if(!isset($this->profil_cards[$status])){
-            $this->profil_cards[$status] = CardFlagged::getCardsByStatus($this->getId(), $status, true, $compare_user_id);
+    public function getProfilCardsByStatus($status_id, $only_tradeable = true){
+        if(!isset($this->profil_cards[$status_id])){
+        	$this->profil_cards[$status_id] = CardFlagged::getMemberCardsByStatus($this->getId(), $status_id, true);
         }
-        return $this->profil_cards[$status];
+        return $this->profil_cards[$status_id];
     }
     
     /**
@@ -196,7 +200,7 @@ class Member extends DbRecordModel {
      */
     public function getProfilLink() {
     	if(!is_null($this->id)){
-    		return RoutesDb::getUri('member_profil').'?id='.$this->id;
+    		return Routes::getUri('member_profil').'?id='.$this->id;
     	}else{
     		return null;
     	}
@@ -284,9 +288,17 @@ class Member extends DbRecordModel {
                     // Gift for level up
                     $levelup_bonus = Setting::getByName('giftcards_for_master');
                     if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
-                        Card::createRandomCard($this->getId(),$levelup_bonus->getValue(),'Level Up!');
+                        $cards = Card::createRandomCards($this, intval($levelup_bonus->getValue()));
+                        $cardnames = $cardnames_msg = '';
+                        foreach($cards as $card){
+                        	$cardnames_msg.= $card->getName()." (#".$card->getId()."), ";
+                        	$cardnames.= $card->getName()." (#".$card->getId()."), ";
+                        }
+                        $cardnames = substr($cardnames, 0, -2);
+                        Tradelog::addEntry($this, 'level_up_info',$cardnames);
                     }
-                    Message::add(null, $this->getId(), 'LEVEL UP! Du hast, für das Erreichen von Level '.$next_level->getName().', '.$levelup_bonus->getValue().' Karten erhalten.');
+                    $msg_text = SystemMessageTextHandler::getInstance()->getTextByCode('level_up_info',$this->getLang());
+                    Message::add(null, $this->getId(), $msg_text.$cardnames_msg);
                     
                 }
             }
@@ -298,28 +310,32 @@ class Member extends DbRecordModel {
      * returns the fields admins can edit
      * @return String[]
      */
-    public function getEditableData($mode = 'user') {
-        $filed = array();
-        if($mode  == 'admin'){
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Status' => $this->status, 'Level' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
-        }elseif($mode == 'user'){
+    public function getEditableData($login = null) {
+        $fields = array();
+        if($login instanceof Login AND count($login->getUser()->getRights()) > 0){
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Status' => $this->status, 'Level ID' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
+        }else{
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->info_text);
         }
         return $fields; 
     }
     
     /**
+     * @deprecated
      * push current member data into database
      *
      * @return boolean
      */
     public function store() {
-        
-        // make sure info_text_html is up to date!
-        $parsedown = new Parsedown();
-        $this->info_text_html = $parsedown->text($this->info_text);
-        
-        return parent::update();
+    	$this->update();
+    }
+    
+    public function update() {
+    	// make sure info_text_html is up to date!
+    	$parsedown = new Parsedown();
+    	$this->info_text_html = $parsedown->text($this->info_text);
+    	
+    	return parent::update();
     }
     
     
@@ -394,6 +410,11 @@ class Member extends DbRecordModel {
         }
     }
     
+    /**
+     * @todo
+     * @throws ErrorException
+     * @return boolean
+     */
     public function resetPassword(){
         if(Login::loggedIn() AND in_array('Admin',$this->login()->getUser()->getRights()) OR !Login::loggedIn() ){
           
@@ -425,6 +446,8 @@ class Member extends DbRecordModel {
             
         }
     }
+    
+    
     
     /**
      * BASIC GETTER FUNCTIONS
@@ -523,8 +546,20 @@ class Member extends DbRecordModel {
     }
     
     public function setPassword($pw){
-        $req = $this->db->prepare('UPDATE members SET password = :password WHERE id = :id');
-        return $req->execute([':password'=>password_hash($pw,PASSWORD_BCRYPT), ':id'=>$this->getId()]);
+    	$this->password = password_hash($pw, PASSWORD_DEFAULT, ['cost'=>10]);
+    	$req = $this->db->prepare('UPDATE '.self::$db_table.' SET password = :password WHERE id = :id ');
+    	$req->execute([':password'=>$this->getPassword(),':id'=>$this->getId()]);
+    	if($req->rowCount() != 0){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    public function updatePassword($pw1,$pw2){
+    	if($pw1 === $pw2){
+    		return $this->setPassword($pw1);
+    	}
     }
     
     

@@ -7,15 +7,19 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_routes_index');?>">Routing</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_routes_index');?>">Routing</a></li>
     <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
   </ol>
 </nav>
 
 <h1>Route bearbeiten</h1>
 
-<form method="post" action="<?php echo RoutesDb::getUri('admin_routes_edit')."?id=".$route->getIdentifier(); ?>">
+<?php if(!$route->isDeletable()){ 
+	$this->renderMessage('info','<b>V O R S I C H T !</b><br>Es handelt sich um einen Standard Eintrag. Änderungen könnten schwerwiegende Probleme in der App verursachen.<br>Bitte nimm nur Änderungen vor, wenn du dir deiner Sache zu 100% sicher bist.');
+} ?>
+
+<form method="post" action="<?php echo Routes::getUri('admin_routes_edit')."?id=".$route->getIdentifier(); ?>">
     <table class="table table-striped">
     	<tr>
     		<td>Identifier<br><small>einzigartiger Schlüssel (unveränderbar)</small></td>
@@ -46,7 +50,7 @@
     </table>
 
 	<p class="text-center">
-		<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('admin_routes_index');?>">zurück zur Liste</a> 
+		<a class="btn btn-dark" href="<?php echo Routes::getUri('admin_routes_index');?>">zurück zur Liste</a> 
 		&bull; <input class="btn btn-primary" type="submit" name="editRoute" value="speichern">
 		<input type="hidden" name="identifier" value="<?php echo $route->getIdentifier(); ?>">
 	</p>

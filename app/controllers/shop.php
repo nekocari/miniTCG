@@ -12,35 +12,32 @@ class ShopController extends AppController {
      */
     public function shop() {
         
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
-        }
+    	$this->redirectNotLoggedIn();
+    	$shop = new Shop();
         
         $data = array();  
         
         if(isset($_POST['buy_card'])){
             $selected_card = ShopCard::getByPk($_POST['buy_card']);
-            if(!is_null($selected_card)) {
-                if($selected_card->isBuyable()){
+            if($selected_card instanceof ShopCard) {
                     try{
-                        $selected_card->buy();
-                        $data['_success'][] = SystemMessages::getSystemMessageText('cardshop_card_bought').'<br><div class="text-center">'.$selected_card->getImageHTML().'</div>';
+                    	if($selected_card->buy($this->login())){
+                        	$this->layout()->addSystemMessage('success','cardshop_card_bought',[],'<br><div class="text-center">'.$selected_card->getImageHTML().'</div>');
+                    	}else{
+                    		$this->layout()->addSystemMessage('error','cardshop_no_money');
+                    	}
                     }
                     catch(Exception $e){
-                        $data['_error'][] = SystemMessages::getSystemMessageText('cardshop_buy_error').$e->getMessage();
+                        $this->layout()->addSystemMessage('error','cardshop_buy_error',[],$e->getMessage());
                     }
-                }else{
-                    $data['_error'][] = SystemMessages::getSystemMessageText('cardshop_no_money');
-                }
             }else{
-                $data['_error'][] = SystemMessages::getSystemMessageText('cardshop_card_gone');
+                $this->layout()->addSystemMessage('error','cardshop_card_gone');
             }
         }
         
-        $shop = new Shop();
         $shop->restock();
               
-        $data['s_cards'] = $shop->getCards(['name'=>'ASC']);
+        $data['s_cards'] = $shop->getCards($this->login(),['name'=>'ASC']);
         $data['shop_next_restock_date'] = $shop->getRestockDate();
         $data['currency_name'] = Setting::getByName('currency_name')->getValue();
         $data['currency_icon'] = Setting::getByName('currency_icon_path')->getValue();

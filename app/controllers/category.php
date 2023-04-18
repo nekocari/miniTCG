@@ -110,7 +110,7 @@ class CategoryController extends AppController {
             
             if(($return = Subcategory::add($_POST['name'],$_POST['category'])) === true){
                 
-                header("Location: ".BASE_URI.RoutesDb::getUri('category_index'));
+                header("Location: ".BASE_URI.Routes::getUri('category_index'));
                 
             }else{
             
@@ -150,7 +150,7 @@ class CategoryController extends AppController {
             $subcategory->setName($_POST['name']);
             $subcategory->store();
             
-            header("Location: ".BASE_URI.RoutesDb::getUri('category_index'));
+            header("Location: ".BASE_URI.Routes::getUri('category_index'));
             
         }
         
@@ -182,7 +182,7 @@ class CategoryController extends AppController {
             $category->setName($_POST['name']);
             $category->store();
             
-            header("Location: ".BASE_URI.RoutesDb::getUri('category_index'));
+            header("Location: ".BASE_URI.Routes::getUri('category_index'));
             
         }
         

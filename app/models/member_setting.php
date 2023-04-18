@@ -30,7 +30,13 @@ class MemberSetting extends DbRecordModel {
      * @return MemberSetting|NULL
      */
     public static function getByMemberId($member_id) {
-        return parent::getByPk($member_id);
+    	$settings = parent::getByPk($member_id);
+    	if(is_null($settings)){
+    		$settings = new MemberSetting();
+    		$settings->setPropValues(['member_id'=>$member_id, 'language'=>key(SUPPORTED_LANGUAGES), 'timezone'=>DEFAULT_TIMEZONE]);
+    		$settings->create();
+    	}
+    	return $settings;
     }
     
     /**
@@ -54,6 +60,15 @@ class MemberSetting extends DbRecordModel {
         }
     }
     
+    public function setLang($lang) {
+    	if(key_exists($lang, SUPPORTED_LANGUAGES)){
+    		$this->language = $lang;
+    	}
+    }
+    
+    public function setTimezone($zone) {
+    	$this->timezone = $zone;
+    }
     
     public function setPropValues($array) {
     	parent::setPropValues($array);

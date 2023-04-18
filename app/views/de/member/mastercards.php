@@ -2,9 +2,9 @@
 
 <p class="text-center">
 	<a class="btn btn-outline-dark <?php if($curr_order == 'deckname'){ echo 'active'; } ?>" 
-		href="<?php echo RoutesDb::getUri('member_mastercards'); ?>?order_by=deckname">sortiert nach Deckname</a>
+		href="<?php echo Routes::getUri('member_mastercards'); ?>?order_by=deckname">sortiert nach Deckname</a>
 	<a class="btn btn-outline-dark <?php if($curr_order == 'date'){ echo 'active'; } ?>" 
-		href="<?php echo RoutesDb::getUri('member_mastercards'); ?>?order_by=date">sortiert nach Datum</a>
+		href="<?php echo Routes::getUri('member_mastercards'); ?>?order_by=date">sortiert nach Datum</a>
 </p>
 
 <?php echo $pagination; ?>
@@ -22,7 +22,7 @@
 		<br>
     	<a class="deckname" href="<?php echo $mastercard->getDeck()->getDeckpageUrl(); ?>"><?php echo $mastercard->getDeck()->getDeckname(); ?></a>
     	<br>
-    	<small><?php echo $mastercard->getDate(); ?></small>
+    	<small><?php echo $mastercard->getDate($this->login->getUser()->getTimezone()); ?></small>
     </span>
 
 <?php } ?>

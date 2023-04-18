@@ -49,7 +49,7 @@ class UpdateController extends AppController {
         $updates = Update::getAll(['date'=>'DESC']);
         
         // set up pagination and pass values on to view
-        $pagination = new Pagination($updates, 20, $currPage, RoutesDb::getUri('update_index'));
+        $pagination = new Pagination($updates, 20, $currPage, Routes::getUri('update_index'));
         $data['updates'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         
@@ -81,7 +81,7 @@ class UpdateController extends AppController {
                 foreach($_POST['decks'] as $deck_id){
                     $update->addDeck($deck_id);
                 }
-                header("Location: ".BASE_URI.RoutesDb::getUri('deck_update'));
+                header("Location: ".BASE_URI.Routes::getUri('deck_update'));
                 
             }else{
             	$this->layout()->addSystemMessage('error','update_new_failed');
@@ -160,7 +160,7 @@ class UpdateController extends AppController {
         
         // if is not logged in redirect to sign in form
         if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin'));
+            header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
         // get current update data 
@@ -182,9 +182,9 @@ class UpdateController extends AppController {
                 
                 // set up messages for success or faliure
                 if(!is_array($update_cards)){
-                    $data['_error'][] = SystemMessages::getSystemMessageText('update_take_failed');
+                    $this->layout()->addSystemMessage('error','update_take_failed');
                 }else{
-                    $data['_success'][] = SystemMessages::getSystemMessageText('update_take_success');
+                    $this->layout()->addSystemMessage('success','update_take_success');
                     $data['show_take_button'] = false;
                 }
                 

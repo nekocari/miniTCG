@@ -9,11 +9,11 @@
 
 class MemberOnline extends DbRecordModel {
     
-    protected $member_id, $date, $ip, $member;
+    protected $member_id, $date, $utc, $ip, $member;
     protected static
         $db_table = 'members_online',
         $db_pk = 'member_id',
-        $db_fields = array('member_id','date','ip'),
+        $db_fields = array('member_id','date','utc','ip'),
         $sql_order_by_allowed_values = array('member_id','date');
         
     private static $del_timer_min = 5; // in minutes
@@ -26,9 +26,10 @@ class MemberOnline extends DbRecordModel {
         return $this->member_id;
     }
     
-    public function getDate($relative=false,$lang='de',$timezone=DEFAULT_TIMEZONE){
-    	$date_obj = new MyDateTime($this->date,'date',$timezone);
-    	return $date_obj->getDate($relative,$lang);
+    public function getDate($timezone=DEFAULT_TIMEZONE){
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+    	return $date->format(Setting::getByName('date_format')->getValue());
     }
     
     public function getMember(){

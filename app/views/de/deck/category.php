@@ -14,7 +14,7 @@
         		<td><?php echo $deck->getId(); ?></td>
         		<td><a class="deckname" href="<?php echo $deck->getDeckpageUrl(); ?>"><?php echo $deck->getDeckname(); ?></a><br>
         			<small><?php echo $deck->getName(); ?></small></td>
-        		<td><?php echo $deck->getDate(); ?><br>
+        		<td><?php echo $deck->getDate($this->login->getUser()->getTimezone()); ?><br>
         			<small>von <?php echo $deck->getCreatorName(); ?></small></td>
         	</tr>
         	<?php } ?>

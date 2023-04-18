@@ -9,14 +9,14 @@
 
 class Message extends DbRecordModel {
     
-    protected $id, $date, $sender_id, $recipient_id, $text, $status, $deleted;
+    protected $id, $date, $utc, $sender_id, $recipient_id, $text, $status, $deleted;
     
     private $sender_obj, $recipient_obj;
     
     protected static
         $db_table = 'messages',
         $db_pk = 'id',
-        $db_fields = array('id','date','sender_id','recipient_id','text','status','deleted'),
+        $db_fields = array('id','date','utc','sender_id','recipient_id','text','status','deleted'),
         $sql_order_by_allowed_values = array('id','date','status','sender','recipient');
         
         private static $accepted_status_values = array('new','all');
@@ -114,15 +114,13 @@ class Message extends DbRecordModel {
     
     /**
      * sets a delete flag or deletes if msg was already flagged by the other party
-     * @see DbRecordModel::delete()
+     * 
      * @return boolean
      */
-    public function delete(){
-    	// TODO: check for login somewhere else before deleting message?
+    public function deleteForUser($login){
     	
-    	//if($login->isLoggedIn()){
-    	if(false){
-            $user_id = $this->login()->getUserId();
+    	if($login->isLoggedIn()){
+            $user_id = $login->getUserId();
             $user_type = NULL;
             if($this->recipient_id == $user_id){
                 $user_type = 'recipient';
@@ -160,7 +158,8 @@ class Message extends DbRecordModel {
     }
     
     public function getDate($timezone = DEFAULT_TIMEZONE) {
-    	$date = new DateTime($this->date,new DateTimeZone($timezone));
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
     	return $date->format(Setting::getByName('date_format')->getValue().' - H:i');
     }
     

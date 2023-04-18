@@ -195,7 +195,7 @@ class Login {
             $app_mail = Setting::getByName('app_mail')->getValue();
             $base_uri = BASE_URI;
             if(substr($base_uri, strlen($base_uri)-1) != '/'){ $base_uri.= '/'; }
-            $activation_url = $base_uri.RoutesDb::getUri('login_activation').'?user='.$member_id.'&code='.$member_code->getCode();
+            $activation_url = $base_uri.Routes::getUri('login_activation').'?user='.$member_id.'&code='.$member_code->getCode();
             // set recipient
             $recipient  = $mail;
             // title

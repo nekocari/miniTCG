@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('news_index');?>">News</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('news_index');?>">News</a></li>
     <li class="breadcrumb-item active" aria-current="page">Verbundenes Update</li>
   </ol>
 </nav>
@@ -17,7 +17,7 @@
     		<span class="badge badge-<?php if($linked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
     			<?php echo $linked_update->getStatus(); ?>
     		</span>
-    		<?php echo $linked_update->getDate(); ?>
+    		<?php echo $linked_update->getDate($this->login->getUser()->getTimezone()); ?>
     	</div>
     	<div class="table-responsive">
     		<div class="card-body p-2" style="white-space: nowrap">
@@ -41,7 +41,7 @@
     		<span class="badge badge-<?php if($unlinked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
     			<?php echo $unlinked_update->getStatus(); ?>
     		</span>
-    		<?php echo $unlinked_update->getDate(); ?>
+    		<?php echo $unlinked_update->getDate($this->login->getUser()->getTimezone()); ?>
     	</div>
     	<div class="table-responsive">
     		<div class="card-body p-2" style="white-space: nowrap">
@@ -57,7 +57,7 @@
 <?php } } ?>
 
 <p class="text-center mx-2">
-	<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('news_index');?>">zurück zur Liste</a>
+	<a class="btn btn-dark" href="<?php echo Routes::getUri('news_index');?>">zurück zur Liste</a>
 </p>
 
 

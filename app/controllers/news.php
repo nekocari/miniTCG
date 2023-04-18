@@ -32,7 +32,7 @@ class NewsController extends AppController {
         
         $news = News::getAll(['date'=>'DESC']);
         
-        $pagination = new Pagination($news, 10, $currPage, RoutesDb::getUri('news_index'));
+        $pagination = new Pagination($news, 10, $currPage, Routes::getUri('news_index'));
         
         $data = array();
         $data['news'] = $pagination->getElements();
@@ -61,7 +61,7 @@ class NewsController extends AppController {
             
             if(News::add($this->login()->getUser(),$_POST['title'],$_POST['text']) instanceof News){
                 
-                header("Location: ".BASE_URI.RoutesDb::getUri('news_index'));
+                header("Location: ".BASE_URI.Routes::getUri('news_index'));
                 
             }else{
                 $this->layout()->addSystemMessage('error','news_insert_failed');
@@ -89,7 +89,7 @@ class NewsController extends AppController {
             if($curr_news instanceof News){
                 $curr_news->setPropValues(['title'=>$_POST['title'],'text'=>$_POST['text']]);
                 if($curr_news->update()){
-                    header("Location: ".BASE_URI.RoutesDb::getUri('news_index'));
+                    header("Location: ".BASE_URI.Routes::getUri('news_index'));
                 }else{
                 	$this->layout()->addSystemMessage('error','news_update_failed',[],' - database not updated');
                 }
@@ -107,7 +107,7 @@ class NewsController extends AppController {
     }
     
     
-    public function linkedUpdate(){
+    public function linkUpdate(){
        
     	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
     	$this->auth()->setRequirements('rights', ['ManageNews']);

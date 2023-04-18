@@ -141,10 +141,10 @@ class Login {
      * @param string $url_name 
      * @return boolean
      */
-    public function userExists($name, $mail, $url_name){
+    public function userExists($name, $mail){
         $db = Db::getInstance();
-        $req = $db->prepare('SELECT id FROM members WHERE name LIKE :name OR url_name LIKE :url_name OR mail LIKE :mail');
-        $req->execute(array(':name'=>$name, ':url_name'=>$url_name, ':mail'=>$mail));
+        $req = $db->prepare('SELECT id FROM members WHERE name LIKE :name OR mail LIKE :mail');
+        $req->execute(array(':name'=>$name, ':mail'=>$mail));
         if($req->rowCount() == 0){
             return false;
         }else{
@@ -164,15 +164,13 @@ class Login {
      * 
      * @return boolean|Member
      */
-    public function createUser($name, $mail, $pw1, $pw2, $lang) {
+    public function createUser($name, $mail, $pw1, $pw2, $lang = 'de') {
         
         // TODO: Create new User
         
     	// 1. user exists?
-    	// create url_name
-    	$url_name = (new TextProcessing($name))->formatAsUrl();
-    	if($this->userExists($name, $mail, $url_name)){
-    		throw new ErrorException('Member NAME, URL_NAME or MAIL already taken',1011);
+    	if($this->userExists($name, $mail)){
+    		throw new ErrorException('Member NAME, or MAIL already taken',1011);
     		return false;
     	}
     	
@@ -190,32 +188,33 @@ class Login {
     	
         // 3. add member entry
         $member = new Member();
-        $member->setPropValues(['name'=>$name,'url_name'=>$url_name,'mail'=>$mail]);        
+        $member->setPropValues(['name'=>$name,'mail'=>$mail]);        
         $member->create();
         // set password (can't be done using default create or update...)
         $member->setPassword($pw1,$pw2);        
         // set language
-        $member->setLanguage($lang);
+        $member->getSettings()->setLang($lang);
+        $member->getSettings()->update();
         
         // 4. create activation code and store in db
-        // TODO: model class for activation codes
         $activation_code = new MemberActivationCode();
         $activation_code->setPropValues(['member_id'=>$member->getId(),'code'=>$this->getRandomActivationCode()]);
         if(is_null($activation_code->create())){
         	throw new ErrorException('unable create activation code entry! Please contact an administratior.',1014);
         }
+        $activation_url = Routes::getUri('login_activation').'?code='.$activation_code->getCode().'&user='.$member->getId();
         
     	// 5. send mail with code
-    	$subject = 'Trading Base TCG';
+    	$subject = Setting::getByName('app_name')->getValue();
         $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_welcome.php');
-        $message_search = ['[USERNAME]','[PASSWORD]','[ACTIVATIONCODE]'];
-        $message_replace = [$name,$pw1,$activation_code->getCode()];
+        $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}'];
+        $message_replace = [$name,$pw1,$activation_url];
         $message = str_replace($message_search, $message_replace, $message);
         
         // mail header
         $header[] = 'MIME-Version: 1.0';
         $header[] = 'Content-type: text/html; charset=UTF-8';
-        $header[] = 'From: Trading Base TCG <no-reply@heavenspell.de>';
+        $header[] = 'From: '.Setting::getByName('app_name')->getValue().' <'.Setting::getByName('app_mail')->getValue().'>';
         
         // send mail
         error_reporting(0);
@@ -241,14 +240,16 @@ class Login {
 	    		$activation_code->delete();
 	    		// update user status
 	    		$member = Member::getById($member_id);
-	    		$member->setStatus('member');
+	    		$member->setStatus('default');
 	    		$member->update();
 	    		// give starter cards
-	    		$cards = Card::RandomCards(Setting::getByName('starter_cards')->getValue());
+	    		$cards = Card::createRandomCards($member, intval(Setting::getByName('cards_startdeck_num')->getValue()));
+	    		$cardnames = '';
 	    		foreach($cards as $card){
-	    			$card->setOwner($member_id);
-	    			$card->create();
+	    			$cardnames.= $card->getName().' (#'.$card->getId().'), ';
 	    		}
+	    		$cardnames = substr($cardnames,0,-2);
+	    		Tradelog::addEntry($member, 'starter_cards_log_text', $cardnames);
 	    		return true;
     		}
     	}

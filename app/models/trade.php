@@ -9,13 +9,13 @@
 
 class Trade extends DbRecordModel {
     
-    protected $id, $date, $offerer_id, $offered_card, $recipient_id, $requested_card, $text, $status;
+    protected $id, $date, $utc, $offerer_id, $offered_card, $recipient_id, $requested_card, $text, $status;
     private $offerer_obj, $recipient_obj, $offered_card_obj, $requested_card_obj;
     
     protected static
         $db_table = 'trades',
         $db_pk = 'id',
-        $db_fields = array('id','date','offerer_id','offered_card','recipient_id','requested_card','text','status'),
+        $db_fields = array('id','date','utc','offerer_id','offered_card','recipient_id','requested_card','text','status'),
         $sql_order_by_allowed_values = array('id','status','date','offerer_id','recipient_id');
     
     private static $query_status_options = array('new','accepted','declined');
@@ -131,9 +131,9 @@ class Trade extends DbRecordModel {
         return false;
     }
     
-    public function answer($status, $msg = '') {
+    public function answer($login,$status, $msg = '') {
         
-        if(in_array($status, self::$query_status_options) AND $this->recipient == $_SESSION['user']->id){
+        if(in_array($status, self::$query_status_options) AND $this->recipient == $login->getUser()->getId()){
             
             $this->setPropValues(['status'=>$status]);
             
@@ -211,12 +211,12 @@ class Trade extends DbRecordModel {
                         // create Tradelog entry for offerer
                         $text = 'Du hast '.strtoupper($this->getOfferedCard()->getName()).' gegen '.strtoupper($this->getRequestedCard()->getName()).
                             ' von '.$this->getRecipient()->getName().' getauscht.';
-                        Tradelog::addEntry($this->getOfferer()->getId(), $text);
+                        Tradelog::addEntry($this->getOfferer(), $text);
                         
                         // create Tradelog entry for recipient
                         $text = 'Du hast '.strtoupper($this->getRequestedCard()->getName()).' gegen '.strtoupper($this->getOfferedCard()->getName()).
                             ' von '.$this->getOfferer()->getName().' getauscht.';
-                        Tradelog::addEntry($this->getRecipient()->getId(), $text);
+                        Tradelog::addEntry($this->getRecipient(), $text);
                         
                         
                         $this->db->commit();
@@ -246,8 +246,10 @@ class Trade extends DbRecordModel {
     public function getId() {
         return $this->id;
     }
-    public function getDate() {
-        return date(Setting::getByName('date_format')->getValue(),strtotime($this->date));
+    public function getDate($timezone = DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+        return $date->format(Setting::getByName('date_format')->getValue().' H:i');
     }
     public function getOfferer() {
         if(!$this->offerer_obj instanceof Member){

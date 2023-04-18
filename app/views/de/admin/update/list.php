@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard'); ?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard'); ?>">Verwaltung</a></li>
     <li class="breadcrumb-item active" aria-current="page">Updates</li>
   </ol>
 </nav>
@@ -9,7 +9,7 @@
 <h1>Deck Updates</h1>
 
 <p class="text-center">
-	<a class="btn btn-primary" href="<?php echo RoutesDb::getUri('deck_update_add'); ?>">neues Update anlegen</a>
+	<a class="btn btn-primary" href="<?php echo Routes::getUri('deck_update_add'); ?>">neues Update anlegen</a>
 </p>
 
 <div class="table-responsive">
@@ -30,14 +30,14 @@
     				<?php echo ucfirst($update->getStatus()); ?></span>
     			</td>
     			<td><?php echo $update->getDeckCount(); ?></td>
-    			<td><?php echo $update->getDate(); ?></td>
+    			<td><?php echo $update->getDate($this->login->getUser()->getTimezone()); ?></td>
     			<td class="text-right">
     				<?php if($update->getStatus() == 'new'){ ?>
-    				<a class="btn btn-success btn-sm" href="<?php echo RoutesDb::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=publish">
+    				<a class="btn btn-success btn-sm" href="<?php echo Routes::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=publish">
     				<i class="fas fa-unlock"></i> <span class="d-none d-md-inline">freischalten</span></a>
-    				<a class="btn btn-danger btn-sm" href="<?php echo RoutesDb::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=delete">
+    				<a class="btn btn-danger btn-sm" href="<?php echo Routes::getUri('deck_update'); ?>?id=<?php echo $update->getId(); ?>&action=delete">
     				<i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span></a>
-    				<a class="btn btn-primary btn-sm" href="<?php echo RoutesDb::getUri('deck_update_edit'); ?>?id=<?php echo $update->getId(); ?>">
+    				<a class="btn btn-primary btn-sm" href="<?php echo Routes::getUri('deck_update_edit'); ?>?id=<?php echo $update->getId(); ?>">
     				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
     				<?php } ?>
     			</td>

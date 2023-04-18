@@ -60,7 +60,7 @@ class AppController {
      * redirects to 404 page
      */
     protected function redirectNotFound(){
-        header('Location: '.BASE_URI.RoutesDb::getUri('not_found'));
+        header('Location: '.BASE_URI.Routes::getUri('not_found'));
     }
     
     /** 
@@ -68,7 +68,7 @@ class AppController {
      */
     protected function redirectNotLoggedIn(){
         if(!$this->login->isloggedIn()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('signin').'?rd=true');
+            header("Location: ".BASE_URI.Routes::getUri('signin').'?rd=true');
         }
     }
     
@@ -77,7 +77,7 @@ class AppController {
      */
     protected function redirectNotAuthorized(){
         if(!$this->auth()->isAuthorized()){
-            header("Location: ".BASE_URI.RoutesDb::getUri('access_denied_authorization'));
+            header("Location: ".BASE_URI.Routes::getUri('access_denied_authorization'));
         }
     }
     

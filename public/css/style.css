@@ -28,6 +28,11 @@
 	font-size: 0.8rem;
 }
 
+#member-nav {
+	background-color: var(--light);
+	background-color: color-mix(in srgb, var(--light) 98%, black);
+}
+
 body{
 	font-family: Roboto;
 }
@@ -120,6 +125,15 @@ body{
 .border-tr-rounded{ border-top-right-radius: var(--def-border-radius);  }
 .border-br-rounded{ border-bottom-right-radius: var(--def-border-radius);  } 
 
+.text-deg80 {
+    transform: rotate(-80deg);
+    -moz-transform: rotate(-80deg);
+    -webkit-transform: rotate(-80deg);
+    -o-transform: rotate(-80deg);
+    -ms-transform: rotate(-80deg);
+    display: inline-block;
+    position: relative;
+    width: 40px;
 
 @media (min-width: 992px) { 
 	

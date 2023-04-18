@@ -7,8 +7,8 @@
 ?>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_dashboard');?>">Verwaltung</a></li>
-    <li class="breadcrumb-item"><a href="<?php echo RoutesDb::getUri('admin_deck_index');?>">Karten</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
+    <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_deck_index');?>">Karten</a></li>
     <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
   </ol>
 </nav>
@@ -35,7 +35,7 @@
     	<tr>
     		<td>Typ</td>
     		<td>
-    			<select class="form-control" name="type">
+    			<select class="form-control" name="type_id">
     				<?php 
     				foreach(DeckType::getAll() as $type){
     				    echo '<option value="'.$type->getId().'"';
@@ -85,21 +85,20 @@
                 		zur Formatierung nutzen!</small>
 			</td>
     	</tr>
-    	<tr>
-    		<td>Karten</td>
-    		<td>
-    			<?php // foreach($card_images as $key => $image){ if($key == 'master'){ echo "<br>"; } echo $image;  } ?>
-    			<?php echo $deckdata->getDeckView().'<br>'.$deckdata->getMasterCard(); ?>
-        		<div class="text-right">
-        			<a href="<?php echo RoutesDb::getUri('card_replace_image');?>?deck_id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
-        		</div>
-    		</td>
-    	</tr>
 	</tbody>
 </table>
 
-<p class="text-center mx-2">
-	<a class="btn btn-dark" href="<?php echo RoutesDb::getUri('admin_deck_index');?>">zurück zur Liste</a> &bull;
+<h2>Karten</h2>
+<div class="text-center table-responsive text-nowrap">
+<?php echo $deckdata->getDeckView().'<br>'.$deckdata->getMasterCard(); ?>
+</div>
+<div class="text-right">
+	<a href="<?php echo Routes::getUri('card_replace_image');?>?deck_id=<?php echo $deckdata->getId(); ?>" class="btn btn-dark btn-sm">eine Karte ersetzen</a>
+</div>
+    	
+
+<p class="text-center m-2">
+	<a class="btn btn-dark" href="<?php echo Routes::getUri('admin_deck_index');?>">zurück zur Liste</a> &bull;
 	<input class="btn btn-primary" type="submit" name="updateDeckdata" value="speichern">
 	<input type="hidden" name="id" value="<?php echo $deckdata->getId(); ?>">
 </p>
