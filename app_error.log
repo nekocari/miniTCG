@@ -1,1 +1,2 @@
-Eine der Karten steht leider nicht mehr zur Verfüngung.
+SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`minitcg`.`trades`, CONSTRAINT `trades_ibfk_4` FOREIGN KEY (`recipient_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
+card_no_longer_available

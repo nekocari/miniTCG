@@ -1,5 +1,6 @@
-<?php if(isset($cat_elements) AND count($cat_elements) ){  ?>
 <div class="my-4">
+
+<?php if(isset($cat_elements) AND count($cat_elements) ){  ?>
     <div class="alert alert-info" role="alert">
     	Klicke auf eine Karte um <?php echo $member->getName(); ?> ein Tauschangebot zu machen!
     </div>
@@ -14,9 +15,8 @@
     		<?php } ?>
     </div>
 	<?php } ?>
-</div>
-
 <?php }else { $this->renderMessage('info','Keine Karten in dieser Kategorie'); } ?>
+</div>
 
 <div class="text-center my-2">
 	<small>

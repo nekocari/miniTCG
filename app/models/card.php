@@ -142,6 +142,32 @@ class Card extends DbRecordModel {
     	return $cards;
     }
     
+    /**
+     * 
+     * @param int $member_id
+     * @return Card[]
+     */
+    public static function getMemberCardsTradeable($member_id) {
+    	$tradeable_status_arr = CardStatus::getTradeable();
+    	$tradeable_status_id_str = '';
+    	foreach($tradeable_status_arr as $status){
+    		$tradeable_status_id_str.= $status->getId().',';
+    	}
+    	$tradeable_status_id_str = substr($tradeable_status_id_str,0,-1);
+    	$cards_db = self::getWhere('owner = '.$member_id.' AND status_id IN('.$tradeable_status_id_str.')',['name'=>'ASC']);
+    	$cards = array();
+    	foreach($cards_db as $card){
+    		if($card->isTradeable()){
+    			if(!key_exists($card->getName(), $cards)){
+    				$cards[$card->getName()] = $card;
+    			}else{
+    				$cards[$card->getName()]->possession_counter++;
+    			}
+    		}
+    	}
+    	return $cards;
+    }
+    
     /*
      * @deprecated user update() instead
      */

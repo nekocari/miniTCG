@@ -25,8 +25,8 @@
                 <?php foreach($cards as $card){ ?>
                 <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
                 	<?php echo $card->getName().' ('.$card->getPossessionCounter().')'; ?>
-                	<?php if($card->missingInKeep()){ echo ' [KEEP]'; } ?>
-                	<?php if($card->missingInCollect()){ echo ' [COLLECT]'; } ?>
+                	<?php if($card->missingInKeep() AND !$card->owned()){ echo ' [KEEP]'; } ?>
+                	<?php if($card->missingInCollect() AND !$card->owned()){ echo ' [COLLECT]'; } ?>
                 	<?php if($card->mastered()){ echo ' [masterd]'; } ?>
                 </option>
                 <?php } ?>

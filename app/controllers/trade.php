@@ -25,10 +25,10 @@ class TradeController extends AppController {
             $trade = Trade::getById($_POST['id']);
             
             // try db update an set messages in case of success or failure
-            if(($return = $trade->decline($_POST['text'])) === true){
+            if($trade->decline($_POST['text'])){
             	$this->layout()->addSystemMessage('success','trade_decline_success');
             }else{
-                $this->layout()->addSystemMessage('error','trade_decline_failed').' - '.SystemMessages::getSystemMessageText($return);
+                $this->layout()->addSystemMessage('error','trade_decline_failed');
             }
         }
         
@@ -38,11 +38,10 @@ class TradeController extends AppController {
             $trade = Trade::getById($_POST['id']);
             
             // try db update an set messages in case of success or failure
-            if(($return = $trade->accept($_POST['text'])) === true){
-                $this->layout()->addSystemMessage('success','trade_accept_success').' - '.SystemMessages::getSystemMessageText('trade_card_new_info').
-                                      strtoupper($trade->getOfferedCard()->getName());
+            if($trade->accept($_POST['text'])){
+                $this->layout()->addSystemMessage('success','trade_accept_success');
             }else{
-                $this->layout()->addSystemMessage('error','trade_accept_failed').' - '.SystemMessages::getSystemMessageText($return);
+                $this->layout()->addSystemMessage('error','trade_accept_failed');
             }
         }
         
@@ -105,12 +104,14 @@ class TradeController extends AppController {
                 
                 // try to add the new trade offer to the database and create messages for case of success and failure
                 try{
-                    TRADE::add($_POST['recipient'],$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text']);
+                    Trade::add($_POST['recipient'],$this->login()->getUserId(),$_POST['requested_card_id'],$_POST['offered_card_id'],$_POST['text']);
                     $this->layout()->addSystemMessage('success','trade_new_success');
                 }
+                catch (ErrorException $e){
+                	error_log($e->getMessage().PHP_EOL, 3, ERROR_LOG);
+                }
                 catch (Exception $e){
-                    $this->layout()->addSystemMessage('error','trade_new_failed');
-                    error_log($e->getMessage().'\n', 3, ERROR_LOG);
+                	$this->layout()->addSystemMessage('error','trade_new_failed');
                 }
                 
                 $this->layout()->render('trade/add_result.php',$data);
@@ -120,9 +121,10 @@ class TradeController extends AppController {
                 
                 // check if trade user is not logged in user
                 if($data['requested_card']->getOwner()->getId() != $this->login()->getUser()->getId()){
-                    $data['searchcardurl'] = Card::getSearchcardHtml();
+                    $data['searchcardurl'] = Card::getSearchcardHtml(); // TODO: filler for trade page?
                     // get all tradeable cards from logged in user 
-                    $data['cards'] = CardFlagged::getCardsByStatus($this->login()->getUser()->getId(),'trade',true,$data['requested_card']->getOwner()->getId());
+                    $data['cards'] = $this->login()->getUser()->getTradeableCards($data['requested_card']->getOwner()->getId());
+                    //die(var_dump($data['cards']));
                     $this->layout()->render('trade/add.php',$data);
                     
                 }else{

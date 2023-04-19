@@ -30,7 +30,7 @@ class MemberController extends AppController {
         // get user or redirect to error page
         $member = Member::getById(intval($_GET['id']));
         if(!$member instanceof Member){ $this->redirectNotFound(); }
-        $cat_elements = $collections = NULL;
+        $cat_elements = $collections = [];
         
         
         // check category for partial

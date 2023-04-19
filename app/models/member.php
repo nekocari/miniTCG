@@ -13,7 +13,7 @@ class Member extends DbRecordModel {
         $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
-        $password, $cards, $masterd_decks, $rights, $profil_cards, $settings;
+        $password, $cards, $masterd_decks, $rights, $profil_cards, $tradeable_cards, $settings;
     
         
     protected static
@@ -164,10 +164,28 @@ class Member extends DbRecordModel {
      * @return CardFlagged[]
      */
     public function getProfilCardsByStatus($status_id, $only_tradeable = true){
-        if(!isset($this->profil_cards[$status_id])){
-        	$this->profil_cards[$status_id] = CardFlagged::getMemberCardsByStatus($this->getId(), $status_id, true);
-        }
-        return $this->profil_cards[$status_id];
+    	if(!isset($this->profil_cards[$status_id])){
+    		$this->profil_cards[$status_id] = CardFlagged::getMemberCardsByStatus($this->getId(), $status_id, true);
+    	}
+    	return $this->profil_cards[$status_id];
+    }
+    
+    /**
+     * retuns an array of flaggable cards
+     * @param int $status_id
+     * @param boolean $only_tradeable
+     * @return CardFlagged[]
+     */
+    public function getTradeableCards($flag_for_member_id = NULL){
+    	if(!is_null($flag_for_member_id) AND (!is_array($this->tradeable_cards) OR !$this->tradeable_cards[0] instanceof CardFlagged)){
+    		$this->tradeable_cards = null;
+    		foreach(CardFlagged::getMemberCardsTradeable($this->getId()) as $card){
+	    		$this->tradeable_cards[] = $card->flag($flag_for_member_id);
+    		}
+    	}elseif(is_null($flag_for_member_id) AND (!is_array($this->tradeable_cards) OR !$this->tradeable_cards[0] instanceof Card)){
+    		$this->tradeable_cards = Card::getMemberCardsTradeable($this->getId());
+    	}
+    	return $this->tradeable_cards;
     }
     
     /**

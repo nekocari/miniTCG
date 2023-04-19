@@ -49,10 +49,10 @@ class Trade extends DbRecordModel {
             
             switch ($type){
                 case 'recieved':
-                    return parent::getWhere('recipient_id = '.intval($member_id).' AND status = \''.$status.'\'', [$order_by=>$order]);
+                	return parent::getWhere(['recipient_id'=>$member_id,'status'=>$status],[$order_by=>$order]);
                     break;
                 case 'sent':
-                    return parent::getWhere('offerer_id = '.intval($member_id).' AND status = \''.$status.'\'', [$order_by=>$order]);
+                	return parent::getWhere(['offerer_id'=>$member_id,'status'=>$status],[$order_by=>$order]);
                     break;
             }
             
@@ -66,28 +66,24 @@ class Trade extends DbRecordModel {
      * get all trades recieved by a member using the member ID
      *
      * @param int $member_id - id of member
-     * @param string $order_by - colum to order by [id|date|status|offerer|recipient]
-     * @param string $order - [ASC|DESC]
      *
      * @return boolean|Array(Trade)
      */
-    public static function getRecievedByMemberId($member_id, $status='new', $order_by = 'date', $order = 'ASC') {
+    public static function getRecievedByMemberId($member_id, $status='new') {
         
-        return self::getTradesByMemberId($member_id, 'recieved');
+        return self::getTradesByMemberId($member_id, 'recieved', $status);
     }
     
     /**
      * get all trades sent by a member using the member ID
      *
      * @param int $member_id - id of member
-     * @param string $order_by - colum to order by [id|date|status|offerer|recipient]
-     * @param string $order - [ASC|DESC]
      *
      * @return boolean|Array(Trade)
      */
-    public static function getSentByMemberId($member_id, $status='new', $order_by = 'date', $order = 'ASC') {
+    public static function getSentByMemberId($member_id, $status='new') {
         
-        return self::getTradesByMemberId($member_id, 'sent');
+        return self::getTradesByMemberId($member_id, 'sent', $status);
     }
     
     
@@ -95,7 +91,7 @@ class Trade extends DbRecordModel {
         return $this->delete();
     }
     
-    public static function add($recipient, $requested_card_id, $offered_card_id, $text) {
+    public static function add($recipient, $offerer, $requested_card_id, $offered_card_id, $text) {
         
         
         $offered_card = Card::getById($offered_card_id);
@@ -104,28 +100,26 @@ class Trade extends DbRecordModel {
         
         if(!is_null($offered_card) AND $offered_card->isTradeable() AND 
             !is_null($requested_card) AND $requested_card->isTradeable() AND 
-            $offered_card->getOwner()->getId() == $_SESSION['user']->id AND 
+            $offered_card->getOwner()->getId() == $offerer AND 
             $requested_card->getOwner()->getID() == $recipient){
             
             $prop_values = array(
-                'recipient'     =>$recipient,
+                'recipient_id'     =>$recipient,
                 'requested_card'=>$requested_card_id,
                 'offered_card'   =>$offered_card_id,
-                'offerer'       =>$_SESSION['user']->id,
+                'offerer_id'       =>$offerer,
                 'text'          =>$text
             );
                 
             $trade = new Trade();
             $trade->setPropValues($prop_values);
             //die(var_dump($trade));
-            $trade_id = $trade->create();
-            
-            if($trade_id !== false){
+            if($trade->create()){
                 return true;
             }
             
         }else{
-            throw new Exception('Eine der Karten steht leider nicht mehr zur Verfüngung.');
+            throw new Exception('card_no_longer_available');
         }
         
         return false;
@@ -253,7 +247,7 @@ class Trade extends DbRecordModel {
     }
     public function getOfferer() {
         if(!$this->offerer_obj instanceof Member){
-            $this->offerer_obj = Member::getById($this->offerer);
+            $this->offerer_obj = Member::getById($this->offerer_id);
         }
         return $this->offerer_obj;
     }
@@ -261,13 +255,13 @@ class Trade extends DbRecordModel {
         if(!$this->offered_card_obj instanceof CardFlagged){
             $card = new CardFlagged();
             $card->setPropValues(['id'=>$this->offered_card]);
-            $this->offered_card_obj = $card->flag($this->recipient);
+            $this->offered_card_obj = $card->flag($this->recipient_id);
         }
         return $this->offered_card_obj;
     }
     public function getRecipient() {
         if(!$this->recipient_obj instanceof Member){
-            $this->recipient_obj = Member::getById($this->recipient);
+            $this->recipient_obj = Member::getById($this->recipient_id);
         }
         return $this->recipient_obj;
     }
@@ -275,7 +269,7 @@ class Trade extends DbRecordModel {
         if(!$this->requested_card_obj instanceof CardFlagged){
             $card = new CardFlagged();
             $card->setPropValues(['id'=>$this->requested_card]);
-            $this->requested_card_obj = $card->flag($this->offerer);;
+            $this->requested_card_obj = $card->flag($this->offerer_id);
         }
         return $this->requested_card_obj;
     }
