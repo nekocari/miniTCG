@@ -57,10 +57,17 @@ class AppController {
     }
     
     /**
+     * redirects 
+     */
+    protected function redirect($route_identifier){
+    	header('Location: '.BASE_URI.Routes::getUri($route_identifier));
+    }
+    
+    /**
      * redirects to 404 page
      */
     protected function redirectNotFound(){
-        header('Location: '.BASE_URI.Routes::getUri('not_found'));
+    	header('Location: '.BASE_URI.Routes::getUri('not_found'));
     }
     
     /** 

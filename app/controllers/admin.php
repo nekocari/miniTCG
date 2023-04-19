@@ -184,6 +184,7 @@ class AdminController extends AppController {
 		    				$card_status->setPosition(intval($_POST['position'][$card_status->getId()]));
 		    			}
 		    			$card_status->update();
+		    			$card_status_arr = CardStatus::getAll(['position'=>'ASC']);
 	    			}
 	    		}
     			$this->layout()->addSystemMessage('success','changes_saved');
@@ -196,11 +197,51 @@ class AdminController extends AppController {
     	$this->layout()->render('admin/card_status/index.php',['categories'=>$card_status_arr]);
     	
     }
+    
+    
     public function addCardStatus() {
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
+    	if(isset($_POST['name'])){
+    		$card_status = new CardStatus();
+    		$card_status->setName($_POST['name']);
+    		if($card_status->create()){
+    			$this->redirect('admin_card_status_index');
+    		}else{
+    			$this->layout()->addSystemMessage('error', 'unknown_error');
+    		}
+    	}	    	
     	$this->layout()->render('admin/card_status/add.php');
+    }
+    
+    
+    public function deleteCardStatus() {
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->redirectNotAuthorized();
+    	
+    	if(isset($_GET['id']) AND ($card_status = CardStatus::getById($_GET['id'])) instanceof CardStatus){
+    		try {
+    			$card_status->delete();
+    			$this->redirect('admin_card_status_index');
+    		}
+    		catch (PDOException $e){
+    			switch($e->getCode()){
+    				case 23000:
+    					$this->layout()->addSystemMessage('error', 'unknown_error',[],'karten existieren in dieser kategorie');
+    					break;
+    				default: 
+    					throw new ErrorException('unknown_error');
+    					break;
+    			}
+    		}
+    		catch (ErrorException $e) {
+    			$this->layout()->addSystemMessage('error', 'unknown_error',[],$e->getMessage());
+    		}	
+    	}else{
+    		$this->redirectNotFound();
+    	}
+    	$this->layout()->render('admin/error.php');
     }
     
     

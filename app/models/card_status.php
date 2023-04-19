@@ -161,5 +161,19 @@ class CardStatus extends DbRecordModel {
     	$this->public = ''.intval(boolval($this->public));
     	return parent::update();
     }
+     /**
+      * 
+      * {@inheritDoc}
+      * @see DbRecordModel::delete()
+      */
+    public function delete() {
+    	if($this->isCollections()){
+    		throw new ErrorException('status_is_collect');
+    	}elseif($this->isNew()){
+    		throw new ErrorException('status_is_new');
+    	}else{
+    		return parent::delete();
+    	}
+    }
     
 }
