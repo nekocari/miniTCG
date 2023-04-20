@@ -36,7 +36,7 @@ class MessageController extends AppController {
                         $this->layout()->addSystemMessage('success','pm_send_success');
                     }else{
                         // log error
-                        error_log('Message::add() returned wrong type:'.gettype($message).'\n', 3, ERROR_LOG);
+                        error_log('Message::add() returned wrong type:'.gettype($message).PHP_EOL, 3, ERROR_LOG);
                         // error message text
                         $this->layout()->addSystemMessage('error','unexpected_error');
                     }

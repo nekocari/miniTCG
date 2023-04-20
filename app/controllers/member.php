@@ -11,8 +11,9 @@ class MemberController extends AppController {
      * get the memberlist
      */
     public function memberlist() {
-        
-        $data['members'] = Member::getGrouped('level','name','ASC');
+    	
+    	$data['members'] = Member::getGrouped('level','name','ASC');
+    	$data['members'] = Member::getGrouped('level',['name'=>'ASC']);
         $data['level'] = Level::getAll();
         
         $this->layout()->render('member/list.php',$data);
@@ -100,15 +101,11 @@ class MemberController extends AppController {
     	$this->redirectNotLoggedIn();        
         
         // Vars needed
-        $curr_page = 1;
         $order = 'ASC';
         $order_by = 'deckname';
         $grouped = true;
         
         // process post vars if exist
-        if(isset($_GET['pg']) AND intval($_GET['pg']) > 0){
-            $curr_page = intval($_GET['pg']);
-        }
         if(isset($_GET['order_by'])){
             $order_by = $_GET['order_by'];
         }
@@ -120,10 +117,11 @@ class MemberController extends AppController {
         }
         
         // get masterd sets from database
-        $masters = Master::getMasterdByMember($_SESSION['user']->id,$grouped,[$order_by=>$order]);
+        $masters = Master::getMasterdByMember($this->login()->getUserId(),$grouped,[$order_by=>$order]);
         
         // pagination
-        $pagination = new Pagination($masters, 20, $curr_page, Routes::getUri('member_mastercards').'?order_by='.$order_by);
+        $pagination = new Pagination($masters, 20, Routes::getUri('member_mastercards').'?order_by='.$order_by);
+        $pagination->checkForCurrPage();
         
         // set vars accessable in view
         $data['mastered_decks'] = $pagination->getElements();

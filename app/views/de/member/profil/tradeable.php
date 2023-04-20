@@ -5,8 +5,11 @@
     	Klicke auf eine Karte um <?php echo $member->getName(); ?> ein Tauschangebot zu machen!
     </div>
     <?php foreach($cat_elements as $card){ ?>
-        <div class="d-inline-block card-member-profil <?php if($card->missingInKeep()){ echo " card-missing-keep"; } 
-        if($card->missingInCollect()){ echo " card-missing-collect"; } if($card->mastered()){ echo " card-mastered"; } ?>">
+        <div class="d-inline-block card-member-profil <?php 
+        if($card->missingInKeep() AND !$card->owned()){ echo " card-missing-keep"; } 
+        if($card->missingInCollect() AND !$card->owned()){ echo " card-missing-collect"; } 
+        if($card->mastered()){ echo " card-mastered"; } 
+        ?>">
         	<a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>">
             	<?php echo $card->getImageHtml(); ?>
         	</a>

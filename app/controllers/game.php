@@ -116,7 +116,7 @@ class GameController extends AppController {
                 $card = Card::getById($_POST['card']);
                 if($card instanceof Card AND $this->login()->getUser()->getId() == $card->getOwnerId()){
                     $card->delete();
-                    Tradelog::addEntry($this->login()->getUser(), '[GAME] '.$game_name.' -> <strike>'.$card->getName().'</strike>');
+                    Tradelog::addEntry($this->login()->getUser(), 'game_loss_log_text', $game_name.' -> <strike>'.$card->getName().'(#'.$card->getId().')</strike>');
                     $data['game_name'] = $game_name;
                     $data['reward'] = $game->determineReward('win-card:1');
                 }else{

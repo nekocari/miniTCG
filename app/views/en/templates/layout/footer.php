@@ -3,7 +3,7 @@
         	<div id="footer" class="text-center">
         		<hr class="m-2">
     			<small class="d-block m-2">
-    				<a href="<?php echo Routes::getUri('faq'); ?>">FAQ</a> &bull; <a href="<?php echo Routes::getUri('imprint'); ?>">Impressum</a><br> 
+    				<a href="<?php echo Routes::getUri('faq'); ?>">FAQ</a> &bull; <a href="<?php echo Routes::getUri('imprint'); ?>">Imprint</a><br> 
     				powered by <a href="https://github.com/nekocari/miniTCG/" target="_blank">miniTCG <small><?php echo APP_VERSION; ?></small></a>
     			</small>
         	</div>
@@ -20,31 +20,31 @@
     			<!-- Navigation if IS logged in -->  
             	<?php if($this->login->isLoggedIn()) { ?>  
     			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
-    				<span class="h5 m-0 text-nowrap">Hallo <b><?php echo $this->login->getUser()->getName(); ?></b></span>
+    				<span class="h5 m-0 text-nowrap">Hello <b><?php echo $this->login->getUser()->getName(); ?></b></span>
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 my-2 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
-    					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Mitglieder online</small>
+    					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> members online</small>
     				</button></div>
     			<ul class="nav nav-fill flex-lg-column justify-content-between" id="member-links">
     				<li class="nav-item">
     					<a class="nav-link text-left" href="<?php echo Routes::getUri('member_dashboard');?>">
-        					<span><i class="fas fa-house-user mr-md-1"></i>&nbsp;<span class="d-none d-md-inline">Mitgliedsbereich</span></span>
+        					<span><i class="fas fa-house-user mr-md-1"></i>&nbsp;<span class="d-none d-md-inline">Member Area</span></span>
     					</a>
     				</li>
     				<li class="nav-item">
     					<a class="nav-link d-md-flex justify-content-lg-between align-items-center" href="<?php echo Routes::getUri('messages_recieved');?>">
-    						<span><i class="fas fa-envelope-open mr-1"></i> <span class="d-none d-md-inline mr-2">Nachrichten</span></span> 
+    						<span><i class="fas fa-envelope-open mr-1"></i> <span class="d-none d-md-inline mr-2">Messages</span></span> 
     						<span class="badge badge-pill badge-dark"><?php echo count(Message::getReceivedByMemberId($this->login->getUserId(),'new')); ?></span>
     					</a>
     				</li>
     				<li class="nav-item">
     					<a class="nav-link d-md-flex justify-content-lg-between align-items-center" href="<?php echo Routes::getUri('trades_recieved');?>">
-    						<span><i class="fas fa-sync-alt mr-1"></i> <span class="d-none d-md-inline mr-2">Tauschanfragen</span></span>
+    						<span><i class="fas fa-sync-alt mr-1"></i> <span class="d-none d-md-inline mr-2">Trade Offers</span></span>
     						<span class="badge badge-pill badge-dark"><?php echo count(Trade::getRecievedByMemberId($this->login->getUserId(),'new')); ?></span>
     					</a>
     				</li>
     				<li class="nav-item my-lg-2">
     					<a class="nav-link btn btn-dark" href="<?php echo Routes::getUri('signout');?>">
-    						<i class="fas fa-sign-out-alt mr-lg-1"></i> <span class="d-lg-inline d-none">Ausloggen</span>
+    						<i class="fas fa-sign-out-alt mr-lg-1"></i> <span class="d-lg-inline d-none">Logout</span>
     					</a>
     				</li>
     				<!-- Link to ACP -->
@@ -62,17 +62,17 @@
     			<!-- Navigation if NOT logged in -->
     			<?php }else{ ?>
     			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
-    				<span class="h5 m-0 text-nowrap">Hallo <b>Gast</b></span>
+    				<span class="h5 m-0 text-nowrap">Hello <b>Guest</b></span>
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
-    					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Mitglieder online</small>
+    					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Members online</small>
     				</button>
     			</div>
     			<ul class="nav nav-fill flex-lg-column align-items-center" id="member-guest">
     				<li class="nav-item">
-    					<a class="nav-link" href="<?php echo Routes::getUri('signup');?>"><i class="fas fa-pencil-alt mr-md-1"></i> Registrierung</a>
+    					<a class="nav-link" href="<?php echo Routes::getUri('signup');?>"><i class="fas fa-pencil-alt mr-md-1"></i> Register</a>
     				</li>
     				<li class="nav-item">
-    					<a class="nav-link" href="<?php echo Routes::getUri('signin');?>"><i class="fas fa-sign-in-alt mr-md-1"></i> Einloggen</a>
+    					<a class="nav-link" href="<?php echo Routes::getUri('signin');?>"><i class="fas fa-sign-in-alt mr-md-1"></i> Login</a>
     				</li>
     			</ul>
     			<?php } ?>
@@ -84,11 +84,11 @@
 			<!-- Members online -->
 			<div class="d-block">
     			<div class="h5 d-none d-lg-flex">
-    				<?php echo count(MemberOnline::getVisible()); ?> Mitglieder online
+    				<?php echo count(MemberOnline::getVisible()); ?> Members online
     			</div>
     			<div class="d-none  text-right mb-1">
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
-    					<small><?php echo count(MemberOnline::getVisible()); ?> Mitglieder online</small>
+    					<small><?php echo count(MemberOnline::getVisible()); ?> Members online</small>
     				</button>
     			</div>
     			<div id="members-online" class="card collapse d-lg-block">
@@ -98,7 +98,7 @@
     							<a class="btn btn-link" href="<?php echo $m->getMember()->getProfilLink(); ?>"><i class="fas fa-user"></i> <?php echo $m->getMember()->getName(); ?></a>
     						<?php } 
     					}else{ ?> 
-    						niemand ist online 
+    						no one is online 
     					<?php } ?>
     				</div>
     			</div>

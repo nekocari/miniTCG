@@ -62,8 +62,6 @@ class Message extends DbRecordModel {
             $status = self::$accepted_status_values[0];
         }
         
-        $msgs = array();
-        
         $where = $type.'_id = '.intval($id).' AND (deleted != \''.$type.'\' OR deleted IS NULL) ';
         
         if($status == 'new'){

@@ -42,24 +42,19 @@ class Member extends DbRecordModel {
      *
      * @return Member[]
      */
-    public static function getGrouped($group, $order_by = 'name', $order = 'ASC') {
+    public static function getGrouped($group, $only_active = true, $order=['name' => 'ASC']) {
         
         $members = array();
-        $db_conn = Db::getInstance();
-        
-        if(!in_array($order_by, self::$sql_order_by_allowed_values)){
-            $order_by = self::$sql_order_by_allowed_values[0];
-        }
-        
-        if(!in_array($order, self::$sql_direction_allowed_values)){
-            $order = self::$sql_direction_allowed_values[0];
-        }
         
         if(!in_array($group, self::$accepted_group_options)){
             $group = self::$accepted_group_options[0];
         }
         
-        $members_array = self::getAll([$order_by=>$order]);
+        if($only_active){
+        	$members_array = self::getWhere(['status'=>'default'],$order);
+        }else{
+        	$members_array = self::getAll($order);
+        }
             
         foreach($members_array as $member){
             $members[$member->$group][]  = $member;
@@ -285,10 +280,19 @@ class Member extends DbRecordModel {
     
     /**
      * checks if the member has enough cards to level up and changes the level
+     * TODO: master card count individual by deck size!
      */
-    public function checkLevelUp() {
-        
-        $card_count_with_master = $this->getCardCount() + ($this->getMasterCount() * Setting::getByName('cards_decksize')->getValue());
+    public function checkLevelUp() {    	
+    	
+    	$sql = 'SELECT SUM(size) FROM decks_master 
+				LEFT JOIN decks ON decks_master.deck = decks.id
+				LEFT JOIN decks_types ON decks_types.id = decks.type_id
+				WHERE member = '.$this->getId();
+    	$req = $this->db->query($sql);
+    	$master_cards_sum = $req->fetchColumn();
+    	if(is_null($master_cards_sum)){ $master_cards_sum = 0; }
+    	
+    	$card_count_with_master = $this->getCardCount() + $master_cards_sum;
         $current_level = $this->getLevel();
         $reached_level = Level::getByCardNumber($card_count_with_master);
         
@@ -434,34 +438,36 @@ class Member extends DbRecordModel {
      * @return boolean
      */
     public function resetPassword(){
-        if(Login::loggedIn() AND in_array('Admin',$this->login()->getUser()->getRights()) OR !Login::loggedIn() ){
-          
-            $random_code = Login::getRandomActivationCode();            
-            
-            if($this->setPassword($random_code)){
-                // set mail vars
-                $app_name = Setting::getByName('app_name')->getValue();
-                $app_mail = Setting::getByName('app_mail')->getValue();
-                $name = $this->getName();
-                $recipient  = $this->getMail();
-                $title = 'Neues Passwort für '.$app_name;
-                // get mail tpl and replace placeholders
-                $message = file_get_contents(PATH.'inc/mail_template_reset_pw.php');
-                $message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$random_code,$app_name], $message);
-                // set mail header
-                $header[] = 'MIME-Version: 1.0';
-                $header[] = 'Content-type: text/html; charset=UTF-8';
-                $header[] = 'From: '.$app_name.' <'.$app_mail.'>';
-                // send mail
-                if(!mail($recipient, $title, $message, implode("\r\n", $header))){
-                    throw new ErrorException('login_new_password_not_sent');
-                    return false;
-                }
-                return true;
-            }else{
-                return false;
-            }
-            
+    	
+    	$login = new Login;
+    	$random_code = $login->getRandomActivationCode();            
+        
+    	if($this->setPassword($random_code)){
+    		// send mail with code
+    		$app_name = Setting::getByName('app_name')->getValue();
+    		$app_mail = Setting::getByName('app_mail')->getValue();
+    		$name = $this->getName();
+    		$mail  = $this->getMail();
+    		
+    		$subject = $app_name;
+    		$message = file_get_contents('app/views/'.$this->getLang().'/templates/mail_template_reset_pw.php');
+    		$message = str_replace(['{{MEMBERNAME}}','{{PASSWORD}}','{{APPNAME}}'], [$name,$random_code,$app_name], $message);
+    		
+    		// mail header
+    		$header[] = 'MIME-Version: 1.0';
+    		$header[] = 'Content-type: text/html; charset=UTF-8';
+    		$header[] = 'From: '.$app_name.' <'.$app_mail.'>';
+    		
+    		// send mail
+    		error_reporting(0);
+    		if(!mail($mail, $subject, $message, implode("\r\n", $header))){
+    			throw new ErrorException('Unable to send new password');
+    		}
+    		error_reporting(-1);
+    		
+    		return true;
+        }else{
+        	return false;
         }
     }
     

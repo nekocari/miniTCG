@@ -93,11 +93,9 @@ class News extends DbRecordModel{
         return parent::getAll(['date'=>'DESC'],intval($number));
     }
     
-    public static function display($number,$login){
-    	if($login->getUser() instanceof Member){
-    		$lang = $login->getUser()->getLang();
-    	}else{ 
-    		$lang = SUPPORTED_LANGUAGES[0];
+    public static function display($number,$lang,$login){
+    	if(!array_key_exists($lang, SUPPORTED_LANGUAGES)){
+    		$lang = key(SUPPORTED_LANGUAGES); 
     	}
         $entries = self::getLatestEntries($number);
         $template = self::getEntryTemplate($lang);

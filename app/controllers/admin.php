@@ -32,52 +32,37 @@ class AdminController extends AppController {
     /**
      * Settings
      */
-    public function settings() {
-    	
+    public function settings() {    	
         // check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['EditSettings']);
     	$this->redirectNotAuthorized();
-            
-        
-        $data = array();
-        
+    	
         // update form was sent
         if(isset($_POST['updateSettings']) AND isset($_POST['settings'])){
-            
             // go throug all settings and store the values in database
             foreach($_POST['settings'] as $name => $value){
-                                    
                 $setting = Setting::getByName($name);
                 $setting->setValue($value);     
-                
-                // create error message in case of failure
+                // check and log if any setting was not updated
                 if(!$setting->update()){
-                    $data['_errors'][] = $name." not updated";
-                }
-                
+                	$errors[] = $name." not updated";
+                }   
             }
-            
         }
         
         // if form was sent and no error message was created - create a success message
-        if(isset($_POST['updateSettings']) AND !isset($data['_error'])){ 
+        if(isset($_POST['updateSettings']) AND !isset($errors)){ 
         	$this->layout()->addSystemMessage('success','admin_settings_updated');
-        }else{
-        	// TODO: display the errors
-        }
-        
-        // get all settings form database
-        $data['settings'] = Setting::getAll(['name'=>'ASC']);
-        
-        $this->layout()->render('admin/settings.php',$data);
-          
+        }                
+        $this->layout()->render('admin/settings.php',['settings'=>Setting::getAll(['name'=>'ASC'])]);          
     }
     
     /**
      * Routing
      */
     public function routes() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -92,11 +77,11 @@ class AdminController extends AppController {
     			$this->layout()->addSystemMessage('error', 'del_route_denied');
     		}
     	}    	
-    	$this->layout()->render('admin/routes/index.php',['routes'=>Route::getAll(['url'=>'ASC'])]);
-    	
+    	$this->layout()->render('admin/routes/index.php',['routes'=>Route::getAll(['url'=>'ASC'])]);    	
     }
     
     public function addRoute() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -113,6 +98,7 @@ class AdminController extends AppController {
     }
     
     public function editRoute() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -142,6 +128,7 @@ class AdminController extends AppController {
      * Card Status (Card Manager Categories) Management
      */
     public function cardStatus() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -200,6 +187,7 @@ class AdminController extends AppController {
     
     
     public function addCardStatus() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -217,6 +205,7 @@ class AdminController extends AppController {
     
     
     public function deleteCardStatus() {
+    	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();
     	
@@ -249,7 +238,6 @@ class AdminController extends AppController {
      * Memberlist
      */
     public function memberlist() {
-                
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers','ManageRights']);
@@ -276,8 +264,7 @@ class AdminController extends AppController {
      * Member edit form
      */
     // TODO: add pw reset option
-    public function editMember() {
-        
+    public function editMember() {        
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers']);
@@ -334,7 +321,6 @@ class AdminController extends AppController {
      * Member search form
      */
     public function searchMember() {   
-        
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers','ManageRights']);
@@ -363,7 +349,6 @@ class AdminController extends AppController {
      * Member Gift Money
      */
     public function giftMoney(){
-        
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers']);
@@ -411,7 +396,6 @@ class AdminController extends AppController {
      * Member Gift Cards
      */
     public function giftCards(){
-        
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers']);
@@ -461,8 +445,7 @@ class AdminController extends AppController {
      * manage user rights 
      */
     public function manageRights() {
-        
-    	// check if user has required rights
+        // check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageRights']);
     	$this->redirectNotAuthorized();
@@ -506,7 +489,6 @@ class AdminController extends AppController {
     
     
     public function resetPassword(){
-        
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->redirectNotAuthorized();

@@ -45,13 +45,13 @@
         			<div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ml-auto">
             				<li class="nav-item">
-            					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home text-primary"></i> Startseite</a>
+            					<a class="nav-link" href="<?php echo BASE_URI; ?>"><i class="fas fa-home text-primary"></i> Homepage</a>
             				</li>
             				<li class="nav-item">
-            					<a class="nav-link" href="<?php echo Routes::getUri('member_index');?>"><i class="fas fa-users text-primary"></i> Mitglieder</a>
+            					<a class="nav-link" href="<?php echo Routes::getUri('member_index');?>"><i class="fas fa-users text-primary"></i> Members</a>
             				</li>
             				<li class="nav-item dropdown">
-            					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder text-primary"></i> Karten</a>
+            					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder text-primary"></i> Cards</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
                                 	<!-- PHP Code for the Category List -->
                                 	<?php if(count($tcg_categories = Category::getAll(['name'=>'ASC']))>0){ foreach($tcg_categories as $tcg_category){ ?>

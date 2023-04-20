@@ -206,7 +206,7 @@ class Login {
         
     	// 5. send mail with code
     	$subject = Setting::getByName('app_name')->getValue();
-        $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_welcome.php');
+        $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_template_sign_up.php');
         $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}'];
         $message_replace = [$name,$pw1,$activation_url];
         $message = str_replace($message_search, $message_replace, $message);
@@ -273,7 +273,11 @@ class Login {
     }
     
     public function delete($password){
-    	// TODO check is pw is correct before deleting
+    	if(password_verify($password, $this->getUser()->getPassword())){
+    		return $this->getUser()->delete();
+    	}else{
+    		throw new Exception('password_invalid',9999);
+    	}
     	return false;
     }
    

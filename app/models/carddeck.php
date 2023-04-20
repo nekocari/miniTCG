@@ -201,11 +201,67 @@ class Carddeck extends DbRecordModel {
         return $members;
     }
     
-    public static function master($deck, $member){
-        require_once PATH.'models/setting.php';
+    /**
+     * 
+     * @param Login $login
+     * @throws PDOException
+     * @throws Exception
+     * @return boolean
+     */
+    public function master($login){
+    	// check if collection card sum matches deck size
+    	$collection_cards = Card::getWhere(['owner'=>$login->getUserId(),'deck'=>$this->getId(),'status_id'=>CardStatus::getCollect()->getId()]);
+    	$deck_size = $this->getType()->getSize();
+    	if(count($collection_cards) == $deck_size){
+    		// db transation begins - only commit if everything works
+    		try{
+	    		$this->db->beginTransaction();
+	    		// delete cards
+	    		foreach($collection_cards as $card){
+	    			$card->delete();
+	    		}
+	    		// add master
+	    		$master = new Master();
+	    		$master->setPropValues(['member'=>$login->getUserId(),'deck'=>$this->getId()]);
+	    		$master->create();	    		
+	    		// commit db transaction
+	    		$this->db->commit();
+	    		// gift cards acording to settings
+	    		$gift_cards = Setting::getByName('master_gift_cards')->getValue();
+	    		
+	    		if($gift_cards > 0){
+	    			$cards = Card::createRandomCards($login->getUser(), $gift_cards);
+	    			$log_text = '';
+	    			foreach ($cards as $card) {
+	    				$log_text.= $card->getName().'(#'.$card->getId().'), ';
+	    			}
+	    			$log_text = substr($log_text, 0, -2);
+	    			Tradelog::addEntry($this->login()->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
+	    		}
+	    		return true;
+	    	}
+	    	catch(PDOException $e) {
+	    		$this->db->rollBack();
+	    		throw $e;
+	    	}
+    	}else{
+    		throw new Exception('deck incomplete', 6003);
+    	}
+    	return false;
+    }
+    
+    /**
+     * @todo - > not static!
+     * @deprecated
+     * @param unknown $deck
+     * @param unknown $member
+     * @throws Exception
+     * @return boolean|unknown
+     */
+    public static function masterx($deck, $member){
         $db = DB::getInstance();
         
-        $gift_cards_num = Setting::getByName('giftcards_for_master')->getValue();
+        $gift_cards_num = Setting::getByName('master_gift_cards')->getValue();
         try{
             $db->beginTransaction();
             // delete cards

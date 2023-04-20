@@ -84,7 +84,7 @@ class CardFlagged extends Card {
                                     WHERE c.id = ".$this->id;
                         break;
                     default:
-                        $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
+                        $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
                                     FROM cards c
                                     LEFT JOIN trades t ON (t.offered_card = c.id OR t.requested_card = c.id) AND t.status = 'new'
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
@@ -133,6 +133,7 @@ class CardFlagged extends Card {
                         break;
                 }
             }
+            
             $req = $this->db->query($sql);
             $card = $req->fetch(PDO::FETCH_ASSOC);
             if($card !== false){

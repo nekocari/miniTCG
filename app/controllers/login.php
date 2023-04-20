@@ -91,7 +91,7 @@ class LoginController extends AppController {
 	            $this->layout()->render('login/signup_successfull.php');
 	        }
 	        catch(Exception $e){;
-	        	$this->layout()->addSystemMessage('error', '0',[],$e->getMessage());
+	        	$this->layout()->addSystemMessage('error', $e->getCode());
                 $this->layout()->render('login/signup.php');
             }
             
@@ -257,26 +257,42 @@ class LoginController extends AppController {
 	 */
 	public function deleteAccount() {
 	    
-	    $this->redirectNotLoggedIn();
 	    
-	    // if form was not sent
-	    if(!isset($_POST['delete']) OR !isset($_POST['password'])){
-	        $this->layout()->render('login/delete_account.php');
-	        
-	    // form was sent
-	    }else{
-	        
-	        // try to delete the account 
-	        if(($result = $this->login()->delete($_POST['password'])) === true){
-    	        // on success display message
-    	        $this->layout()->render('login/delete_account_success.php');
-    	    }else{
-    	        // display error 
-    	        $this->layout()->addSystemMessage('error', 'password_incorrect');
-    	        $this->layout()->render('login/delete_account.php',$data);
-    	    }	
-    	    
-	    }
+	    // if form sent
+		if(isset($_POST['delete']) AND isset($_POST['password'])){
+	    	try{
+	    		if($this->login()->delete($_POST['password'])){	    
+	    			$this->login()->logout();
+	    			$this->layout()->render('login/delete_account_success.php');
+	    			return;
+	    		}else{
+	    			$this->layout()->addSystemMessage('error', 'delete_account_error');
+	    		}
+	    	}
+	    	catch(PDOException $e){
+	    		switch($e->getCode()){
+	    			case 23000:
+	    				$this->layout()->addSystemMessage('error', 'database_relations_exist_error');
+	    				break;
+	    		}
+	    	}
+	    	catch(Exception $e){
+	    		switch($e->getCode()){
+	    			case 9999:
+	    				$this->layout()->addSystemMessage('error', 'password_invalid');
+	    				break;
+	    			default:
+	    				$this->layout()->addSystemMessage('error', 'unknown_error',[],$e->getCode());
+	    				error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+	    				break;
+	    		}
+	    	}   
+	    	
+		}
+		
+		$this->redirectNotLoggedIn();
+		$this->layout()->render('login/delete_account.php');
+	    
 	}
 	
 }

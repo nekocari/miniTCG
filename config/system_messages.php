@@ -196,14 +196,23 @@
     ]);
     
     
-    /*
+    
     // texts used in level controller --------------------------------------
     
-    $sys_msg_text_handler->addCode('level_add_failed','level not added','Anlegen fehlgeschlagen.');
-    $sys_msg_text_handler->addCode('level_edit_success', 'changes saved', 'Änderungen gespeichert.');
-    $sys_msg_text_handler->addCode('level_edit_failed', 'changes not saved', 'Ändern fehlgeschlagen.');
+    $sys_msg_text_handler->addCode('level_add_failed',[
+    		'en'=>'level not added',
+    		'de'=>'Anlegen fehlgeschlagen.'
+    ]);
+    $sys_msg_text_handler->addCode('level_edit_success', [
+    		'en'=>'changes saved', 
+    		'de'=>'Änderungen gespeichert.'
+    ]);
+    $sys_msg_text_handler->addCode('level_edit_failed', [
+    		'en'=>'changes not saved', 
+    		'de'=>'Ändern fehlgeschlagen.'
+    ]);
     
-    */
+    
     
     // texts used in shop controller --------------------------------------
     
@@ -256,6 +265,10 @@
     		'en'=>'Game won: ',
     		'de'=>'Spiel gewonnen: '
     ]);
+    $sys_msg_text_handler->addCode('game_loss_log_text',[
+    		'en'=>'Game loss: ',
+    		'de'=>'Spiel Verlust: '
+    ]);
     
     
     
@@ -267,8 +280,12 @@
     		'de'=>'Account ist nicht aktiv.'
     ]);
     $sys_msg_text_handler->addCode('login_sign_in_failed', [
-    		'en'=>'userdata invalid', 
+    		'en'=>'userdata invalid',
     		'de'=>'Benutzerdaten sind ungültig.'
+    ]);
+    $sys_msg_text_handler->addCode('password_invalid', [
+    		'en'=>'password invalid',
+    		'de'=>'Passwort ungültig.'
     ]);
     $sys_msg_text_handler->addCode('login_sign_up_no_password', [
     		'en'=>'please set a password', 
@@ -291,8 +308,12 @@
     		'de'=>'Passwort nicht zurück gesetzt.'
     ]);
     $sys_msg_text_handler->addCode('login_new_password_not_sent', [
-    		'en'=>'password was reset, but mail could not be sent', 
+    		'en'=>'password was reset, but mail could not be sent',
     		'de'=>'Passwort zurück gesetzt, doch Mail konnte nicht gesendet werden.'
+    ]);
+    $sys_msg_text_handler->addCode('delete_account_error', [
+    		'en'=>'Account can not be deleted. Please contact an administrator.',
+    		'de'=>'Benutzerkonto kann nicht gelöscht werden. Bitte wende dich an einen Administrator.'
     ]);
     $sys_msg_text_handler->addCode('starter_cards_log_text', [
     		'en'=>'Starter cards recieved -> ',
@@ -321,27 +342,39 @@
     		'de'=>'Sammlung gemastert!'
     ]);
     $sys_msg_text_handler->addCode('cardmanager_master_deck_failed', [
-    		'en'=>'collection can not be masterd', 
+    		'en'=>'collection can not be masterd',
     		'de'=>'Sammlung konnte nicht gemastert werden.'
     ]);
+    $sys_msg_text_handler->addCode('cardmanager_master_deck_log_text', [
+    		'en'=>'Master of ',
+    		'de'=>'Master von '
+    ]); // NOTE: name of deck follows!
     
     // USERDATA EDIT
     $sys_msg_text_handler->addCode('user_edit_data_success',[
-    		'en'=>'userdata updated',
+    		'en'=>'user data updated',
     		'de'=>'Daten wurden gespeichert.'
     ]);
     $sys_msg_text_handler->addCode('user_edit_data_failed',[
-    		'en'=>'userdata not updated',
+    		'en'=>'user data not updated',
     		'de'=>'Daten nicht aktualisiert.'
+    ]);
+    $sys_msg_text_handler->addCode('user_edit_settings_success',[
+    		'en'=>'user settings updated',
+    		'de'=>'Einstellungen wurden gespeichert.'
+    ]);
+    $sys_msg_text_handler->addCode('user_edit_settings_failed',[
+    		'en'=>'user settings not updated',
+    		'de'=>'Einstellungen nicht aktualisiert.'
     ]);
     $sys_msg_text_handler->addCode('user_edit_pw_success',[
     		'en'=>'password saved',
     		'de'=>'Passwort wurde gespeichert.'
     ]);
     $sys_msg_text_handler->addCode('user_edit_pw_failed',[
-    		'en'=>'password not saved, error:',
-    		'de'=>'Passwort nicht aktualisiert. Folgender Fehler trat auf:'
-    ]); // NOTE: more information about why it failed follows automaticaly
+    		'en'=>'password not updated.',
+    		'de'=>'Passwort nicht aktualisiert.'
+    ]); 
     
     
     
@@ -380,16 +413,28 @@
     		'de'=>'Die Eingabe ist unvollständig.'
     ]);
     
-    /*
+    
     
     // texts used by the news controller ----------------------------------
     
-    $sys_msg_text_handler->addCode('news_update_not_logged_in', 'login to see update decks', 'Einloggen um Update zu sehen.');
-    $sys_msg_text_handler->addCode('news_delete_failed', 'news could not be deleted', 'News konnte nicht gelöscht werden.');
-    $sys_msg_text_handler->addCode('news_insert_failed', 'news could not be inserted', 'News konnte nicht gespeichert werden.');
-    $sys_msg_text_handler->addCode('news_update_failed', 'news could not be updated', 'Änderung konnte nicht gespeichert werden.');
+    $sys_msg_text_handler->addCode('news_update_not_logged_in', [
+    		'en'=>'login to view update decks', 
+    		'de'=>'Einloggen um Update zu sehen.'
+    ]);
+    $sys_msg_text_handler->addCode('news_delete_failed', [
+    		'en'=>'news could not be deleted', 
+    		'de'=>'News konnte nicht gelöscht werden.'
+    ]);
+    $sys_msg_text_handler->addCode('news_insert_failed', [
+    		'en'=>'news could not be inserted', 
+    		'de'=>'News konnte nicht gespeichert werden.'
+    ]);
+    $sys_msg_text_handler->addCode('news_update_failed', [
+    		'en'=>'news could not be updated', 
+    		'de'=>'Änderung konnte nicht gespeichert werden.'
+    ]);
     
-    */
+    
     
     // texts used by the trade controller ----------------------------------
     
@@ -432,6 +477,18 @@
     $sys_msg_text_handler->addCode('trade_with_self',  [
     		'en'=>'you can not trade with yourself',
     		'de'=>'Du kannst nicht mit dir selbst tauschen.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_declined_msg_text',  [
+    		'en'=>'OFFER DECLINED! [{{MEMBER_NAME_RECIPIENT}}]({{MEMBER_LINK_RECIPIENT}}) does not trade {{REQUESTED_CARD_NAME}} for your {{OFFERED_CARD_NAME}}.',
+    		'de'=>'ANFRAGE ABGELEHNT! [{{MEMBER_NAME_RECIPIENT}}]({{MEMBER_LINK_RECIPIENT}}) tauscht {{REQUESTED_CARD_NAME}} nicht gegen deine {{OFFERED_CARD_NAME}}.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_accepted_msg_text',  [
+    		'en'=>'OFFER ACCEPTED! [{{MEMBER_NAME_RECIPIENT}}]({{MEMBER_LINK_RECIPIENT}}) traded {{REQUESTED_CARD_NAME}} for your {{OFFERED_CARD_NAME}}.',
+    		'de'=>'ANFRAGE ANGENOMMEN! [{{MEMBER_NAME_RECIPIENT}}]({{MEMBER_LINK_RECIPIENT}}) tauschte {{REQUESTED_CARD_NAME}} gegen deine {{OFFERED_CARD_NAME}}.'
+    ]);
+    $sys_msg_text_handler->addCode('trade_accepted_log_text',  [
+    		'en'=>'TRADE with ',
+    		'de'=>'TAUSCH mit '
     ]);
     
     
@@ -479,42 +536,132 @@
     
     // GENERAL - stuff like custom error codes
     
+    $sys_msg_text_handler->addCode('invalid_data', [
+    		'en' => 'Recieved data is invalid. ',
+    		'de' => 'Übergebene Daten sind ungültig. '
+    ]);
     $sys_msg_text_handler->addCode('level_up_info', [
     		'en' => 'You just reached a new level and recieved the following as a gift: ',
     		'de' => 'Du hast soeben ein neues Level erreicht und folgendes Geschenk erhalten: '
     ]);
     
-    /*
-    $sys_msg_text_handler->addCode('input_invalid_character', 'input contains invalid character', 'Eingabe enthält ungültige Zeichen.');
-    $sys_msg_text_handler->addCode('file_typ_invalid','invalid file type detected','Ungültiger Dateityp gefunden.');
-    $sys_msg_text_handler->addCode('mkdir_failed', 'folder could not be created', 'Ordner konnte nicht anglegt werden.');
-    $sys_msg_text_handler->addCode('dir_exists', 'folder already exists', 'Ordner existiert bereits');
-    $sys_msg_text_handler->addCode('file_exists', 'file already exists', 'Datei existiert bereits');
-    $sys_msg_text_handler->addCode('translate_recieved', 'recieved', 'erhalten');
-    $sys_msg_text_handler->addCode('unexpected_error', 'unexpected error', 'unerwarteter Fehler');
+    $sys_msg_text_handler->addCode('database_relations_exist_error', [
+    		'en' => 'Action not possible, as long as there are active relations in the database. ',
+    		'de' => 'Aktion nicht möglich, solange es noch aktive Verbindungen in der Datenbank gibt. '
+    ]);
     
-    $sys_msg_text_handler->addCode('1001', 'invalid character', 'Ungültiges Zeichen');
-    $sys_msg_text_handler->addCode('2001', 'invalid parameter', 'Ungültige Parameter.');
-    $sys_msg_text_handler->addCode('8000', 'unallowed elements removed from input', 'Unerlaubte Elemente wurden aus Eingabe entfernt.');
+    
+    
+    $sys_msg_text_handler->addCode('input_invalid_character', [
+    		'en' => 'input contains invalid character', 
+    		'de' => 'Eingabe enthält ungültige Zeichen.'
+    ]);
+    $sys_msg_text_handler->addCode('file_typ_invalid',[
+    		'en' => 'invalid file type detected',
+    		'de' => 'Ungültiger Dateityp gefunden.'
+    ]);
+    $sys_msg_text_handler->addCode('mkdir_failed', [
+    		'en' => 'folder could not be created', 
+    		'de' => 'Ordner konnte nicht anglegt werden.'
+    ]);
+    $sys_msg_text_handler->addCode('dir_exists', [
+    		'en' => 'folder already exists', 
+    		'de' => 'Ordner existiert bereits'
+    ]);
+    $sys_msg_text_handler->addCode('file_exists', [
+    		'en' => 'file already exists', 
+    		'de' => 'Datei existiert bereits'
+    ]);
+    $sys_msg_text_handler->addCode('unexpected_error', [
+    		'en' => 'unexpected error', 
+    		'de' => 'unerwarteter Fehler'
+    ]);
+    
+    // GENERAL ERROR CODES
+    
+    $sys_msg_text_handler->addCode('1001', [
+    		'en' => 'invalid character', 
+    		'de' => 'Ungültiges Zeichen'
+    ]);
+    $sys_msg_text_handler->addCode('2001', [
+    		'en' => 'invalid parameter', 
+    		'de' => 'Ungültige Parameter.'
+    ]);
+    $sys_msg_text_handler->addCode('8000', [
+    		'en' => 'unallowed elements removed from input', 
+    		'de' => 'Unerlaubte Elemente wurden aus Eingabe entfernt.'
+    ]);
+    
+    // LOGIN ERROR CODES
+    
+    $sys_msg_text_handler->addCode('1011', [
+    		'en' => 'Username or mail already taken.',
+    		'de' => 'Benutername vergeben oder Mail bereits vorhanden.'
+    ]);    
+    $sys_msg_text_handler->addCode('1012', [
+    		'en' => 'Password cannot be empty.',
+    		'de' => 'Passwort kann nicht leer sein.'
+    ]);
+    $sys_msg_text_handler->addCode('1013', [
+    		'en' => 'Passwords do not match.',
+    		'de' => 'Passwörter stimmen nicht überein.'
+    ]);
+    $sys_msg_text_handler->addCode('1015', [
+    		'en' => 'Mail with activation code could not be sent.',
+    		'de' => 'Mail mit Aktivierungscode konnte nicht gesendet werden.'
+    ]);
     
     // TRADE ERROR CODES
     
-    $sys_msg_text_handler->addCode('5001', 'status already changed', 'Der Status der Tauschanfrage wurde bereits geändert.');
-    $sys_msg_text_handler->addCode('5002', 'you are not the recipient of this offer', 'Du kannst diese Anfrage nicht beantworten, da du nicht der Empfänger bist!');
-    $sys_msg_text_handler->addCode('5003', 'requested card is no longer available', 'Angefragte Karte ist nicht verfügbar.');
-    $sys_msg_text_handler->addCode('5004', 'offered card is no longer available', 'Angebotene Karte ist nicht verfügbar.');
+    $sys_msg_text_handler->addCode('5001', [
+    		'en' => 'status already changed', 
+    		'de' => 'Der Status der Tauschanfrage wurde bereits geändert.'
+    ]);
+    $sys_msg_text_handler->addCode('5002', [
+    		'en' => 'you are not the recipient of this offer', 
+    		'de' => 'Du kannst diese Anfrage nicht beantworten, da du nicht der Empfänger bist!'
+    ]);
+    $sys_msg_text_handler->addCode('5003', [
+    		'en' => 'requested card is no longer available', 
+    		'de' => 'Angefragte Karte ist nicht verfügbar.'
+    ]);
+    $sys_msg_text_handler->addCode('5004', [
+    		'en' => 'offered card is no longer available', 
+    		'de' => 'Angebotene Karte ist nicht verfügbar.'
+    ]);
     
     // CARD MANGAGMENT CODES
-    $sys_msg_text_handler->addCode('6000', '', '');
-    $sys_msg_text_handler->addCode('6001', '', '');
-    $sys_msg_text_handler->addCode('6002', 'card already in collection', 'Karte befindet sich schon in Sammlung.');
-    $sys_msg_text_handler->addCode('6003', 'collection is incomplete', 'Sammlung ist unvollständig.');
-    $sys_msg_text_handler->addCode('6004', '', '');
-    $sys_msg_text_handler->addCode('6005', '', '');
+    $sys_msg_text_handler->addCode('6000', [
+    		'en' => '',
+    		'de' => ''
+    ]);
+    $sys_msg_text_handler->addCode('6001', [
+    		'en' => '',
+    		'de' => ''
+    ]);
+    $sys_msg_text_handler->addCode('6002', [
+    		'en' => 'card already in collection',
+    		'de' => 'Karte befindet sich schon in Sammlung.'
+    ]);
+    $sys_msg_text_handler->addCode('6003', [
+    		'en' => 'collection is incomplete',
+    		'de' => 'Sammlung ist unvollständig.'
+    ]);
+    $sys_msg_text_handler->addCode('6004', [
+    		'en' => '',
+    		'de' => ''
+    ]);
+    $sys_msg_text_handler->addCode('6005', [
+    		'en' => '',
+    		'de' => ''
+    ]);
     
     // DB ERRORS
     
-    $sys_msg_text_handler->addCode('9999', 'database reports an error', 'Datenbank meldet einen Fehler');
-    */
+    $sys_msg_text_handler->addCode('9999', [
+    		'en' => 'database reports an error', 
+    		'de' => 'Datenbank meldet einen Fehler'
+    ]);
+    
     
 ?>

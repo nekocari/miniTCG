@@ -86,7 +86,10 @@ class Trade extends DbRecordModel {
         return self::getTradesByMemberId($member_id, 'sent', $status);
     }
     
-    
+    /**
+     * @deprecated use delete() instead
+     * @return boolean
+     */
     public function del() {
         return $this->delete();
     }
@@ -127,7 +130,7 @@ class Trade extends DbRecordModel {
     
     public function answer($login,$status, $msg = '') {
         
-        if(in_array($status, self::$query_status_options) AND $this->recipient == $login->getUser()->getId()){
+        if(in_array($status, self::$query_status_options) AND $this->recipient_id == $login->getUser()->getId()){
             
             $this->setPropValues(['status'=>$status]);
             
@@ -140,14 +143,14 @@ class Trade extends DbRecordModel {
                         break;
                         
                     case 'declined':
-                        $msg_text = 'ANFRAGE ABGELEHNT! ['.$this->getRecipient()->getName().']('.$this->getRecipient()->getProfilLink().') tauscht '.
-                                strtoupper($this->getRequestedCard()->getName()).' nicht gegen deine '.
-                                strtoupper($this->getOfferedCard()->getName()).'.';
+                    	$search = ['{{MEMBER_NAME_RECIPIENT}}','{{MEMBER_LINK_RECIPIENT}}','{{REQUESTED_CARD_NAME}}','{{OFFERED_CARD_NAME}}'];
+                    	$replace = [$this->getRecipient()->getName(),$this->getRecipient()->getProfilLink(),$this->getRequestedCard()->getName(),$this->getOfferedCard()->getName()];
+                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_declined_msg_text'));
                         break;
                 }
                 
                 if(!empty($msg)){
-                    $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
+                	$msg_text.= '  "'.strip_tags($msg).'"';
                 }
                 
                 Message::add(Null, $this->getOfferer()->getId(), $msg_text);
@@ -162,55 +165,51 @@ class Trade extends DbRecordModel {
     }
     
     
-    public function decline($msg = '') {
+    public function decline($login,$msg = '') {
         
-        return $this->answer('declined',$msg);
+        return $this->answer($login,'declined',$msg);
         
     }
     
-    public function accept($msg = '') {
+    public function accept($login,$msg = '') {
        
         $this->db->beginTransaction();
-        if($this->getRecipient()->getId() == $_SESSION['user']->id){
+        if($this->getRecipient()->getId() == $login->getUser()->getId()){
             
             // change owner of offered card to recipient
             if($this->getOfferedCard()->getOwner()->getId() == $this->getOfferer()->getId()){
+            	$new_status_id = CardStatus::getNew()->getId();
                 
                 $this->getOfferedCard()->setOwner($this->getRecipient()->getId());
-                $this->getOfferedCard()->setStatus('new');
+                $this->getOfferedCard()->setStatusId($new_status_id);
                 $this->getOfferedCard()->store();
                 
                 // change owner of requested card to offerer
                 if($this->getRequestedCard()->getOwner()->getId() == $this->getRecipient()->getId()){
                     
                     $this->getRequestedCard()->setOwner($this->getOfferer()->getId());
-                    $this->getRequestedCard()->setStatus('new');
+                    $this->getRequestedCard()->setStatusId($new_status_id);
                     $this->getRequestedCard()->store();
                     
                     // update trade status 
                     $req = $this->db->query('UPDATE trades SET status = \'accepted\' WHERE id = '.$this->getId());
                     if($req->rowCount() == 1){
                         
-                        // send message to inform offerer
-                        $msg_text = 'ANFRAGE ANGENOMMEN! ['.$this->getRecipient()->getName().']('.$this->getRecipient()->getProfilLink().') hat '.
-                            strtoupper($this->getRequestedCard()->getName()).' gegen deine '.
-                            strtoupper($this->getOfferedCard()->getName()).' getauscht.';
-                        
-                        if(!empty($msg)){
-                            $msg_text.= ' Nachricht: "'.strip_tags($msg).'"';
+                    	// send message to inform offerer
+                    	$search = ['{{MEMBER_NAME_RECIPIENT}}','{{MEMBER_LINK_RECIPIENT}}','{{REQUESTED_CARD_NAME}}','{{OFFERED_CARD_NAME}}'];
+                    	$replace = [$this->getRecipient()->getName(),$this->getRecipient()->getProfilLink(),$this->getRequestedCard()->getName(),$this->getOfferedCard()->getName()];
+                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_accepted_msg_text'));
+                    	if(!empty($msg)){
+                            $msg_text.= '  "'.strip_tags($msg).'"';
                         }
                         
                         Message::add(NULL, $this->getOfferer()->getId(), $msg_text);
                         
                         // create Tradelog entry for offerer
-                        $text = 'Du hast '.strtoupper($this->getOfferedCard()->getName()).' gegen '.strtoupper($this->getRequestedCard()->getName()).
-                            ' von '.$this->getRecipient()->getName().' getauscht.';
-                        Tradelog::addEntry($this->getOfferer(), $text);
+                        Tradelog::addEntry($this->getOfferer(), 'trade_accepted_log_text', $this->getRecipient()->getName().': '.strtoupper($this->getOfferedCard()->getName()).' <-> '.strtoupper($this->getRequestedCard()->getName()));
                         
                         // create Tradelog entry for recipient
-                        $text = 'Du hast '.strtoupper($this->getRequestedCard()->getName()).' gegen '.strtoupper($this->getOfferedCard()->getName()).
-                            ' von '.$this->getOfferer()->getName().' getauscht.';
-                        Tradelog::addEntry($this->getRecipient(), $text);
+                        Tradelog::addEntry($this->getRecipient(), 'trade_accepted_log_text', $this->getOfferer()->getName().': '.strtoupper($this->getRequestedCard()->getName()).' <-> '.strtoupper($this->getOfferedCard()->getName()));
                         
                         
                         $this->db->commit();

@@ -25,7 +25,7 @@ class TradeController extends AppController {
             $trade = Trade::getById($_POST['id']);
             
             // try db update an set messages in case of success or failure
-            if($trade->decline($_POST['text'])){
+            if($trade->decline($this->login(),$_POST['text'])){
             	$this->layout()->addSystemMessage('success','trade_decline_success');
             }else{
                 $this->layout()->addSystemMessage('error','trade_decline_failed');
@@ -38,7 +38,7 @@ class TradeController extends AppController {
             $trade = Trade::getById($_POST['id']);
             
             // try db update an set messages in case of success or failure
-            if($trade->accept($_POST['text'])){
+            if($trade->accept($this->login(),$_POST['text'])){
                 $this->layout()->addSystemMessage('success','trade_accept_success');
             }else{
                 $this->layout()->addSystemMessage('error','trade_accept_failed');
@@ -67,13 +67,12 @@ class TradeController extends AppController {
                         $this->layout()->addSystemMessage('success','trade_delete_success');
                     }
                 }else{
-                	$this->layout()->addSystemMessage('error','unexpected_error');
-                    error_log('recieved invalid trade id', 3, ERROR_LOG);
+                	$this->layout()->addSystemMessage('error','invalid_data');
                 }
             }
             catch (Exception $e){
                 $this->layout()->addSystemMessage('error','trade_delete_failed');
-                error_log($e->getMessage(), 3, ERROR_LOG);
+                error_log($e->getMessage().PHP_EOL, 3, ERROR_LOG);
             }
         }
         
