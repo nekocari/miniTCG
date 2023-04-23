@@ -137,16 +137,9 @@ class UpdateController extends AppController {
         }
         
         // set values that are to be passed on to view
-        // ... in case of update is new
-        if($update->getStatus() == 'new'){
-            
-            $data['curr_decks'] = $update->getRelatedDecks(true);
-            $data['new_decks'] = $update->getUnlinkedDecks();
-        
-        // .. in case update is already published
-        }else{
-            $this->layout()->addSystemMessage('info','update_edit_published');
-            
+        // ... in case of update is 
+        if($update->getStatus() == 'public'){
+            $this->layout()->addSystemMessage('info','update_edit_published');            
         }
         
         $this->layout()->render('admin/update/edit.php',['update'=>$update]);
@@ -159,9 +152,7 @@ class UpdateController extends AppController {
     public function take() {
         
         // if is not logged in redirect to sign in form
-        if(!isset($_SESSION['user'])){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }
+        $this->redirectNotLoggedIn();
         
         // get current update data 
         $curr_update = Update::getLatest();
@@ -178,7 +169,7 @@ class UpdateController extends AppController {
             if(isset($_POST['takeUpdateCards'])){
                 
                 // try to add a new entry to database for taken cards
-                $update_cards = Card::takeCardsFromUpdate($_SESSION['user']->id, $curr_update->getId());
+                $update_cards = Card::takeCardsFromUpdate($this->login()->getUserId(), $curr_update->getId());
                 
                 // set up messages for success or faliure
                 if(!is_array($update_cards)){

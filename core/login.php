@@ -202,13 +202,14 @@ class Login {
         if(is_null($activation_code->create())){
         	throw new ErrorException('unable create activation code entry! Please contact an administratior.',1014);
         }
-        $activation_url = Routes::getUri('login_activation').'?code='.$activation_code->getCode().'&user='.$member->getId();
+        $activation_url = BASE_URI.Routes::getUri('login_activation').'?code='.$activation_code->getCode().'&user='.$member->getId();
         
     	// 5. send mail with code
-    	$subject = Setting::getByName('app_name')->getValue();
+        $app_name = Setting::getByName('app_name')->getValue();
+    	$subject = $app_name;
         $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_template_sign_up.php');
-        $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}'];
-        $message_replace = [$name,$pw1,$activation_url];
+        $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}','{{APPNAME}}'];
+        $message_replace = [$name,$pw1,$activation_url,$app_name];
         $message = str_replace($message_search, $message_replace, $message);
         
         // mail header

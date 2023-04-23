@@ -41,20 +41,30 @@ class AdminController extends AppController {
         // update form was sent
         if(isset($_POST['updateSettings']) AND isset($_POST['settings'])){
             // go throug all settings and store the values in database
+        	$error_str = '';
+            $updated_str = '';
             foreach($_POST['settings'] as $name => $value){
                 $setting = Setting::getByName($name);
-                $setting->setValue($value);     
-                // check and log if any setting was not updated
-                if(!$setting->update()){
-                	$errors[] = $name." not updated";
-                }   
+                if($setting->getValue() != $value){
+	                $setting->setValue($value);     
+	                // check and log if any setting was not updated
+	                if(!$setting->update()){
+	                	$error_str.= $name.', ';
+	                }else{
+	                	$updated_str.= $name.', ';
+	                }
+                }
             }
+            // display a success message
+            if(strlen($updated_str) > 0){
+            	$this->layout()->addSystemMessage('success','admin_settings_updated',[],substr($updated_str,0,-2));
+            }
+            // display a error message
+            if(strlen($error_str) > 0){
+            	$this->layout()->addSystemMessage('error','admin_settings_not_updated',[],substr($error_str,0,-2));
+            }   
         }
-        
-        // if form was sent and no error message was created - create a success message
-        if(isset($_POST['updateSettings']) AND !isset($errors)){ 
-        	$this->layout()->addSystemMessage('success','admin_settings_updated');
-        }                
+                     
         $this->layout()->render('admin/settings.php',['settings'=>Setting::getAll(['name'=>'ASC'])]);          
     }
     
@@ -281,8 +291,7 @@ class AdminController extends AppController {
                 $memberdata->setMoney($_POST['Money']);
                 $memberdata->setInfoText($_POST['Text']);
                 $memberdata->setStatus($_POST['Status']);
-                
-                $return = $memberdata->store();
+                $memberdata->update();
                 
                 $this->layout()->addSystemMessage('success', 'admin_edit_user_success');
             }
@@ -305,7 +314,7 @@ class AdminController extends AppController {
         
         if($memberdata){
             $data['accepted_stati'] = Member::getAcceptedStati();
-            $data['memberdata'] = $memberdata->getEditableData('admin');
+            $data['memberdata'] = $memberdata->getEditableData($this->login());
             
             $this->layout()->render('admin/members/edit.php',$data);
             

@@ -16,7 +16,7 @@
 		<h4>Karte anbieten</h4>
 		
 		<div class="text-center" id="offered-card">
-			<?php echo $searchcardurl; ?>
+			<img class="cardimage">
 		</div>
 		
 		<div class="text-center m-2">
@@ -58,7 +58,8 @@ function changeImage(){
 	if(selected.length == 1){
     	let imgUrl = selected[0].getAttribute('data-url');
     	let offeredCard = document.getElementById('offered-card').getElementsByClassName('cardimage');
-    	offeredCard[0].style.backgroundImage = "url('"+imgUrl+"')";
+    	//offeredCard[0].style.backgroundImage = "url('"+imgUrl+"')";
+    	offeredCard[0].src = imgUrl;
     	
 	}else{
 		console.log('more than one selected option found for #offered_card'); 

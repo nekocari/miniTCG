@@ -282,9 +282,9 @@ class Member extends DbRecordModel {
      * checks if the member has enough cards to level up and changes the level
      * TODO: master card count individual by deck size!
      */
-    public function checkLevelUp() {    	
+    public function checkLevelUp() {
     	
-    	$sql = 'SELECT SUM(size) FROM decks_master 
+    	$sql = 'SELECT SUM(decks_types.size) FROM decks_master 
 				LEFT JOIN decks ON decks_master.deck = decks.id
 				LEFT JOIN decks_types ON decks_types.id = decks.type_id
 				WHERE member = '.$this->getId();
@@ -293,10 +293,10 @@ class Member extends DbRecordModel {
     	if(is_null($master_cards_sum)){ $master_cards_sum = 0; }
     	
     	$card_count_with_master = $this->getCardCount() + $master_cards_sum;
-        $current_level = $this->getLevel();
+        $current_level = $this->getLevel('object');
         $reached_level = Level::getByCardNumber($card_count_with_master);
-        
-        if(!is_null($reached_level) AND $current_level != $reached_level->getId()){
+        //var_dump($reached_level).'<hr>'.var_dump($reached_level);
+        if(!is_null($reached_level) AND $current_level->getLevel() != $reached_level->getLevel()){
             
             $next_level = $this->getLevel('object')->next();
             
@@ -305,10 +305,10 @@ class Member extends DbRecordModel {
                 $this->setLevel($next_level->getId());
                 $this->cards = null;
                 
-                if($this->store()){
+                if($this->update()){
                     
                     // Gift for level up
-                    $levelup_bonus = Setting::getByName('giftcards_for_master');
+                    $levelup_bonus = Setting::getByName('master_gift_cards');
                     if($levelup_bonus instanceof Setting AND $levelup_bonus->getValue() > 0){
                         $cards = Card::createRandomCards($this, intval($levelup_bonus->getValue()));
                         $cardnames = $cardnames_msg = '';
@@ -318,9 +318,9 @@ class Member extends DbRecordModel {
                         }
                         $cardnames = substr($cardnames, 0, -2);
                         Tradelog::addEntry($this, 'level_up_info',$cardnames);
+                        $msg_text = SystemMessageTextHandler::getInstance()->getTextByCode('level_up_info',$this->getLang());
+                        Message::add(null, $this->getId(), $msg_text.$cardnames_msg);
                     }
-                    $msg_text = SystemMessageTextHandler::getInstance()->getTextByCode('level_up_info',$this->getLang());
-                    Message::add(null, $this->getId(), $msg_text.$cardnames_msg);
                     
                 }
             }
@@ -335,7 +335,7 @@ class Member extends DbRecordModel {
     public function getEditableData($login = null) {
         $fields = array();
         if($login instanceof Login AND count($login->getUser()->getRights()) > 0){
-            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Status' => $this->status, 'Level ID' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
+            $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Status' => $this->status, 'Level' => $this->level, 'Money' => $this->money, 'Text' => $this->info_text);
         }else{
             $fields = array('Name' => $this->name, 'Mail' => $this->mail, 'Text' => $this->info_text);
         }
@@ -489,6 +489,10 @@ class Member extends DbRecordModel {
         return $this->mail;
     }
     
+    /**
+     * @param string $mode [id|obj]
+     * @return int|Level|NULL
+     */
     public function getLevel($mode='id') {
         if($mode=='id'){
             return $this->level;

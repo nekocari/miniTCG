@@ -82,7 +82,7 @@ class LevelController extends AppController {
             }
             
             catch (Exception $e){
-                $this->layout()->addSystemMessage('error','level_edit_failed');
+                $this->layout()->addSystemMessage('error','level_edit_failed',[],$e->getMessage());
             }
             
         }

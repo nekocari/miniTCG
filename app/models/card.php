@@ -19,13 +19,11 @@ class Card extends DbRecordModel {
         $db_fields = array('id','deck','number','name','owner','status_id','date', 'utc'),
         $sql_order_by_allowed_values = array('id','name');
     
-    private static  $tpl_width, $tpl_height, $tpl_html, $accepted_stati, $accepted_stati_obj;
+    private static $tpl_html, $accepted_stati, $accepted_stati_obj;
     
     public function __construct() {
         parent::__construct();
         if(is_null(self::$tpl_html)){
-            self::$tpl_width = Setting::getByName('cards_template_width')->getValue();
-            self::$tpl_height = Setting::getByName('cards_template_height')->getValue();
             self::$tpl_html = file_get_contents(PATH.'app/views/multilang/templates/card_image_temp.php');
         }
     }
@@ -110,15 +108,6 @@ class Card extends DbRecordModel {
         return $req->execute(array(':status'=>$status,':id'=>$id,':user'=>$user));
     }
     
-    /**
-     * @deprecated
-     */
-    public static function dissolveCollection($deck_id,$user) {
-        $db = DB::getInstance();
-        $new_status_id = CardStatus::getWhere(['new'=>1])[0];
-        $req = $db->prepare('UPDATE cards SET status_id = :status_id WHERE deck = :deck_id and owner = :user and status = \'collect\'');
-        return $req->execute(array(':status_id'=>$new_status_id,':deck_id'=>$deck_id,':user'=>$user));
-    }
     
     /**
      * 
@@ -261,35 +250,18 @@ class Card extends DbRecordModel {
         $url = $this->getImageUrl();
         
         $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
-        $replace = array(self::$tpl_width, self::$tpl_height, $url);
+        $replace = array($this->getDeck()->getType()->getCardWidth(), $this->getDeck()->getType()->getCardHeight(), $url);
         
         return str_replace($tpl_placeholder, $replace, self::$tpl_html);
     }
-    
-    public static function getSearchcardURL($mode='default', $number=1){
-        if(!in_array($mode,['default','puzzle'])){
-            $mode = 'default';
-        }
-        switch($mode){
-            case 'default':
-                $url = Setting::getByName('card_filler_general_image')->getValue();
-                break;
-            case 'puzzle':
-                $folder_url = Setting::getByName('card_filler_puzzle_folder')->getValue();
-                if(substr($folder_url,strlen($folder_url)-1,1) != '/'){
-                    $folder_url.= '/';
-                }
-                $url = $folder_url.$number.'.'.Setting::getByName('cards_file_type')->getValue();
-                break;
-        }
-        return $url;
-    }
-    
-    public static function getSearchcardHtml($mode='default', $number=1) {
-        $image_url = self::getSearchcardUrl($mode, $number); 
-        $tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
-        $replace = array(self::$tpl_width, self::$tpl_height, $image_url);
-        return str_replace($tpl_placeholder, $replace, self::$tpl_html);
+        
+    public static function getFillerHtml($file_path,$img_width,$img_height){
+    	if(is_null(self::$tpl_html)){
+    		self::$tpl_html = file_get_contents(PATH.'app/views/multilang/templates/card_image_temp.php');
+    	}
+    	$tpl_placeholder = array('[WIDTH]','[HEIGHT]','[URL]');
+    	$replace = array($img_width, $img_height, Carddeck::getDecksFolder().$file_path);
+    	return str_replace($tpl_placeholder, $replace, self::$tpl_html);    	
     }
     
     public function isTradeable() {
@@ -337,8 +309,9 @@ class Card extends DbRecordModel {
     	if(is_null($name)){
     		$name = Carddeck::getById($deck_id)->getDeckname().$number;
     	}
-    	$card->setPropValues(['deck'=>$deck_id,'number'=>$number,'name'=>$name,'owner'=>$member->getId(),'status_id'=>$status_id,'utc'=>$date->format('c')]);
+    	$card->setPropValues(['deck'=>$deck_id,'number'=>$number,'name'=>$name,'status_id'=>$status_id,'utc'=>$date->format('c')]);
     	if($member instanceof Member){
+    		$card->setOwner($member->getId());
     		$card->create();
     	}
     	return $card;
@@ -356,7 +329,7 @@ class Card extends DbRecordModel {
     		if(is_int($amount) and $amount > 0){
     			$decks = Carddeck::getRandom(true,$amount);
     			foreach($decks as $deck){
-    				$deck_size = $deck->getType()->getSize();;
+    				$deck_size = $deck->getSize();;
     				$number = mt_rand(1,$deck_size);
     				$cards[] = Card::createNewCard($member, $deck->getId(), $number);
     			}
@@ -375,49 +348,43 @@ class Card extends DbRecordModel {
     public static function takeCardsFromUpdate($user_id,$update_id) {
         $cards = array();
         $db = Db::getInstance();
+        $member = Member::getById($user_id);
          
         try{
             $update_decks = Carddeck::getInUpdate($update_id);
-            $decksize = Setting::getByName('cards_decksize')->getValue();
-            $db->beginTransaction();
+            $card_log_str = '';
+            
             foreach($update_decks as $deck){
                 // insert created data to insert into DB for a new Card Object
-                $card_props['number'] = mt_rand(1,$decksize);
-                $card_props['name'] = $deck->getDeckname().$card_props['number'];
-                $card_props['date'] = date('Y-m-d G:i:s');
-                $card_props['deck'] = $deck->getId();
-                $card_props['owner'] = $user_id;
+            	$number = mt_rand(1,$deck->getSize());
+                $card_name = $deck->getDeckname().$number;
                 
                 $card = new Card();
-                $card->setPropValues($card_props);
-                $card_id = $card->create();
-                $card->setPropValues(['id'=>$card_id]);
+                $card = Card::createNewCard($member, $deck->getId(), $number, $card_name);
                 
                 $cards[] = $card;
+                $card_log_str.= ', '.$card->getName().' (#'.$card->getId().')';
             }
             if(count($cards) > 0){
                 $req = $db->prepare('INSERT INTO updates_members (update_id, member_id) VALUES (:update_id,:user_id) ');
                 $req->execute(array(':update_id'=>$update_id,':user_id'=>$user_id));
             }
             
-            // add entry for each card in member tradelog
-            foreach($cards as $card){
-                Tradelog::addEntry($user_id, 'Cardupdate -> '.$card->getName().' (#'.$card->getId().') erhalten.');
-            }
+            // add entry tradelog
+            Tradelog::addEntry($member, '0','Cardupdate -> '.$card_log_str);
             
-            $db->commit();
-            Member::getById($user_id)->checkLevelUp();
+            
+            $member->checkLevelUp();
             return $cards;
         }
         catch(Exception $e) {
-            $db->rollBack();
-            return $e->getMessage();
+            throw $e;
         }
         
     }
     
     /**
-     * Get Member who owns a specific card with status 'trade' 
+     * Get Member who owns a specific card with status thats tradeable
      * @param int $deck_id
      * @param int $number
      * @return Member[]

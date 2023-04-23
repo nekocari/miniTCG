@@ -26,29 +26,25 @@ class CategoryController extends AppController {
             
             try {
                 if($_POST['action'] == 'del_cat'){
-                    $return = Category::getById($_POST['id'])->delete();
+                   Category::getById($_POST['id'])->delete();
                     
                 }elseif($_POST['action'] == 'del_subcat'){
-                    $return = Subcategory::getById($_POST['id'])->delete();
+                   Subcategory::getById($_POST['id'])->delete();
                     
                 }
             }
             
             catch(Exception $e){
                 
-                if($e instanceof PDOException){
-                    if($e->getCode() == 23000){
-                        $message = 'Es kann keine Kategorie/Unterkategorie gelöscht werden, solang noch Elemente untergeordnet sind!';
-                    }
+                if($e instanceof PDOException AND $e->getCode() == 23000){
+                    $this->layout()->addSystemMessage('error', 'database_relations_exist_error');
                 }else{
-                    $message = $e->getMessage();
+                	$this->layout()->addSystemMessage('error', '0',[],$e->getCode());
                 }
-                
-                die($this->layout()->render('admin/error.php',['errors'=>array($message)]));
-               
                 
             }
         }
+        
         
         $data['categories'] = Category::getALL();
         

@@ -22,9 +22,6 @@ class Game extends DbRecordModel {
     
     public function __construct() {
         parent::__construct();
-        $sys_msgs = SystemMessageTextHandler::getInstance();
-        $this->reward_texts['won'] = $sys_msgs->getTextByCode('game_won');
-        $this->reward_texts['lost'] = $sys_msgs->getTextByCode('game_lost');
     }
     
     /**
@@ -163,6 +160,9 @@ class Game extends DbRecordModel {
         
         $result_action = preg_replace('/\d+/', '', $result);
         $result_amount = intval(str_replace($result_action, '', $result));
+        $sys_msgs = SystemMessageTextHandler::getInstance();
+        $this->reward_texts['won'] = $sys_msgs->getTextByCode('game_won',$this->getMember()->getLang());
+        $this->reward_texts['lost'] = $sys_msgs->getTextByCode('game_lost',$this->getMember()->getLang());
                 
         if(in_array($result_action,self::$allowed_game_results)){
             
@@ -186,6 +186,7 @@ class Game extends DbRecordModel {
                     }else{
                         $game_reward['cards'] = $cards;
                     }
+                    $this->getMember()->checkLevelUp();
                     break;
                     
                 case 'win-money:':

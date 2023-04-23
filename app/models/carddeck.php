@@ -9,25 +9,26 @@
 
 class Carddeck extends DbRecordModel {
     
-    protected $id, $name, $deckname, $status, $type, $type_id, $creator, $date, $utc, $description, $description_html;
+    protected $id, $name, $deckname, $status, $size, $type_id, $creator, $date, $utc, $description, $description_html;
     
     protected static
     $db_table = 'decks',
     $db_pk = 'id',
-    $db_fields = array('id','name','deckname','status','type','type_id','creator','date','utc','description','description_html'),
-    $sql_order_by_allowed_values = array('id','name','deckname','date');
+    $db_fields = array('id','name','deckname','status','size','type_id','creator','date','utc','description','description_html'),
+    $sql_order_by_allowed_values = array('id','name','deckname','date', 'type_id');
     
     private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj, $type_obj;
-    private $date_formate = 'd.m.Y';
     
     private static $decks_folder;
     private static $naming_pattern = "/[A-Za-z0-9äÄöÖüÜß _\-]+/";
     private static $allowed_status = array('public','new'); 
-    private static $allowed_types, $allowed_types_obj;
+    private static $allowed_types, $allowed_types_obj, $date_format;
     
     public function __construct() {
+        if(is_null(self::$date_format)){
+        	self::$date_format = Setting::getByName('date_format')->getValue();
+        }
         parent::__construct();
-        $this->date_formate = Setting::getByName('date_format')->getValue();
     }
     
     public static function getAcceptedStati(){
@@ -211,7 +212,7 @@ class Carddeck extends DbRecordModel {
     public function master($login){
     	// check if collection card sum matches deck size
     	$collection_cards = Card::getWhere(['owner'=>$login->getUserId(),'deck'=>$this->getId(),'status_id'=>CardStatus::getCollect()->getId()]);
-    	$deck_size = $this->getType()->getSize();
+    	$deck_size = $this->getSize();
     	if(count($collection_cards) == $deck_size){
     		// db transation begins - only commit if everything works
     		try{
@@ -227,7 +228,7 @@ class Carddeck extends DbRecordModel {
 	    		// commit db transaction
 	    		$this->db->commit();
 	    		// gift cards acording to settings
-	    		$gift_cards = Setting::getByName('master_gift_cards')->getValue();
+	    		$gift_cards = intval(Setting::getByName('master_gift_cards')->getValue());
 	    		
 	    		if($gift_cards > 0){
 	    			$cards = Card::createRandomCards($login->getUser(), $gift_cards);
@@ -236,7 +237,7 @@ class Carddeck extends DbRecordModel {
 	    				$log_text.= $card->getName().'(#'.$card->getId().'), ';
 	    			}
 	    			$log_text = substr($log_text, 0, -2);
-	    			Tradelog::addEntry($this->login()->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
+	    			Tradelog::addEntry($login()->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
 	    		}
 	    		return true;
 	    	}
@@ -251,39 +252,20 @@ class Carddeck extends DbRecordModel {
     }
     
     /**
-     * @todo - > not static!
-     * @deprecated
-     * @param unknown $deck
-     * @param unknown $member
-     * @throws Exception
-     * @return boolean|unknown
+     * 
+     * @param Login $login
+     * @return boolean
      */
-    public static function masterx($deck, $member){
-        $db = DB::getInstance();
-        
-        $gift_cards_num = Setting::getByName('master_gift_cards')->getValue();
-        try{
-            $db->beginTransaction();
-            // delete cards
-            $req = $db->prepare('DELETE FROM cards WHERE owner = :member AND deck = :deck AND status=\'collect\' ');
-            $req->execute(array(':deck'=>$deck, ':member'=>$member));
-            if($req->rowCount() != Setting::getByName('cards_decksize')->getValue()){
-                throw new Exception('Das Deck ist nicht komplett!','');
-            }
-            // add master
-            $req = $db->prepare('INSERT INTO decks_master (deck,member) VALUES (:deck,:member) ');
-            $req->execute(array(':deck'=>$deck, ':member'=>$member));
-            $db->commit();
-            // add gift cards for mastering a deck
-            if($gift_cards_num > 0){
-                Card::createRandomCard($member,$gift_cards_num,'Deck gemastert');
-            }
-            return true;
-        }
-        catch(Exception $e) {
-            $db->rollBack();
-            return $e->getMessage();
-        }
+    public function dissolveCollection($login) {
+    	$new_status_id = CardStatus::getNew()->getId();
+    	$collect_status_id = CardStatus::getCollect()->getId();
+    	$req = $this->db->prepare('UPDATE cards SET status_id = :status_id WHERE deck = :deck_id and owner = :user and status_id = :collect_id');
+    	$req->execute(array(':status_id'=>$new_status_id,':deck_id'=>$this->getId(),':user'=>$login->getUserId(),':collect_id'=>$collect_status_id));
+    	if($req->rowCount() > 0){
+    		return true;
+    	}else{
+    		return false;
+    	}
     }
     
     public function getId() {
@@ -298,9 +280,10 @@ class Carddeck extends DbRecordModel {
         return $this->deckname;
     }
     
-    public function getDate() {
-        $date = date($this->date_formate, strtotime($this->date));
-        return $date;
+    public function getDate($timezone = DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->utc);
+    	$date->setTimezone(new DateTimeZone($timezone));
+    	return $date->format(self::$date_format);
     }
     
     /**
@@ -369,7 +352,11 @@ class Carddeck extends DbRecordModel {
     }
     
     public function getSize() {
-    	return $this->getType()->getSize();
+    	if(empty($this->size)){
+    		$this->size = $this->getType()->getSize();
+    		$this->update();
+    	}
+    	return $this->size;
     }
     
     public function getCategory() {
@@ -419,9 +406,8 @@ class Carddeck extends DbRecordModel {
     public function getImageUrls() {
         $urls = array();
         $setting_file_type = Setting::getByName('cards_file_type')->getValue();
-        $setting_cards_decksize = Setting::getByName('cards_decksize')->getValue();
         $deckname = $this->getDeckname();
-        for($i = 1; $i <= $setting_cards_decksize; $i++){
+        for($i = 1; $i <= $this->getSize(); $i++){
             $urls[$i] = self::getDecksFolder().$deckname.'/'.$deckname.$i.'.'.$setting_file_type;
         }
         $urls['master'] = self::getDecksFolder().$deckname.'/'.$deckname.'_master.'.$setting_file_type;
@@ -430,10 +416,10 @@ class Carddeck extends DbRecordModel {
     
     public function getImages() {
         $card_images = array();
-        $setting_tpl_width = Setting::getByName('cards_template_width')->getValue();
-        $setting_tpl_height = Setting::getByName('cards_template_height')->getValue();
-        $setting_master_tpl_width = Setting::getByName('cards_master_template_width')->getValue();
-        $setting_master_tpl_height = Setting::getByName('cards_master_template_height')->getValue();
+        $setting_tpl_width = $this->getType()->getCardWidth();
+        $setting_tpl_height = $this->getType()->getCardHeight();
+        $setting_master_tpl_width = $this->getType()->getMasterWidth();
+        $setting_master_tpl_height = $this->getType()->getMasterHeight();
         $cardimage_tpl = file_get_contents(PATH.'app/views/multilang/templates/card_image_temp.php');
         
         $image_urls = $this->getImageUrls();
@@ -457,8 +443,8 @@ class Carddeck extends DbRecordModel {
     	unset($card_images['master']);
     	
     	if(empty($this->getType()->getTemplatePath())){
-	        $cards_per_row = Setting::getByName('deckpage_cards_per_row')->getValue();
-	        $decksize = $this->getType()->getSize();
+	        $cards_per_row = $this->getType()->getPerRow();
+	        $decksize = $this->getSize();
 	        $counter = 0;
 	        foreach($card_images as $image){
 	            $counter++;
@@ -468,7 +454,7 @@ class Carddeck extends DbRecordModel {
 	            }
 	        }
     	}else{
-    		$template_path = PATH.'app/views/'.$this->getType()->getTemplatePath();
+    		$template_path = DeckType::getTemplateBasePath(true).$this->getType()->getTemplatePath();
     		if(file_exists($template_path)){
     			$template = file_get_contents($template_path);
     			$counter = 1;
@@ -491,5 +477,18 @@ class Carddeck extends DbRecordModel {
         return Master::getMemberByDeck($this->id);
     }
     
+    public function create() {
+    	if(empty($this->size)){
+    		$this->size = $this->getType()->getSize();
+    	}
+    	parent::create();
+    }
+    
+    public function update() {
+    	if($this->size != $this->getType()->getSize()){
+    		$this->size = $this->getType()->getSize();
+    	}
+    	parent::update();
+    }
     
 }

@@ -16,7 +16,7 @@
     		<th>ID</th>
     		<th>Name</th>
     		<th class="text-center">Karten</th>
-    		<th class="text-center">Template?</th>
+    		<th class="text-center">Ansichts Template?</th>
     		<th></th>
     	</tr>
 	</thead>
@@ -43,3 +43,5 @@
 	</tbody>
 </table>
 </div>
+
+<p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_deck_type_add');?>">neue Deck Art anlegen</a></p>

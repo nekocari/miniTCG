@@ -4,19 +4,17 @@
     </head>
     <body>
     	<p>Thank you for registration!<br>
-    	with this mail you recive your
-      <p>Vielen Dank für deine Anmeldung!<br>
       	You receive your login details with this email.</p>
         
-      <p>Username: {{MEMBERNAME}}<br>
+      <p>Username: {{USERNAME}}<br>
         Password: {{PASSWORD}}</p>
        
       <p></p>
       <p>Before you can log in, please activate your account.<br>
       Please use the following link:<br>
-      <a href="{{ACTIVATION-URL}}">{{ACTIVATION-URL}}</a></p>
+      <a href="{{ACTIVATIONURL}}">{{ACTIVATIONURL}}</a></p>
         
       <p>Have fun,<br>
       the {{APPNAME}} Team</p>
     </body>
-</html> 
+</html>

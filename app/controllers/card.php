@@ -8,17 +8,23 @@
 class CardController extends AppController {
     
     function search() {
-        
-        if(!isset($_POST['deck_id']) OR !isset($_POST['number'])){
+    	
+    	$this->redirectNotLoggedIn();
+    	
+    	if(!isset($_GET['deck_id']) OR !isset($_GET['number'])){
             
             $data['decks'] = Carddeck::getAllByStatus('public');
-            $data['decksize'] = Setting::getByName('cards_decksize')->getValue();
-            
+            if(count($data['decks'])){
+            	$data['decksize'] = $data['decks'][0]->getSize();
+            }else{
+            	$data['decksize'] = 0;
+            }
             $this->layout()->render('card/search.php', $data);
             
         }else{
-            
-            $data['trader'] = Card::findTrader($_POST['deck_id'],$_POST['number']);
+        	
+        	$data['trader'] = Card::findTrader($_GET['deck_id'],$_GET['number']);
+        	$data['card'] = Card::createNewCard(null, $_GET['deck_id'], $_GET['number']);
                         
             $this->layout()->render('card/search_result.php',$data);
         }

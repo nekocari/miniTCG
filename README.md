@@ -5,10 +5,11 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 
 (Because of the DSGVO you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
 
-*Note that this is a german project, so files will contain mostly german text elements!*
-If you are interested in an english translation, please let me know.
+*Note that this startet as an all german project, so files may still contain some german text elements! 
+But the comments are mostly english and the views are being translated as well, with options to add in other languages in the future. *
 
-**The Application is still under development!**
+
+**The Application is still in development.**
 
 ---
 
@@ -23,68 +24,103 @@ If you are interested in an english translation, please let me know.
 ---
 
 ## How to Setup
-* Go to inc/constants.php and set the constants for the App. See comments in the file for details.
-* Upload everything to your webspace using a FTP programm.
-* Run *yourwebsitehere.com*/setup/setup.php
-* Now you should be able to login using the default Admin account.
-* Visit the administration area *yourwebsitehere.com*/admin/ (or click the link in the navigation) and change the application settings to your liking.
-* **Delete** the *setup* folder!
+* TBA
 
 
 
 ## Current Features
 
-* login system
-* admin panel
-  * manage decks incl. file upload
-  * manage cardupdates
-  * manage level
-  * manage news
-  * manage categories (and subcategories)
-  * manage app settings
-  	* size of cardimages
-  	* size of deck 
-  	* name the currency  
-  	* etc.
-  * manage members
-  	* manage rights 
-  	* gift random cards
-  	* gift money
-  	* edit profil data
-  	* reset passwords
-  	* delete accounts
 * public functions
+  * responsive basic design
+  * language switch automatic
+  	* according to browser settings if translation exists
   * homepage
-  * display news
+  * view news
   * deck list
   * member list
   * display online members
+* login system
+  * sign up
+  * sign in
+  * sign out
+  * activation codes via mail
+  * reset password
+* administration
+  * manage news
+    * connect updates to them
+  * manage members
+    * search
+    * manage rights 
+    * gift random cards
+    * gift money
+    * edit profil data
+    * reset passwords
+    * delete accounts
+  * manage decks
+    * create (with file upload)
+    * edit data
+    * manage card updates
+  * manage application
+    * main categories and subcategories
+    * level
+    * deck types
+      * create, edit, delete individual types
+      * change deck sizes
+      * change image sizes
+      * change filler type and image paths
+      * create and edit html templates withrom within the app
+    * card manager categories
+      * rename, create or delete them
+      * set if visible in member profil
+      * etc.
+    * general settings 
+      * card folder path
+      * currency  
+      * shop 
+      * etc.
+  	* manage routing
+  	* SQL import option for later updates
 * member functions
-  * view decks
+  * view decks (may also be made public)
+  * view member profils (may also be made public)
+  	* make trade offers
+  		* info for each offerable card if it's usefull
+  * manage cards
+  	* pre selection keep/collect
+  	* highlighting keep/collect
+  	* master decks
+  	* search link for missing collect cards
+  * manage trade offers
+  	* reply to recieved offers
+  	* withdraw made offers
   * messages
   	* write 
   	* inbox
   	* outbox
-  * manage cards
-  	* pre selection keep/collect cards
-  	* highlighting keep/collect cards
-  * master decks
+  * view master cards
+  	* sort by date or deck name
   * take cards from updates
-  * search cards
-  * buy cards in a cardshop
+  * play games
+  	* 3 simple games included
+  	* easy to use class for creating lucky games
+  * buy cards from a shop
+  * search for cards
   * tradelog
-  * edit member data (+ password change)
-  * make trade offers
-  * respond to trade offers 
-  * delete account
   * automated level ups
+  * edit own data
+  	* profil data
+  	* language and timezone settings
+  	* change password
+  * delete account
 
    
 ## Features TBA
 * allow comments on news
-* highlighting of needed cards in shop
 * add decks without uploading files
 * sort & search options for lists
+* add reset option for shop
+* add individualization for handing out update cards
+* add simple pages without messing with the controller files
 
 
 ## Used Libs & Co.
@@ -100,5 +136,4 @@ FontAwesome 5.15.3 (CDN)
 
 ## Special Thanks
 Goes to **Maron** for first testing!  
-Big shoutout to **Kasu** :3 who's supporting miniTCG by using it for her upcoming tcg!
-[Disciples of Art](https://doa.darkcharms.de/)
+And **Kasuna** who was planning on using it

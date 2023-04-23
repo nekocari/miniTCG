@@ -38,7 +38,7 @@ class ShopController extends AppController {
         $shop->restock();
               
         $data['s_cards'] = $shop->getCards($this->login(),['name'=>'ASC']);
-        $data['shop_next_restock_date'] = $shop->getRestockDate();
+        $data['shop_next_restock_date'] = $shop->getRestockDate($this->login()->getUser()->getTimezone());
         $data['currency_name'] = Setting::getByName('currency_name')->getValue();
         $data['currency_icon'] = Setting::getByName('currency_icon_path')->getValue();
         $data['user_money'] = $this->login()->getUser()->getMoney();

@@ -12,7 +12,6 @@ class MemberController extends AppController {
      */
     public function memberlist() {
     	
-    	$data['members'] = Member::getGrouped('level','name','ASC');
     	$data['members'] = Member::getGrouped('level',['name'=>'ASC']);
         $data['level'] = Level::getAll();
         
@@ -32,6 +31,7 @@ class MemberController extends AppController {
         $member = Member::getById(intval($_GET['id']));
         if(!$member instanceof Member){ $this->redirectNotFound(); }
         $cat_elements = $collections = [];
+        $cardmanager = null;
         
         
         // check category for partial
@@ -71,9 +71,12 @@ class MemberController extends AppController {
             		}
             	}else{
             		// for collections
-            		$pagination = new Pagination($collections, 4, $member->getProfilLink().'&cat='.$cat->getId());
-            		$collections = $pagination->getElements();
             		$partial_uri = 'member/profil/collect.php';
+            		$cardmanager = new Cardmanager($member);
+            		$cardmanager->setStatus($cat);
+            		$collect_decks = $cardmanager->getCollectionDecks();
+            		$pagination = new Pagination($collect_decks, 2, $member->getProfilLink().'&cat='.$cat->getId());
+            		$collections = $pagination->getElements();
             	}
             	break;
         }
@@ -84,6 +87,7 @@ class MemberController extends AppController {
         		'cat_elements'=>$cat_elements,
         		'collections'=>$collections,
         		'partial_uri'=>$partial_uri,
+        		'cardmanager'=>$cardmanager,
         		'pagination'=>$pagination->getPaginationHtml()
         ];
         

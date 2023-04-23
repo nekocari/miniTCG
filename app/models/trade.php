@@ -25,7 +25,11 @@ class Trade extends DbRecordModel {
         parent::__construct();
     }
     
-    
+    /**
+     * 
+     * @param unknown $id
+     * @return Trade|NULL
+     */
     public static function getById($id) {
         return parent::getByPk($id);
     }
@@ -145,7 +149,7 @@ class Trade extends DbRecordModel {
                     case 'declined':
                     	$search = ['{{MEMBER_NAME_RECIPIENT}}','{{MEMBER_LINK_RECIPIENT}}','{{REQUESTED_CARD_NAME}}','{{OFFERED_CARD_NAME}}'];
                     	$replace = [$this->getRecipient()->getName(),$this->getRecipient()->getProfilLink(),$this->getRequestedCard()->getName(),$this->getOfferedCard()->getName()];
-                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_declined_msg_text'));
+                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_declined_msg_text',$this->getOfferer()->getLang()));
                         break;
                 }
                 
@@ -198,7 +202,7 @@ class Trade extends DbRecordModel {
                     	// send message to inform offerer
                     	$search = ['{{MEMBER_NAME_RECIPIENT}}','{{MEMBER_LINK_RECIPIENT}}','{{REQUESTED_CARD_NAME}}','{{OFFERED_CARD_NAME}}'];
                     	$replace = [$this->getRecipient()->getName(),$this->getRecipient()->getProfilLink(),$this->getRequestedCard()->getName(),$this->getOfferedCard()->getName()];
-                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_accepted_msg_text'));
+                    	$msg_text = str_replace($search, $replace, SystemMessageTextHandler::getInstance()->getTextByCode('trade_accepted_msg_text',$this->getOfferer()->getLang()));
                     	if(!empty($msg)){
                             $msg_text.= '  "'.strip_tags($msg).'"';
                         }

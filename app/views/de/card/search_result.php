@@ -1,5 +1,5 @@
 <h1>Tauschpartner finden</h1>
-<h2>Suchergebnis</h2>
+<h2><?php echo $card->getName(); ?></h2>
 
 <?php if(count($trader)){ ?>
 <table class="table">

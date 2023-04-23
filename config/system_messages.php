@@ -50,12 +50,12 @@
     
     // SETTINGS
     $sys_msg_text_handler->addCode('admin_settings_updated', [
-    		'en'=>'settings are now updated', 
-    		'de'=>'Settings wurden aktualisiert.'
+    		'en'=>'settings are now updated: ', 
+    		'de'=>'Settings wurden aktualisiert: '
     ]);
     $sys_msg_text_handler->addCode('admin_settings_not_updated', [
-    		'en'=>'settings could not be updated',
-    		'de'=>'Settings konnten nicht aktualisiert werden.'
+    		'en'=>'settings could not be updated: ',
+    		'de'=>'Settings konnten nicht aktualisiert werden: '
     ]);
     
     // ROUTING
@@ -330,19 +330,19 @@
     		'de'=>'Karte nicht verschoben:'
     ]); // NOTE: card name will be displayed after the text
     $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_success', [
-    		'en'=>'collection dissolved - the cards need to be sorted again.', 
-    		'de'=>'Sammlung aufgelöst. Die Karten müssen erneut sortiert werden.'
+    		'en'=>'collection dissolved - the cards need to be sorted again. Deck: ', 
+    		'de'=>'Sammlung aufgelöst. Die Karten müssen erneut sortiert werden. Deck: '
     ]);
     $sys_msg_text_handler->addCode('cardmanager_dissolve_collection_failed', [
     		'en'=>'collection could not be dissolved', 
     		'de'=>'Sammlung konnte nicht aufgelöst werden.'
     ]);
     $sys_msg_text_handler->addCode('cardmanager_master_deck_success', [
-    		'en'=>'you masterd a deck', 
-    		'de'=>'Sammlung gemastert!'
+    		'en'=>'You masterd a deck: ', 
+    		'de'=>'Sammlung gemastert:'
     ]);
     $sys_msg_text_handler->addCode('cardmanager_master_deck_failed', [
-    		'en'=>'collection can not be masterd',
+    		'en'=>'Collection can not be masterd.',
     		'de'=>'Sammlung konnte nicht gemastert werden.'
     ]);
     $sys_msg_text_handler->addCode('cardmanager_master_deck_log_text', [

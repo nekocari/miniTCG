@@ -14,12 +14,14 @@
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<?php echo $category->getName(); ?>
 		<div class="row">
+			<?php if(!isset($subcategories[$category->getId()]) OR !count($subcategories[$category->getId()])){ ?>
 			<form class="col px-1 m-0" method="POST" action="">
 				<button class="btn btn-danger btn-sm del-link" onclick="return confirm('Kategorie <?php echo $category->getName(); ?> wirklich löschen?');">
 					<i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span></button>
 				<input type="hidden" name="action" value="del_cat">
 				<input type="hidden" name="id" value="<?php echo $category->getId(); ?>">
 			</form>
+			<?php } ?>
 			<a class="btn btn-primary btn-sm" href="<?php echo Routes::getUri('category_edit');?>?id=<?php echo $category->getId(); ?>">
 				<i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span></a>
 		</div>

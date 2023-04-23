@@ -17,8 +17,9 @@ class Shop {
         $this->shop_max_stock = Setting::getByName('shop_max_stock')->getValue();
     }
     
-    public function getRestockDate($format='d.m.Y H:i') {
+    public function getRestockDate($timezone=DEFAULT_TIMEZONE,$format='d.m.Y H:i') {
         $datetime = new DateTime($this->next_restock_date);
+        $datetime->setTimezone(new DateTimeZone($timezone));
         return $datetime->format($format);
     }
     
@@ -37,7 +38,7 @@ class Shop {
             $setting->update();
             
             // create random cards
-            $new_cards = Card::createRandomCard(null, ($this->shop_max_stock - $this->getCardsSum()) );
+            $new_cards = Card::createRandomCards(null, ($this->shop_max_stock - $this->getCardsSum()) );
             
             // get price settings
             $min_price = Setting::getByName('shop_price_min')->getValue();
@@ -48,7 +49,7 @@ class Shop {
                 // determin price
                 $price = rand($min_price, $max_price);
                 // set values for shop card entry
-                $sc_values = array('deck_id'=>$new_card['deck'],'number'=>$new_card['number'],'name'=>$new_card['name'],'price'=>$price);
+                $sc_values = array('deck_id'=>$new_card->getDeckId(),'number'=>$new_card->getNumber(),'name'=>$new_card->getName(),'price'=>$price);
                 // create and save shop card
                 $new_sc = new ShopCard();
                 $new_sc->setPropValues($sc_values);

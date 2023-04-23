@@ -1,0 +1,2 @@
+this is the default folder for filler images of deck type puzzle
+note: each card must be named only with the corresponding number of the card the filler is ment to replace

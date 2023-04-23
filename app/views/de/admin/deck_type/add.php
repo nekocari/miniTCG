@@ -9,13 +9,12 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
     <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_deck_type_index');?>">Deck Arten</a></li>
-    <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
+    <li class="breadcrumb-item active" aria-current="page">anlegen</li>
   </ol>
 </nav>
 
-<h1>Deck Art bearbeiten</h1>
+<h1>Deck Art anlegen</h1>
 
-<h2><?php echo $deck_type->getName(); ?></h2>
 
 <form method="post" action="">
 <table class="table table-striped">
@@ -67,20 +66,13 @@
     		<td><input class="form-control" type="number" min="1" name="cards_per_row" value="<?php echo $deck_type->getPerRow(); ?>" required></td>
     	</tr>
     	<tr>
-    		<td>Template Dateipfad<br><small class="text-muted">optional</small></td>
+    		<td>Ansichts Template Dateipfad<br><small class="text-muted">optional</small></td>
     		<td>
 	    		<div class="input-group">
-	        		<div class="input-group-prepend d-md-inline">
-    				<div class="input-group-text"><?php echo DeckType::getTemplateBasePath(); ?></div>
+	        		<div class="input-group-prepend">
+	    				<div class="input-group-text">app/views/</div>
 	    			</div>
-    				<input class="form-control" style="min-width: 100px" type="text" name="template_path" placeholder="optional" value="<?php echo $deck_type->getTemplatePath(); ?>">
-	    		</div>
-	    		<div class="text-right">
-	    		<?php if(empty($deck_type->getTemplatePath())){ ?>
-	    			<a class="btn btn-sm btn-dark" href="<?php echo Routes::getUri('admin_deck_type_template_edit'); ?>?id=<?php echo $deck_type->getId(); ?>">anlegen</a>
-	    		<?php }else{ ?>
-	    			<a class="btn btn-sm btn-dark" href="<?php echo Routes::getUri('admin_deck_type_template_edit'); ?>?id=<?php echo $deck_type->getId(); ?>">bearbeiten</a>
-	    		<?php } ?>
+    				<input class="form-control" type="text" name="template_path" placeholder="optional" value="<?php echo $deck_type->getTemplatePath(); ?>">
 	    		</div>
 	    	</td>
     	</tr>
@@ -89,7 +81,7 @@
 
 <p class="text-center mx-2">
 	<a class="btn btn-dark" href="<?php echo Routes::getUri('admin_deck_type_index');?>">zurück zur Liste</a> &bull;
-	<input class="btn btn-primary" type="submit" name="updateDeckType" value="speichern">
+	<input class="btn btn-primary" type="submit" name="addDeckType" value="speichern">
 	<input type="hidden" name="id" value="<?php echo $deck_type->getId(); ?>">
 </p>
 </form>

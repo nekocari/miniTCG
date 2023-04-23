@@ -11,7 +11,7 @@ class Cardmanager {
       
     private static $accepted_stati;
     private static $accepted_query_styles = array('join','exists');
-    private $cards,$member, $member_id, $status, $status_id, $db, $query_style, $collections, $collection_decks;
+    private $cards, $member, $member_id, $status, $status_id, $db, $query_style, $collections, $collection_decks, $viewer;
     
     public function __construct($member,$query_style = 'join') {
     	$this->member = $member;
@@ -24,13 +24,34 @@ class Cardmanager {
         return Card::getAcceptedStati();
     }
     
+    /**
+     * @param CardStatus $status
+     * @throws ErrorException
+     * @return boolean
+     */
     public function setStatus($status) {
     	if($status instanceof CardStatus){
     		$this->status = $status;
     		$this->status_id = $status->getId();
+    		return true;
     	}else{
     		throw new ErrorException('parameter 1 needs to be of type CardStatus');
     	}
+    	return false;
+    }
+    
+    /**
+     * @param Member $member
+     * @return boolean
+     */
+    public function setViewer($member){
+    	if($member instanceof Member){
+    		$this->viewer = $member;
+    		return true;
+    	}else{
+    		throw new ErrorException('parameter 1 needs to be of type Member');
+    	}
+    	return false;
     }
     
     public function setQueryStyle($style){
@@ -52,10 +73,14 @@ class Cardmanager {
     	return $updated;
     }
     
+    /**
+     * 
+     * @return Card[]
+     */
     public function getCollectionCards() {
     	if(is_null($this->collections)){
 	    	$coll_status = CardStatus::getCollect();
-	    	$this->cards[$this->status_id] = Card::getWhere(['owner'=>$this->member_id,'status_id'=>$coll_status->getId()]);
+	    	$this->cards[$this->status_id] = Card::getWhere(['owner'=>$this->member_id,'status_id'=>$coll_status->getId()],['name'=>'ASC']);
 	    	foreach($this->cards[$this->status_id] as $coll_card){
 	    		if(!isset($this->collections[$coll_card->getDeckId()][$coll_card->getNumber()])){
 	    			$this->collections[$coll_card->getDeckId()][$coll_card->getNumber()] = $coll_card;
@@ -149,40 +174,56 @@ class Cardmanager {
         return $this->cards[$this->status_id][$trade_locked];
     }
     
-    public function collectionView($deck_id) {
+    public function collectionView($deck_id,$search_link = false) {
+    	$file_type = Setting::getByName('cards_file_type')->getValue();
     	$deck_cards = $this->getCollectionCards()[$deck_id];
     	$deck = $this->getCollectionDecks()[$deck_id];
+    	$deck_card_width = $deck->getType()->getCardWidth(); 
+    	$deck_card_height = $deck->getType()->getCardHeight(); 
+    	$images = array();
     	
     	if(count($deck_cards) AND $deck instanceof Carddeck){
+    		// create an array of images (html)
+    		for($i = 1; $i <= $deck->getSize(); $i++){
+    			
+    			if(isset($deck_cards[$i])){ // card owned
+    				$images[$i] = $deck_cards[$i]->getImageHtml();
+    			}else{ // not owned
+    				if($deck->getType()->getFillerType() == 'identical'){
+    					if(!isset($filler_html)){
+    						$filler_html = Card::getFillerHtml($deck->getType()->getFillerPath(), $deck_card_width, $deck_card_height);
+    					}
+    					// get general filler image;
+    					$image = $filler_html;
+    				}else{
+    					// get number specific filler image;
+    					$image = Card::getFillerHtml($deck->getType()->getFillerPath().$i.'.'.$file_type, $deck_card_width, $deck_card_height);;
+    				}
+    				if($search_link){
+    					$image = '<a href="'.Routes::getUri('card_search').'?deck_id='.$deck->getId().'&number='.$i.'">'.$image.'</a>';
+    				}
+    				$images[$i] = $image;
+    			}
+    		}    		
+    		
+    		// put together view
     		if(empty($deck->getType()->getTemplatePath())){
+    			// no specific template path was set - just display the images
     			$cards_per_row = $deck->getType()->getPerRow();
-    			$deck_size = $deck->getType()->getSize();
 	    		$view = '';
-	    		for($i = 1; $i <= $deck_size; $i++){
-	    			if(isset($deck_cards[$i])){
-	    				$image = $deck_cards[$i]->getImageHtml();
-	    			}else{
-	    				if($deck->getType()->getFillerType() == 'identical'){
-	    					// get general filler image;
-	    					$image = 'X';
-	    				}else{
-	    					// get number specific filler image;
-	    					$image = 'Y';
-	    				}
-	    			}
-	    			$view.= $image;
-	    			if($i % $cards_per_row == 0 AND $i != $deck_size){
+	    		foreach ($images as $key => $image){
+	    			$view.= $image;	    		
+	    			if($key % $cards_per_row == 0 AND $key != $deck->getSize()){
 	    				$view.= "<br>";
 	    			}
 	    		}
 	    	}else{
-	    		$template_path = PATH.'app/views/'.$this->getType()->getTemplatePath();
+	    		// load template file and replace placeholders with actual image html
+	    		$template_path = DeckType::getTemplateBasePath(true).$deck->getType()->getTemplatePath();
 	    		if(file_exists($template_path)){
 	    			$template = file_get_contents($template_path);
-	    			$counter = 1;
-	    			foreach($card_images as $image){
-	    				$template = str_replace('['.$counter.']', $image, $template);
-	    				$counter++;
+	    			foreach ($images as $key => $image){
+	    				$template = str_replace('['.$key.']', $image, $template);
 	    			}
 	    			$view = $template;
 	    		}
