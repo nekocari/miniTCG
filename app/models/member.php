@@ -224,11 +224,24 @@ class Member extends DbRecordModel {
      *
      * @return string - html code
      */
-    public function getMemberLinkHtml() {
+    public function getMemberLinkHtml($css_classes='') {
     	if(!is_null($url = $this->getProfilLink())){
-    		return '<a href="'.$url.'">'.$this->getName().'</a>';
+    		return '<a href="'.$url.'" class="'.$css_classes.'">'.$this->getName().'</a>';
     	}else{
-    		return $this->getName();
+    		return '<span class="'.$css_classes.'">'.$this->getName().'</span>';
+    	}
+    }
+    
+    /**
+     * returns html link to 
+     *
+     * @return string - html code
+     */
+    public function getMessageLink($text='send pm',$css_classes=null) {
+    	if(!is_null($this->getId())){
+    		return '<a href="'.Routes::getUri('messages_write').'?id='.$this->getUrl().'" class="'.$css_classes.'">'.$text.'</a>';
+    	}else{
+    		return '<span class="'.$css_classes.'">'.$text.'</span>';
     	}
     }
     

@@ -76,8 +76,15 @@ class Card extends DbRecordModel {
         }else{
         	throw new ErrorException('has to be set to all tradeable stati or you need to define a single status id');
         }
+        if(key_exists('name',$order_settings)){
+        	$order_settings['deck.deckname'] = $order_settings['name'];
+        	$order_settings['card.number'] = $order_settings['name'];
+			unset($order_settings['name']);
+        }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
-        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part']." GROUP BY name HAVING counter > 1 ".$sql_order['query_part'];
+        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part'].
+        		"LEFT JOIN decks ON deck.id = cards.deck ";
+        		" GROUP BY name HAVING counter > 1 ".$sql_order['query_part'];
         
         $req = $db->prepare($sql);
         $req->execute($sql_where['param_array']);

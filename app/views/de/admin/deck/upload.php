@@ -46,7 +46,9 @@
             		<label for="type">Typ</label>
             		<select class="form-control" id="type" name="type" required>
             			<?php foreach($deck_types as $type){ ?>
-            				<option value="<?php echo $type->getId(); ?>"><?php echo $type->getName(); ?></option>
+            				<option value="<?php echo $type->getId(); ?>" data-size="<?php echo $type->getSize(); ?>">
+            					<?php echo $type->getName(); ?> (<?php echo $type->getSize(); ?> Karten)
+            				</option>
             			<?php } ?>
             		</select>
             	</div>
@@ -70,14 +72,16 @@
 		<div class="card-header">
 			Karten
 		</div>
-		<div class="card-body form-row">
-    		<?php for($i = 1; $i <= $max_deck_size; $i++){ ?>
-    		<div class="col-12 col-lg-6 form-group">
-    			<label for="file<?php echo $i; ?>">Karte <?php echo $i; ?></label>
-    			<input class="form-control form-control-sm" type="file" id="file<?php echo $i; ?>" name="card_<?php echo $i; ?>">
-    		</div>
-    		<?php } ?>
-    		<div class="col-12 col-lg-6 form-group">
+		<div class="card-body ">
+			<div id="file-uploads" class="form-row">
+	    		<?php for($i = 1; $i <= $deck_types[0]->getSize(); $i++){ ?>
+	    		<div class="col-12 col-lg-6 form-group">
+	    			<label for="file<?php echo $i; ?>">Karte <?php echo $i; ?></label>
+	    			<input class="form-control form-control-sm" type="file" id="file<?php echo $i; ?>" name="card_<?php echo $i; ?>">
+	    		</div>
+	    		<?php } ?>
+	    	</div>
+    		<div class="form-group">
     			<label for="file_master">Master Karte</label>
     			<input class="form-control form-control-sm" type="file" id="file_master" name="_master">
     		</div>
@@ -97,3 +101,27 @@
 	</div>
 
 </form>
+
+<script>	
+let fileUploads = document.getElementById('file-uploads');
+let typeSelect = document.getElementById('type');
+typeSelect.addEventListener("change", updateFileUpload);
+function updateFileUpload(){ 
+	let selected = typeSelect.selectedOptions;
+	if(selected.length == 1){
+		let upload = '';
+    	let deckSize = selected[0].getAttribute('data-size');
+    	console.log(deckSize);
+	    fileUploads.innerHTML = '';
+	    for (i=1;i<=deckSize;i++){ 
+	    	upload = '<div class="col-12 col-lg-6 form-group">';
+	    	upload+= '<label for="file'+i+'">Karte '+i+'</label>';
+			upload+= '<input class="form-control form-control-sm" type="file" id="file'+i+'" name="card_'+i+'">';
+	    	upload+= '</div>';
+	    	fileUploads.innerHTML+= upload;
+	    }
+	}else{
+		console.log('more than one selected option found for #type'); 
+	}
+}
+</script>
