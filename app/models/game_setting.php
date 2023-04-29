@@ -1,65 +1,46 @@
 <?php
 /**
  * 
- * Represents a Game
+ * Represents a Game Setting
  * 
  * @author NekoCari
  *
  */
 
-class Game extends DbRecordModel {
+class GameSetting extends DbRecordModel {
     
-    protected $id, $type, $member, $date, $utc, $wait_minutes;
-    private $member_obj, $reward_texts = array('lost' => null, 'won' => null);
+    protected $id, $game_key, $type, $wait_time, $route_identifier, $name_json, $description_json, $preview_img_path, $game_img_path;
     
     protected static 
-        $db_table = 'members_games',
+        $db_table = 'game_settings',
         $db_pk = 'id',
-        $db_fields = array('id','type','member','date','utc'),
-        $sql_order_by_allowed_values = array('id','type','member','date');
+        $db_fields = array('id','game_key','type','wait_time','route_identifier','name_json','description_json','preview_img_path','game_img_path'),
+        $sql_order_by_allowed_values = array('id','game_key');
     
-    private static $allowed_game_results = array('win-card:','win-money:','lost');
+    private static $allowed_types = array('custom','lucky');
     
     public function __construct() {
         parent::__construct();
     }
     
     /**
-     * get game datafrom database using game type and member id
-     * 
-     * @param string $type - Name of the game (like 'lucky_number')
-     * @param int $member_id - Name of the game (like 'lucky_number')
-     * 
-     * @return Game
+     * get a game setting by id
+     * @param int $id
+     * @return GameSetting|NULL
      */
-    public static function getById($type, $member_id) {
-        
-        $game_data = parent::getWhere("type = '$type' AND  member = ".intval($member_id));
-        
-        if(!is_null($game_data) AND count($game_data) == 1){
-            $game = $game_data[0];
-            $game->setPropValues(array('wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
-        }else{
-            $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
-            $game = new Game();
-            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date,'wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
-            $game_id = $game->create();
-            $game->setPropValues(['id'=>$game_id]);
-        }
-        
-        return $game;
+    public static function getById($id) {
+    	return parent::getByPk($id);
     }
     
     /**
-     * @deprecated
-     * stores the current game data into the db
-     * 
-     * @throws ErrorException
-     * @return boolean
+     * get a game setting by game key
+     * @param string $key
+     * @return GameSetting|NULL
      */
-    public function store() {
-        return parent::update();
+    public static function getByKey($key) {
+    	return parent::getByUniqueKey($key);
     }
+    
     
     /**
      * check if game is playable
@@ -74,10 +55,11 @@ class Game extends DbRecordModel {
     }
     
     /**
-     * calculate the minutes to wait till game is playable again
+     * @todo: refactor
+     * calculate the minutes to wait till game is playable again by member
      * @return number
      */
-    public function getMinutesToWait() {
+    public function getMinutesToWait($member) {
         
         $last_game_time = strtotime($this->date);
         
@@ -98,10 +80,10 @@ class Game extends DbRecordModel {
      * @return boolean
      */
     public function isDailyGame(){
-        if($this->wait_minutes !== false){
-            return false;
-        }else{
+        if(is_null($this->wait_minutes)){
             return true;
+        }else{
+            return false;
         }
     }
     
@@ -110,49 +92,60 @@ class Game extends DbRecordModel {
      * Getter
      */
     public function getId() {
-        return $this->id;
+    	return $this->id;
     }
     public function getType() {
-        return $this->type;
+    	return $this->type;
     }
-    public function getMember($mode = 'object') {
-        if($mode == 'object'){
-            if(!$this->member_obj instanceof Member){
-                $this->member_obj = Member::getById($this->member);
-            }
-            return $this->member_obj;
-        }elseif($mode == 'int'){
-            return $this->member;
-        }
+    public function getWaitTime() {
+    	return $this->wait_time;
     }
-    public function getDate() {
-        return date(Setting::getByName('date_format'),strtotime($this->date));
+    public function getRouteIdentifier() {
+    	return $this->route_identifier;
     }
-    public static function getAllowedResults(){
+    public function getName($lang='de') {
+    	$name_arr = json_decode($this->name_json);
+    	if(!array_key_exists($lang, $name_arr)){
+    		return $name_arr[0];
+    	}
+    	return $name_arr[$lang];
+    }
+    public function getDescription($lang='de') {
+    	$description_arr = json_decode($this->description_json);
+    	if(!array_key_exists($lang, $description_arr)){
+    		return $description_arr[0];
+    	}
+    	return $description_arr[$lang];
+    }
+    
+    public static function getAllowedTypes(){
         return self::$allowed_game_results;
     }
     
-    /**
-     * set a new date using an unix timestamp
-     * 
-     * @param int $date - unix timestamp
-     * @param string $mode - default is 'unix'
-     * 
-     * @return boolean
-     */
-    public function setDate($date, $mode='unix') {
-        if($mode == 'unix'){
-            $date = date('Y-m-d H:i:s', $date);
-        }else{
-            return false;
-        }
-        $this->date = $date;
-        return true;
+    
+    public function update(){
+    	$this->validate();
+    	parent::update();
+    }
+    
+    private function validate() {
+    	if(empty($this->wait_time) AND !is_null($this->wait_time)){
+    		$this->wait_time = NULL;
+    	}
+    	if(!in_array($this->getType(), $this->getAllowedTypes())){
+    		throw new ErrorException($this->getType().' is not an allowed game type!');
+    	}
     }
     
     
+    /**
+     * @todo move the management of results to here form game model
+     * @param LuckyGame|String $result 
+     * @throws ErrorException
+     * @return boolean|string[]|array[]|NULL[]|Card[][]
+     */
     public function determineReward($result){
-        
+        /*
         // get result code of the current specific game
         if($result instanceof LuckyGame){
             $result = $result->getResult();
@@ -218,7 +211,7 @@ class Game extends DbRecordModel {
             
         }else{
             throw new ErrorException('Result is not an allowed value');
-        }
+        } */
     }
     
 }
