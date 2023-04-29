@@ -51,7 +51,14 @@ class MessageController extends AppController {
             }
         }
         
-        $data['recipients'] = Member::getAll(['name'=>'ASC']);
+        if(isset($_GET['id']) AND ($message = Message::getByPk($_GET['id'])) instanceof Message){
+        	if($message->getRecipient()->getId() == $this->login()->getUserId()){
+        		$data['message'] = $message;
+        		$data['recipients'] = array(Member::getById($message->getSender()->getId()));
+        	}
+        }else{
+        	$data['recipients'] = Member::getAll(['name'=>'ASC']);
+        }
         
         $this->layout()->render('message/new.php',$data);
     }

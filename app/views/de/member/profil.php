@@ -1,8 +1,11 @@
 <h1><?php echo $member->getName(); ?></h1>
-<div class="mb-2">
-	<span class="badge badge-dark">Level <?php echo $member->getLevel('object')->getName(); ?></span> |
-	<span class="badge badge-secondary"><?php echo $member->getCardCount(); ?> Karten</span> |
-	<span class="badge badge-primary"><?php echo $member->getMasterCount(); ?> Master</span>
+<div class="row">
+	<div class="col-12 col-md mb-2">
+		<span class="badge badge-dark">Level <?php echo $member->getLevel('object')->getName(); ?></span> |
+		<span class="badge badge-secondary"><?php echo $member->getCardCount(); ?> Karten</span> |
+		<span class="badge badge-primary"><?php echo $member->getMasterCount(); ?> Master</span>
+	</div>
+	<div class="col-12 col-md text-right"><?php echo $member->getMessageLink('Nachricht senden','btn btn-primary'); ?></div>
 </div>
 
 <?php if($member->getInfoText()) { ?>  	

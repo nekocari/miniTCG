@@ -23,7 +23,7 @@
         			<?php }else{ ?>
         			<button class="btn btn-sm" disabled><small>gelesen</small></button>
         			<?php } ?>
-        			<button class="btn btn-sm btn-dark" name="delete" value="<?php echo $msg->getId(); ?>"><small>löschen</small></button>
+        			<button class="btn btn-sm btn-danger" name="delete" value="<?php echo $msg->getId(); ?>"><small>löschen</small></button>
         		</form>
         	</div>
     	</div>

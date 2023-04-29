@@ -17,7 +17,7 @@ class Message extends DbRecordModel {
         $db_table = 'messages',
         $db_pk = 'id',
         $db_fields = array('id','date','utc','sender_id','recipient_id','text','status','deleted'),
-        $sql_order_by_allowed_values = array('id','date','status','sender','recipient');
+        $sql_order_by_allowed_values = array('id','date','utc','status','sender','recipient');
         
         private static $accepted_status_values = array('new','all');
         private static $accepted_deleted_values = array('sender','recipient');
@@ -54,7 +54,7 @@ class Message extends DbRecordModel {
      * @param string $tatus
      * @return Message[]
      */
-    public static function getByMemberId($id, $type, $status='all'){
+    public static function getByMemberId($id, $type, $status='all', $order_settings=['status'=>'ASC','utc'=>'DESC']){
         if(!in_array($type,['sender','recipient'])){
             $type = 'recipient';
         }
@@ -68,7 +68,7 @@ class Message extends DbRecordModel {
             $where.= ' AND status = \'new\'';
         }
         
-        return parent::getWhere($where,['date'=>'DESC']);
+        return parent::getWhere($where,$order_settings);
     }
     
     /**
@@ -172,6 +172,7 @@ class Message extends DbRecordModel {
         return $this->sender_obj;
     }
     
+    
     public function getRecipient() {
         if(!$this->recipient_obj instanceof Member){
             $this->recipient_obj = Member::getById($this->recipient_id);
@@ -180,12 +181,20 @@ class Message extends DbRecordModel {
     }
     
     public function getText() {
-        $parsedown = new Parsedown();
-        return $parsedown->text($this->text);
+    	$parsedown = new Parsedown();
+    	return $parsedown->text($this->text);
+    }
+    
+    public function getTextPlain() {
+    	return $this->text;
     }
     
     public function getStatus() {
         return $this->status;
+    }
+    
+    public function isSystemMessage() {
+    	return is_null($this->getSender()->getId());
     }
     
     

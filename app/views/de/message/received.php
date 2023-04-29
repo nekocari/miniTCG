@@ -24,7 +24,10 @@
         			<?php }else{ ?>
         			<button class="btn btn-sm" disabled><small>gelesen</small></button>
         			<?php } ?>
-        			<button class="btn btn-sm btn-dark" name="delete" value="<?php echo $msg->getId(); ?>"><small>löschen</small></button>
+        			<?php if(!$msg->isSystemMessage()){ ?>
+        				<a class="btn btn-sm btn-dark" href="<?php echo Routes::getUri('messages_write').'?id='.$msg->getId(); ?>"><small>antworten</small></a>
+        			<?php } ?>
+        			<button class="btn btn-sm btn-danger" name="delete" value="<?php echo $msg->getId(); ?>"><small>löschen</small></button>
         		</form>
         	</div>
     	</div>

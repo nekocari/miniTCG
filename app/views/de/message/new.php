@@ -12,16 +12,20 @@
         		<div class="col-4">Empfänger</div>
         		<div class="col-8">
         			<select class="form-control" name="recipient" required>
-        				<option value=""></option>
-        				<?php foreach(Member::getWhere(['status'=>'default']) as $recipient){ if($recipient->getId() != $this->login->getUser()->getId()) { ?>
-        					<option value="<?php echo $recipient->getId(); ?>" <?php if($recipient)?>><?php echo $recipient->getName(); ?></option>
+        				<?php foreach($recipients as $recipient){ if($recipient->getId() != $this->login->getUser()->getId()) { ?>
+        					<option value="<?php echo $recipient->getId(); ?>" 
+        					<?php if(isset($_GET['member_id']) AND $recipient->getId() == $_GET['member_id']){ echo 'selected'; }?>>
+        						<?php echo $recipient->getName(); ?>
+        					</option>
         				<?php } } ?>
         			</select>
         		</div>
         	</div>
         	<hr>
         	<div class="my-2">Deine Nachricht:</div>
-        	<textarea class="form-control" rows="8" style="max-height: 75vh;" name="text" placeholder="schreib etwas..." required></textarea>
+        	<textarea class="form-control" rows="8" style="max-height: 75vh;" name="text" placeholder="schreib etwas..." required><?php 
+        	if(isset($message)){ echo PHP_EOL.PHP_EOL.'- - - - -   '.PHP_EOL.'  **'.$message->getSender()->getName().':**  '.PHP_EOL.$message->getTextPlain(); }
+        	?></textarea>
         	<small>Du kannst <a href="https://de.wikipedia.org/wiki/Markdown#Auszeichnungsbeispiele" target="_blank">Markdown</a> 
 					verwenden. HTML ist nicht erlaubt!</small>
     	</div>

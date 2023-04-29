@@ -239,7 +239,7 @@ class Member extends DbRecordModel {
      */
     public function getMessageLink($text='send pm',$css_classes=null) {
     	if(!is_null($this->getId())){
-    		return '<a href="'.Routes::getUri('messages_write').'?id='.$this->getUrl().'" class="'.$css_classes.'">'.$text.'</a>';
+    		return '<a href="'.Routes::getUri('messages_write').'?member_id='.$this->getId().'" class="'.$css_classes.'">'.$text.'</a>';
     	}else{
     		return '<span class="'.$css_classes.'">'.$text.'</span>';
     	}
