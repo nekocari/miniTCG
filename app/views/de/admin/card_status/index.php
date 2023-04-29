@@ -7,7 +7,7 @@
 
 <h1>Karten Kategorien</h1>
 
-<p>Individualiere die Kategorien zum Einsortieren im Kartenmanager<p>
+<p>Individualisiere die Kategorien zum Einsortieren im Kartenmanager<p>
 
 <p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_card_status_add');?>">Kategorie anlegen</a></p>
 
