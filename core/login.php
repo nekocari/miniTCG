@@ -164,7 +164,7 @@ class Login {
      * 
      * @return boolean|Member
      */
-    public function createUser($name, $mail, $pw1, $pw2, $lang = 'de') {
+    public function createUser($name, $mail, $pw1, $pw2, $lang = 'de', $activation_mail = true) {
         
         // TODO: Create new User
         
@@ -190,39 +190,45 @@ class Login {
         $member = new Member();
         $member->setPropValues(['name'=>$name,'mail'=>$mail]);        
         $member->create();
+        $member = Member::getById($member->getId());
         // set password (can't be done using default create or update...)
         $member->setPassword($pw1,$pw2);        
         // set language
         $member->getSettings()->setLang($lang);
         $member->getSettings()->update();
         
-        // 4. create activation code and store in db
-        $activation_code = new MemberActivationCode();
-        $activation_code->setPropValues(['member_id'=>$member->getId(),'code'=>$this->getRandomActivationCode()]);
-        if(is_null($activation_code->create())){
-        	throw new ErrorException('unable create activation code entry! Please contact an administratior.',1014);
+        if($activation_mail == true){
+	        // 4. create activation code and store in db
+	        $activation_code = new MemberActivationCode();
+	        $activation_code->setPropValues(['member_id'=>$member->getId(),'code'=>$this->getRandomActivationCode()]);
+	        if(is_null($activation_code->create())){
+	        	throw new ErrorException('unable create activation code entry! Please contact an administratior.',1014);
+	        }
+	        $activation_url = BASE_URI.Routes::getUri('login_activation').'?code='.$activation_code->getCode().'&user='.$member->getId();
+	        
+	    	// 5. send mail with code
+	        $app_name = Setting::getByName('app_name')->getValue();
+	    	$subject = $app_name;
+	        $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_template_sign_up.php');
+	        $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}','{{APPNAME}}'];
+	        $message_replace = [$name,$pw1,$activation_url,$app_name];
+	        $message = str_replace($message_search, $message_replace, $message);
+	        
+	        // mail header
+	        $header[] = 'MIME-Version: 1.0';
+	        $header[] = 'Content-type: text/html; charset=UTF-8';
+	        $header[] = 'From: '.Setting::getByName('app_name')->getValue().' <'.Setting::getByName('app_mail')->getValue().'>';
+	        
+	        // send mail
+	        error_reporting(0);
+	        if(!mail($mail, $subject, $message, implode("\r\n", $header))){
+	    		throw new ErrorException('Unable to send activation code',1015);
+	    	}
+	    	error_reporting(-1);
+        }else{
+        	$member->setStatus('default');
+        	$member->update();
         }
-        $activation_url = BASE_URI.Routes::getUri('login_activation').'?code='.$activation_code->getCode().'&user='.$member->getId();
-        
-    	// 5. send mail with code
-        $app_name = Setting::getByName('app_name')->getValue();
-    	$subject = $app_name;
-        $message = file_get_contents('app/views/'.$member->getLang().'/templates/mail_template_sign_up.php');
-        $message_search = ['{{USERNAME}}','{{PASSWORD}}','{{ACTIVATIONURL}}','{{APPNAME}}'];
-        $message_replace = [$name,$pw1,$activation_url,$app_name];
-        $message = str_replace($message_search, $message_replace, $message);
-        
-        // mail header
-        $header[] = 'MIME-Version: 1.0';
-        $header[] = 'Content-type: text/html; charset=UTF-8';
-        $header[] = 'From: '.Setting::getByName('app_name')->getValue().' <'.Setting::getByName('app_mail')->getValue().'>';
-        
-        // send mail
-        error_reporting(0);
-        if(!mail($mail, $subject, $message, implode("\r\n", $header))){
-    		throw new ErrorException('Unable to send activation code',1015);
-    	}
-    	error_reporting(-1);
     	return $member;
         
     }

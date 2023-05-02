@@ -7,73 +7,90 @@
 // set up database connection
 require_once '../config/constants.php';
 require_once '../core/dbconnect.php';
-require_once '../helper/text_processing.php';
+require_once '../core/login.php';
+require_once '../core/routes_db.php';
+require_once '../helper/parsedown.php';
+require_once '../app/models/db_record_model.php';
+require_once '../app/models/setting.php';
+require_once '../app/models/member.php';
+require_once '../app/models/member_setting.php';
 
 
-if(isset($_POST['admin_user']) AND isset($_POST['admin_password']) AND !empty($_POST['admin_user'] AND !empty($_POST['admin_password']))){
+if(isset($_POST['start_setup'])){
+	try {
+		// create tables
+		$db = Db::getInstance();
+		$mysql = file_get_contents(PATH.'setup/structure_v1_0beta.sql');
+		$req = $db->prepare($mysql);
+		if($req->execute()){
+			$res = $req->fetchAll();
+			$setup_result_message= '<div style="max-width: 500px;" class="mx-auto">'.
+					'<h3>Database created!</h3>'.
+					'<p>Create your admin account:</p>'.
+					'<form name="start-setup" method="POST" action="">'.
+					'	<div class="row justify-content-center my-2">'.
+					'		<div class="col-12">'.
+					'			Admin User'.
+					'		</div>'.
+					'		<div class="col-12">'.
+					'			<input class="form-control" type="text" name="admin_user" required>'.
+					'		</div>'.
+					'	</div>'.
+					'	<div class="row justify-content-center my-2">'.
+					'		<div class="col-12">'.
+					'			Admin Mail'.
+					'		</div>'.
+					'		<div class="col-12">'.
+					'			<input class="form-control" type="email" name="admin_mail" required>'.
+					'		</div>'.
+					'	</div>'.
+					'	<div class="row justify-content-center my-2">'.
+					'		<div class="col-12">'.
+					'			Admin Password'.
+					'		</div>'.
+					'		<div class="col-12">'.
+					'			<input class="form-control" type="password" name="admin_password" required>'.
+					'		</div>'.
+					'	</div>'.
+					'	<div class="row justify-content-center my-2">'.
+					'		<div class="col-12">'.
+					'			Admin Password repeat'.
+					'		</div>'.
+					'		<div class="col-12">'.
+					'			<input class="form-control" type="password" name="admin_password2" required>'.
+					'		</div>'.
+					'	</div>'.
+					'	<input type="hidden" name="language" value="'.key(SUPPORTED_LANGUAGES).'">'.
+					'	<p class="text-center"><input class="btn btn-primary" type="submit" name="start" value="submit"></p>'.
+					'</form></div>';			
+		}
+	} 
+	catch (PDOException $e) {
+		die('Could not create database! Error Message: '.$e->getMessage());
+	}
 	
+}elseif(isset($_POST['admin_user'])){
 	
 	try{
 		$db = Db::getInstance();
-		
-		// create tables
-		$mysql = file_get_contents(PATH.'setup/structure2023.sql');
-		$req = $db->query($mysql);
-		$admin_name = ""
-		$admin_query = "
-		INSERT INTO `members` (`id`, `name`, `mail`, `password`, `join_date`) VALUES
-		(1, 'Admin', 'admin@minitcg', '$2y$10$yq/CFMqDu8GVIK5F6QQ/7Oz5dUjdgsfirhOf0jaCh6.5Acrpt.Y2e','2018-02-20 07:40:09');
-		
-		CREATE TABLE `members_online` (
-				`member` int(10) UNSIGNED NOT NULL,
-				`ip` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-				
-				CREATE TABLE `members_rights` (
-						`member_id` int(10) UNSIGNED NOT NULL,
-						`right_id` int(10) UNSIGNED NOT NULL
-						) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-						
-						INSERT INTO `members_rights` (`member_id`, `right_id`) VALUES
-						(1, 1);
-		";
-		$req2 = $db->query($admin_query);
-		// TODO: check folder for updates and add them in in a loop.
-		// TODO: check for actual success of query
-		
-		$setup_result_message= '<p>Tabellen erfolgreich angelegt</p>'.
-				'<p>Benutzer und Passwort für den Administrationsbereich lauten: User <b>Admin</b> Passwort <b>admin</b>.</p>'.
-				'<p>Bitte ändere das Passwort direkt nach dem ersten Login!</p>';
-		
-		
+		$login = new Login();		
+		$login->createUser($_POST['admin_user'], $_POST['admin_mail'], $_POST['admin_password'], $_POST['admin_password2'], $_POST['language'], false);
+		$req2 = $db->prepare("INSERT INTO `members_rights` (`member_id`, `right_id`) VALUES (1, 1)");
+		if($req2->execute()){
+			$setup_result_message= '<h3>Installation complete!</h3><p>Please delete the setup folder now!</p>';
+		}	
+	}
+	catch (Exception $e){		
+		die('Could not create account! Error Message: '.$e->getMessage());
 	}
 	catch (PDOException $e){
-		
-		die('Setup Fehlgeschlagen! Error Message: '.$e->getMessage());
-		
+		die('Could not create account! Error Message: '.$e->getMessage());
 	}
 }else{
 	
-	$setup_result_message = '<div style="max-width: 500px;" class="mx-auto">'.
+	$setup_result_message=  '<div style="max-width: 500px;" class="mx-auto">'.
 			'<form name="start-setup" method="POST" action="">'.
-			'	<div class="row justify-content-center my-2">'.
-			'		<div class="col-12">'.
-			'			Admin User'.
-			'		</div>'.
-			'		<div class="col-12">'.
-			'			<input class="form-control" type="text" name="admin_user">'.
-			'		</div>'.
-			'	</div>'.
-			'	<div class="row justify-content-center my-2">'.
-			'		<div class="col-12">'.
-			'			Admin Password'.
-			'		</div>'.
-			'		<div class="col-12">'.
-			'			<input class="form-control" type="password" name="admin_password">'.
-			'		</div>'.
-			'	</div>'.
-			'	<p class="text-center"><input class="btn btn-primary" type="submit" name="start" value="start setup"></p>'.
+			'	<p class="text-center"><input class="btn btn-primary" type="submit" name="start_setup" value="start setup"></p>'.
 			'</form></div>';
 	
 }
