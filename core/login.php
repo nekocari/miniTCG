@@ -10,8 +10,7 @@ class Login {
     
     public function __construct() {
         $this->db		= Db::getInstance();
-        if(isset($_SESSION['user_id'])){
-            $this->user = Member::getById($_SESSION['user_id']);
+        if(isset($_SESSION['user_id']) AND ($this->user = Member::getById($_SESSION['user_id'])) instanceof Member){
             $this->language = $this->user->getSettings()->getValueByName('language');
             $this->updateMemberOnline();
         }
