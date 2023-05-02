@@ -20,7 +20,7 @@
     			<!-- Navigation if IS logged in -->  
             	<?php if($this->login->isLoggedIn()) { ?>  
     			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
-    				<span class="h5 m-0 text-nowrap">Hello <b><?php echo $this->login->getUser()->getName(); ?></b></span>
+    				<span class="h5 m-0 text-nowrap">Hello <b><a href="<?php echo $this->login->getUser()->getProfilLink(); ?>"><?php echo $this->login->getUser()->getName(); ?></a></b></span>
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 my-2 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
     					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> members online</small>
     				</button></div>
