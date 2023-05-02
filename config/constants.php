@@ -1,19 +1,46 @@
 <?php
     // replace with your values
-    define('MYSQL_HOST',     'localhost'); 			// Host Name, meist passt localhost
-    define('MYSQL_USER',     'root'); 				// Benutzername
-    define('MYSQL_PASS',     '');		 			// Benutzerpasswort
-    define('MYSQL_DATABASE', 'miniTCG');	 		// Datenbank Name
+    define('MYSQL_HOST',     'localhost'); 			// host name
+    define('MYSQL_USER',     'root'); 				// username
+    define('MYSQL_PASS',     '');		 			// password
+    define('MYSQL_DATABASE', 'miniTCG');	 		// database ame
     
-    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // Pfad wo die App installiert wurde
+    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path / Basispfad
     
-    define('DEFAULT_TIMEZONE','Europe/Berlin');
+    define('DEFAULT_TIMEZONE','Europe/Berlin'); 	// default application timezone 
+    
+    // languages the app supports: (remove what you don't need/want)
+    // with German as primary language
     define('SUPPORTED_LANGUAGES',[
     		'de'=>'Deutsch',
     		'en'=>'English'		
     ]);
+    /*
+    // with English as primary language:
+    define('SUPPORTED_LANGUAGES',[
+    		'en'=>'English',
+    		'de'=>'Deutsch'
+    ]);
+    */
     
-    // no need to edit here
+    
+    /* 
+     * IMPORTANT INFO
+     * --------------
+     * Feel free to add more languages!
+     * To do so, add a new key value pair to the array above. (e.g. 'fr'=>'Français')
+     * Copy the view files form another language folder into a new folder, named after your new key, 
+     * and translate the texts.
+     * You might also want to add your new language to the system messages
+     */
+    
+    
+    
+    
+    
+    
+    
+    // no need to edit here -------------------------------------------------------------------------------------
     define('APP_VERSION','v0.2alpha');
     define('PATH', dirname(__FILE__).'/../'); 		// relativer Pfad
     define('SERVER_URL', $_SERVER['SERVER_NAME']);

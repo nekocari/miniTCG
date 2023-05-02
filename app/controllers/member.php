@@ -23,7 +23,9 @@ class MemberController extends AppController {
      */
     public function profil() {
         
-    	$this->redirectNotLoggedIn(); // comment this line to make profils accessable when not logged in
+    	if(Setting::getByName('members_profil_public')->getValue() != 1){
+    		$this->redirectNotLoggedIn(); 
+    	}
         if(!isset($_GET['id'])){  $this->redirectNotFound(); }
             
         

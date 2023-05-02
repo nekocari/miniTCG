@@ -9,8 +9,8 @@
 
 class Game extends DbRecordModel {
     
-    protected $id, $type, $member, $date, $utc, $wait_minutes;
-    private $member_obj, $reward_texts = array('lost' => null, 'won' => null);
+    protected $id, $type, $member, $date, $utc;
+    private $member_obj, $game_settings, $reward_texts = array('lost' => null, 'won' => null);
     
     protected static 
         $db_table = 'members_games',
@@ -38,29 +38,16 @@ class Game extends DbRecordModel {
         
         if(!is_null($game_data) AND count($game_data) == 1){
             $game = $game_data[0];
-            $game->setPropValues(array('wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
         }else{
             $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
             $game = new Game();
-            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date,'wait_minutes'=>GAMES_SETTINGS[$type]['wait_minutes']));
-            $game_id = $game->create();
-            $game->setPropValues(['id'=>$game_id]);
+            $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date));
+            $game->create();
         }
         
         return $game;
     }
-    
-    /**
-     * @deprecated
-     * stores the current game data into the db
-     * 
-     * @throws ErrorException
-     * @return boolean
-     */
-    public function store() {
-        return parent::update();
-    }
-    
+        
     /**
      * check if game is playable
      * @return boolean
@@ -78,19 +65,19 @@ class Game extends DbRecordModel {
      * @return number
      */
     public function getMinutesToWait() {
-        
-        $last_game_time = strtotime($this->date);
-        
-        if($this->wait_minutes === false){
-            $start_today_time = strtotime(date('Y-m-d').' 00:00:00');
-            if($last_game_time < $start_today_time){
-                return 0;
-            }else{
-                return $minutes_to_wait = ceil(($start_today_time + 24*60*60 - time())/60);
-            }
-        }else{
-            return $minutes_to_wait = ceil(($last_game_time + $this->wait_minutes*60 - time())/60);
-        }
+    	
+    	$last_game_time = strtotime($this->date);
+    	
+    	if($this->getGameSettings()->getWaitTime() === false){
+    		$start_today_time = strtotime(date('Y-m-d').' 00:00:00');
+    		if($last_game_time < $start_today_time){
+    			return 0;
+    		}else{
+    			return $minutes_to_wait = ceil(($start_today_time + 24*60*60 - time())/60);
+    		}
+    	}else{
+    		return $minutes_to_wait = ceil(($last_game_time + $this->getGameSettings()->getWaitTime()*60 - time())/60);
+    	}
     }
     
     /**
@@ -98,11 +85,7 @@ class Game extends DbRecordModel {
      * @return boolean
      */
     public function isDailyGame(){
-        if($this->wait_minutes !== false){
-            return false;
-        }else{
-            return true;
-        }
+        return $this->getGameSettings()->isDailyGame();
     }
     
     
@@ -115,23 +98,27 @@ class Game extends DbRecordModel {
     public function getType() {
         return $this->type;
     }
-    public function getMember($mode = 'object') {
-        if($mode == 'object'){
-            if(!$this->member_obj instanceof Member){
-                $this->member_obj = Member::getById($this->member);
-            }
-            return $this->member_obj;
-        }elseif($mode == 'int'){
-            return $this->member;
+    public function getMember() {
+		if(!$this->member_obj instanceof Member){
+			$this->member_obj = Member::getById($this->getMemberId());
         }
+    	return $this->member_obj;
+    }
+    public function getMemberId() {
+    	return $this->member;
     }
     public function getDate() {
-        return date(Setting::getByName('date_format'),strtotime($this->date));
+        return date(Setting::getByName('date_format'),strtotime($this->date)); // TODO: timezone
     }
     public static function getAllowedResults(){
         return self::$allowed_game_results;
     }
-    
+    public function getGameSettings() {
+    	if(is_null($this->game_settings)){
+    		$this->game_settings = GameSetting::getByKey($this->getType());
+    	}
+    	return $this->game_settings;
+    }
     /**
      * set a new date using an unix timestamp
      * 
@@ -175,11 +162,12 @@ class Game extends DbRecordModel {
                     $game_reward['text'] = $this->reward_texts['won'];
                     $cards = Card::createRandomCards($this->getMember(), $result_amount);
                     // Tradelog
+                    $cardnames = '';
                     foreach($cards as $card){
-                    		$cardnames = $card->getName().' (#'.$card->getId().'), ';
+                    		$cardnames.= $card->getName().' (#'.$card->getId().'), ';
                     }
                     $cardnames = substr($cardnames,0,-2);
-                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',GAMES_SETTINGS[$this->type]['name'].' -> '.$cardnames);
+                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',$this->getGameSettings()->getName($this->getMember()->getLang()).' -> '.$cardnames);
                     
                     if(!is_array($cards)){
                         $game_reward['cards'][] = $cards;
@@ -200,7 +188,7 @@ class Game extends DbRecordModel {
                     $this->getMember()->addMoney($result_amount);
                     $this->getMember()->update();
                     //Tradelog
-                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',GAMES_SETTINGS[$this->type]['name'].' -> '.$game_reward['money']);
+                    Tradelog::addEntry($this->getMember(), 'game_won_log_text',$this->getGameSettings()->getName($this->getMember()->getLang()).' -> '.$game_reward['money']);
                     break;
                     
                 case 'lost':

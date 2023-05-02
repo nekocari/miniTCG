@@ -50,7 +50,9 @@ class DeckController extends AppController{
      */
     public function deckpage() {
     	
-    	$this->redirectNotLoggedIn();
+    	if(Setting::getByName('cards_decks_public')->getValue() != 1){
+    		$this->redirectNotLoggedIn();
+    	}
         
         if(isset($_GET['id'])){
             

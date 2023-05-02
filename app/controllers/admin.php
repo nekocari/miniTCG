@@ -30,6 +30,180 @@ class AdminController extends AppController {
     }
     
     /**
+     * Game Settings
+     */
+    public function games_index() {    	
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right!
+    	$this->redirectNotAuthorized();
+    	
+    	if(isset($_POST['delete_game'])){
+    		$game = GameSetting::getById($_POST['delete_game']);
+    		if($game instanceof GameSetting){
+    			if($game->delete()){
+    				$this->layout()->addSystemMessage('success', 'admin_games_deleted');
+    			}
+    		}
+    	}
+    	
+    	$games_settings = GameSetting::getAll();
+    	$pagination = new Pagination($games_settings, 20, Routes::getUri('admin_games_index'));
+    	
+    	$data['game_settings'] = $pagination->getElements();
+    	$data['pagination'] = $pagination->getPaginationHtml();
+    	
+    	$this->layout()->render('admin/games/list.php',$data);
+    }
+    
+    public function addGame() {
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right!
+    	$this->redirectNotAuthorized();
+    	
+    	if(isset($_POST['addGame'])){
+    		try{
+    			$game_setting = new GameSetting();
+    			$game_setting->setKey($_POST['game_key']);
+    			$game_setting->setRouteIdentifier($_POST['route_identifier']);
+    			$game_setting->setName($_POST['name']);
+    			$game_setting->setDescription($_POST['description']);
+    			$game_setting->setType($_POST['type']);
+    			if(isset($_POST['daily_game']) AND $_POST['daily_game'] == 1){
+    				$game_setting->setWaitTime(NULL);
+    			}else{
+    				$game_setting->setWaitTime($_POST['wait_time']);
+    			}
+    			$game_setting->create();
+    			if($_POST['type'] == 'lucky'){
+	    			// if is lucky create entry in db as well
+	    			$lucky = new LuckyGame();
+	    			$lucky->setSettingsId($game_setting->getId());
+	    			$lucky->setChoiceType($_POST['lucky_choice_type']);
+	    			$lucky->setChoices($_POST['lucky_choices']);
+	    			$lucky->setResults($_POST['lucky_results']);
+	    			$lucky->create();
+    			}
+    			
+    			$this->layout()->addSystemMessage('success', 'admin_games_add_success');
+    			$_GET['id']=$game_setting->getId();
+    			$this->editGame();
+    			die();
+    		}
+    		catch(ErrorException $e){
+    			switch($e->getCode()){
+    				case 4004:
+    					$this->layout()->addSystemMessage('error', 'admin_game_result_value_invalid',[],$e->getMessage());
+    					$lucky->create();
+    					break;
+    				case 4005:
+    					$this->layout()->addSystemMessage('error', 'admin_game_choice_type_invalid',[],$e->getMessage());
+    					$lucky->setChoiceType('text');
+    					break;
+    				case 4006:
+    					$this->layout()->addSystemMessage('error', 'admin_game_to_few_results');
+    					$lucky->setChoices(array());
+    					$lucky->setResults(array());
+    					break;
+    				default:
+    					throw $e;
+    					break;
+    			}
+    			$lucky->create();
+    			
+    			$this->layout()->addSystemMessage('success', 'admin_games_add_success');
+    			$_GET['id']=$game_setting->getId();
+    			$this->editGame();
+    			die();
+    		}
+    		catch(Exception $e){
+    			$this->layout()->addSystemMessage('error', 'unknown_error');
+    			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+    		}
+    	}
+    	
+    	$this->layout()->render('admin/games/add.php');
+    }
+    
+    public function editGame() {
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right!
+    	$this->redirectNotAuthorized();
+    	
+    	if(!isset($_GET['id']) OR !($game_setting = GameSetting::getById($_GET['id'])) instanceof GameSetting){
+    		$this->redirectNotFound();
+    	}
+    	
+    	
+    	$data['choices'] = $data['results'] = '';
+    	$lucky = LuckyGame::getByPk($game_setting->getId());
+    	
+    	if(isset($_POST['editGame']) ){
+    		try{
+	    		$game_setting->setRouteIdentifier($_POST['route_identifier']);
+	    		$game_setting->setName($_POST['name']);
+	    		$game_setting->setDescription($_POST['description']);
+	    		if(isset($_POST['daily_game']) AND $_POST['daily_game'] == 1){
+	    			$game_setting->setWaitTime(NULL);
+	    		}else{
+	    			$game_setting->setWaitTime($_POST['wait_time']);
+	    		}
+	    		$game_setting->update();
+	    		
+	    		if($game_setting->getType() == 'lucky'){
+	    				$lucky->setChoiceType($_POST['lucky_choice_type']);
+	    				$lucky->setChoices($_POST['lucky_choices']);
+	    				$lucky->setResults($_POST['lucky_results']);
+	    				$lucky->update();
+	    		}
+	    		
+	    		$this->layout()->addSystemMessage('success', 'changes_saved');
+    		}
+    		catch(ErrorException $e){
+    			switch($e->getCode()){
+    				case 4004:
+    					$this->layout()->addSystemMessage('error', 'admin_game_result_value_invalid',[],$e->getMessage());
+    					break;
+    				case 4005:
+    					$this->layout()->addSystemMessage('error', 'admin_game_choice_type_invalid',[],$e->getMessage());
+    					break;
+    				case 4006:
+    					$this->layout()->addSystemMessage('error', 'admin_game_to_few_results',[]);
+    					break;
+    				default:
+    					throw $e;
+    					break;
+    			}
+    		}
+    		catch(Exception $e){
+    			$this->layout()->addSystemMessage('error', 'unknown_error');
+    			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+    		}
+    	}
+    	
+    	$data['game'] = $game_setting;
+    	if($lucky instanceof LuckyGame ){
+    		
+    		$data['choice_type'] = $lucky->getChoiceType();
+    		$choices = $lucky->getChoicesArr();
+    		foreach($choices as $choice){
+    			$data['choices'].= $choice.',';
+    		}
+    		$data['choices'] = substr($data['choices'],0,-1);
+    		$results = $lucky->getResultsArr();
+    		foreach($results as $result){
+    			$data['results'].= $result.',';
+    		}
+    		$data['results'] = substr($data['results'],0,-1);
+    	}
+    	
+    	$this->layout()->render('admin/games/edit.php',$data);
+    }
+    
+    
+    /**
      * Settings
      */
     public function settings() {    	
@@ -270,11 +444,8 @@ class AdminController extends AppController {
         
     }
     
-    /**
-     * Member edit form
-     */
-    // TODO: add pw reset option
     public function editMember() {        
+    	
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers']);
@@ -326,9 +497,7 @@ class AdminController extends AppController {
         }
     }
     
-    /**
-     * Member search form
-     */
+    
     public function searchMember() {   
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
@@ -352,11 +521,8 @@ class AdminController extends AppController {
     }
     
     
-    // TODO: rework giftMoney() and giftCards() to be more DRY
+    // TODO: rework giftMoney() and giftCards() to be more DRY?
     
-    /**
-     * Member Gift Money
-     */
     public function giftMoney(){
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
@@ -399,11 +565,6 @@ class AdminController extends AppController {
         
     }
         
-        
-        
-    /**
-     * Member Gift Cards
-     */
     public function giftCards(){
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
@@ -450,9 +611,6 @@ class AdminController extends AppController {
         
     }
     
-    /**
-     * manage user rights 
-     */
     public function manageRights() {
         // check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
@@ -496,7 +654,9 @@ class AdminController extends AppController {
         
     }
     
-    
+    /*
+     * SQL Imports
+     */
     public function resetPassword(){
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);

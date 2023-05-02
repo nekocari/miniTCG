@@ -30,8 +30,13 @@ class Setting extends DbRecordModel {
         return $this->value;
     }    
     
-    public function getDescription() {
-        return $this->description;
+    public function getDescription($lang='de') {
+    	$description = json_decode($this->description,true);
+    	if(isset($description[$lang])){
+    		return $description[$lang];
+    	}else{
+    		return $description[0];
+    	}
     }
     
     public function setValue($value) {

@@ -5,7 +5,6 @@
  * @author NekoCari
  */
 
-require_once 'config/games_settings.php';
 
 class GameController extends AppController {
     
@@ -13,28 +12,31 @@ class GameController extends AppController {
      * game index
      */
     public function index() {
-        $sys_msgs = SystemMessageTextHandler::getInstance();
-        if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }        
+    	
+    	$this->redirectNotLoggedIn();
+    	$sys_msgs = SystemMessageTextHandler::getInstance();
         
-        $game_list = GAMES_SETTINGS;
+        $game_list = GameSetting::getAll();
         
         $data['games'] = array();
         
-        foreach($game_list as $type => $entry){
+        foreach($game_list as $entry){
              
-            $entry_game = Game::getById($type, $this->login()->getUser()->getId());
+            $entry_game = Game::getById($entry->getKey(), $this->login()->getUserId());
             
             if($entry_game instanceof Game and $entry_game->isPlayable()){
-                
-                $link = '<a href="'.Routes::getUri($entry['routing']).'">';
+            	$link_url = Routes::getUri($entry->getRouteIdentifier());
+            	// in case identifier points to default lucky game page add game id to url
+            	if($entry->getRouteIdentifier() == 'game_default_lucky'){
+            		$link_url.= '?id='.$entry->getId();
+            	}
+                $link = '<a href="'.$link_url.'">';
                 $link.= $sys_msgs->getTextByCode('game_play_now',$this->login()->getUser()->getLang());
                 $link.= '</a>';
                 
             }else{
                 
-                if(!$entry_game->isDailyGame()){
+                if(!$entry->isDailyGame()){
                 	$link = $entry_game->getMinutesToWait().' '.$sys_msgs->getTextByCode('game_waiting_minutes',$this->login()->getUser()->getLang());
                 }else{
                 	$link = $sys_msgs->getTextByCode('game_waiting_tomorrow',$this->login()->getUser()->getLang());
@@ -42,7 +44,7 @@ class GameController extends AppController {
                 
             }
             
-            $data['games'][] = array('name'=> $entry['name'], 'link'=>$link);
+            $data['games'][] = array('name'=> $entry->getName($this->login()->getUser()->getLang()), 'link'=>$link);
         }
         
         $this->layout()->render('game/index.php',$data);
@@ -51,26 +53,16 @@ class GameController extends AppController {
     
     /**
      * default behavior of a lucky game
-     * @param string $game_key - like set in game_settings.php
-     * @param string $name - Angezeigter Name
-     * @param string $description
-     * @param string $choice_type
-     * @param string[] $choice_elements
-     * @param string[] $possible_results
      */
-    private function lucky_game($game_key,$description, $choice_type, $choice_elements, $possible_results){
+    private function lucky_game($game_id){
         // redirect if not logged in
-        if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }
+        $this->redirectNotLoggedIn();
         
-        // create the game object
-        $game = Game::getById($game_key, $this->login()->getUser()->getId());
-        // create a lucky game object
-        $lucky_game = new LuckyGame(GAMES_SETTINGS[$game_key]['name'], $description, $choice_type, $choice_elements, $possible_results);
+        $lucky_game = LuckyGame::getByPK($game_id);
+        $lucky_game->setMember($this->login()->getUser());
         
         // check if a game object was created and the game is playable
-        if($game instanceof Game AND $game->isPlayable()){
+        if($lucky_game->getMemberGame() instanceof Game AND $lucky_game->getMemberGame()->isPlayable()){
             
             // post request not sent?
             if(!isset($_POST['play'])){
@@ -79,8 +71,8 @@ class GameController extends AppController {
                 $this->layout()->render('game/lucky_game.php',$data);
             }else{
                 // request was sent determine the reward
-                $data['game_name'] = $lucky_game->getName();
-                $data['reward'] = $game->determineReward($lucky_game->getResult());
+            	$data['game_name'] = $lucky_game->getName($this->login()->getUser()->getLang());
+            	$data['reward'] = $lucky_game->getMemberGame()->determineReward($lucky_game->getResult($_POST['choice']));
                 // display the result to the user, using the default game result page
                 $this->layout()->render('game/display_result.php',$data);
             }
@@ -91,6 +83,7 @@ class GameController extends AppController {
     
     /**
      * trade in
+     * @todo: refactor
      */
     public function tradeIn() {
         
@@ -99,10 +92,10 @@ class GameController extends AppController {
             header("Location: ".BASE_URI.Routes::getUri('signin'));
         }
         
+        $game_setting = GameSetting::getByKey('trade_in');
+        
         // create the game object
-        $game_key = 'trade_in';
-        $game_name = GAMES_SETTINGS[$game_key]['name'];
-        $game = Game::getById($game_key, $this->login()->getUser()->getId());
+        $game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
         
         // check if a game object was created and the game is playable
         if($game instanceof Game AND $game->isPlayable()){
@@ -116,8 +109,8 @@ class GameController extends AppController {
                 $card = Card::getById($_POST['card']);
                 if($card instanceof Card AND $this->login()->getUser()->getId() == $card->getOwnerId()){
                     $card->delete();
-                    Tradelog::addEntry($this->login()->getUser(), 'game_loss_log_text', $game_name.' -> <strike>'.$card->getName().'(#'.$card->getId().')</strike>');
-                    $data['game_name'] = $game_name;
+                    Tradelog::addEntry($this->login()->getUser(), 'game_loss_log_text', $game_setting->getName($this->login()->getUser()->getLang()).' -> <strike>'.$card->getName().'(#'.$card->getId().')</strike>');
+                    $data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
                     $data['reward'] = $game->determineReward('win-card:1');
                 }else{
                     // user does not own card - redirect to start point
@@ -135,44 +128,28 @@ class GameController extends AppController {
         
     }
     
-    /**
-     * lucky number
-     */
-    public function luckyNumber() {
-        
-        $game_key = 'lucky_number'; // key as in /game_settings.php
-        $description = 'Wähle eine Zahl und mit Glück gewinnst du eine oder sogar zwei Karten!'; // text for game detail page
-        $choice_type = 'text'; // [text|image]
-        $choice_elements = range(1,9); // user choices
-        $possible_results = array('win-card:1','win-card:1','win-card:2','win-money:500','win-card:2','win-money:250','lost','lost','lost'); // possible results
-        // NOTE: amount of choices and results needs to be the same!
-        
-        $this->lucky_game($game_key, $description, $choice_type, $choice_elements, $possible_results);
-       
-    }
     
     /**
      * head or tail
      */
     public function headOrTail() {
-        
-        $game_key = 'head_or_tail'; // key as in /game_settings.php
-        $description = 'Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.'; // text for game detail page
-        $choice_type = 'text'; // [text|image]
-        $choice_elements = array('Kopf','Zahl'); // user choices
-        $possible_results = array('win-card:1','lost'); // possible results
-        // NOTE: amount of choices and results needs to be the same!
-        
-        $this->lucky_game($game_key, $description, $choice_type, $choice_elements, $possible_results);
-        
+    	$this->lucky_game(2);
+    }
+    /**
+     * lucky number
+     */
+    public function luckyNumber() {
+    	$this->lucky_game(1);
     }
     
-    /*
-     * add your own lucky game:
-     * - copy and edit one of the example games and change the variable values
-     * - add new route in /routing.php
-     * - make sure you addes your game to /games_settings.php 
+    /**
+     * default for lucky games!
      */
+    public function customLucky() {
+    	$this->lucky_game($_GET['id']);
+    }
+    
+    
     
 }
 ?>

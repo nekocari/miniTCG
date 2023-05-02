@@ -148,6 +148,28 @@
     		'de'=>'Es gab einen Fehler beim Upload der Bilder.'
     ]);
     
+    // GAME SETTINGS
+    $sys_msg_text_handler->addCode('admin_games_add_success',[
+    		'en'=>'A new game was created. Please make sure the routing identifier is valid!',
+    		'de'=>'Ein neues Spiel wurde angelegt. Bitte sicherstellen, dass der Routing Identifier gültig ist!'
+    ]);
+    $sys_msg_text_handler->addCode('admin_games_deleted',[
+    		'en'=>'Game successfully deleted',
+    		'de'=>'Spiel erfolgreich entfernt.'
+    ]);
+    $sys_msg_text_handler->addCode('admin_game_result_value_invalid',[
+    		'en'=>'The following result value is invalid: ',
+    		'de'=>'Das folgende Resultat ist ungültig: '
+    ]);
+    $sys_msg_text_handler->addCode('admin_game_choice_type_invalid',[
+    		'en'=>'Choice type is invalid: ',
+    		'de'=>'Auswahltype ist ungültig: '
+    ]);
+    $sys_msg_text_handler->addCode('admin_game_to_few_results',[
+    		'en'=>'There are not enough results!',
+    		'de'=>'Es gibt nicht genügend Resultate.'
+    ]);
+    
     
     // texts used in deck type controller -----------------------------
     

@@ -11,7 +11,7 @@
     	<li class="list-group-item d-flex justify-content-between align-items-center">
     		<div>
     			<?php echo $setting->getName(); ?><br>
-    			<small class="text-muted"><?php echo $setting->getDescription(); ?></small>
+    			<small class="text-muted"><?php echo $setting->getDescription('de'); ?></small>
     		</div>
     		<div>
     			<input class="form-control" name="settings[<?php echo $setting->getName(); ?>]" value="<?php echo $setting->getValue(); ?>" required>

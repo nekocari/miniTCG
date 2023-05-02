@@ -69,7 +69,7 @@ class Card extends DbRecordModel {
         	foreach($tradable_stati as $status){
         		$sql_where['query_part'] .= $status->getId().',';
         	}
-        	$sql_where['query_part'] = substr($sql_where['query_part'] ,0,-1).')';
+        	$sql_where['query_part'] = substr($sql_where['query_part'] ,0,-1).') ';
         	$sql_where['param_array'] = null;
         }elseif(is_int($status_id)){
         	$sql_where = self::buildSqlPart('where',['owner'=>$member_id,'status_id'=>$status_id]);
@@ -82,8 +82,8 @@ class Card extends DbRecordModel {
 			unset($order_settings['name']);
         }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
-        $sql = "SELECT MIN(id), COUNT(id) as counter, c.* FROM cards c ".$sql_where['query_part'].
-        		"LEFT JOIN decks ON deck.id = cards.deck ";
+        $sql = "SELECT MIN(cards.id), COUNT(cards.id) as counter, cards.* FROM cards  ".
+          		"LEFT JOIN decks ON decks.id = cards.deck ".$sql_where['query_part'].
         		" GROUP BY name HAVING counter > 1 ".$sql_order['query_part'];
         
         $req = $db->prepare($sql);

@@ -49,15 +49,36 @@
     <div class="col-12 col-md-6">
         <div class="card mb-4">
         	<div class="card-body">
-        		<h4><i class="fas fa-cogs"></i> Applikation</h4>
-        		<small>Einstellungen des TCG</small>
+        		<h4><i class="fas fa-gamepad"></i> Spiele</h4>
+        		<small>Verwaltung der Spiele</small>
+        		<nav class="nav justify-content-end">
+        			<a class="nav-link" href="<?php echo Routes::getUri('admin_games_add');?>">anlegen</a>
+        			<a class="nav-link" href="<?php echo Routes::getUri('admin_games_index');?>">Liste anzeigen</a>
+        		</nav>
+        	</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="card mb-4">
+        	<div class="card-body">
+        		<h4><i class="fas fa-wrench"></i> Struktur</h4>
+        		<small>Aufbau und Anzeigerelevante Daten</small>
         		<nav class="nav justify-content-end">
         			<a class="nav-link" href="<?php echo Routes::getUri('category_index');?>">Kategorien</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('level_index');?>">Level</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_deck_type_index');?>">Deck Arten</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_card_status_index');?>">Manager Kategorien</a>
         		</nav>
-        		<hr>
+        	</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card mb-4">
+        	<div class="card-body">
+        		<h4><i class="fas fa-cogs"></i> Applikation</h4>
+        		<small>Grundeinstellungen des TCG</small>
         		<nav class="nav justify-content-end">
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_settings');?>">Einstellungen</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_routes_index');?>">Routing</a>
