@@ -1,8 +1,0 @@
-SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`minitcg`.`trades`, CONSTRAINT `trades_ibfk_4` FOREIGN KEY (`recipient_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
-card_no_longer_available
-SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'key'
-invalid type
-SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'the_button' for key 'key'
-SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'the_button' for key 'key'
-SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'the_button' for key 'key'
-SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'the_button' for key 'key'

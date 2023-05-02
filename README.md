@@ -1,9 +1,10 @@
 # miniTCG
 
 An automated Trading Card Game Application written in PHP, covering most of the basics.
+This type of TCG is not meant to play with the cards, but to collect and trade them.
 miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 
-(Because of the DSGVO you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
+(Because of the DSGVO in Germany you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
 
 *Note that this startet as an all german project, so files may still contain some german text elements! 
 But the comments are mostly english and the views are being translated as well, with options to add in other languages in the future. *
@@ -24,7 +25,13 @@ But the comments are mostly english and the views are being translated as well, 
 ---
 
 ## How to Setup
-* TBA
+* open config/constants.php and update it with your information
+* upload all files via ftp to your server
+* open browser and go to your miniTCG installation /setup/setup.php
+* follow the instructions
+* delete the setup folder
+* login and head to the administration -> settings first to customize the applikation
+* look through all the other options and customize the app even more. :)
 
 
 
@@ -60,6 +67,11 @@ But the comments are mostly english and the views are being translated as well, 
     * create (with file upload)
     * edit data
     * manage card updates
+  * manage games
+    * change game settings
+    * manage lucky games (options + results)
+    * add new lucky games (no coding required)
+    * add new game settings for custom games
   * manage application
     * main categories and subcategories
     * level

@@ -1,6 +1,5 @@
 <?php
 require_once 'config/constants.php';
-//require_once 'config/routing.php';
 require_once 'config/system_messages.php';
 require_once 'core/dbconnect.php';
 require_once 'core/routes_db.php';
@@ -11,8 +10,13 @@ class App {
 	private $controller, $action, $identifier, $routes, $vars, $controller_obj;
 	
 	public function __construct(){
-		$this->routes = Routes::getInstance(Db::getInstance());
-		$this->autoloading();
+		try{
+			$this->routes = Routes::getInstance(Db::getInstance());
+			$this->autoloading();
+		}
+		catch(PDOException $e){
+			die("mini TCG setup not complete");
+		}
 	}
 	
     
