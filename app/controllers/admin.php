@@ -432,22 +432,37 @@ class AdminController extends AppController {
     	$this->auth()->setRequirements('roles', ['Admin']);
     	$this->auth()->setRequirements('rights', ['ManageMembers','ManageRights']);
     	$this->redirectNotAuthorized();
-            
-        $members = Member::getAll(['id'=>'ASC']);
-        $currPage = 1;
-        
-        if(isset($_GET['pg'])){ 
-            $currPage = $_GET['pg']; 
-        }
-        
-        $pagination = new Pagination($members, 10, $currPage, Routes::getUri('admin_member_index'));
-        
-        $data['members'] = $pagination->getElements();
-        $data['pagination'] = $pagination->getPaginationHtml();
+    	
+    	$list = new MemberList();
+    	if(isset($_GET['order'], $_GET['direction'])){
+    		$list->setOrder([$_GET['order']=>$_GET['direction']]);
+    	}
+    	if(isset($_GET['pg'])){
+    		$list->setPage($_GET['pg']);
+    	}
+    	if(isset($_REQUEST['search'])){
+    		$list->setSearchStr($_REQUEST['search']);
+    	}
         $data['currency_name'] = Setting::getByName('currency_name')->getValue();
+        $data['list'] = $list;
         
         $this->layout()->render('admin/members/list.php',$data);
         
+    }
+    
+    public function searchMember() {
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->auth()->setRequirements('rights', ['ManageMembers','ManageRights']);
+    	$this->redirectNotAuthorized();
+    	
+    	if(!isset($_POST['search'])){
+    		$this->layout()->render('admin/members/search.php');
+    		
+    	}else{    		
+    		$this->memberlist();
+    	}
+    	
     }
     
     public function editMember() {        
@@ -503,28 +518,6 @@ class AdminController extends AppController {
         }
     }
     
-    
-    public function searchMember() {   
-    	// check if user has required rights
-    	$this->auth()->setRequirements('roles', ['Admin']);
-    	$this->auth()->setRequirements('rights', ['ManageMembers','ManageRights']);
-    	$this->redirectNotAuthorized();
-                
-        if(!isset($_POST['search'])){
-            
-            $this->layout()->render('admin/members/search.php');
-            
-        }else{
-            
-            $data = array();
-            $data['members'] = Member::searchByName($_POST['search']);
-            $data['pagination'] = '';
-            
-            $this->layout()->render('admin/members/list.php',$data);
-            
-        }
-        
-    }
     
     
     // TODO: rework giftMoney() and giftCards() to be more DRY?
