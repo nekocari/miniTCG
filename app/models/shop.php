@@ -37,8 +37,13 @@ class Shop {
             $setting->setValue($this->next_restock_date);
             $setting->update();
             
-            // create random cards
-            $new_cards = Card::createRandomCards(null, ($this->shop_max_stock - $this->getCardsSum()) );
+            try{
+	            // create random cards
+	            $new_cards = Card::createRandomCards(null, ($this->shop_max_stock - $this->getCardsSum()) );
+            }
+            catch (ErrorException $e){
+            	error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+            }
             
             // get price settings
             $min_price = Setting::getByName('shop_price_min')->getValue();

@@ -160,7 +160,12 @@ class Game extends DbRecordModel {
                 case 'win-card:':
                     $game_reward['type'] = 'won';
                     $game_reward['text'] = $this->reward_texts['won'];
-                    $cards = Card::createRandomCards($this->getMember(), $result_amount);
+                    try{
+                    	$cards = Card::createRandomCards($this->getMember(), $result_amount);
+                    }
+                    catch (ErrorException $e){
+                    	error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+                    }
                     // Tradelog
                     $cardnames = '';
                     foreach($cards as $card){

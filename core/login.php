@@ -249,14 +249,27 @@ class Login {
 	    		$member = Member::getById($member_id);
 	    		$member->setStatus('default');
 	    		$member->update();
-	    		// give starter cards
-	    		$cards = Card::createRandomCards($member, intval(Setting::getByName('cards_startdeck_num')->getValue()));
-	    		$cardnames = '';
-	    		foreach($cards as $card){
-	    			$cardnames.= $card->getName().' (#'.$card->getId().'), ';
+	    		// give starter cards 
+	    		try{
+		    		$cards = Card::createRandomCards($member, intval(Setting::getByName('cards_startdeck_num')->getValue()));
+		    		$cardnames = '';
+		    		if(count($cards)>0){
+			    		foreach($cards as $card){
+			    			$cardnames.= $card->getName().' (#'.$card->getId().'), ';
+			    		}
+			    		$cardnames = substr($cardnames,0,-2);
+		    		}
+		    		Tradelog::addEntry($member, 'starter_cards_log_text', $cardnames);
 	    		}
-	    		$cardnames = substr($cardnames,0,-2);
-	    		Tradelog::addEntry($member, 'starter_cards_log_text', $cardnames);
+	    		catch(PDOException $e){
+	    			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+	    		}
+	    		catch(ErrorException $e){
+	    			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+	    		}
+	    		catch(Exception $e){
+	    			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+	    		}
 	    		return true;
     		}
     	}

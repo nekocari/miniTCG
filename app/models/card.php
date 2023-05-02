@@ -333,16 +333,20 @@ class Card extends DbRecordModel {
      */
     public static function createRandomCards($member,$amount){
     	$cards = array();
-    		if(is_int($amount) and $amount > 0){
-    			$decks = Carddeck::getRandom(true,$amount);
-    			foreach($decks as $deck){
-    				$deck_size = $deck->getSize();;
-    				$number = mt_rand(1,$deck_size);
-    				$cards[] = Card::createNewCard($member, $deck->getId(), $number);
-    			}
-    		}else{
-    			throw new ErrorException('second parameter needs to be a positiv integer');
-    		}
+    	if(Carddeck::getCount(['status'=>'public']) > 0){
+	    	if(is_int($amount) and $amount > 0){
+	    		$decks = Carddeck::getRandom(true,$amount);
+	    		foreach($decks as $deck){
+	    			$deck_size = $deck->getSize();;
+	    			$number = mt_rand(1,$deck_size);
+	    			$cards[] = Card::createNewCard($member, $deck->getId(), $number);
+	    		}
+	    	}else{
+	    		throw new ErrorException('second parameter needs to be a positiv integer');
+	    	}
+	    }else{
+	    	throw new ErrorException('no public card decks found');
+	    }
     	return $cards;
     }
     
