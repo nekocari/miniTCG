@@ -237,7 +237,7 @@ class Carddeck extends DbRecordModel {
 	    				$log_text.= $card->getName().'(#'.$card->getId().'), ';
 	    			}
 	    			$log_text = substr($log_text, 0, -2);
-	    			Tradelog::addEntry($login()->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
+	    			Tradelog::addEntry($login->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
 	    		}
 	    		return true;
 	    	}
