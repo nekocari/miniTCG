@@ -35,7 +35,7 @@ class AdminController extends AppController {
     public function games_index() {    	
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
-    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right!
+    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right?
     	$this->redirectNotAuthorized();
     	
     	if(isset($_POST['delete_game'])){
@@ -47,11 +47,17 @@ class AdminController extends AppController {
     		}
     	}
     	
-    	$games_settings = GameSetting::getAll();
-    	$pagination = new Pagination($games_settings, 20, Routes::getUri('admin_games_index'));
-    	
-    	$data['game_settings'] = $pagination->getElements();
-    	$data['pagination'] = $pagination->getPaginationHtml();
+    	$list = new GameSettingList();
+    	if(isset($_GET['order'], $_GET['direction'])){
+    		$list->setOrder([$_GET['order']=>$_GET['direction']]);
+    	}
+    	if(isset($_GET['pg'])){
+    		$list->setPage($_GET['pg']);
+    	}
+    	if(isset($_GET['search'])){
+    		$list->setSearchStr($_GET['search']);
+    	}
+    	$data['list'] = $list;
     	
     	$this->layout()->render('admin/games/list.php',$data);
     }
@@ -59,7 +65,7 @@ class AdminController extends AppController {
     public function addGame() {
     	// check if user has required rights
     	$this->auth()->setRequirements('roles', ['Admin']);
-    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right!
+    	//$this->auth()->setRequirements('rights', ['ManageGames']); // TODO: add new right?
     	$this->redirectNotAuthorized();
     	
     	if(isset($_POST['addGame'])){

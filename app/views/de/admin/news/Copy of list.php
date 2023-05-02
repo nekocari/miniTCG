@@ -7,34 +7,6 @@
 
 <h1>News Übersicht</h1>
 
-<form method="GET" action="">
-	<div class="row">
-		<div class="col-12 col-md">
-			<div class="input-group input-group-sm">
-				<select class="form-control" name="order">
-					<option value="id" <?php if(isset($_GET['order']) AND $_GET['order']=='id'){ echo 'selected'; } ?>>ID</option>
-					<option value="utc" <?php if(isset($_GET['order']) AND $_GET['order']=='utc'){ echo 'selected'; } ?>>Datum</option>
-				</select>
-				<select class="form-control" name="direction">
-					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
-					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
-				</select>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
-				</div>
-			</div>
-		</div>
-		<div class="col-12 col-md py-md-0 py-1">
-			<div class="input-group input-group-sm">
-				<input class="form-control" type="text" name="search" value="<?php if(isset($_GET['search'])){ echo $_GET['search']; } ?>">
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>
-
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -46,7 +18,7 @@
     	</tr>
 	</thead>
 	<tbody>
-<?php foreach($list->getItems() as $entry){ ?>
+<?php foreach($news as $entry){ ?>
     	<tr>
     		<td><?php echo $entry->getId(); ?></td>
     		<td><?php echo $entry->getTitle(); ?><br>
@@ -70,5 +42,4 @@
 	</tbody>
 </table>
 </div>
-
-<?php echo $list->getPagination()->getPaginationHTML(); ?>
+<?php echo $pagination; ?>

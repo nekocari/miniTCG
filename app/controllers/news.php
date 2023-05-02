@@ -25,6 +25,17 @@ class NewsController extends AppController {
             }
         }
         
+        $list = new NewsList();
+        if(isset($_GET['order'], $_GET['direction'])){
+        	$list->setOrder([$_GET['order']=>$_GET['direction']]);
+        }
+        if(isset($_GET['pg'])){
+        	$list->setPage($_GET['pg']);
+        }
+        if(isset($_GET['search'])){
+        	$list->setSearchStr($_GET['search']);
+        }
+        
         $currPage = 1; 
         if(isset($_GET['pg'])){
             $currPage = intval($_GET['pg']);
@@ -38,9 +49,8 @@ class NewsController extends AppController {
         $data['news'] = $pagination->getElements();
         $data['pagination'] = $pagination->getPaginationHtml();
         
-        if(count($data['news']) == 0){
-        	$this->layout()->addSystemMessage('info', 'no_elements');
-        }
+        
+        $data['list'] = $list;
         
         $this->layout()->render('admin/news/list.php',$data);
             

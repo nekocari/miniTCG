@@ -16,7 +16,7 @@ class News extends DbRecordModel{
         $db_table = 'news_entries',
         $db_pk = 'id',
         $db_fields = array('id','date','utc','author','title','text','text_html'),
-        $sql_order_by_allowed_values = array('id','date');
+        $sql_order_by_allowed_values = array('id','date','utc');
     
     public function __construct() {
         parent::__construct();

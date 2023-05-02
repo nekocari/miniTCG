@@ -18,12 +18,16 @@ class Pagination {
 
 
     public function __construct($elements, $itemsPerPage, $link, $offset=2, $parameterName='pg') {
-		$this->elements	    = $elements;
+    	if(is_array($elements)){
+    		$this->elements  = $elements;
+    	}else{
+    		$this->elements = array();
+    	}
 		$this->itemsPerPage	= $itemsPerPage;
 		$this->offset		= $offset;
 		$this->link			= $link;
 		$this->parameterName= $parameterName;
-		$this->totalItems   = count($elements);
+		$this->totalItems  = count($this->elements);
 		$this->checkForCurrPage();
     }
     

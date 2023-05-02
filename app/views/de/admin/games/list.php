@@ -1,3 +1,10 @@
+<?php 
+/*
+ * preset variables:
+ * $list - a Listable object containing GameSetting objects as items
+ * 
+ */
+?>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="<?php echo Routes::getUri('admin_dashboard');?>">Verwaltung</a></li>
@@ -6,6 +13,40 @@
 </nav>
 
 <h1>Spiele</h1>
+
+
+<form method="GET" action="">
+	<div class="row">
+		<div class="col-12 col-md">
+			<div class="input-group input-group-sm">
+				<select class="form-control" name="order">
+					<option value="id" <?php if(isset($_GET['order']) AND $_GET['order']=='id'){ echo 'selected'; } ?>>ID</option>
+					<option value="type" <?php if(isset($_GET['order']) AND $_GET['order']=='type'){ echo 'selected'; } ?>>Art</option>
+				</select>
+				<select class="form-control" name="direction">
+					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
+					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
+				</select>
+				<div class="input-group-append">
+					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md py-md-0 py-1">
+			<div class="input-group input-group-sm">
+				<input class="form-control" type="text" name="search" list="game-list-data" value="<?php if(isset($_GET['search'])){ echo $_GET['search']; } ?>">
+				<datalist id="game-list-data">
+					<?php foreach(GameSetting::getAll() as $gs){ ?>
+						<option><?php echo $gs->getName('de'); ?></option>
+					<?php } ?>
+				</datalist>
+				<div class="input-group-append">
+					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
 
 <form method="POST" action="">
 	<div class="table-responsive">
@@ -19,7 +60,7 @@
 		    	</tr>
 			</thead>
 			<tbody>
-		<?php foreach($game_settings as $game){ ?>
+		<?php foreach($list->getItems() as $game){ ?>
 		    	<tr style="white-space:nowrap">
 		    		<td><?php echo $game->getName('de'); ?></td>
 		    		<td class="text-center"><?php echo $game->getType(); ?></td>
@@ -35,4 +76,7 @@
 		</table>
 	</div>
 </form>
+
+<?php echo $list->getPagination()->getPaginationHTML(); ?>
+
 <p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_games_add');?>">neues Spiel anlegen</a></p>

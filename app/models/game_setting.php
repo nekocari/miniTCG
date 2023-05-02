@@ -15,7 +15,7 @@ class GameSetting extends DbRecordModel {
         $db_table = 'games_settings',
         $db_pk = 'id',
         $db_fields = array('id','game_key','type','wait_time','route_identifier','name_json','description_json','preview_img_path','game_img_path'),
-        $sql_order_by_allowed_values = array('id','game_key');
+        $sql_order_by_allowed_values = array('id','game_key','type');
     
     private static $allowed_types = array('custom','lucky');
     
