@@ -266,8 +266,22 @@ class AdminController extends AppController {
     		}else{
     			$this->layout()->addSystemMessage('error', 'del_route_denied');
     		}
-    	}    	
-    	$this->layout()->render('admin/routes/index.php',['routes'=>Route::getAll(['url'=>'ASC'])]);    	
+    	}
+    	
+    	$list = new RouteList();
+    	if(isset($_GET['order'], $_GET['direction'])){
+    		$list->setOrder([$_GET['order']=>$_GET['direction']]);
+    	}
+    	if(isset($_GET['pg'])){
+    		$list->setPage($_GET['pg']);
+    	}
+    	if(isset($_GET['search'])){
+    		$list->setSearchStr($_GET['search']);
+    	}
+    	
+    	$data['list'] = $list;
+    	
+    	$this->layout()->render('admin/routes/index.php',$data);    	
     }
     
     public function addRoute() {

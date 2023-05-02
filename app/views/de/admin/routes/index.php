@@ -9,6 +9,39 @@
 
 <p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_routes_add');?>">neue Route anlegen</a></p>
 
+<form method="GET" action="">
+	<div class="row">
+		<div class="col-12 col-md">
+			<div class="input-group input-group-sm">
+				<select class="form-control" name="order">
+					<option value="identifier" <?php if(isset($_GET['order']) AND $_GET['order']=='identifier'){ echo 'selected'; } ?>>Identifier</option>
+					<option value="url" <?php if(isset($_GET['order']) AND $_GET['order']=='url'){ echo 'selected'; } ?>>URL</option>
+				</select>
+				<select class="form-control" name="direction">
+					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
+					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
+				</select>
+				<div class="input-group-append">
+					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md py-md-0 py-1">
+			<div class="input-group input-group-sm">
+				<input class="form-control" type="text" name="search" list="route-list-data" value="<?php echo $list->getSearchStr(); ?>">
+				<datalist id="route-list-data">
+					<?php foreach(Route::getAll() as $route){ ?>
+						<option><?php echo $route->getIdentifier(); ?></option>
+					<?php } ?>
+				</datalist>
+				<div class="input-group-append">
+					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -19,7 +52,7 @@
     	</tr>
 	</thead>
 	<tbody>
-<?php foreach($routes as $entry){ ?>
+<?php foreach($list->getItems() as $entry){ ?>
     	<tr style="white-space:nowrap">
     		<td><?php echo $entry->getIdentifier(); ?><br>
     		<small><?php echo $entry->getUrl(); ?></small></td>
@@ -45,5 +78,7 @@
 	</tbody>
 </table>
 </div>
+
+<?php echo $list->getPagination()->getPaginationHTML(); ?>
 
 <p class="text-center"><a class="btn btn-primary" href="<?php echo Routes::getUri('admin_routes_add');?>">neue Route anlegen</a></p>
