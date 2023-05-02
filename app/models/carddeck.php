@@ -15,7 +15,7 @@ class Carddeck extends DbRecordModel {
     $db_table = 'decks',
     $db_pk = 'id',
     $db_fields = array('id','name','deckname','status','size','type_id','creator','date','utc','description','description_html'),
-    $sql_order_by_allowed_values = array('id','name','deckname','date', 'type_id');
+    $sql_order_by_allowed_values = array('id','name','deckname','date', 'type_id', 'status');
     
     private $creator_obj, $category_id, $subcategory_id, $category_obj, $subcategory_obj, $type_obj;
     

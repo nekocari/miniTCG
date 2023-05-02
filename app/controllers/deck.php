@@ -125,8 +125,20 @@ class DeckController extends AppController{
     	
     	$this->auth()->setRequirements('roles', ['Admin','CardCreator']);
     	$this->redirectNotAuthorized();
-            
-        $data['carddecks'] = Carddeck::getAll();
+        
+    	$list = new CarddeckList();
+    	$list->setOrder(['status'=>'ASC']);
+    	if(isset($_GET['order'], $_GET['direction'])){
+    		$list->setOrder([$_GET['order']=>$_GET['direction']]);
+    	}
+    	if(isset($_GET['pg'])){
+    		$list->setPage($_GET['pg']);
+    	}
+    	if(isset($_GET['search'])){
+    		$list->setSearchStr($_GET['search']);
+    	}
+    	
+        $data['list'] = $list;
         $data['badge_css']['new'] = 'badge-primary';
         $data['badge_css']['public'] = 'badge-secondary';
         
