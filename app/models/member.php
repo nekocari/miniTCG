@@ -326,7 +326,7 @@ class Member extends DbRecordModel {
                         $cards = Card::createRandomCards($this, intval($levelup_bonus->getValue()));
                         $cardnames = $cardnames_msg = '';
                         foreach($cards as $card){
-                        	$cardnames_msg.= $card->getName()." (#".$card->getId()."), ";
+                        	$cardnames_msg.= $card->getName().", ";
                         	$cardnames.= $card->getName()." (#".$card->getId()."), ";
                         }
                         $cardnames = substr($cardnames, 0, -2);
