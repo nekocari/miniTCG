@@ -262,6 +262,11 @@ class Carddeck extends DbRecordModel {
 	    			$log_text = substr($log_text, 0, -2);
 	    			Tradelog::addEntry($login->getUser(), 'cardmanager_master_deck_log_text', ' -> '.$log_text);	    			
 	    		}
+	    		// remove from wishlist if entry existed
+	    		if(count($wishlist_entry = MemberWishlistEntry::getWhere(['member_id'=>$login->getUserId(),'deck_id'=>$this->getId()])) == 1){
+	    			$wishlist_entry[0]->delete();
+	    		}
+	    		
 	    		return true;
 	    	}
 	    	catch(PDOException $e) {
