@@ -185,8 +185,12 @@
     
     // DECK DISPLAY
     $sys_msg_text_handler->addCode('deck_no_elements', [
-    		'en'=>'no decks to display', 
+    		'en'=>'no decks to display',
     		'de'=>'Keine Decks zum Anzeigen.'
+    ]);
+    $sys_msg_text_handler->addCode('vote_submited', [
+    		'en'=>'Thanks for voting.',
+    		'de'=>'Danke für deine Stimme.'
     ]);
     
     // CARD UPLOAD (Replace)

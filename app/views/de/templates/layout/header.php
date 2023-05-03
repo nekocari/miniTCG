@@ -55,13 +55,18 @@
             					<a class="nav-link dropdown-toggle" href="#"  id="decksDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-folder text-primary"></i> Karten</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="decksDropdown">
                                 	<!-- PHP Code for the Category List -->
-                                	<?php if(count($tcg_categories = Category::getAll(['name'=>'ASC']))>0){ foreach($tcg_categories as $tcg_category){ ?>
+                                	<?php if(count($tcg_categories = Category::getAll(['name'=>'ASC'])) > 0){ foreach($tcg_categories as $tcg_category){ ?>
         								<a class="dropdown-item" href="<?php echo $tcg_category->getLinkUrl();?>"><?php echo $tcg_category->getName();?></a>
         							<?php } ?>
                                 	<div class="dropdown-divider"></div>
                                 	<?php } ?>
-                                	<!-- Category Liste End -->
+                                	<!-- Upcoming -->
+                                	<?php if(Setting::getByName('cards_decks_upcoming_public')->getValue() == 1){ ?>
+                                		<a class="dropdown-item" href="<?php echo Routes::getUri('decks_list_upcoming');?>">Unveröffentlicht</a>
+                                	<?php } ?>
+                                	<!-- all -->
                                 	<a class="dropdown-item" href="<?php echo Routes::getUri('deck_index');?>">Alle</a>
+                                	<!-- end of list -->
                                 </div>
             				</li>
             			</ul>

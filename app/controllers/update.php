@@ -30,28 +30,28 @@ class UpdateController extends AppController {
         if(isset($_GET['action'], $_GET['id']) AND $_GET['action'] == 'delete'){
         	try{
         		$update = Update::getById($_GET['id']);
-        		$update->delete();
-        		$this->layout()->addSystemMessage('success','update_delete_success');
+        		if($update instanceof Update){
+        			$update->delete();
+        			$this->layout()->addSystemMessage('success','update_delete_success');
+        		}
         	}
         	catch(Exception $e){
         		$this->layout()->addSystemMessage('error','update_delete_failed',[],$e->getMessage());
         	}
         }
         
-        // set values for pagination
+        $list = new UpdateList();
+        if(isset($_GET['order'], $_GET['direction'])){
+        	$list->setOrder([$_GET['order']=>$_GET['direction']]);
+        }
         if(isset($_GET['pg'])){
-            $currPage = $_GET['pg'];
-        }else{
-            $currPage = 1;
+        	$list->setPage($_GET['pg']);
+        }
+        if(isset($_GET['search'])){
+        	$list->setSearchStr($_GET['search']);
         }
         
-        // get all updates form database
-        $updates = Update::getAll(['date'=>'DESC']);
-        
-        // set up pagination and pass values on to view
-        $pagination = new Pagination($updates, 20, $currPage, Routes::getUri('update_index'));
-        $data['updates'] = $pagination->getElements();
-        $data['pagination'] = $pagination->getPaginationHtml();
+        $data['list'] = $list;
         
         $this->layout()->render('admin/update/list.php',$data);
                
@@ -133,6 +133,8 @@ class UpdateController extends AppController {
                         $update->removeDeck($deck_id);
                     }
                 }
+                
+                $update->getRelatedDecks(true);
             }
         }
         

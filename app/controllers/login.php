@@ -32,8 +32,7 @@ class LoginController extends AppController {
 				$this->login()->login($_POST['username'], $_POST['password']);
 			}
 			catch(Exception $e){
-				die($e->getMessage());
-				$this->layout()->addSystemMessage('error',$e->getCode());
+				$this->layout()->addSystemMessage('error','login_sign_in_failed');
 			}
 		}
 		

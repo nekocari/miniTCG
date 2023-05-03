@@ -13,9 +13,14 @@
 	<div class="row">
 	<?php foreach($update->getRelatedDecks() as $deck){ ?>
 		<div class="col-12 col-md-6 col-lg-4 text-center">
-    		<div><?php echo $deck->getMasterCard(); ?></div>
-    		<p><input type="checkbox" name="remove_decks[]" value="<?php echo $deck->getId();?>">
-    			<span class="deckname"><?php echo $deck->getDeckname();?></span></p>
+    		<label for="check<?php echo $deck->getId();?>"><?php echo $deck->getMasterCard(); ?></label>
+    		<p>
+    			<label for="check<?php echo $deck->getId();?>">
+    				<input id="check<?php echo $deck->getId();?>" type="checkbox" name="remove_decks[]" value="<?php echo $deck->getId();?>">
+    				<span class="deckname"><?php echo $deck->getDeckname();?></span>
+    				&bull; <span class="text-primary"><?php echo $deck->getVoteCount(); ?> <i class="small fas fa-thumbs-up"></i></span>
+    			</label>
+    		</p>
 		</div>
 	<?php } ?>
 	</div>
@@ -23,9 +28,14 @@
 	<div class="row">
 	<?php foreach($update->getUnlinkedDecks() as $deck){ ?>
 		<div class="col-12 col-md-6 col-lg-4 text-center">
-    		<div><?php echo $deck->getMasterCard(); ?></div>
-    		<p><input type="checkbox" name="add_decks[]" value="<?php echo $deck->getId();?>">
-    			<span class="deckname"><?php echo $deck->getDeckname();?></span></p>
+    		<label for="check<?php echo $deck->getId();?>"><?php echo $deck->getMasterCard(); ?></label>
+    		<p>
+    			<label for="check<?php echo $deck->getId();?>">
+    				<input id="check<?php echo $deck->getId();?>" type="checkbox" name="add_decks[]" value="<?php echo $deck->getId();?>">
+    				<span class="deckname"><?php echo $deck->getDeckname();?></span>
+    				&bull; <span class="text-primary"><?php echo $deck->getVoteCount(); ?> <i class="small fas fa-thumbs-up"></i></span>
+    			</label>
+    		</p>
 		</div>
 	<?php } ?>
 	</div>

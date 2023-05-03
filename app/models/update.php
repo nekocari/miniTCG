@@ -65,10 +65,14 @@ class Update extends DbRecordModel {
     public function publish() {
         $decks = $this->getRelatedDecks();
         
+        // TODO: may need to get rid of the nested loops for better performance
         foreach($decks as $deck){
             $deck->setPropValues(['status'=>'public']);
             $deck->update();
-        }
+            foreach(DeckVoteUpcoming::getByDeckId($deck->getId()) as $vote){
+            	$vote->delete();
+            }
+        }      
         
         $this->setPropValues(['status'=>'public']);
         $this->update();

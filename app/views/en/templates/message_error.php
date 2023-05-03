@@ -1,4 +1,4 @@
-<div class="alert alert-danger" role="alert" data="[DATA]">
-	<h4 class="alert-heading">Error</h4>
-	<p>[MESSAGE] [EXTRA_TEXT]</p>
+<div class="alert alert-danger d-flex" role="alert" data="[DATA]">
+	<div class="my-1 mr-2"><i class="fas fa-exclamation-triangle"></i></div>
+	<div>[MESSAGE] [EXTRA_TEXT]</div>
 </div>

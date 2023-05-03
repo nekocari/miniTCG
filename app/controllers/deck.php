@@ -87,11 +87,31 @@ class DeckController extends AppController{
         if(isset($_GET['id'])){
         	
             $deck = Carddeck::getById($_GET['id']);
-            if($deck->getStatus() == 'new' AND Setting::getByName('cards_decks_upcoming_public')->getValue() != 1){
-            	$this->redirectNotFound();
-            }
             
             if($deck instanceof Carddeck){
+            	if($deck->getStatus() == 'new' AND Setting::getByName('cards_decks_upcoming_public')->getValue() != 1){
+            		$this->redirectNotFound();
+            	}
+            	
+            	if(isset($_POST['vote'])){
+            		try{
+	            		if($deck->addVote($this->login())){
+	            			$this->layout()->addSystemMessage('success', 'vote_submited');
+	            		}else{
+	            			$this->layout()->addSystemMessage('error', 'unknown_error');
+	            		}
+            		}
+            		catch(PDOException $e){
+            			if($e->getCode() != 23000){
+            				throw $e;
+            			}
+            		}
+            		catch(Exception $e){
+            			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+            			$this->layout()->addSystemMessage('error', 'unknown_error');
+            		}
+            	}
+            	
             	$data = array();
             	$data['deck'] = $deck ;
                 $this->layout()->render('deck/deckpage.php',$data);

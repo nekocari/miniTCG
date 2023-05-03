@@ -1,5 +1,19 @@
 <h1><span class="deckname"><?php echo $deck->getDeckname(); ?></span> <?php echo $deck->getName(); ?></h1>
 
+<?php if(!$deck->isPublic()){ $this->renderMessage('info','Dieses Deck kann noch nicht gesammelt werden.'); ?>
+	<div class="row">
+		<div class="col"><span class="btn btn-outline-primary disabled"><?php echo $deck->getVoteCount(); ?> <i class="fas fa-thumbs-up"></i> Stimmen</span></div>
+		<?php if(!$deck->hasVoted($this->login)){ ?>
+			<form method="POST" action="" class="col text-right">
+				<button class="btn btn-primary" role="submit" name="vote"><i class="fas fa-thumbs-up"></i> abstimmen</button>
+			</form>
+		<?php }else{ ?>
+			<div class="col text-right">Du hast bereits abgestimmt!</div>
+		<?php } ?>
+	</div>
+	<hr>
+<?php } ?>
+
 <div class="d-flex flex-wrap">
 	<div class="my-2 col-12 col-md-4 text-center">
 		<?php echo $deck->getMasterCard(); ?>

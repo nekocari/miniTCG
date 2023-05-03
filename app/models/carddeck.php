@@ -190,6 +190,20 @@ class Carddeck extends DbRecordModel {
         return $decks;
     }
     
+    public function addVote($login){
+    	if($login instanceof Login){
+    		return DeckVoteUpcoming::addVote($login->getUser(), $this);
+    	}
+    	return false;
+    }
+    
+    public function getVotes(){
+    	return DeckVoteUpcoming::getVoteCountforDeck($this->getId());
+    }
+    public function getVoteCount(){
+    	return DeckVoteUpcoming::getCount(['deck_id'=>$this->getId()]);
+    }
+    
     public function getCollectorMembers(){
         $members = array();
         $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND c.status_id = \''.CardStatus::getCollect()->getId().'\'');
@@ -395,12 +409,28 @@ class Carddeck extends DbRecordModel {
         return Routes::getUri('deck_detail_page').'?id='.$this->id;
     }
     
+    public function isPublic(){
+    	if($this->getStatus() == 'public'){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    public function hasVoted($login){
+    	if($login instanceof Login AND !DeckVoteUpcoming::getVote($login->getUserId(),$this->getId()) instanceof DeckVoteUpcoming){
+    		return false;
+    	}else{
+    		return true;
+    	}
+    }
+    
     public function isPuzzle(){
-        $is_puzzle = false;
-        if($this->getType()->getName() == 'puzzle'){
-            $is_puzzle = true;
-        }
-        return $is_puzzle;
+    	$is_puzzle = false;
+    	if($this->getType()->getName() == 'puzzle'){
+    		$is_puzzle = true;
+    	}
+    	return $is_puzzle;
     }
     
     public function getImageUrls() {
