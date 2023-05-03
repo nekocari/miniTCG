@@ -27,6 +27,7 @@
                 	<?php echo $card->getName().' ('.$card->getPossessionCounter().')'; ?>
                 	<?php if($card->missingInKeep() AND !$card->owned()){ echo ' [KEEP]'; } ?>
                 	<?php if($card->missingInCollect() AND !$card->owned()){ echo ' [COLLECT]'; } ?>
+                	<?php if($card->onWishlist() AND !$card->owned()){ echo ' [WISHLIST]'; } ?>
                 	<?php if($card->mastered()){ echo ' [masterd]'; } ?>
                 </option>
                 <?php } ?>

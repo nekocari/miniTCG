@@ -4,6 +4,9 @@
 
 :root{ 
 	--def-border-radius: 0.5rem;
+	--collect: var(--success);
+	--keep: var(--warning);
+	--wishlist: var(--primary);
 }
 
 .navbar-toggler{
@@ -94,16 +97,22 @@ body{
 	bottom: 0;
 }
 
+.card-missing-wishlist {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--wishlist);
+	border-color: var(--wishlist);
+}
+
 .card-missing-collect {
-	background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5) 100%);
-	background-color: var(--primary);
-	border-color: var(--primary);
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--collect);
+	border-color: var(--collect);
 }
 
 .card-missing-keep {
-	background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5) 100%);
-	background-color: var(--secondary);
-	border-color: var(--secondary);
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--keep);
+	border-color: var(--keep);
 }
 
 .card-mastered {
@@ -111,7 +120,7 @@ body{
 	border-color: rgba(0,0,0,0.05);
 }
 .card-mastered.card-missing-keep, .card-mastered.card-missing-collect {
-	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.45), rgba(255,255,255,0.45) 6px, rgba(255,255,255,0.5) 6px, rgba(255,255,255,0.5) 12px);
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7) 6px, rgba(255,255,255,0.75) 6px, rgba(255,255,255,0.75) 12px);
 	border-color: rgba(0,0,0,0.05);
 }
 

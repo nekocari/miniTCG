@@ -14,8 +14,9 @@
     	<?php foreach($s_cards as $s_card){ ?>
         	<div class="card shop-card m-2 text-center">
             	<div class="d-inline-block mb-0 shop-card-image <?php 
-            	if($s_card->missingInKeep() AND !$s_card->owned()){ echo " card-missing-keep"; } 
-            	if($s_card->missingInCollect() AND !$s_card->owned()){ echo " card-missing-collect"; } 
+            	if($s_card->missingInKeep() AND !$s_card->owned()){ echo " card-missing-keep"; }
+            	if($s_card->missingInCollect() AND !$s_card->owned()){ echo " card-missing-collect"; }
+            	if($s_card->onWishlist() AND !$s_card->owned()){ echo " card-missing-wishlist"; } 
             	if($s_card->mastered()){ echo " card-mastered"; } ?>">
 					<?php echo $s_card->getImageHTML(); ?>
         		</div>
@@ -32,7 +33,8 @@
         	</div>
         <?php } ?>
     </form>
-    
+
+	<?php include $this->partial('templates/card_color_legend.php'); ?>
 
 <!-- Information falls keine Karten vorhanden sind -->
 <?php }else{ $this->renderMessage('info','Alle Karten sind <i>ausverkauft!</i> <br> Neue Lieferung voraussichtlich am <b>'.$shop_next_restock_date.'</b>'); } ?>

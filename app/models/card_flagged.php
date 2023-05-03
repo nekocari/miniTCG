@@ -10,7 +10,7 @@
 
 class CardFlagged extends Card {
     
-    protected $keep_flag, $collect_flag, $mastered_flag, $in_keep_flag, $in_collect_flag, $owned_flag, $possession_counter=1;    
+    protected $keep_flag, $collect_flag, $wishlist_flag, $mastered_flag, $in_keep_flag, $in_collect_flag, $owned_flag, $possession_counter=1;    
     
     public function __construct() {
         parent::__construct();
@@ -39,11 +39,18 @@ class CardFlagged extends Card {
         }
     }
     public function mastered(){
-        if(!$this->mastered_flag){
-            return false;
-        }else{
-            return true;
-        }
+    	if(!$this->mastered_flag){
+    		return false;
+    	}else{
+    		return true;
+    	}
+    }
+    public function onWishlist(){ 
+    	if(!$this->wishlist_flag){
+    		return false;
+    	}else{
+    		return true;
+    	}
     }
     public function owned(){
     	if(!$this->owned_flag){
@@ -77,6 +84,7 @@ class CardFlagged extends Card {
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck) as collect_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as keep_flag,
                                 	EXISTS (SELECT 1 FROM decks_master WHERE member = ".$compare_user_id." and deck = c.deck) as mastered_flag,
+                                	EXISTS (SELECT 1 FROM members_wishlist WHERE member_id = ".$compare_user_id." and deck_id = c.deck) as wishlist_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and deck = c.deck AND number = c.number) as owned_flag
@@ -84,7 +92,7 @@ class CardFlagged extends Card {
                                     WHERE c.id = ".$this->id;
                         break;
                     default:
-                        $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
+                        $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
                                     FROM cards c
                                     LEFT JOIN trades t ON (t.offered_card = c.id OR t.requested_card = c.id) AND t.status = 'new'
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
@@ -93,6 +101,8 @@ class CardFlagged extends Card {
                                         keep ON keep.deck = c.deck
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$compare_user_id.")
                                         mastered ON mastered.deck = c.deck
+                                    LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$compare_user_id.")
+                                        wishlist ON wishlist.deck_id = c.deck
                                     LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
                                         in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
                                     LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
@@ -110,13 +120,14 @@ class CardFlagged extends Card {
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck) as collect_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as keep_flag,
                                 	EXISTS (SELECT 1 FROM decks_master WHERE member = ".$compare_user_id." and deck = c.deck) as mastered_flag,
+                                	EXISTS (SELECT 1 FROM members_wishlist WHERE member_id = ".$compare_user_id." and deck_id = c.deck) as wishlist_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
                                 	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and deck = c.deck AND number = c.number) as owned_flag
                                     FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c ";
                         break;
                     default:
-                        $sql = "SELECT collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
+                        $sql = "SELECT collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
                                     FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
                                         collect ON collect.deck = c.deck
@@ -124,6 +135,8 @@ class CardFlagged extends Card {
                                         keep ON keep.deck = c.deck
                                     LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$compare_user_id.")
                                         mastered ON mastered.deck = c.deck
+                                    LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$compare_user_id.")
+                                        wishlist ON wishlist.deck_id = c.deck
                                     LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
                                         in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
                                     LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
@@ -144,7 +157,8 @@ class CardFlagged extends Card {
         }else{
             // set all flags to 0;
             $this->keep_flag = 0; // in untradebale status but not collection or new
-            $this->collect_flag = 0; 
+            $this->collect_flag = 0;
+            $this->wishlist_flag = 0;
             $this->mastered_flag = 0;
             $this->in_keep_flag = 0;
             $this->in_collect_flag = 0;

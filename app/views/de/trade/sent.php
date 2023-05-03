@@ -45,10 +45,5 @@
 
 <div class="my-4"><?php if(count($trades) == 0){ $this->renderMessage('info','Du hast keine Tauschanfragen gesendet.'); } ?></div>
 
-<div class="text-center my-2">
-	<small>
-		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in Keep</span>
-		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Collect</span>
-		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
-	</small>
-</div>
+
+<?php include $this->partial('templates/card_color_legend.php'); ?>

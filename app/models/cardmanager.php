@@ -138,6 +138,7 @@ class Cardmanager {
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id = $status_id_collect and deck = c.deck) as collect_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as keep_flag,
                         	EXISTS (SELECT 1 FROM decks_master WHERE member = c.owner and deck = c.deck) as mastered_flag,
+                        	EXISTS (SELECT 1 FROM members_wishlist WHERE member_id = c.owner and deck_id = c.deck) as wishlist_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
                             FROM cards c $join_partial
@@ -145,12 +146,14 @@ class Cardmanager {
                             ORDER BY name ASC";
                     break;
                 default:
-                	$sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
+                	$sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
                             FROM cards c $join_partial
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id = $status_id_collect)
                                 collect ON collect.deck = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id IN($status_ids_not_tradeable_str) )
                                 keep ON keep.deck = c.deck
+                            LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$this->member_id.")
+                                wishlist ON wishlist.deck_id = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$this->member_id.")
                                 mastered ON mastered.deck = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id = $status_id_collect)

@@ -6,8 +6,9 @@
     </div>
     <?php foreach($cat_elements as $card){ ?>
         <div class="d-inline-block card-member-profil <?php 
-        if($card->missingInKeep() AND !$card->owned()){ echo " card-missing-keep"; } 
-        if($card->missingInCollect() AND !$card->owned()){ echo " card-missing-collect"; } 
+        if($card->missingInKeep() AND !$card->owned()){ echo " card-missing-keep"; }
+        if($card->missingInCollect() AND !$card->owned()){ echo " card-missing-collect"; }
+        if($card->onWishlist() AND !$card->owned()){ echo " card-missing-wishlist"; } 
         if($card->mastered()){ echo " card-mastered"; } 
         ?>">
         	<a href="<?php echo Routes::getUri('trade').'?card='.$card->getId(); ?>">
@@ -21,10 +22,5 @@
 <?php }else { $this->renderMessage('info','Keine Karten in dieser Kategorie'); } ?>
 </div>
 
-<div class="text-center my-2">
-	<small>
-		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in nicht tauschbar</span>
-		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Sammlung</span>
-		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
-	</small>
-</div>
+
+<?php include $this->partial('templates/card_color_legend.php'); ?>

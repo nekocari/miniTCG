@@ -15,6 +15,7 @@
 	<div>
 	<?php foreach($cards as $card){ ?>
 		<div class="d-inline-block text-center m-1 card-cardmanager <?php if($card->missingInKeep()){ echo " card-missing-keep"; } 
+		   if($card->onWishlist()){ echo " card-missing-wishlist"; } 
 		   if($card->missingInCollect()){ echo " card-missing-collect"; } if($card->mastered()){ echo " card-mastered"; } ?>">
 			<div>
 				<?php echo $card->getImageHtml(); ?>
@@ -44,10 +45,4 @@
 	<input type="hidden" name="action" value="move_cards">
 </form>
 
-<div class="text-center my-2">
-	<small>
-		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in nicht tauschbar</span>
-		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Sammlung</span>
-		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
-	</small>
-</div>
+<?php include $this->partial('templates/card_color_legend.php'); ?>

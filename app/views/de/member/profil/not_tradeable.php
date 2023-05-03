@@ -10,10 +10,5 @@
 <?php } }else { $this->renderMessage('info','Keine Karten in dieser Kategorie'); } ?>
 </div>
 
-<div class="text-center my-2">
-	<small>
-		<span class="d-inline-block card-member-profil card-missing-keep">fehlend in nicht tauschbar</span>
-		<span class="d-inline-block card-member-profil card-missing-collect">fehlend in Sammlung</span>
-		<span class="d-inline-block card-member-profil card-mastered">Deck gemastert</span>
-	</small>
-</div>
+
+<?php include $this->partial('templates/card_color_legend.php'); ?>
