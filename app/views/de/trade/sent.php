@@ -23,7 +23,8 @@
 			<div class="text-center d-inline-block">
 				<div class="d-inline-block card-member-profil <?php 
 				    if($trade->getRequestedCard()->missingInKeep() AND !$trade->getRequestedCard()->owned()){ echo " card-missing-keep"; } 
-				    if($trade->getRequestedCard()->missingInCollect()AND !$trade->getRequestedCard()->owned()){ echo " card-missing-collect"; } 
+				    if($trade->getRequestedCard()->missingInCollect()AND !$trade->getRequestedCard()->owned()){ echo " card-missing-collect"; }
+				    if($trade->getRequestedCard()->onWishlist()AND !$trade->getRequestedCard()->owned()){ echo " card-missing-wishlist"; } 
     				if($trade->getRequestedCard()->mastered()){ echo " card-mastered"; } ?>">
     				<?php echo $trade->getRequestedCard()->getImageHTML(); ?>
     			</div>

@@ -1,15 +1,15 @@
-<h1>Tauschanfragen</h1>
+<h1>Trade Offers</h1>
 
 <ul class="nav nav-tabs">
-	<li class="nav-item"><a class="nav-link active">Erhalten</a></li>
-	<li class="nav-item"><a class="nav-link" href="<?php echo Routes::getUri('trades_sent'); ?>">Gesendet</a></li>
+	<li class="nav-item"><a class="nav-link active">recieved</a></li>
+	<li class="nav-item"><a class="nav-link" href="<?php echo Routes::getUri('trades_sent'); ?>">sent</a></li>
 </ul>
 
 <?php foreach($trades as $trade){ ?>
 <div class="card my-4">
 	<div class="card-header text-muted text-right font-italic">
-		<small>von <a class="font-weight-bold" href="<?php echo $trade->getOfferer()->getProfilLink(); ?>"><?php echo $trade->getOfferer()->getName(); ?></a> 
-			am <?php echo $trade->getDate($this->login->getUser()->getTimezone()); ?></small>
+		<small> <a class="font-weight-bold" href="<?php echo $trade->getOfferer()->getProfilLink(); ?>"><?php echo $trade->getOfferer()->getName(); ?></a> 
+			on <?php echo $trade->getDate($this->login->getUser()->getTimezone()); ?></small>
 	</div>
 	<div class="card-body text-center">
 		<div>
@@ -30,25 +30,25 @@
             </div>
 		</div>
 		<div>
-			Deine <span class="text-uppercase"><?php echo $trade->getRequestedCard()->getName(); ?></span> gegen 
-			<span class="text-uppercase"><?php echo $trade->getOfferedCard()->getName(); ?></span> von <?php echo $trade->getOfferer()->getName(); ?>
+			Your <span class="text-uppercase"><?php echo $trade->getRequestedCard()->getName(); ?></span> for 
+			<span class="text-uppercase"><?php echo $trade->getOfferedCard()->getName(); ?></span> from <?php echo $trade->getOfferer()->getName(); ?>
 		</div>
 			
-		<div class="text-muted font-italic">Nachricht: "<?php echo $trade->getText(); ?>"</div>
+		<div class="text-muted font-italic">Message: "<?php echo $trade->getText(); ?>"</div>
 	</div>
 	<div class="card-footer text-center">
 		<form class="m-0 p-0" method="POST" action="">
-			<input type="text" class="form-control my-1" maxlength="250" name="text" placeholder="Nachricht (optional)">
-    		<button class="btn btn-sm btn-primary" name="accept"><i class="fas fa-check"></i> Ja</button>
+			<input type="text" class="form-control my-1" maxlength="250" name="text" placeholder="Message (optional)">
+    		<button class="btn btn-sm btn-primary" name="accept"><i class="fas fa-check"></i> yes</button>
     		&bull; 
-    		<button class="btn btn-sm btn-danger" name="decline"><i class="fas fa-times"></i> Nein</button>
+    		<button class="btn btn-sm btn-danger" name="decline"><i class="fas fa-times"></i> no</button>
     		<input type="hidden" name="id" value="<?php echo $trade->getId(); ?>">
     	</form>
 	</div>
 </div>
 <?php } ?>
 
-<div class="my-4"><?php if(count($trades) == 0){ $this->renderMessage('info','Du hast keine Tauschanfragen erhalten.'); } ?></div>
+<div class="my-4"><?php if(count($trades) == 0){ $this->renderMessage('info','no trade offers recieved'); } ?></div>
 
 
 <?php include $this->partial('templates/card_color_legend.php'); ?>

@@ -288,7 +288,7 @@
     		'de'=>'jetzt spielen'
     ]);
     $sys_msg_text_handler->addCode('game_won',[
-    		'en'=>'You <b>won!</b> <br>This is your price:',
+    		'en'=>'You <b>won!</b> <br>This is your prize:',
     		'de'=>'Du hast <b>gewonnen!</b> <br>Hier dein Gewinn:'
     ]); // price displayed afterwards
     $sys_msg_text_handler->addCode('game_lost',[

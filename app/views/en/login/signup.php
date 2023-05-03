@@ -1,18 +1,18 @@
 <form class="card mx-auto my-3" style="max-width:400px;" name="signUpForm" method="POST" action="" role="form">
-	<div class="card-header">Registrierung</div>
+	<div class="card-header">Registration</div>
 	<div class="card-body">
         <div class="form-group">
-        	<label for="username">Benutzername:</label>
+        	<label for="username">Username:</label>
         	<div class="input-group">
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-user"></i></div>
     			</div>
         		<input class="form-control" type="text" name="username" id="username" required pattern="[A-Za-z0-9_äÄöÖüÜß]+">
         	</div>
-        	<small class="form-text text-muted">Erlaubt sind Buchstaben,Zahlen und"_"</small>
+        	<small class="form-text text-muted">Letters, numbers and "_" are allowed</small>
         </div>
         <div class="form-group">
-        	<label for="mail">E-Mailadresse:</label>
+        	<label for="mail">Email:</label>
         	<div class="input-group">
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-envelope"></i></div>
@@ -21,17 +21,17 @@
         	</div>
         </div>
         <div class="form-group">
-        	<label for="password">Passwort:</label>
+        	<label for="password">Password:</label>
         	<div class="input-group">
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-key"></i></div>
     			</div>
         		<input class="form-control" type="password" name="password" id="password2" required  minlength="6">
         	</div>
-        	<small class="form-text text-muted">mindestens 6 Zeichen</small>
+        	<small class="form-text text-muted">at least 6 characters</small>
         </div>
         <div class="form-group">
-        	<label for="password_rep">Passwort:</label>
+        	<label for="password_rep">Password:</label>
         	<div class="input-group">
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-key"></i></div>
@@ -40,7 +40,7 @@
         	</div>
         </div>
         <div class="form-group">
-        	<label for="language">Sprache:</label>
+        	<label for="language">Language:</label>
         	<div class="input-group">
         		<div class="input-group-prepend">
     				<div class="input-group-text"><i class="fas fa-language"></i></div>
@@ -52,6 +52,6 @@
         		</select>
         	</div>
         </div>
-		<input class="btn btn-primary" type="submit" name="signup" value="Registrierung senden">
+		<input class="btn btn-primary" type="submit" name="signup" value="sign up now">
 	</div>
 </form>
