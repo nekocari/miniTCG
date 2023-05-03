@@ -1,6 +1,10 @@
 <h1>Karten Decks</h1>
 
-<?php if(count($decks) > 0) { ?>
+<?php if($list->getDeckStatus() == 'new'){ ?>
+	<h2>Unveröffentlicht</h2>
+<?php } ?>
+
+<?php if($list->getCount() > 0) { ?>
 <div class="table-responsive">
 	<table class="table">
 		<thead class="thead-light">
@@ -11,7 +15,7 @@
 				<th>Erstellt</th>
 			</tr>
 		</thead>
-    	<?php foreach($decks as $deck){ ?>
+    	<?php foreach($list->getItems() as $deck){ ?>
     	<tr>
     		<th>#<?php echo $deck->getId(); ?></th>
     		<td><a class="deckname" href="<?php echo $deck->getDeckpageUrl(); ?>"><?php echo $deck->getDeckname(); ?></a><br>
@@ -24,6 +28,6 @@
     </table>
 </div>
 
-<?php echo $pagination; ?>
+<?php echo $list->getPagination()->getPaginationHTML(); ?>
 
 <?php }else{ echo $this->renderMessage('info','Es existieren keine veröffentlichten Decks.'); } ?>

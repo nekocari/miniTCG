@@ -6,27 +6,57 @@
  */
 
 class DeckController extends AppController{
-    
-    /**
-     * Decks Index
-     */
-    public function index() {
-        
-        if(isset($_GET['pg']) AND intval($_GET['pg'] > 0)){
-            $currPage = $_GET['pg'];
-        }else{
-            $currPage = 1;
-        }
-        
-        $decks = Carddeck::getAllByStatus('public',['deckname'=>'ASC']);
-        $pagination = new Pagination($decks, 10, $currPage, Routes::getUri('deck_index'));
-        
-        $data = array();
-        $data['decks'] = $pagination->getElements();
-        $data['pagination'] = $pagination->getPaginationHtml();
-        
-        $this->layout()->render('deck/list.php', $data);
-    }
+	
+	/**
+	 * Decks Index
+	 */
+	public function index() {
+		
+		$data = array();
+		$list = new CarddeckList();
+		$list->setDeckStatus('public');
+		
+		if(isset($_GET['order'], $_GET['direction'])){
+			$list->setOrder([$_GET['order']=>$_GET['direction']]);
+		}
+		if(isset($_GET['pg'])){
+			$list->setPage($_GET['pg']);
+		}
+		if(isset($_GET['search'])){
+			$list->setSearchStr($_GET['search']);
+		}
+		
+		$data['list'] = $list;
+		
+		$this->layout()->render('deck/list.php', $data);
+	}
+	
+	/**
+	 * upcoming Decks Index
+	 */
+	public function upcomingIndex() {
+		
+		if(Setting::getByName('cards_decks_upcoming_public')->getValue() != 1){
+			$this->redirectNotFound();
+		}
+				
+		$data = array();
+		$list = new CarddeckList();
+		$list->setDeckStatus('new');
+		if(isset($_GET['order'], $_GET['direction'])){
+			$list->setOrder([$_GET['order']=>$_GET['direction']]);
+		}
+		if(isset($_GET['pg'])){
+			$list->setPage($_GET['pg']);
+		}
+		if(isset($_GET['search'])){
+			$list->setSearchStr($_GET['search']);
+		}
+		
+		$data['list'] = $list;
+		
+		$this->layout()->render('deck/list.php', $data);
+	}
     
     /**
      * Decks by Category
@@ -55,12 +85,15 @@ class DeckController extends AppController{
     	}
         
         if(isset($_GET['id'])){
+        	
+            $deck = Carddeck::getById($_GET['id']);
+            if($deck->getStatus() == 'new' AND Setting::getByName('cards_decks_upcoming_public')->getValue() != 1){
+            	$this->redirectNotFound();
+            }
             
-            $data = array();
-            $data['deck'] = Carddeck::getById($_GET['id']);
-            
-            if($data['deck'] instanceof Carddeck){
-                
+            if($deck instanceof Carddeck){
+            	$data = array();
+            	$data['deck'] = $deck ;
                 $this->layout()->render('deck/deckpage.php',$data);
                 
             }

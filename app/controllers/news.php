@@ -36,20 +36,6 @@ class NewsController extends AppController {
         	$list->setSearchStr($_GET['search']);
         }
         
-        $currPage = 1; 
-        if(isset($_GET['pg'])){
-            $currPage = intval($_GET['pg']);
-        }
-        
-        $news = News::getAll(['date'=>'DESC']);
-        
-        $pagination = new Pagination($news, 10, $currPage, Routes::getUri('news_index'));
-        
-        $data = array();
-        $data['news'] = $pagination->getElements();
-        $data['pagination'] = $pagination->getPaginationHtml();
-        
-        
         $data['list'] = $list;
         
         $this->layout()->render('admin/news/list.php',$data);

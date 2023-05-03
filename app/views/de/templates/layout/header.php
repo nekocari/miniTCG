@@ -36,7 +36,8 @@
         	<!-- Main Navigation -->
         	<div id="main-nav">
                 <nav class="navbar navbar-expand-sm navbar-light px-0 py-3">  
-                	<a class="navbar-brand" href="<?php echo BASE_URI; ?>">mini<span class="tcg">TCG</span> <small><?php echo APP_VERSION; ?></small></a>      	
+                	
+                	<a class="navbar-brand" href="<?php echo BASE_URI; ?>"><?php if(($name = Setting::getByName('app_name')->getValue()) != 'miniTCG'){ echo $name; }else{ ?>mini<span class="tcg">TCG</span> <small><?php echo APP_VERSION; ?></small><?php } ?></a>        	
                     
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     	<span class="navbar-toggler-icon"></span>

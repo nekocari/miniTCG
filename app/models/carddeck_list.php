@@ -70,6 +70,10 @@ class CarddeckList extends Listable {
     	return $this->list_items;
     }
     
+    public function getDeckStatus() {
+    	return $this->deck_status;
+    }
+    
     public function setDeckStatus($status) {
     	$this->deck_status = $status;
     }

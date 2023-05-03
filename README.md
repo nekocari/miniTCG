@@ -127,12 +127,15 @@ But the comments are mostly english and the views are being translated as well, 
 
    
 ## Features TBA
+* wishlist
+* vote on upcoming decks
+* tagging on decks
 * allow comments on news
 * add decks without uploading files
 * sort & search options for lists
 * add reset option for shop
 * add individualization for handing out update cards
-* add simple pages without messing with the controller files
+* add simple pages without the need to mess the controller files
 
 
 ## Used Libs & Co.
