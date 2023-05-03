@@ -192,6 +192,14 @@
     		'en'=>'Thanks for voting.',
     		'de'=>'Danke für deine Stimme.'
     ]);
+    $sys_msg_text_handler->addCode('wishlist_add_success', [
+    		'en'=>'Deck added to wishlist.',
+    		'de'=>'Deck zur Wunschliste hinzugefügt.'
+    ]);
+    $sys_msg_text_handler->addCode('wishlist_del_success', [
+    		'en'=>'Deck removed from wishlist.',
+    		'de'=>'Deck von der Wunschliste entfernt.'
+    ]);
     
     // CARD UPLOAD (Replace)
     $sys_msg_text_handler->addCode('card_upload_success', [

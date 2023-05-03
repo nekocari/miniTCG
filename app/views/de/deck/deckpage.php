@@ -30,13 +30,19 @@
 		</p>
 		
 		<p><?php echo $deck->getDescription('html'); ?></p>
+		
+		<?php if($deck->onWishlist($this->login)){ ?>
+			<form method="post" class="text-right"><button class="btn btn-outline-danger" name="wishlist" value="remove"><i class="far fa-heart"></i> <del>Wunschliste</del></button></form>
+		<?php }else{ ?>
+			<form method="post" class="text-right"><button class="btn btn-primary" name="wishlist" value="add"><i class="fas fa-heart"></i> Wunschliste</button></form>
+		<?php } ?>
     	
 	</div>
 </div>
 
 <hr>
 
-<div class="my-4 text-center table-responsive <?php if($deck->isPuzzle()){ echo "puzzle-view"; } ?>" style="white-space:nowrap;">
+<div class="my-4 text-center table-responsive" style="white-space:nowrap;">
 	<?php echo $deck->getDeckView(); ?>
 </div>
 

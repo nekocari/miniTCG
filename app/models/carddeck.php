@@ -204,6 +204,15 @@ class Carddeck extends DbRecordModel {
     	return DeckVoteUpcoming::getCount(['deck_id'=>$this->getId()]);
     }
     
+    public function onWishlist($login){
+    	if($login instanceof Login){
+    		if(MemberWishlistEntry::getCount(['member_id'=>$login->getUserId(),'deck_id'=>$this->getId()])){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public function getCollectorMembers(){
         $members = array();
         $req = $this->db->prepare('SELECT DISTINCT m.* FROM cards c JOIN members m ON m.id = c.owner WHERE deck = '.$this->id.' AND c.status_id = \''.CardStatus::getCollect()->getId().'\'');

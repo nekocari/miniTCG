@@ -112,6 +112,30 @@ class DeckController extends AppController{
             		}
             	}
             	
+            	if(isset($_POST['wishlist'])){
+            		if($_POST['wishlist'] == 'add'){
+            			try{
+            				if(MemberWishlistEntry::add($this->login(), $deck)){
+	            				$this->layout()->addSystemMessage('success', 'wishlist_add_success');
+            				}else{
+            					$this->layout()->addSystemMessage('error', 'unknown_error');
+	            			}
+            			}
+            			catch(PDOException $e){
+            				if($e->getCode() != 23000){
+            					throw $e;
+            				}
+            			}
+            		}elseif($_POST['wishlist'] == 'remove'){
+            			$entries = MemberWishlistEntry::getWhere(['member_id'=>$this->login()->getUserId(),'deck_id'=>$deck->getId()]);
+            			if(count($entries) == 1){
+            				if($entries[0]->delete()){
+            					$this->layout()->addSystemMessage('success', 'wishlist_del_success');
+            				}
+            			}
+            		}
+            	}
+            	
             	$data = array();
             	$data['deck'] = $deck ;
                 $this->layout()->render('deck/deckpage.php',$data);

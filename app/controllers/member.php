@@ -138,5 +138,29 @@ class MemberController extends AppController {
         $this->layout()->render('member/mastercards.php',$data);
     }
     
+    /**
+     * wishlist
+     */
+    public function wishlist() {
+    	
+    	$this->redirectNotLoggedIn();
+    	
+    	if(isset($_POST['delete'])){
+    		$wish = MemberWishlistEntry::getById();
+    		if($wish instanceof MemberWishlistEntry){
+    			if($wish->delete()){
+    				$this->layout()->addSystemMessage('success', 'wishlist_deck_deleted');
+    			}
+    		}
+    	}
+    	
+    	$list = new MemberWishlist();
+    	$list->setMember($this->login()->getUser());
+    	
+    	$data['list'] = $list;
+    	
+    	$this->layout()->render('member/wishlist.php',$data);
+    	
+    }
     
 }

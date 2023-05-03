@@ -6,11 +6,9 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 
 (Because of the DSGVO in Germany you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
 
-*Note that this startet as an all german project, so files may still contain some german text elements! 
-But the comments are mostly english and the views are being translated as well, with options to add in other languages in the future. *
+*Note, that this startet as an all german project, so you might stumble upon some german text elements in the code! 
+But it should be mostly english by now and the views are being translated as well, with options to add in other languages in the future.*
 
-
-**The Application is still in development.**
 
 ---
 
@@ -94,6 +92,7 @@ But the comments are mostly english and the views are being translated as well, 
   	* SQL import option for later updates
 * member functions
   * view decks (may also be made public)
+  * vote for upcoming decks
   * view member profils (may also be made public)
   	* make trade offers
   		* info for each offerable card if it's usefull
