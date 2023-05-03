@@ -745,6 +745,7 @@ class AdminController extends AppController {
         
         
         // import sql
+        $data['files'] = array();
         foreach(scandir($dir) as $file){
             $fnarr = explode('.', $file);
             if(end($fnarr) == 'sql'){

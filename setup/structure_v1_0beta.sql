@@ -1,12 +1,12 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- Server-Version: 10.4.22-MariaDB
--- PHP-Version: 7.4.27
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Datenbank: `minitcg`
@@ -45,16 +45,6 @@ CREATE TABLE `cards_stati` (
   `public` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' COMMENT 'other members can see cards in here'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Daten für Tabelle `cards_stati`
---
-
-INSERT INTO `cards_stati` (`id`, `name`, `tradeable`, `position`, `new`, `collections`, `public`) VALUES
-(1, 'New', '0', 10, '1', '0', '0'),
-(2, 'Trade', '1', 20, '0', '0', '1'),
-(3, 'Keep', '0', 30, '0', '0', '1'),
-(4, 'Collect', '0', 40, '0', '1', '1');
-
 -- --------------------------------------------------------
 
 --
@@ -70,7 +60,7 @@ CREATE TABLE `categories` (
 -- Daten für Tabelle `categories`
 --
 
-INSERT INTO `categories` (`id`, `name`) VALUES
+INSERT INTO `categories` VALUES
 (1, '1st Category'),
 (2, '2nd Category'),
 (3, '3rd Category');
@@ -144,10 +134,23 @@ CREATE TABLE `decks_types` (
 -- Daten für Tabelle `decks_types`
 --
 
-INSERT INTO `decks_types` (`id`, `name`, `size`, `cards_per_row`, `card_image_width`, `card_image_height`, `master_image_width`, `master_image_height`, `template_path`, `filler_type`, `filler_path`) VALUES
+INSERT INTO `decks_types` VALUES
 (1, 'default', 6, 3, 100, 90, 130, 100, NULL, 'identical', '_filler/default.gif'),
 (2, 'puzzle', 6, 3, 110, 100, 120, 100, 'deck_type_puzzle.php', 'individual', '_filler/puzzle/'),
 (3, 'special', 4, 2, 90, 125, 120, 100, 'deck_type_special.php', 'identical', '_filler/default.gif');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `decks_votes_upcoming`
+--
+
+CREATE TABLE `decks_votes_upcoming` (
+  `deck_id` int(10) UNSIGNED NOT NULL,
+  `member_id` int(10) UNSIGNED NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  `utc` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -167,10 +170,10 @@ CREATE TABLE `games_lucky` (
 -- Daten für Tabelle `games_lucky`
 --
 
-INSERT INTO `games_lucky` (`id`, `settings_id`, `choices_json`, `results_json`, `choice_type`) VALUES
+INSERT INTO `games_lucky` VALUES
 (1, 2, '[\"Kopf\",\"Zahl\"]', '[\"win-card:1\",\"lost\"]', 'text'),
 (2, 1, '[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"]', '[\"win-card:1\",\"win-card:1\",\"win-card:2\",\"win-money:500\",\"win-card:2\",\"win-money:250\",\"lost\",\"lost\",\"lost\"]', 'text'),
-(4, 4, '[\"public\\/img\\/games\\/poke\\/rattata.png\",\"public\\/img\\/games\\/poke\\/pikachu.png\",\"public\\/img\\/games\\/poke\\/jigglypuff.png\",\"public\\/img\\/games\\/poke\\/meowth.png\",\"public\\/img\\/games\\/poke\\/psyduck.png\"]', '[\"lost\",\"win-money:100\",\"win-money:150\",\"win-money:200\",\"win-money:250\"]', 'image');
+(5, 8, '[\"public\\/img\\/games\\/poke\\/rattata.png\",\"public\\/img\\/games\\/poke\\/pikachu.png\",\"public\\/img\\/games\\/poke\\/jigglypuff.png\",\"public\\/img\\/games\\/poke\\/meowth.png\",\"public\\/img\\/games\\/poke\\/psyduck.png\"]', '[\"lost\",\"win-money:100\",\"win-money:150\",\"win-money:200\",\"win-money:250\"]', 'image');
 
 -- --------------------------------------------------------
 
@@ -194,11 +197,11 @@ CREATE TABLE `games_settings` (
 -- Daten für Tabelle `games_settings`
 --
 
-INSERT INTO `games_settings` (`id`, `game_key`, `type`, `wait_time`, `route_identifier`, `name_json`, `description_json`, `preview_img_path`, `game_img_path`) VALUES
-(1, 'lucky_number', 'lucky', 15, 'game_lucky_number', '{\"de\":\"Gl\\u00fcckszahl\",\"en\":\"Lucky Number\"}', '{\"de\":\"W\\u00e4hle eine Zahl und mit Gl\\u00fcck gewinnst du eine oder sogar zwei Karten!\",\"en\":\"Pick your Lucky Number, and you might win up to two Random Cards!\"}', NULL, ''),
-(2, 'head_or_tail', 'lucky', 30, 'game_head_or_tail', '{\"de\":\"Kopf oder Zahl\",\"en\":\"Head or Tail\"}', '{\"de\":\"Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.\",\"en\":\"I\'ll throw a coin. If you guess the result right, you win a Random Card.\"}', NULL, ''),
+INSERT INTO `games_settings` VALUES
+(1, 'lucky_number', 'lucky', 5, 'game_lucky_number', '{\"de\":\"Gl\\u00fcckszahl\",\"en\":\"Lucky Number\"}', '{\"de\":\"W\\u00e4hle eine Zahl und mit Gl\\u00fcck gewinnst du eine oder sogar zwei Karten!\",\"en\":\"Pick your Lucky Number, and you might win up to two Random Cards!\"}', NULL, ''),
+(2, 'head_or_tail', 'lucky', 3, 'game_head_or_tail', '{\"de\":\"Kopf oder Zahl\",\"en\":\"Head or Tail\"}', '{\"de\":\"Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.\",\"en\":\"I\'ll throw a coin. If you guess the result right, you win a Random Card.\"}', NULL, ''),
 (3, 'trade_in', 'custom', NULL, 'game_trade_in', '{\"de\":\"Tausch Mich\",\"en\":\"Trade In\"}', '{\"de\":\"Tausche eine doppelte Karte gegen eine Zufallskarte!\",\"en\":\"Trade in your duplicate Card for a Random Card!\"}', NULL, ''),
-(4, 'poke', 'lucky', 30, 'game_default_lucky', '{\"de\":\"Lucky Pok\\u00e9\",\"en\":\"Lucky Pok\\u00e9\"}', '{\"de\":\"Schnapp dir ein Pokemon!  \\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\",\"en\":\"Catch a Pokemon!\\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\"}', NULL, NULL);
+(8, 'poke', 'lucky', 2, 'game_default_lucky', '{\"de\":\"Lucky Pok\\u00e9\",\"en\":\"Lucky Pok\\u00e9\"}', '{\"de\":\"Schnapp dir ein Pokemon!  \\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\",\"en\":\"Catch a Pokemon!\\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\"}', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -217,10 +220,12 @@ CREATE TABLE `level` (
 -- Daten für Tabelle `level`
 --
 
-INSERT INTO `level` (`id`, `level`, `name`, `cards`) VALUES
+INSERT INTO `level` VALUES
 (1, 1, 'Level 1', 0),
-(2, 2, 'Level 2', 50),
-(3, 3, 'Level 3', 100);
+(2, 2, 'Level 2', 25),
+(3, 3, 'Level 3', 50),
+(4, 4, 'Level 4', 75),
+(9, 5, 'Level 5', 100);
 
 -- --------------------------------------------------------
 
@@ -307,6 +312,20 @@ CREATE TABLE `members_settings` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `members_wishlist`
+--
+
+CREATE TABLE `members_wishlist` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `member_id` int(10) UNSIGNED NOT NULL,
+  `deck_id` int(10) UNSIGNED NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  `utc` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `messages`
 --
 
@@ -353,7 +372,7 @@ CREATE TABLE `rights` (
 -- Daten für Tabelle `rights`
 --
 
-INSERT INTO `rights` (`id`, `name`, `description`) VALUES
+INSERT INTO `rights` VALUES
 (1, 'Admin', 'Alle Rechte'),
 (2, 'CardCreator', 'Decks verwalten, News verwalten, Karten Updates verwalten'),
 (3, 'ManageMembers', 'Mitgliedsdaten verwalten inkl. Karten gutschreiben'),
@@ -383,7 +402,7 @@ CREATE TABLE `routing` (
 -- Daten für Tabelle `routing`
 --
 
-INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES
+INSERT INTO `routing` VALUES
 ('access_denied_authorization', 'access_denied.php', 'Pages', 'accessDenied', 'get', '0'),
 ('admin_card_status_add', 'admin/settings/card_status/add.php', 'Admin', 'addCardStatus', 'get|post', '0'),
 ('admin_card_status_delete', 'admin/settings/card_status/delete.php', 'Admin', 'deleteCardStatus', 'get|post', '0'),
@@ -415,13 +434,14 @@ INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `d
 ('category_edit', 'admin/category/edit.php', 'Category', 'editCategory', 'get|post', '0'),
 ('category_index', 'admin/category.php', 'Category', 'categories', 'get|post', '0'),
 ('deck_by_category', 'decks/category.php', 'Deck', 'category', 'get', '0'),
-('deck_detail_page', 'decks/deck.php', 'Deck', 'deckpage', 'get', '0'),
+('deck_detail_page', 'decks/deck.php', 'Deck', 'deckpage', 'get|post', '0'),
 ('deck_edit', 'admin/deck/edit.php', 'Deck', 'deckEdit', 'get|post', '0'),
 ('deck_index', 'decks.php', 'Deck', 'index', 'get', '0'),
 ('deck_update', 'admin/deck/update.php', 'Update', 'updates', 'get|post', '0'),
 ('deck_update_add', 'admin/deck/update/add.php', 'Update', 'add', 'get|post', '0'),
 ('deck_update_edit', 'admin/deck/update/edit.php', 'Update', 'edit', 'get|post', '0'),
 ('deck_upload', 'admin/deck/upload.php', 'Deck', 'deckUpload', 'get|post', '0'),
+('decks_list_upcoming', 'decks/upcoming.php', 'Deck', 'upcomingIndex', 'get', '0'),
 ('delete_account', 'member/delete_account.php', 'Login', 'deleteAccount', 'get|post', '0'),
 ('edit_userdata', 'member/userdata.php', 'Login', 'editUserdata', 'get|post', '0'),
 ('faq', 'faq.php', 'Pages', 'faq', 'get', '0'),
@@ -479,11 +499,12 @@ CREATE TABLE `settings` (
 -- Daten für Tabelle `settings`
 --
 
-INSERT INTO `settings` (`name`, `value`, `description`) VALUES
+INSERT INTO `settings` VALUES
 ('app_mail', 'mintcg@irgendwas.de', '{\"en\":\"Address for mailing\",\"de\":\"Adresse für Mails\"}'),
 ('app_meta_description', 'an automatic trading card game', '{\"en\":\"Page description for search engines\",\"de\":\"Seitenbeschreibung für Suchmaschinen\"}'),
 ('app_name', 'miniTCG', '{\"en\":\"Name this TCG\",\"de\":\"Name des TCG\"}'),
 ('cards_decks_public', '0', '{\"en\":\"Cards publicly accessible? 1=yes 0=no\",\"de\":\"Karten für jedermann öffentlich zugänglich? 1=ja 0=nein\"}'),
+('cards_decks_upcoming_public', '1', '{\"en\":\"Upcoming decks publicly accessible?  1=yes 0=no\",\"de\":\"Unveröffentlichte Decks sichtbar 1=ja 0=nein\"}'),
 ('cards_file_type', 'gif', '{\"en\":\"Filetype of card images [ gif | jpg | png ]\",\"de\":\"Dateityp der Karten Bilder [ gif | jpg | png ]\"}'),
 ('cards_folder', 'public/img/cards', '{\"en\":\"path to where the card image folders are located\",\"de\":\"Pfad an dem die Ordner mit den Kartenbildern liegen\"}'),
 ('cards_per_page', '35', '{\"en\":\"Number of cards per page displayed in cardmanager and member profil\",\"de\":\"Anzahl der Karten pro Seite in der Cardverwaltung und dem Mitgliedsprofil\"}'),
@@ -496,7 +517,7 @@ INSERT INTO `settings` (`name`, `value`, `description`) VALUES
 ('master_gift_cards', '2', '{\"en\":\"Number of cards a member will recieve for mastering a deck\",\"de\":\"Anzahl der Karten die ein Mitglied für das mastern eines Decks erhält\"}'),
 ('members_profil_public', '0', '{\"en\":\"Member profiles publicly accessible? 1=yes 0=no\",\"de\":\"Mitgliederprofile für jedermann öffentlich zugänglich? 1=ja 0=nein\"}'),
 ('shop_max_stock', '6', '{\"en\":\"Maximum number of cards in shop\",\"de\":\"maximale Anzahl Karten im Shop\"}'),
-('shop_next_restock', '2023-04-29T20:54:49+00:00', '{\"en\":\"Next shop restock date\",\"de\":\"Nächste Auffüllung des Shops\"}'),
+('shop_next_restock', '2023-05-03T11:48:51+02:00', '{\"en\":\"Next shop restock date\",\"de\":\"Nächste Auffüllung des Shops\"}'),
 ('shop_price_max', '250', '{\"en\":\"Maximum price for cards\",\"de\":\"Maximalpreis der Karten\"}'),
 ('shop_price_min', '100', '{\"en\":\"Minimum price for cards\",\"de\":\"Mindestpreis der Karten\"}'),
 ('shop_restock_minutes', '5', '{\"en\":\"Time between each restock\",\"de\":\"Wartezeit zwischen Auffüllungen im Shop\"}');
@@ -533,11 +554,11 @@ CREATE TABLE `subcategories` (
 -- Daten für Tabelle `subcategories`
 --
 
-INSERT INTO `subcategories` (`id`, `name`, `category`) VALUES
+INSERT INTO `subcategories` VALUES
 (1, 'Subcat A', 2),
 (2, 'Subcat A', 1),
 (3, 'Subcat B', 1),
-(4, 'Subcat B', 2);
+(5, 'Subcat B', 2);
 
 -- --------------------------------------------------------
 
@@ -677,6 +698,14 @@ ALTER TABLE `decks_types`
   ADD UNIQUE KEY `name` (`name`);
 
 --
+-- Indizes für die Tabelle `decks_votes_upcoming`
+--
+ALTER TABLE `decks_votes_upcoming`
+  ADD PRIMARY KEY (`deck_id`,`member_id`),
+  ADD KEY `deck_id` (`deck_id`),
+  ADD KEY `member_id` (`member_id`);
+
+--
 -- Indizes für die Tabelle `games_lucky`
 --
 ALTER TABLE `games_lucky`
@@ -743,6 +772,15 @@ ALTER TABLE `members_rights`
 --
 ALTER TABLE `members_settings`
   ADD PRIMARY KEY (`member_id`);
+
+--
+-- Indizes für die Tabelle `members_wishlist`
+--
+ALTER TABLE `members_wishlist`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `member_id_2` (`member_id`,`deck_id`),
+  ADD KEY `member_id` (`member_id`),
+  ADD KEY `deck_id` (`deck_id`);
 
 --
 -- Indizes für die Tabelle `messages`
@@ -856,13 +894,13 @@ ALTER TABLE `cards`
 -- AUTO_INCREMENT für Tabelle `cards_stati`
 --
 ALTER TABLE `cards_stati`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `decks`
@@ -880,25 +918,25 @@ ALTER TABLE `decks_master`
 -- AUTO_INCREMENT für Tabelle `decks_types`
 --
 ALTER TABLE `decks_types`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `games_lucky`
 --
 ALTER TABLE `games_lucky`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `games_settings`
 --
 ALTER TABLE `games_settings`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `level`
 --
 ALTER TABLE `level`
-  MODIFY `id` tinyint(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` tinyint(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `members`
@@ -910,6 +948,12 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT für Tabelle `members_games`
 --
 ALTER TABLE `members_games`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `members_wishlist`
+--
+ALTER TABLE `members_wishlist`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -928,7 +972,7 @@ ALTER TABLE `news_entries`
 -- AUTO_INCREMENT für Tabelle `rights`
 --
 ALTER TABLE `rights`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `shop_cards`
@@ -940,7 +984,7 @@ ALTER TABLE `shop_cards`
 -- AUTO_INCREMENT für Tabelle `subcategories`
 --
 ALTER TABLE `subcategories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `tradelog`
@@ -994,6 +1038,13 @@ ALTER TABLE `decks_subcategories`
   ADD CONSTRAINT `decks_subcategories_ibfk_2` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`) ON UPDATE CASCADE;
 
 --
+-- Constraints der Tabelle `decks_votes_upcoming`
+--
+ALTER TABLE `decks_votes_upcoming`
+  ADD CONSTRAINT `decks_votes_upcoming_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `decks_votes_upcoming_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints der Tabelle `games_lucky`
 --
 ALTER TABLE `games_lucky`
@@ -1036,6 +1087,13 @@ ALTER TABLE `members_rights`
 --
 ALTER TABLE `members_settings`
   ADD CONSTRAINT `members_settings_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `members_wishlist`
+--
+ALTER TABLE `members_wishlist`
+  ADD CONSTRAINT `members_wishlist_ibfk_1` FOREIGN KEY (`deck_id`) REFERENCES `decks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `members_wishlist_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `messages`
@@ -1097,5 +1155,8 @@ ALTER TABLE `updates_members`
 ALTER TABLE `updates_news`
   ADD CONSTRAINT `updates_news_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `news_entries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `updates_news_ibfk_2` FOREIGN KEY (`update_id`) REFERENCES `updates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
