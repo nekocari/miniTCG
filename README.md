@@ -92,13 +92,14 @@ But it should be mostly english by now and the views are being translated as wel
   	* SQL import option for later updates
 * member functions
   * view decks (may also be made public)
+    * put deck on wishlist
   * vote for upcoming decks
   * view member profils (may also be made public)
   	* make trade offers
   		* info for each offerable card if it's usefull
   * manage cards
   	* pre selection keep/collect
-  	* highlighting keep/collect
+  	* highlighting keep/collect/wish/mastered
   	* master decks
   	* search link for missing collect cards
   * manage trade offers
@@ -112,8 +113,7 @@ But it should be mostly english by now and the views are being translated as wel
   	* sort by date or deck name
   * take cards from updates
   * play games
-  	* 3 simple games included
-  	* easy to use class for creating lucky games
+  	* 4 simple games included
   * buy cards from a shop
   * search for cards
   * tradelog
@@ -126,8 +126,6 @@ But it should be mostly english by now and the views are being translated as wel
 
    
 ## Features TBA
-* wishlist
-* vote on upcoming decks
 * tagging on decks
 * allow comments on news
 * add decks without uploading files
