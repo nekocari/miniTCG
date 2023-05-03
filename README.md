@@ -28,7 +28,7 @@ But it should be mostly english by now and the views are being translated as wel
 * open browser and go to your miniTCG installation /setup/setup.php
 * follow the instructions
 * delete the setup folder
-* login and head to the administration -> settings first to customize the applikation
+* login and head to administration -> settings first to customize the application
 * look through all the other options and customize the app even more. :)
 
 
