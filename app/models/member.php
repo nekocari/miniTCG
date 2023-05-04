@@ -173,9 +173,15 @@ class Member extends DbRecordModel {
      */
     public function getTradeableCards($flag_for_member_id = NULL){
     	if(!is_null($flag_for_member_id) AND (!is_array($this->tradeable_cards) OR !$this->tradeable_cards[0] instanceof CardFlagged)){
-    		$this->tradeable_cards = null;
+    		$this->tradeable_cards = array('collect'=>array(),'keep'=>array(),'wishlist'=>array(),'general'=>array(),'mastered'=>array());
     		foreach(CardFlagged::getMemberCardsTradeable($this->getId()) as $card){
-	    		$this->tradeable_cards[] = $card->flag($flag_for_member_id);
+    			$card->flag($flag_for_member_id);
+    			$group = 'general';
+    			if($card->mastered()){ $group =  'mastered'; }
+    			if($card->onWishlist() AND !$card->owned()){ $group =  'wishlist'; } 
+    			if($card->missingInKeep() AND !$card->owned()){ $group =  'keep'; } 
+    			if($card->missingInCollect() AND !$card->owned()){ $group = 'collect'; }
+	    		$this->tradeable_cards[$group][] = $card;
     		}
     	}elseif(is_null($flag_for_member_id) AND (!is_array($this->tradeable_cards) OR !$this->tradeable_cards[0] instanceof Card)){
     		$this->tradeable_cards = Card::getMemberCardsTradeable($this->getId());

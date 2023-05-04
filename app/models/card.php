@@ -124,9 +124,12 @@ class Card extends DbRecordModel {
      * @return Card[]
      */
     public static function getMemberCardsByStatus($member_id, $status_id, $only_tradeable = false) {
-    	$cards_db = self::getWhere(['owner'=>$member_id,'status_id'=>$status_id],['name'=>'ASC']);
+    	$query = "SELECT c.* FROM ".self::getDbTableName()." c LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id 
+				WHERE owner = :owner AND status_id = :status_id ORDER BY d.deckname ASC, c.number ASC";
+    	$req = Db::getInstance()->prepare($query);
+    	$req->execute([':owner'=>$member_id,':status_id'=>$status_id]);
     	$cards = array();
-    	foreach($cards_db as $card){
+    	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
     		if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
     			if(!key_exists($card->getName(), $cards)){
     				$cards[$card->getName()] = $card;
@@ -150,19 +153,26 @@ class Card extends DbRecordModel {
     		$tradeable_status_id_str.= $status->getId().',';
     	}
     	$tradeable_status_id_str = substr($tradeable_status_id_str,0,-1);
-    	$cards_db = self::getWhere('owner = '.$member_id.' AND status_id IN('.$tradeable_status_id_str.')',['name'=>'ASC']);
+    	
+    	$query = "SELECT c.* FROM ".self::getDbTableName()." c 
+				LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id
+				LEFT JOIN ".Trade::getDbTableName()." t ON t.status = 'new' AND (offered_card = c.id OR requested_card = c.id)
+				WHERE owner = :owner AND status_id IN( :status_id_str ) AND t.id IS NULL 
+				ORDER BY d.deckname ASC, c.number ASC";
+    	$req = Db::getInstance()->prepare($query);
+    	$req->execute([':owner'=>$member_id,':status_id_str'=>$tradeable_status_id_str]);
     	$cards = array();
-    	foreach($cards_db as $card){
-    		if($card->isTradeable()){
-    			if(!key_exists($card->getName(), $cards)){
-    				$cards[$card->getName()] = $card;
-    			}else{
-    				$cards[$card->getName()]->possession_counter++;
-    			}
+    	
+    	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
+    		if(!key_exists($card->getName(), $cards)){
+    			$cards[$card->getName()] = $card;
+    		}else{
+    			$cards[$card->getName()]->possession_counter++;
     		}
     	}
     	return $cards;
     }
+    
     
     /*
      * @deprecated user update() instead
@@ -275,7 +285,7 @@ class Card extends DbRecordModel {
         if(is_null($this->is_tradeable)){
             $this->is_tradeable = false;
             if($this->getStatus()){
-                // TODO: make use of: Trade::getWhere($condition)
+                // TODO: make use of: Trade::getWhere($condition)?
                 $query = 'SELECT count(*) FROM trades WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
                 $trades = $this->db->query($query)->fetchColumn();
                 if($trades == 0){

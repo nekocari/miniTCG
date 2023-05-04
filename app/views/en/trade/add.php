@@ -21,17 +21,20 @@
 		
 		<div class="text-center m-2">
 			<select class="form-control" id="offered-card-id" name="offered_card_id">
-            	<option value="">choose a card</option>
-                <?php foreach($cards as $card){ ?>
+            	<option value="">choose a card</option>          	
+                <?php foreach($cards as $group => $g_cards){ if(count($g_cards)){ ?>
+            	<option value="">- - - - </option>
+                <?php } foreach($g_cards as $card){ ?>
                 <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
+                	<?php if($card->missingInCollect() AND !$card->owned()){ echo '&star; '; } ?>
+                	<?php if($card->missingInKeep() AND !$card->owned()){ echo '&#11048; '; } ?>
+                	<?php if($card->onWishlist() AND !$card->owned()){ echo '&#9825; '; } ?>
+                	<?php if($card->mastered()){ echo '&#10680; '; } ?>
                 	<?php echo $card->getName().' ('.$card->getPossessionCounter().')'; ?>
-                	<?php if($card->missingInKeep() AND !$card->owned()){ echo ' [KEEP]'; } ?>
-                	<?php if($card->missingInCollect() AND !$card->owned()){ echo ' [COLLECT]'; } ?>
-                	<?php if($card->onWishlist() AND !$card->owned()){ echo ' [WISHLIST]'; } ?>
-                	<?php if($card->mastered()){ echo ' [masterd]'; } ?>
                 </option>
-                <?php } ?>
+                <?php } } ?>
             </select>   
+        	<small>&star;&nbsp;collecting / &#11048;&nbsp;keeping / &#9825;&nbsp;wishlist / &#10680;&nbsp;mastered </small>
         </div>
 	</div>
 	

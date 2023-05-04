@@ -203,7 +203,7 @@ class CardFlagged extends Card {
             }
         }
         return $options;
-    }
+    } 
     
     public function getSortingOptionsHTML(){
         $html = '';

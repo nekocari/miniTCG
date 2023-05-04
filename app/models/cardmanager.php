@@ -142,12 +142,14 @@ class Cardmanager {
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
                         	EXISTS (SELECT 1 FROM cards WHERE owner = c.owner and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
                             FROM cards c $join_partial
+							LEFT JOIN decks d ON d.id = c.deck
                             WHERE c.owner = ".$this->member_id." AND c.status_id = '$this->status_id' $where_partial
-                            ORDER BY name ASC";
+                            ORDER BY d.deckname ASC, c.number ASC";
                     break;
                 default:
                 	$sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag
                             FROM cards c $join_partial
+							LEFT JOIN decks d ON d.id = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id = $status_id_collect)
                                 collect ON collect.deck = c.deck
                             LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id IN($status_ids_not_tradeable_str) )
@@ -161,7 +163,7 @@ class Cardmanager {
                             LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$this->member_id." AND status_id IN($status_ids_not_tradeable_str) )
                                 in_keep ON in_keep.deck = c.deck AND in_keep.number = c.number
                             WHERE c.owner = ".$this->member_id." AND c.status_id = '$this->status_id' $where_partial
-                            ORDER BY name ASC";
+                            ORDER BY d.deckname ASC, c.number ASC";
                 	break;
             }
             
