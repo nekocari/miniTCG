@@ -1,0 +1,149 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css?family=ABeeZee|Roboto');
+
+:root{ 
+	--def-border-radius: 0.5rem;
+	--collect: var(--success);
+	--keep: var(--warning);
+	--wishlist: var(--primary);
+}
+
+.navbar-toggler{
+	border: 0;
+}
+.navbar-toggler:focus {
+	outline: 0;
+}
+
+.navbar-brand {
+	font-style: italic;
+	font-size: 1.5rem;
+}
+
+.navbar-brand .tcg {
+	color: var(--primary);
+	font-weight: bold;
+}
+
+.navbar-brand small{
+	color: lightgrey;
+	font-size: 0.8rem;
+}
+
+#member-nav {
+	background-color: var(--light);
+	background-color: color-mix(in srgb, var(--light) 98%, black);
+}
+
+body{
+	font-family: Roboto;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+	font-family: ABeeZee;
+	letter-spacing: -.1rem;
+}
+
+.breadcrumb {
+	background: transparent;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.deckname {
+	text-transform: uppercase;
+}
+.deckname:before {
+	content: "[";
+	color: lightgrey;
+}
+.deckname:after {
+	content: "]";
+	color: lightgrey;
+}
+
+.cardimage, .mastercardimage  {
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: center center;
+	margin: 2px;
+	background-color: rgba(0,0,0,0.1);
+	vertical-align: bottom;
+}
+
+.card-cardmanager {
+	border-radius: 0.25rem;
+	border: 1px solid rgba(0,0,0,0.25);
+	background-color: white;
+	padding: 0.25rem;
+}
+.card-member-profil, .shop-card-image {
+	border-radius: 0.25rem;
+	border: 1px solid transparent;
+	background-color: transparent;
+	padding: 0.25rem;
+	margin: 0.1rem;
+	position: relative;
+}
+
+.card-link {
+	display: contents;
+}
+
+.card-member-profil .badge {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+.card-missing-wishlist {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--wishlist);
+	border-color: var(--wishlist);
+}
+
+.card-missing-collect {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--collect);
+	border-color: var(--collect);
+}
+
+.card-missing-keep {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--keep);
+	border-color: var(--keep);
+}
+
+.card-mastered {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(0,0,0,0.05);
+}
+.card-mastered.card-missing-keep, .card-mastered.card-missing-collect, .card-mastered.card-missing-wishlist {
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7) 6px, rgba(255,255,255,0.75) 6px, rgba(255,255,255,0.75) 12px);
+	border-color: rgba(0,0,0,0.05);
+}
+
+.puzzle-view .cardimage {
+		margin: 0;
+}
+
+.border-rounded{ border-radius: var(--def-border-radius);  }
+.border-tl-rounded{ border-top-left-radius: var(--def-border-radius);  }
+.border-bl-rounded{ border-bottom-left-radius: var(--def-border-radius);  }
+.border-tr-rounded{ border-top-right-radius: var(--def-border-radius);  }
+.border-br-rounded{ border-bottom-right-radius: var(--def-border-radius);  } 
+
+.text-deg80 {
+    transform: rotate(-80deg);
+    -moz-transform: rotate(-80deg);
+    -webkit-transform: rotate(-80deg);
+    -o-transform: rotate(-80deg);
+    -ms-transform: rotate(-80deg);
+    display: inline-block;
+    position: relative;
+    width: 40px;
+
+@media (min-width: 992px) { 
+	
+}

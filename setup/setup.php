@@ -66,6 +66,7 @@ if(isset($_POST['start_setup'])){
 		}
 	} 
 	catch (PDOException $e) {
+		error_log($e->getCode().' - '.$e->getMessage().PHP_EOL,3,ERROR_LOG);
 		die('Could not create database! Error Message: '.$e->getMessage());
 	}
 	

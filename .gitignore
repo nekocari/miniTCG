@@ -2,4 +2,4 @@
 .project
 .buildpath
 public/img/cards/*/
-db_changes.txt
+vendor/

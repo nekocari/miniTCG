@@ -1,4 +1,4 @@
-<?php //TODO edit to match with new system
+<?php 
     // DO NOT EDIT THIS LINE -----------------
     require_once 'core/system_message.php';
     $sys_msg_text_handler = SystemMessageTextHandler::getInstance();

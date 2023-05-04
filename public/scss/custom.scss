@@ -1,0 +1,58 @@
+//@import "vars_orange";
+//@import "vars_blue";
+@import "vars_purple";
+
+
+// HEADLINES
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	text-shadow: 0 1px 2px #{'rgba(var(--shadow-rgba), 0.33)'}; 
+}
+ 
+
+// LINKS
+a {
+	@include transition(all, 0.2s);
+	&:hover {
+
+	}
+	&.img-link {
+		border: 0px;
+		display: inline-block;
+	}
+}
+
+
+// BUTTONS GENEREAL
+body .btn{
+    
+	
+	&:hover {
+	}
+	
+    &-primary  {
+		box-shadow: 0 1px 4px -2px var(--pirmary); 
+	}
+	
+    &-secondary  {
+		box-shadow: 0 1px 4px -2px var(--secondary); 
+	}
+	
+    &-dark  {
+		box-shadow: 0 1px 4px -2px var(--gray-dark); 
+	}
+	
+	&-warning  { 
+		box-shadow: 0 1px 4px -2px var(--warning); 
+	}
+     
+    &-danger  {
+		box-shadow: 0 1px 4px -2px var(--danger); 
+	}
+	
+}
+
+
+
+
+// import all of bootstrape
+@import "../../vendor/bootstrap-4.6.2/scss/bootstrap";
