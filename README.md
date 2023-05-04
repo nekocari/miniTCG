@@ -13,6 +13,7 @@ But it should be mostly english by now and the views are being translated as wel
 ---
 
 ## Table of contents
+[Requirements](#requirements)  
 [How to Setup](#how-to-setup)  
 [Current Features](#current-features)    
 [Features TBA](#features-tba)  
@@ -21,6 +22,11 @@ But it should be mostly english by now and the views are being translated as wel
 [Special Thanks](#special-thanks)  
 
 ---
+
+## Requirements
+lowest tested specs:
+* PHP 7.4 
+* MariaDB 10.3.38 
 
 ## How to Setup
 * open config/constants.php and update it with your information
@@ -78,10 +84,10 @@ But it should be mostly english by now and the views are being translated as wel
       * change deck sizes
       * change image sizes
       * change filler type and image paths
-      * create and edit html templates withrom within the app
+      * create and edit html templates from within the app
     * card manager categories
       * rename, create or delete them
-      * set if visible in member profil
+      * set what's visible in member profil
       * etc.
     * general settings 
       * card folder path
