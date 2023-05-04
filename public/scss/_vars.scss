@@ -1,0 +1,60 @@
+
+// custom vars
+$imgfolder: '../img';
+
+// RGB
+$shadow-rgb: 0,0,0;
+$glow-rgb: 255,255,255;
+
+
+// font var (overrides
+$font-size-base: 			1rem;
+
+
+$h1-font-size:				$font-size-base * 2;
+$h2-font-size:				$font-size-base * 1.75;
+$h3-font-size:				$font-size-base * 1.5;
+$h4-font-size:				$font-size-base * 1.25;
+$h5-font-size:				$font-size-base * 1.15;
+$h6-font-size:				$font-size-base;
+
+
+
+// navbar var overrides
+$navbar-brand-font-size: 	1.25rem;
+$navbar-toggler-font-size: 	.9rem;
+$navbar-light-toggler-border-color: transparent;
+
+
+
+// button overrides
+
+$btn-border-radius: 		0.25rem;
+
+
+// table overries
+
+$table-cell-padding:		.5rem;
+$table-cell-padding-sm: 	.25rem;
+
+$table-border-width:		1px;
+$table-color:				inherit;
+$table-bg:                  transparent;
+
+
+
+
+@mixin linear-bg($direction,$color_start,$color_end){
+    background-image: -webkit-linear-gradient($direction, $color_start, $color_end);
+    background-image: -moz-linear-gradient($direction, $color_start, $color_end);
+    background-image: -ms-linear-gradient($direction, $color_start, $color_end);
+    background-image: -o-linear-gradient($direction, $color_start, $color_end);   
+	background-image: linear-gradient($direction, $color_start, $color_end);
+}
+
+@mixin transition($element, $time) {
+	-webkit-transition: $element $time ease-in-out;
+    -moz-transition: $element $time ease-in-out;
+    -o-transition: $element $time ease-in-out;
+    transition: $element $time ease-in-out
+}

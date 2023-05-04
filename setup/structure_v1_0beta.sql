@@ -45,6 +45,16 @@ CREATE TABLE `cards_stati` (
   `public` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' COMMENT 'other members can see cards in here'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Daten für Tabelle `cards_stati`
+--
+
+INSERT INTO `cards_stati` VALUES
+(1, 'New', '0', '1', '1', '0', '0'),
+(2, 'Trade', '1', '2', '0', '0', '1'),
+(3, 'Keep', '0', '3', '0', '0', '1'),
+(4, 'Collect', '0', '4', '0', '1', '1');
+
 -- --------------------------------------------------------
 
 --
@@ -503,6 +513,7 @@ INSERT INTO `settings` VALUES
 ('app_mail', 'mintcg@irgendwas.de', '{\"en\":\"Address for mailing\",\"de\":\"Adresse für Mails\"}'),
 ('app_meta_description', 'an automatic trading card game', '{\"en\":\"Page description for search engines\",\"de\":\"Seitenbeschreibung für Suchmaschinen\"}'),
 ('app_name', 'miniTCG', '{\"en\":\"Name this TCG\",\"de\":\"Name des TCG\"}'),
+('app_theme', 'default.css', '{\"en\":\"css file name\",\"de\":\"css Dateiname\"}'),
 ('cards_decks_public', '0', '{\"en\":\"Cards publicly accessible? 1=yes 0=no\",\"de\":\"Karten für jedermann öffentlich zugänglich? 1=ja 0=nein\"}'),
 ('cards_decks_upcoming_public', '1', '{\"en\":\"Upcoming decks publicly accessible?  1=yes 0=no\",\"de\":\"Unveröffentlichte Decks sichtbar 1=ja 0=nein\"}'),
 ('cards_file_type', 'gif', '{\"en\":\"Filetype of card images [ gif | jpg | png ]\",\"de\":\"Dateityp der Karten Bilder [ gif | jpg | png ]\"}'),
