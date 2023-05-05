@@ -36,7 +36,7 @@ class News extends DbRecordModel{
         if($autor instanceof Member AND !empty($title) AND !empty($text)){
             $parsedown = new Parsedown();
             $text_html = $parsedown->text($text);
-            $title = $parsedown->text(strip_tags($title));
+            $title = strip_tags($title);
             $date = new DateTime('now');
             
             $entry = new News();
