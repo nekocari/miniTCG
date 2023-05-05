@@ -28,7 +28,7 @@ to update you database after the app recieved an update.</div>
         			<button class="btn btn-sm btn-primary" name="import" value="<?php echo $file; ?>">
         				<i class="fas fa-database"></i> import</button>
         			<button class="btn btn-sm btn-danger" name="delete" value="<?php echo $file; ?>" onclick="return confirm('Delete file from server?');">
-        				<i class="fas fa-times"></i> delte</button>
+        				<i class="fas fa-times"></i> delete</button>
 				</form>
     		</td>
     	</tr>
