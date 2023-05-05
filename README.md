@@ -91,6 +91,7 @@ lowest tested specs:
       * etc.
     * general settings 
       * card folder path
+      * design color theme
       * currency  
       * shop 
       * etc.
@@ -135,7 +136,6 @@ lowest tested specs:
 * tagging on decks
 * allow comments on news
 * add decks without uploading files
-* sort & search options for lists
 * add reset option for shop
 * add individualization for handing out update cards
 * add simple pages without the need to mess the controller files
@@ -143,7 +143,7 @@ lowest tested specs:
 
 ## Used Libs & Co.
 [Parsedown](https://github.com/erusev/parsedown) by erusev on GitHub  
-Bootstrap 4.1.3 (CDN)  
+Bootstrap 4.6.2  
 jQuery 3.2.1 (CDN)  
 FontAwesome 5.15.3 (CDN)  
 

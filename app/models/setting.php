@@ -49,7 +49,12 @@ class Setting extends DbRecordModel {
      * @return Setting|NULL
      */
     public static function getByName($name){
-        return parent::getByPk($name);
+        $setting = parent::getByPk($name);
+        if(!$setting instanceof Setting){
+        	$setting = new Setting();
+        	$setting->setPropValues(['name'=>$name]);
+        }
+        return $setting;
     }
     
 
