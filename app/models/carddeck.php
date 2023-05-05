@@ -439,6 +439,10 @@ class Carddeck extends DbRecordModel {
     	}
     }
     
+    /**
+     * @deprecated
+     * @return boolean
+     */
     public function isPuzzle(){
     	$is_puzzle = false;
     	if($this->getType()->getName() == 'puzzle'){
@@ -525,12 +529,20 @@ class Carddeck extends DbRecordModel {
     	if(empty($this->size)){
     		$this->size = $this->getType()->getSize();
     	}
+    	if(!is_null($this->utc) OR empty($this->utc)){
+    		$date_time = new DateTime('now');
+    		$this->utc = $date_time->format('c');
+    	}
     	parent::create();
     }
     
     public function update() {
     	if($this->size != $this->getType()->getSize()){
     		$this->size = $this->getType()->getSize();
+    	}
+    	if(!is_null($this->utc) OR empty($this->utc)){
+    		$date_time = new DateTime($this->date);
+    		$this->utc = $date_time->format('c');
     	}
     	parent::update();
     }

@@ -11,7 +11,7 @@ class UpdateList extends Listable {
 	
 	protected 
 		$order_settings = ['status'=>'ASC','date'=>'DESC'],
-		$items_per_page = 3;
+		$items_per_page = 10;
 	protected static $order_by_allowed_values = ['status','id','date'];
     
 	public function getCount() {
