@@ -95,42 +95,6 @@ $table-color:				inherit;
 $table-bg:                  transparent;
 
 
-// Inputs
-
-$input-color:						var(--body-color);
-$input-group-addon-bg:				var(--tcg-border-darker-color);
-$input-group-addon-border-color:	var(--tcg-border-darker-color);
-$input-placeholder-color:			var(--tcg-lightgrey);
-
-$form-feedback-icon-valid-color:    var(--tcg-green);
-$form-feedback-icon-invalid-color:  var(--tcg-orange);
-
-$component-active-color:      var(--accent-bg);
-$component-active-bg:         $tcg-yellow;
-
-
-
-
-// Dropdown menu container and contents.
-
-$dropdown-color:                    var(--body-color);
-$dropdown-bg:                       var(--accent-bg);
-$dropdown-border-color:             var(--tcg-border-color);
-$dropdown-divider-bg:               var(--tcg-border-color); 
-$dropdown-box-shadow:               0px 1px 5px #{'rgba(var(--shadow-rgba),0.075)'};
-
-$dropdown-link-color:               var(--body-color);
-$dropdown-link-hover-color:         var(--body-color);
-
-$dropdown-link-active-color:        $component-active-color;
-$dropdown-link-active-bg:           var(--tcg-yellow);
-
-
-// List group
-
-$list-group-bg: 					var(--accent-color);
-$list-group-border-color: 			var(--list-group-border-color);
-$list-group-active-bg:				var(--tcg-yellow);
 
 
 
