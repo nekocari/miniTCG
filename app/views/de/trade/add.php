@@ -21,18 +21,20 @@
 		
 		<div class="text-center m-2">
 			<select class="form-control" id="offered-card-id" name="offered_card_id">
-            	<option value="">Karte auswählen</option>            	
+            	<option value="" disabled selected>Karte auswählen</option>            	
                 <?php foreach($cards as $group => $g_cards){ if(count($g_cards)){ ?>
-            	<option value="">- - - - </option>
-                <?php } foreach($g_cards as $card){ ?>
-                <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
-                	<?php if($card->missingInCollect() AND !$card->owned()){ echo '&star; '; } ?>
-                	<?php if($card->missingInKeep() AND !$card->owned()){ echo '&#11048; '; } ?>
-                	<?php if($card->onWishlist() AND !$card->owned()){ echo '&#9825; '; } ?>
-                	<?php if($card->mastered()){ echo '&#10680; '; } ?>
-                	<?php echo $card->getName().' ('.$card->getPossessionCounter().')'; ?>
-                </option>
-                <?php } } ?>
+	            	<optgroup label="">
+	                <?php } foreach($g_cards as $card){ ?>
+		                <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
+		                	<?php if($card->missingInCollect() AND !$card->owned()){ echo '&star; '; } ?>
+		                	<?php if($card->missingInKeep() AND !$card->owned()){ echo '&#11048; '; } ?>
+		                	<?php if($card->onWishlist() AND !$card->owned()){ echo '&#9825; '; } ?>
+		                	<?php if($card->mastered()){ echo '&#10680; '; } ?>
+		                	<?php echo $card->getName(); if($card->getPossessionCounter() > 1){ echo ' ('.$card->getPossessionCounter().')'; }  ?>
+		                </option>
+	                <?php } ?>
+	                </optgroup>
+                <?php } ?>
             </select>   
         	<small>&star;&nbsp;Sammlung / &#11048;&nbsp;behalten / &#9825;&nbsp;Wunschliste / &#10680;&nbsp;gemastert</small>
         </div>
