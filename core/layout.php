@@ -36,11 +36,10 @@ class Layout {
     
     private 
     	$supported_languages = SUPPORTED_LANGUAGES,
-    	$lang = 'de',
+    	$lang,
     	$mode = 'default',
     	$darkmode = false,
-    	$views_path = 'app/views/de/',
-    	$html_title = 'miniTCG v0.2 alpha',
+    	$views_path,
     	$js_files = array(),
     	$css_files = array(),
     	$breadcrumbs = array(),
@@ -73,7 +72,7 @@ class Layout {
         
         // set language to default in case view does not yet exist in current language
         if(!file_exists($this->views_path.$view)) {
-            $this->setLanguage('de');
+            $this->setLanguage(key($this->supported_languages));
         }
         
         // continue if view is found
@@ -148,7 +147,7 @@ class Layout {
         $partial_path = PATH.$this->views_path.$partial;
         // set language to default in case view does not yet exist in current language
         if(!file_exists($partial_path)) {
-            $partial_path = PATH.'app/views/de/'.$partial;
+        	$partial_path = PATH.'app/views/'.key($this->supported_languages).'/'.$partial;
         }
         return $partial_path;
     }
