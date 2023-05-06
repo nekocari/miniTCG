@@ -20,7 +20,7 @@ if(isset($_POST['start_setup'])){
 	try {
 		// create tables
 		$db = Db::getInstance();
-		$mysql = file_get_contents(PATH.'setup/structure_v1_0beta.sql');
+		$mysql = file_get_contents(PATH.'setup/structure_v1_2beta.sql');
 		$req = $db->prepare($mysql);
 		if($req->execute()){
 			$res = $req->fetchAll();

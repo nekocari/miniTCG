@@ -44,6 +44,7 @@ class Login {
             if($member instanceof Member AND password_verify($password, $member->getPassword() ) ) {
             	// check status - allow only active member accounts
             	if($member->getStatus(false) == 'default'){
+            		$_SESSION['URI'] = BASE_URI;
             		$_SESSION['user_id'] = $member->getId();
             		$_SESSION['user_name'] = $member->getName();
             		$_SESSION['user_lang'] = $member->getSettings()->getValueByName('lang');
@@ -91,7 +92,7 @@ class Login {
      * @return boolean
      */
     public function isloggedIn() {
-    	if(!is_null($this->getUser() ) AND isset($_SESSION['user_name']) AND $_SESSION['user_name'] == $this->getUser()->getName() ){
+    	if(!is_null($this->getUser() ) AND isset($_SESSION['URI']) AND $_SESSION['URI'] == BASE_URI ){
             return true;
         }else{
             return false;
