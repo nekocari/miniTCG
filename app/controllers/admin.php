@@ -75,6 +75,7 @@ class AdminController extends AppController {
     			$game_setting->setRouteIdentifier($_POST['route_identifier']);
     			$game_setting->setName($_POST['name']);
     			$game_setting->setDescription($_POST['description']);
+    			$game_setting->setStatus($_POST['status']);
     			$game_setting->setType($_POST['type']);
     			if(isset($_POST['daily_game']) AND $_POST['daily_game'] == 1){
     				$game_setting->setWaitTime(NULL);
@@ -151,6 +152,7 @@ class AdminController extends AppController {
 	    		$game_setting->setRouteIdentifier($_POST['route_identifier']);
 	    		$game_setting->setName($_POST['name']);
 	    		$game_setting->setDescription($_POST['description']);
+	    		$game_setting->setStatus($_POST['status']);
 	    		if(isset($_POST['daily_game']) AND $_POST['daily_game'] == 1){
 	    			$game_setting->setWaitTime(NULL);
 	    		}else{

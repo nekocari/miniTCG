@@ -118,7 +118,7 @@ class Layout {
         $js = '';
         foreach($this->js_files as $js_file){
             if(file_exists(PATH.'public/js/'.$js_file)){
-                $js.= '<script language="JavaScript" src="public/js/'.$js_file.'"></script>'. PHP_EOL;
+                $js.= '<script language="JavaScript" src="public/js/'.$js_file.'"  charset="utf-8"></script>'. PHP_EOL;
             }
         }
         return $js;

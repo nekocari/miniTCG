@@ -109,6 +109,10 @@
     	
     	
     </div>
+    
+    
+    <!-- custom jquery and javascript -->
+    <?php echo $this->getJsLinks(); ?>
 		
 			
 	</body>

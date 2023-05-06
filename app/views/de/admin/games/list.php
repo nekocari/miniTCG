@@ -54,6 +54,7 @@
 			<thead>
 		    	<tr>
 		    		<th>Name</th>
+		    		<th class="text-center">Status</th>
 		    		<th class="text-center">Art</th>
 		    		<th class="text-center">Wartezeit</th>
 		    		<th></th>
@@ -63,6 +64,7 @@
 		<?php foreach($list->getItems() as $game){ ?>
 		    	<tr style="white-space:nowrap">
 		    		<td><?php echo $game->getName('de'); ?></td>
+		    		<td class="text-center"><span class="badge"><?php echo $game->getStatus(); ?></span></td>
 		    		<td class="text-center"><?php echo $game->getType(); ?></td>
 		    		<td class="text-center"><?php if(!$game->isDailyGame()){ echo $game->getWaitTime().' min'; }else{ echo '-'; } ?></td>
 		    		<td class="text-right">

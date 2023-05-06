@@ -9,12 +9,12 @@
 
 class GameSetting extends DbRecordModel {
     
-    protected $id, $game_key, $type, $wait_time, $route_identifier, $name_json, $description_json, $preview_img_path, $game_img_path;
+	protected $id, $game_key, $status, $type, $wait_time, $route_identifier, $name_json, $description_json, $preview_img_path, $game_img_path;
     
     protected static 
         $db_table = 'games_settings',
         $db_pk = 'id',
-        $db_fields = array('id','game_key','type','wait_time','route_identifier','name_json','description_json','preview_img_path','game_img_path'),
+        $db_fields = array('id','game_key','status','type','wait_time','route_identifier','name_json','description_json','preview_img_path','game_img_path'),
         $sql_order_by_allowed_values = array('id','game_key','type');
     
     private static $allowed_types = array('custom','lucky');
@@ -41,6 +41,15 @@ class GameSetting extends DbRecordModel {
     	return parent::getByUniqueKey('game_key',$key);
     }
     
+    /**
+     * @return boolean
+     */
+    public function isOnline() {
+    	if($this->getStatus() == 'online'){
+    		return true;
+    	}
+    	return false;
+    }
         
     /**
      * returns true if game is only playable once per day
@@ -66,6 +75,9 @@ class GameSetting extends DbRecordModel {
     }
     public function getType() {
     	return $this->type;
+    }
+    public function getStatus() {
+    	return $this->status;
     }
     public function getWaitTime() {
     	if(is_numeric($this->wait_time)){
@@ -115,6 +127,14 @@ class GameSetting extends DbRecordModel {
     		$this->type = $type;
     	}else{
     		throw new ErrorException('invalid type');
+    	}
+    }
+    
+    public function setStatus($status) {
+    	if(in_array($status,['online','offline'])){
+    		$this->status = $status;
+    	}else{
+    		throw new ErrorException('invalid status');
     	}
     }
     

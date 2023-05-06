@@ -34,6 +34,15 @@
     		</td>
     	</tr>
     	<tr>
+    		<td>Status</td>
+    		<td>
+    			<select class="form-control" name="status" required >
+    				<option selected>online</option>
+    				<option>offline</option>
+    			</select>
+    		</td>
+    	</tr>
+    	<tr>
     		<td>Type</td>
     		<td>
     			<select class="form-control" name="type" id="game-type" required >

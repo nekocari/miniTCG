@@ -21,30 +21,35 @@ class GameController extends AppController {
         $data['games'] = array();
         
         foreach($game_list as $entry){
+        	
+        	if($entry->isOnline()){
              
-            $entry_game = Game::getById($entry->getKey(), $this->login()->getUserId());
-            
-            if($entry_game instanceof Game and $entry_game->isPlayable()){
-            	$link_url = Routes::getUri($entry->getRouteIdentifier());
-            	// in case identifier points to default lucky game page add game id to url
-            	if($entry->getRouteIdentifier() == 'game_default_lucky'){
-            		$link_url.= '?id='.$entry->getId();
-            	}
-                $link = '<a href="'.$link_url.'">';
-                $link.= $sys_msgs->getTextByCode('game_play_now',$this->login()->getUser()->getLang());
-                $link.= '</a>';
-                
-            }else{
-                
-                if(!$entry->isDailyGame()){
-                	$link = $entry_game->getMinutesToWait().' '.$sys_msgs->getTextByCode('game_waiting_minutes',$this->login()->getUser()->getLang());
-                }else{
-                	$link = $sys_msgs->getTextByCode('game_waiting_tomorrow',$this->login()->getUser()->getLang());
-                }
-                
-            }
-            
-            $data['games'][] = array('name'=> $entry->getName($this->login()->getUser()->getLang()), 'link'=>$link);
+	            $entry_game = Game::getById($entry->getKey(), $this->login()->getUserId());
+	            
+	            if($entry_game instanceof Game and $entry_game->isPlayable()){
+	            	$link_url = Routes::getUri($entry->getRouteIdentifier());
+	            	// in case identifier points to default lucky game page add game id to url
+	            	if($entry->getRouteIdentifier() == 'game_default_lucky'){
+	            		$link_url.= '?id='.$entry->getId();
+	            	}
+	                $link = '<a href="'.$link_url.'">';
+	                $link.= $sys_msgs->getTextByCode('game_play_now',$this->login()->getUser()->getLang());
+	                $link.= '</a>';
+	                
+	            }else{
+	                
+	                if(!$entry->isDailyGame()){
+	                	$link = $entry_game->getMinutesToWait().' '.$sys_msgs->getTextByCode('game_waiting_minutes',$this->login()->getUser()->getLang());
+	                }else{
+	                	$link = $sys_msgs->getTextByCode('game_waiting_tomorrow',$this->login()->getUser()->getLang());
+	                }
+	                
+	            }
+	            
+	            $data['games'][] = array('name'=> $entry->getName($this->login()->getUser()->getLang()), 'link'=>$link);
+	            
+        	}
+        	
         }
         
         $this->layout()->render('game/index.php',$data);
@@ -55,6 +60,7 @@ class GameController extends AppController {
      * default behavior of a lucky game
      */
     private function lucky_game($game_id){
+    	
         // redirect if not logged in
         $this->redirectNotLoggedIn();
         
@@ -86,11 +92,9 @@ class GameController extends AppController {
      * @todo: refactor
      */
     public function tradeIn() {
-        
-        // redirect if not logged in
-        if(!$this->login()->isLoggedIn()){
-            header("Location: ".BASE_URI.Routes::getUri('signin'));
-        }
+    	
+    	// redirect if not logged in
+        $this->redirectNotLoggedIn();
         
         $game_setting = GameSetting::getByKey('trade_in');
         
@@ -128,6 +132,49 @@ class GameController extends AppController {
         
     }
     
+    public function rockPaperScissors(){
+    	
+    	// fetch the settings 
+    	$game_setting = GameSetting::getByKey('rps');
+    	// fetch user specific game data
+    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
+    	
+    	// check if a game object was created and the game is playable
+    	if($game instanceof Game AND $game->isPlayable()){
+    		
+    		// check if a game result was send via post request
+    		if(!isset($_POST['game_result'])){
+    			// display the game
+    			$this->layout()->addJsFile('rock_paper_scissors.js');
+    			$this->layout()->render('game/rock_paper_scissors.php');
+    			
+    		}else{
+    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
+    			// process the game result 
+    			switch($_POST['game_result']){
+    				case 'won':
+    					$data['reward'] = $game->determineReward('win-card:1');
+    					break;
+    				case 'tied':
+    					$data['reward'] = $game->determineReward('win-money:50');
+    					break;
+    				case 'lost':
+    				default:
+    					$data['reward'] = $game->determineReward('lost');
+    					break;
+    			}
+    			
+    			$this->layout()->render('game/display_result.php',$data);
+    		}
+    		
+    	
+    	}else{
+    		// message in case game is not playable
+    		$this->layout()->render('game/wait_message.php');
+    	}
+    	
+    }
+    
     
     /**
      * head or tail
@@ -148,6 +195,13 @@ class GameController extends AppController {
     public function customLucky() {
     	$this->lucky_game($_GET['id']);
     }
+    
+    
+    
+    // ------------ add your custom games below this line! --------------------------------------------
+    // you might want to take a look at rockPaperScissors() to see how to incorperate a javascript game!
+    
+    
     
     
     
