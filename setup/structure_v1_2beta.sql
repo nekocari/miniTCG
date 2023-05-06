@@ -212,7 +212,7 @@ INSERT INTO `games_settings` VALUES
 (2, 'head_or_tail', 'lucky', 15, 'game_head_or_tail', '{\"de\":\"Kopf oder Zahl\",\"en\":\"Head or Tail\"}', '{\"de\":\"Ich werfe eine Münze. Tippst das Ergebnis richtig, bekommst du eine Karte.\",\"en\":\"I\'ll throw a coin. If you guess the result right, you win a Random Card.\"}', NULL, ''),
 (3, 'trade_in', 'custom', NULL, 'game_trade_in', '{\"de\":\"Tausch Mich\",\"en\":\"Trade In\"}', '{\"de\":\"Tausche eine doppelte Karte gegen eine Zufallskarte!\",\"en\":\"Trade in your duplicate Card for a Random Card!\"}', NULL, ''),
 (4, 'poke', 'lucky', 15, 'game_default_lucky', '{\"de\":\"Lucky Pok\\u00e9\",\"en\":\"Lucky Pok\\u00e9\"}', '{\"de\":\"Schnapp dir ein Pokemon!  \\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\",\"en\":\"Catch a Pokemon!\\r\\n<br>\\r\\n<small>(images from <a href=\\\"https:\\/\\/www.flaticon.com\\/authors\\/roundicons-freebies\\\" target=\\\"_blank\\\">roundicons<\\/a>)<\\/small>\"}', NULL, NULL),
-(5, 'rps', 'online', 'custom', '15', 'game_rps', '{\"de\":\"Schere Stein Papier\",\"en\":\"Rock Paper Scissors\"}', '{\"de\":\"Triff deine Wahl.\",\"en\":\"Make your choice.\"}', NULL, NULL);
+(5, 'rps', 'custom', '15', 'game_rps', '{\"de\":\"Schere Stein Papier\",\"en\":\"Rock Paper Scissors\"}', '{\"de\":\"Triff deine Wahl.\",\"en\":\"Make your choice.\"}', NULL, NULL);
 
 
 
