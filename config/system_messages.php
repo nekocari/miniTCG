@@ -102,6 +102,16 @@
     		'de'=>'Passwort konnte nicht zurückgesetzt werden.'
     ]);
     
+    // MEMBERCARD
+    $sys_msg_text_handler->addCode('admin_member_card_success', [
+    		'en'=>'Membercard successfully uploaded',
+    		'de'=>'Membercard erfolgreich hochgeladen'
+    ]);
+    $sys_msg_text_handler->addCode('admin_member_card_failed', [
+    		'en'=>'Membercard not uploaded',
+    		'de'=>'Membercard nicht hochgeladen'
+    ]); 
+    
     // GIFT CARDS
     $sys_msg_text_handler->addCode('admin_gift_cards_success', [
 		    'en'=>'credit successfull:',

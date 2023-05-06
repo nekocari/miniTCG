@@ -1,11 +1,16 @@
 <h1><?php echo $member->getName(); ?></h1>
-<div class="row">
+
+<div class="row mx-2 mb-4">
+	<div><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
 	<div class="col-12 col-md mb-2">
+		joined on: <?php echo $member->getJoinDate($this->login->getUser()->getTimezone()); ?><br>
+		last login: <?php echo $member->getLoginDate($this->login->getUser()->getTimezone()); ?>
+		<br>
 		<span class="badge badge-dark">Rank: <?php echo $member->getLevel('object')->getName(); ?></span> |
 		<span class="badge badge-secondary"><?php echo $member->getCardCount(); ?> Cards</span> |
 		<span class="badge badge-primary"><?php echo $member->getMasterCount(); ?> Master</span>
 	</div>
-	<div class="col-12 col-md text-right"><?php echo $member->getMessageLink('send message','btn btn-primary'); ?></div>
+	<div><?php echo $member->getMessageLink('send message','btn btn-primary'); ?></div>
 </div>
 
 <?php if($member->getInfoText()) { ?>  	

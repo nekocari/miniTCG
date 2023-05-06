@@ -535,6 +535,29 @@ class AdminController extends AppController {
     }
     
     
+    public function membercard() {
+    	// check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	$this->auth()->setRequirements('rights', ['ManageMembers']);
+    	$this->redirectNotAuthorized();
+    	
+    	// get current member data
+    	$data['member'] = $member = Member::getById($_GET['id']);
+    	if(!$member instanceof Member){
+    		$this->redirectNotFound();
+    	}
+    	
+    	if(isset($_POST['action']) AND $_FILES){
+    		if(CardUpload::uploadMembercard($member->getId(), $_FILES['file'])){
+    			$this->layout()->addSystemMessage('success', 'admin_member_card_success');
+    		}else{
+    			$this->layout()->addSystemMessage('error', 'admin_member_card_failed');
+    		}
+    	}
+    	
+    	$this->layout()->render('admin/members/membercard.php',$data);
+    }
+    
     
     // TODO: rework giftMoney() and giftCards() to be more DRY?
     
@@ -547,7 +570,7 @@ class AdminController extends AppController {
         // get current member data
         $data['member'] = $member = Member::getById($_GET['id']);
         if(!$member instanceof Member){
-            header("Location: ".BASE_URI.Routes::getUri('not_found'));
+        	$this->redirectNotFound();
         }
         
         // get currency name for later use in view and log text

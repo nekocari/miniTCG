@@ -45,28 +45,29 @@
 
 <?php if($list->getCount() > 0){ ?>
 
-<div class="table-responsive">
 <table class="table table-striped">
 	<thead>
     	<tr>
-    		<th>ID</th>
+    		<th class="d-none d-sm-block">ID</th>
     		<th>Name</th>
-    		<th>Mail</th>
+    		<th class="d-none d-md-block">Mail</th>
     		<th></th>
     	</tr>
 	</thead>
 	<tbody>
 <?php foreach($list->getItems() as $member){ ?>
     	<tr style="white-space:nowrap">
-    		<td><?php echo $member->getId(); ?></td>
+    		<td class="d-none d-sm-block"><?php echo $member->getId(); ?></td>
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
-    		<td><?php echo $member->getMail(); ?></td>
+    		<td class="d-none d-md-block"><?php echo $member->getMail(); ?></td>
     		<td class="text-right">
     			<div class="dropdown">
 					<a class="dropdown-toggle" href="#"  id="memberEditDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aktionen</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberEditDropdown">
             			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>">
             				<i class="fas fa-pencil-alt"></i> Daten bearbeiten</a>  
+            			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_card');?>?id=<?php echo $member->getId(); ?>">
+            				<i class="fas fa-portrait"></i> Membercard bearbeiten</a>  
             			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_gift_cards');?>?id=<?php echo $member->getId(); ?>">
             				<i class="fas fa-plus"></i> Karten geben</a>   
             			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_gift_money');?>?id=<?php echo $member->getId(); ?>">
@@ -82,7 +83,7 @@
 <?php } ?>
 	</tbody>
 </table>
-</div>
+
 <?php }else{ echo $this->renderMessage('info','Keine Einträge'); } ?>
 
 <?php echo $list->getPagination()->getPaginationHTML(); ?>

@@ -145,28 +145,52 @@ class CardUpload {
     }
     
     public static function replaceCardImage($deck_id,$card_number,$file){
-        // create new file path
-        $deck = Carddeck::getById($deck_id);
-        
-        $file_type =  Setting::getByName('cards_file_type')->getValue();
-        $filename = $deck->getDeckname().$card_number.".".$file_type;
-        $file_path = PATH.Carddeck::getDecksFolder().$deck->getDeckname().'/'.$filename;
-        
-        if($file['name'] != ''){        	
-        	if(file_exists($file_path)){
-        		// delete old file
-        		unlink($file_path);
-        	}
-        	// move file from temp to new dir
-        	if(move_uploaded_file($file['tmp_name'], $file_path)){
-        		chmod($file_path, 0644);
-        		return true;
-			}else{
-        		throw new Exception('admin_upload_file_failed');
-        		return false;
-			}
-        }
-        
+    	// create new file path
+    	$deck = Carddeck::getById($deck_id);
+    	
+    	$file_type =  Setting::getByName('cards_file_type')->getValue();
+    	$filename = $deck->getDeckname().$card_number.".".$file_type;
+    	$file_path = PATH.Carddeck::getDecksFolder().$deck->getDeckname().'/'.$filename;
+    	
+    	if($file['name'] != ''){
+    		if(file_exists($file_path)){
+    			// delete old file
+    			unlink($file_path);
+    		}
+    		// move file from temp to new dir
+    		if(move_uploaded_file($file['tmp_name'], $file_path)){
+    			chmod($file_path, 0644);
+    			return true;
+    		}else{
+    			throw new Exception('admin_upload_file_failed');
+    			return false;
+    		}
+    	}
+    	
+    }
+    
+    public static function uploadMembercard($member_id,$file){
+    	// create new file path
+    	
+    	$file_type =  Setting::getByName('cards_file_type')->getValue();
+    	$filename = intval($member_id).".".$file_type;
+    	$file_path = PATH.Member::getMemberCardFolder().$filename;
+    	
+    	if($file['name'] != ''){
+    		if(file_exists($file_path)){
+    			// delete old file
+    			unlink($file_path);
+    		}
+    		// move file from temp to new dir
+    		if(move_uploaded_file($file['tmp_name'], $file_path)){
+    			chmod($file_path, 0644);
+    			return true;
+    		}else{
+    			throw new Exception('admin_upload_file_failed');
+    			return false;
+    		}
+    	}
+    	
     }
     
 }

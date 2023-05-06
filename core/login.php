@@ -49,11 +49,12 @@ class Login {
             		$_SESSION['user_name'] = $member->getName();
             		$_SESSION['user_lang'] = $member->getSettings()->getValueByName('lang');
             		$this->user = $member;
-            		/*
+            		
             		// update db field - last login to now
-            		$member->setPropValues(['perv_login_date'=>$member->getLoginDatePlain(), 'login_date'=>'CURRENT_TIMESTAMP', 'ip'=>$_SERVER['REMOTE_ADDR']]);
+            		$date = new DateTime('now');
+            		$member->setPropValues(['login_date'=>$date->format('c'), 'ip'=>$_SERVER['REMOTE_ADDR']]);
             		$member->update();
-            		*/
+            		
             		// insert into members online table
             		$this->updateMemberOnline();
             		

@@ -13,7 +13,9 @@ class Member extends DbRecordModel {
         $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
-        $password, $cards, $masterd_decks, $rights, $profil_cards, $tradeable_cards, $settings;
+        $password, $cards, $masterd_decks, $rights, $profil_cards, $tradeable_cards, $settings, $member_card_url;
+    
+    private static $member_card_path = 'public/img/membercards/';
     
         
     protected static
@@ -248,6 +250,39 @@ class Member extends DbRecordModel {
     		return '<a href="'.Routes::getUri('messages_write').'?member_id='.$this->getId().'" class="'.$css_classes.'">'.$text.'</a>';
     	}else{
     		return '<span class="'.$css_classes.'">'.$text.'</span>';
+    	}
+    }
+    
+    public static function getMemberCardFolder() {
+    	return self::$member_card_path;
+    }
+    
+    /**
+     * check if member has personalized member card
+     * @return boolean
+     */
+    public function hasMemberCard() {
+    	if(is_null($this->member_card_url)){
+	    	$personal_url = self::$member_card_path.$this->getId().'.'.Setting::getByName('cards_file_type')->getValue();
+	    	if(file_exists(PATH.$personal_url)){
+	    		$this->member_card_url = $personal_url;
+	    		return true;
+	    	}
+    	}else{
+    		return true;
+    	}
+    	return false;
+    }
+    
+    /**
+     * returns the image url
+     * @return string
+     */
+    public function getMemberCardUrl() {
+    	if($this->hasMemberCard()){
+    		return $this->member_card_url;
+    	}else{
+    		return Setting::getByName('members_card_default_path')->getValue();
     	}
     }
     
@@ -524,8 +559,16 @@ class Member extends DbRecordModel {
         return $this->money;
     }
     
-    public function getJoinDate() {
-        return $this->join_date;
+    public function getJoinDate($timezone=DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->join_date);
+    	$date->setTimezone(new DateTimeZone($timezone));
+    	return $date->format(Setting::getByName('date_format')->getValue());
+    }
+    
+    public function getLoginDate($timezone=DEFAULT_TIMEZONE) {
+    	$date = new DateTime($this->login_date);
+    	$date->setTimezone(new DateTimeZone($timezone));
+    	return $date->format(Setting::getByName('date_time_format')->getValue());
     }
     
     public function getInfoText($mode='html') {
