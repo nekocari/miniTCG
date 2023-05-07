@@ -25,5 +25,10 @@ INSERT INTO `games_settings` (`id`, `game_key`, `status`, `type`, `wait_time`, `
 
 INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('admin_member_card', 'admin/members/membercard.php', 'Admin', 'membercard', 'get|post', '0');
 INSERT INTO `settings` (`name`, `value`, `description`) VALUES ('members_card_default_path', 'public/img/membercards/_default.gif', '{\"en\":\"Filepath in case of not existing membercards\",\"de\":\"Dateipfand für nicht existierende Membercards\"}');
+INSERT INTO `settings` (`name`, `value`, `description`) VALUES ('members_card_folder', 'public/img/membercards', '{\"en\":\"path to where the membercard image folder is located\",\"de\":\"Pfad zum Ordner mit den Membercards\"}');
+
+-- level badges --
+
+INSERT INTO `settings` (`name`, `value`, `description`) VALUES ('level_badge_folder', 'public/img/level', '{\"en\":\"path to where the level badge image folder is located\",\"de\":\"Pfad zum Ordner mit den Level Badges\"}');
 
 COMMIT;

@@ -253,9 +253,18 @@ class Member extends DbRecordModel {
     	}
     }
     
+    
+    /**
+     * returns folder path to membercard folder
+     * @return string|NULL
+     */
     public static function getMemberCardFolder() {
+    	if(!is_null(self::$member_card_path)){
+    		self::$member_card_path = Setting::getByName('members_card_folder')->getValue();
+    	}
     	return self::$member_card_path;
     }
+    
     
     /**
      * check if member has personalized member card
@@ -263,7 +272,7 @@ class Member extends DbRecordModel {
      */
     public function hasMemberCard() {
     	if(is_null($this->member_card_url)){
-	    	$personal_url = self::$member_card_path.$this->getId().'.'.Setting::getByName('cards_file_type')->getValue();
+    		$personal_url = self::getMemberCardFolder().'/'.$this->getId().'.'.Setting::getByName('cards_file_type')->getValue();
 	    	if(file_exists(PATH.$personal_url)){
 	    		$this->member_card_url = $personal_url;
 	    		return true;

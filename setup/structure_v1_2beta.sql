@@ -534,6 +534,7 @@ INSERT INTO `settings` VALUES
 ('date_time_format', 'd.m.Y  \\&\\b\\u\\l\\l\\; H:i', '{\"en\":\"Default date format with time\",\"de\":\"Formatierung von Datum mit Uhrzeit\"}'),
 ('levelup_gift_cards', '3', '{\"en\":\"Number of cards a member will recieve for leveling up\",\"de\":\"Anzahl der Karten die ein Mitglied für den Levelaufstieg erhält\"}'),
 ('master_gift_cards', '2', '{\"en\":\"Number of cards a member will recieve for mastering a deck\",\"de\":\"Anzahl der Karten die ein Mitglied für das mastern eines Decks erhält\"}'),
+('members_card_folder', 'public/img/membercards', '{\"en\":\"path to where the membercard image folder is located\",\"de\":\"Pfad zum Ordner mit den Membercards\"}'),
 ('members_card_default_path', 'public/img/membercards/_default.gif', '{\"en\":\"Filepath in case of not existing membercards\",\"de\":\"Dateipfand für nicht existierende Membercards\"}'),
 ('members_profil_public', '0', '{\"en\":\"Member profiles publicly accessible? 1=yes 0=no\",\"de\":\"Mitgliederprofile für jedermann öffentlich zugänglich? 1=ja 0=nein\"}'),
 ('shop_max_stock', '6', '{\"en\":\"Maximum number of cards in shop\",\"de\":\"maximale Anzahl Karten im Shop\"}'),
