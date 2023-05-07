@@ -252,8 +252,16 @@
     		'de'=>'Änderungen gespeichert.'
     ]);
     $sys_msg_text_handler->addCode('level_edit_failed', [
-    		'en'=>'changes not saved', 
+    		'en'=>'changes not saved',
     		'de'=>'Ändern fehlgeschlagen.'
+    ]);
+    $sys_msg_text_handler->addCode('level_badge_upload_success', [
+    		'en'=>'Level Badge upload successfull',
+    		'de'=>'Level Badge erfolgreich hochgeladen'
+    ]);
+    $sys_msg_text_handler->addCode('level_badge_upload_failed', [
+    		'en'=>'Level Badge upload failed',
+    		'de'=>'Level Badge nicht hochgeladen'
     ]);
     
     

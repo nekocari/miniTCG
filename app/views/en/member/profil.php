@@ -1,6 +1,6 @@
 <h1><?php echo $member->getName(); ?></h1>
 
-<div class="row mx-2 mb-4">
+<div class="row m-2">
 	<div><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
 	<div class="col-12 col-md mb-2">
 		joined on: <?php echo $member->getJoinDate($this->login->getUser()->getTimezone()); ?><br>
@@ -10,8 +10,12 @@
 		<span class="badge badge-secondary"><?php echo $member->getCardCount(); ?> Cards</span> |
 		<span class="badge badge-primary"><?php echo $member->getMasterCount(); ?> Master</span>
 	</div>
-	<div><?php echo $member->getMessageLink('send message','btn btn-primary'); ?></div>
+	<div><?php echo $member->getLevel('object')->getLevelBadgeHTML(); ?></div>
 </div>
+
+
+<div class="text-right mb-4"><?php echo $member->getMessageLink('send message','btn btn-primary'); ?></div>
+
 
 <?php if($member->getInfoText()) { ?>  	
     <p class="text-left">

@@ -532,6 +532,7 @@ INSERT INTO `settings` VALUES
 ('currency_name', 'Taler', '{\"en\":\"Name your virtual currency\",\"de\":\"Name der virtuellen Währung\"}'),
 ('date_format', 'd.m.Y', '{\"en\":\"Default date format\",\"de\":\"Formatierung des Datums\"}'),
 ('date_time_format', 'd.m.Y  \\&\\b\\u\\l\\l\\; H:i', '{\"en\":\"Default date format with time\",\"de\":\"Formatierung von Datum mit Uhrzeit\"}'),
+('level_badge_folder', 'public/img/level', '{\"en\":\"path to where the level badge image folder is located\",\"de\":\"Pfad zum Ordner mit den Level Badges\"}'),
 ('levelup_gift_cards', '3', '{\"en\":\"Number of cards a member will recieve for leveling up\",\"de\":\"Anzahl der Karten die ein Mitglied für den Levelaufstieg erhält\"}'),
 ('master_gift_cards', '2', '{\"en\":\"Number of cards a member will recieve for mastering a deck\",\"de\":\"Anzahl der Karten die ein Mitglied für das mastern eines Decks erhält\"}'),
 ('members_card_folder', 'public/img/membercards', '{\"en\":\"path to where the membercard image folder is located\",\"de\":\"Pfad zum Ordner mit den Membercards\"}'),
@@ -1075,7 +1076,7 @@ ALTER TABLE `games_lucky`
 -- Constraints der Tabelle `members`
 --
 ALTER TABLE `members`
-  ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`level`) REFERENCES `level` (`id`);
+  ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`level`) REFERENCES `level` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `members_activation_code`

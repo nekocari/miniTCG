@@ -8,19 +8,23 @@
 
 <h1>Level anlegen</h1>
 
-<form method="post" action="">
+<form enctype="multipart/form-data" method="post" action="">
     <table class="table table-striped">
     	<tr>
     		<td>Level Stufe:</td>
-    		<td><input class="form-control" type="number" name="level"></td>
+    		<td><input class="form-control" type="number" name="level" value="<?php echo Level::getCount() + 1;?>" required></td>
     	</tr>
     	<tr>
     		<td>Level Name:</td>
-    		<td><input class="form-control" type="text" name="name"></td>
+    		<td><input class="form-control" type="text" name="name" required></td>
     	</tr>
     	<tr>
     		<td>Benötigte Karten Anzahl:</td>
-    		<td><input class="form-control" type="number" name="cards"></td>
+    		<td><input class="form-control" type="number" name="cards" required></td>
+    	</tr>
+    	<tr>
+    		<td>Level Badge:</td>
+    		<td><input class="form-control" type="file" name="file"></td>
     	</tr>
     </table>
 

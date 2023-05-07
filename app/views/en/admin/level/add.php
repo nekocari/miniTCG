@@ -8,7 +8,7 @@
 
 <h1>add Level</h1>
 
-<form method="post" action="">
+<form enctype="multipart/form-data" method="post" action="">
     <table class="table table-striped">
     	<tr>
     		<td>Level Rank:</td>
@@ -21,6 +21,10 @@
     	<tr>
     		<td>Number of Cards needed:</td>
     		<td><input class="form-control" type="number" name="cards"></td>
+    	</tr>
+    	<tr>
+    		<td>Level Badge:</td>
+    		<td><input class="form-control" type="file" name="file"></td>
     	</tr>
     </table>
 

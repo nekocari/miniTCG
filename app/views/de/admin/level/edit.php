@@ -8,7 +8,7 @@
 
 <h1>Level bearbeiten</h1>
 
-<form method="post" action="">
+<form enctype="multipart/form-data" method="post" action="">
     <table class="table table-striped">
     	<tr>
     		<td>Level ID</td>
@@ -25,6 +25,11 @@
     	<tr>
     		<td>Benötigte Karten Anzahl:</td>
     		<td><input class="form-control" type="number" name="cards" value="<?php echo $level->getCards(); ?>" required></td>
+    	</tr>
+    	<tr>
+    		<td>Level Badge ersetzen?</td>
+    		<td><?php echo $level->getLevelBadgeHTML(); ?><br>
+    			<input class="form-control" type="file" name="file"></td>
     	</tr>
     </table>
 

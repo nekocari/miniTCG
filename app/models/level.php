@@ -17,7 +17,9 @@ class Level extends DbRecordModel {
         $db_fields = array('id','name','level','cards'),
         $sql_order_by_allowed_values = array('id','name','level','cards');
     
-    private static $naming_pattern = '/[A-Za-z0-9äÄöÖüÜß _\-]+/';
+    private static 
+    	$naming_pattern = '/[A-Za-z0-9äÄöÖüÜß _\-]+/',
+    	$level_badge_folder;
     
     
     public function __construct() {
@@ -67,6 +69,13 @@ class Level extends DbRecordModel {
         
     }
     
+    public static function getLevelBadgeFolder() {
+    	if(is_null(self::$level_badge_folder)){
+    		self::$level_badge_folder = Setting::getByName('level_badge_folder')->getValue();
+    	}
+    	return self::$level_badge_folder;
+    }
+    
     
     /*
      * Getter
@@ -82,6 +91,24 @@ class Level extends DbRecordModel {
     }
     public function getId() {
         return $this->id;
+    }
+    
+    public function getLevelBadgeUrl() {
+    	$path = self::getLevelBadgeFolder().'/'.$this->getLevel().'.'.Setting::getByName('cards_file_type')->getValue();
+    	if(file_exists(PATH.$path)){
+    		return $path;
+    	}else{
+    		return null;
+    	}
+    }
+    
+    public function getLevelBadgeHTML() {
+    	$url = $this->getLevelBadgeUrl();
+    	if($url){
+    		return '<img src="'.$url.'" alt="'.$this->getName().'">';
+    	}else{
+    		return '-img not found-';
+    	}
     }
     
     /**

@@ -38,18 +38,30 @@ class LevelController extends AppController {
         if(isset($_POST['addLevel'])){
             
             try {
-            $return = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
-            header("Location: ".BASE_URI.Routes::getUri('level_index'));
+	            $level = Level::add($_POST['level'], $_POST['name'], $_POST['cards']);
+	            
+	            
+	            if(!empty($_FILES['file']['name'])){
+	            	if(CardUpload::uploadLevelBadge($level->getLevel(),$_FILES['file'])){
+	            		$this->layout()->addSystemMessage('success','level_badge_upload_success');
+	            	}else{
+	            		$this->layout()->addSystemMessage('error','level_badge_upload_failed');
+	            	}
+	            }
+	            
+	            $this->redirect('level_index');
             }
             catch(Exception $e){
-                $error_text = ' - ';
                 if($e instanceof PDOException){
-                    if($e->getCode() == 23000){
-                        $error_text.= SystemMessages::getSystemMessageText('duplicate_key');
+                	if($e->getCode() == 23000){
+                		$this->layout()->addSystemMessage('error','level_add_failed',[],'duplicate_key');
                     }
+                }else{
+                	$this->layout()->addSystemMessage('error','level_add_failed');
+                	error_log($e->getMessage.PHP_EOL,3,ERROR_LOG);
                 }
-                $this->layout()->addSystemMessage('error','level_add_failed').$error_text;
             }
+            
         }
         
         $this->layout()->render('admin/level/add.php',$data);
@@ -79,6 +91,14 @@ class LevelController extends AppController {
                 $level->update();
                 
                 $this->layout()->addSystemMessage('success','level_edit_success');
+                
+                if(!empty($_FILES['file']['name'])){
+                	if(CardUpload::uploadLevelBadge($level->getLevel(),$_FILES['file'])){
+                		$this->layout()->addSystemMessage('success','level_badge_upload_success');
+                	}else{
+                		$this->layout()->addSystemMessage('error','level_badge_upload_failed');
+                	}
+                }
             }
             
             catch (Exception $e){

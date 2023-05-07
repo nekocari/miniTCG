@@ -15,7 +15,7 @@ class Member extends DbRecordModel {
     private 
         $password, $cards, $masterd_decks, $rights, $profil_cards, $tradeable_cards, $settings, $member_card_url;
     
-    private static $member_card_path = 'public/img/membercards/';
+    private static $member_card_path;
     
         
     protected static
