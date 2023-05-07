@@ -183,7 +183,7 @@ CREATE TABLE `games_lucky` (
 INSERT INTO `games_lucky` VALUES
 (1, 2, '[\"Kopf\",\"Zahl\"]', '[\"win-card:1\",\"lost\"]', 'text'),
 (2, 1, '[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"]', '[\"win-card:1\",\"win-card:1\",\"win-card:2\",\"win-money:500\",\"win-card:2\",\"win-money:250\",\"lost\",\"lost\",\"lost\"]', 'text'),
-(5, 8, '[\"public\\/img\\/games\\/poke\\/rattata.png\",\"public\\/img\\/games\\/poke\\/pikachu.png\",\"public\\/img\\/games\\/poke\\/jigglypuff.png\",\"public\\/img\\/games\\/poke\\/meowth.png\",\"public\\/img\\/games\\/poke\\/psyduck.png\"]', '[\"lost\",\"win-money:100\",\"win-money:150\",\"win-money:200\",\"win-money:250\"]', 'image');
+(3, 4, '[\"public\\/img\\/games\\/poke\\/rattata.png\",\"public\\/img\\/games\\/poke\\/pikachu.png\",\"public\\/img\\/games\\/poke\\/jigglypuff.png\",\"public\\/img\\/games\\/poke\\/meowth.png\",\"public\\/img\\/games\\/poke\\/psyduck.png\"]', '[\"lost\",\"win-money:100\",\"win-money:150\",\"win-money:200\",\"win-money:250\"]', 'image');
 
 -- --------------------------------------------------------
 

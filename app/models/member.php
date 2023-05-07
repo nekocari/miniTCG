@@ -569,15 +569,23 @@ class Member extends DbRecordModel {
     }
     
     public function getJoinDate($timezone=DEFAULT_TIMEZONE) {
-    	$date = new DateTime($this->join_date);
-    	$date->setTimezone(new DateTimeZone($timezone));
-    	return $date->format(Setting::getByName('date_format')->getValue());
+    	if(!is_null($this->join_date)){
+	    	$date = new DateTime($this->join_date);
+	    	$date->setTimezone(new DateTimeZone($timezone));
+	    	return $date->format(Setting::getByName('date_format')->getValue());
+    	}else{
+    		return '';
+    	}
     }
     
     public function getLoginDate($timezone=DEFAULT_TIMEZONE) {
-    	$date = new DateTime($this->login_date);
-    	$date->setTimezone(new DateTimeZone($timezone));
-    	return $date->format(Setting::getByName('date_time_format')->getValue());
+    	if(!is_null($this->login_date)){
+	    	$date = new DateTime($this->login_date);
+	    	$date->setTimezone(new DateTimeZone($timezone));
+	    	return $date->format(Setting::getByName('date_time_format')->getValue());
+    	}else{
+    		return '';
+    	}
     }
     
     public function getInfoText($mode='html') {
