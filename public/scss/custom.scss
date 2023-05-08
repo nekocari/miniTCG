@@ -1,6 +1,4 @@
-//@import "vars_orange";
-//@import "vars_blue";
-@import "vars_purple";
+@import "vars_orange";
 
 
 // HEADLINES
@@ -55,4 +53,31 @@ body .btn{
 
 
 // import all of bootstrap
-@import "../../vendor/bootstrap-4.6.2/scss/bootstrap";
+//@import "../../vendor/bootstrap-4.6.2/scss/bootstrap";
+@import "../../vendor/bootstrap-4.6.2/scss/functions";
+@import "../../vendor/bootstrap-4.6.2/scss/variables";
+@import "../../vendor/bootstrap-4.6.2/scss/mixins";
+@import "../../vendor/bootstrap-4.6.2/scss/root";
+@import "../../vendor/bootstrap-4.6.2/scss/reboot";
+@import "../../vendor/bootstrap-4.6.2/scss/type";
+@import "../../vendor/bootstrap-4.6.2/scss/images";
+@import "../../vendor/bootstrap-4.6.2/scss/code";
+@import "../../vendor/bootstrap-4.6.2/scss/grid";
+@import "../../vendor/bootstrap-4.6.2/scss/tables";
+@import "../../vendor/bootstrap-4.6.2/scss/forms";
+@import "../../vendor/bootstrap-4.6.2/scss/buttons";
+@import "../../vendor/bootstrap-4.6.2/scss/transitions";
+@import "../../vendor/bootstrap-4.6.2/scss/dropdown";
+@import "../../vendor/bootstrap-4.6.2/scss/button-group";
+@import "../../vendor/bootstrap-4.6.2/scss/input-group";
+@import "../../vendor/bootstrap-4.6.2/scss/custom-forms";
+@import "../../vendor/bootstrap-4.6.2/scss/nav";
+@import "../../vendor/bootstrap-4.6.2/scss/navbar";
+@import "../../vendor/bootstrap-4.6.2/scss/card";
+@import "../../vendor/bootstrap-4.6.2/scss/breadcrumb";
+@import "../../vendor/bootstrap-4.6.2/scss/pagination";
+@import "../../vendor/bootstrap-4.6.2/scss/badge";
+@import "../../vendor/bootstrap-4.6.2/scss/jumbotron";
+@import "../../vendor/bootstrap-4.6.2/scss/alert";
+@import "../../vendor/bootstrap-4.6.2/scss/list-group";
+@import "../../vendor/bootstrap-4.6.2/scss/utilities";
