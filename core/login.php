@@ -167,7 +167,6 @@ class Login {
      */
     public function createUser($name, $mail, $pw1, $pw2, $lang = 'de', $activation_mail = true) {
         
-        // TODO: Create new User
         
     	// 1. user exists?
     	if($this->userExists($name, $mail)){
@@ -188,8 +187,9 @@ class Login {
     	}
     	
         // 3. add member entry
+        $date = new DateTime('now');
         $member = new Member();
-        $member->setPropValues(['name'=>$name,'mail'=>$mail]);        
+        $member->setPropValues(['name'=>$name,'mail'=>$mail,'join_date'=>$date->format('c')]);        
         $member->create();
         $member = Member::getById($member->getId());
         // set password (can't be done using default create or update...)
