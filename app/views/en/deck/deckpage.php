@@ -1,6 +1,6 @@
 <h1><span class="deckname"><?php echo $deck->getDeckname(); ?></span> <?php echo $deck->getName(); ?></h1>
 
-<?php if(!$deck->isPublic()){ $this->renderMessage('info','This deck is not yet published and can\'t be collectet.'); ?>
+<?php if(!$deck->isPublic()){ $this->renderMessage('info','This deck is not yet published and can\'t be collected.'); ?>
 	<div class="row">
 		<div class="col"><span class="btn btn-outline-primary disabled"><?php echo $deck->getVoteCount(); ?> <i class="fas fa-thumbs-up"></i> votes</span></div>
 		<?php if(!$deck->hasVoted($this->login)){ ?>

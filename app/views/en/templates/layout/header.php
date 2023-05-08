@@ -61,8 +61,13 @@
         							<?php } ?>
                                 	<div class="dropdown-divider"></div>
                                 	<?php } ?>
-                                	<!-- Category Liste End -->
-                                	<a class="dropdown-item" href="<?php echo Routes::getUri('deck_index');?>">Alle</a>
+                                	<!-- Upcoming -->
+                                	<?php if(Setting::getByName('cards_decks_upcoming_public')->getValue() == 1){ ?>
+                                		<a class="dropdown-item" href="<?php echo Routes::getUri('decks_list_upcoming');?>">Upcoming</a>
+                                	<?php } ?>
+                                	<!-- all -->
+                                	<a class="dropdown-item" href="<?php echo Routes::getUri('deck_index');?>">All</a>
+                                	<!-- end of list -->
                                 </div>
             				</li>
             			</ul>
