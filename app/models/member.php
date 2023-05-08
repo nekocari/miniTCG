@@ -418,7 +418,9 @@ class Member extends DbRecordModel {
     public function update() {
     	// make sure info_text_html is up to date!
     	$parsedown = new Parsedown();
-    	$this->info_text_html = $parsedown->text($this->info_text);
+    	if(!empty($this->info_text)){
+    		$this->info_text_html = $parsedown->text($this->info_text);
+    	}
     	
     	return parent::update();
     }
