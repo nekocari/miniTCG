@@ -10,7 +10,7 @@ class Login {
     
     public function __construct() {
         $this->db		= Db::getInstance();
-        if(isset($_SESSION['user_id']) AND ($this->user = Member::getById($_SESSION['user_id'])) instanceof Member){
+        if(isset($_SESSION[SESSION_PREFIX]['user_id']) AND ($this->user = Member::getById($_SESSION[SESSION_PREFIX]['user_id'])) instanceof Member){
             $this->language = $this->user->getSettings()->getValueByName('language');
             $this->updateMemberOnline();
         }
@@ -37,17 +37,18 @@ class Login {
      * @throws ErrorException
      * @return boolean
      */
-    public function login($name,$password) {    
+    public function login($name,$password) {
+    	
         if(!$this->isloggedIn()){
             $member = Member::getByUniqueKey('name',$name);
             // check username / password
             if($member instanceof Member AND password_verify($password, $member->getPassword() ) ) {
             	// check status - allow only active member accounts
             	if($member->getStatus(false) == 'default'){
-            		$_SESSION['URI'] = BASE_URI;
-            		$_SESSION['user_id'] = $member->getId();
-            		$_SESSION['user_name'] = $member->getName();
-            		$_SESSION['user_lang'] = $member->getSettings()->getValueByName('lang');
+            		$_SESSION[SESSION_PREFIX]['URI'] = BASE_URI;
+            		$_SESSION[SESSION_PREFIX]['user_id'] = $member->getId();
+            		$_SESSION[SESSION_PREFIX]['user_name'] = $member->getName();
+            		$_SESSION[SESSION_PREFIX]['user_lang'] = $member->getLang();
             		$this->user = $member;
             		
             		// update db field - last login to now
@@ -81,9 +82,14 @@ class Login {
                 $mo->delete();
             }
             $this->user = null;
-            // delete sesseion data
-            session_unset();
-            session_destroy();
+            
+            unset($_SESSION[SESSION_PREFIX]);
+            
+            if(count($_SESSION) == 0){
+	            // delete sesseion data
+	            session_unset();
+	            session_destroy();
+            }
             return true;
         }
     }
@@ -92,8 +98,9 @@ class Login {
      * returns true if user is logged in or false if not
      * @return boolean
      */
-    public function isloggedIn() {
-    	if(!is_null($this->getUser() ) AND isset($_SESSION['URI']) AND $_SESSION['URI'] == BASE_URI ){
+    public function isloggedIn() { 
+    	
+    	if(!is_null($this->getUser() ) AND isset($_SESSION[SESSION_PREFIX]['URI']) AND $_SESSION[SESSION_PREFIX]['URI'] == BASE_URI ){
             return true;
         }else{
             return false;

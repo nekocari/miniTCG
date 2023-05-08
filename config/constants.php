@@ -45,6 +45,7 @@
     define('PATH', dirname(__FILE__).'/../'); 		// relativer Pfad
     define('SERVER_URL', $_SERVER['SERVER_NAME']);
     define('ERROR_LOG', PATH.'app_error.log');      // to be used in later versions
+    define('SESSION_PREFIX','mtcg');
     
     
  
