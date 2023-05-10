@@ -259,7 +259,7 @@ class Member extends DbRecordModel {
      * @return string|NULL
      */
     public static function getMemberCardFolder() {
-    	if(!is_null(self::$member_card_path)){
+    	if(is_null(self::$member_card_path)){
     		self::$member_card_path = Setting::getByName('members_card_folder')->getValue();
     	}
     	return self::$member_card_path;
