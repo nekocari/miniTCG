@@ -1,6 +1,7 @@
 .settings/
 .project
 .buildpath
+config/constants_web.php
 public/img/cards/_filler/*.gif
 public/img/cards/_filler/puzzle/*.gif
 !public/img/cards/_filler/

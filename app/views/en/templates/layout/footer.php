@@ -21,13 +21,27 @@
             	<?php if($this->login->isLoggedIn()) { ?>  
     			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
     				<span class="h5 m-0 text-nowrap">Hello <b><a href="<?php echo $this->login->getUser()->getProfilLink(); ?>"><?php echo $this->login->getUser()->getName(); ?></a></b></span>
-    				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 my-2 d-lg-none d-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
-    					<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> members online</small>
-    				</button></div>
+    				
+    				<div class="text-nowrap">
+	    				<a class=" btn btn-dark d-lg-none" href="<?php echo Routes::getUri('signout');?>">
+	    						<i class="fas fa-sign-out-alt mr-lg-1"></i> <span class="d-lg-inline d-none">Logout</span>
+	    				</a>
+	    				<?php if(count($this->login->getUser()->getRights()) > 0){ ?>
+		    				<a class=" btn btn-primary d-lg-none" href="<?php echo Routes::getUri('admin_dashboard');?>">
+		    					<i class="fas fa-lock mr-lg-1"></i> <span class="d-none d-lg-inline">Administation</span>
+		    				</a>
+	    				<?php } ?>
+	    			</div>
+	    		</div>
     			<ul class="nav nav-fill flex-lg-column justify-content-between" id="member-links">
     				<li class="nav-item">
     					<a class="nav-link text-left" href="<?php echo Routes::getUri('member_dashboard');?>">
         					<span><i class="fas fa-house-user mr-md-1"></i>&nbsp;<span class="d-none d-md-inline">Member Area</span></span>
+    					</a>
+    				</li>
+    				<li class="nav-item">
+    					<a class="nav-link d-md-flex justify-content-lg-between align-items-center" href="<?php echo Routes::getUri('member_cardmanager');?>">
+    						<span><i class="fas fa-folder-open mr-1"></i> <span class="d-none d-md-inline mr-2">Card Manager</span></span>
     					</a>
     				</li>
     				<li class="nav-item">
@@ -42,14 +56,14 @@
     						<span class="badge badge-pill badge-dark"><?php echo count(Trade::getRecievedByMemberId($this->login->getUserId(),'new')); ?></span>
     					</a>
     				</li>
-    				<li class="nav-item my-lg-2">
+    				<li class="nav-item my-lg-2 d-none d-lg-block">
     					<a class="nav-link btn btn-dark" href="<?php echo Routes::getUri('signout');?>">
     						<i class="fas fa-sign-out-alt mr-lg-1"></i> <span class="d-lg-inline d-none">Logout</span>
     					</a>
     				</li>
     				<!-- Link to ACP -->
     				<?php if(count($this->login->getUser()->getRights()) > 0){ ?>
-    				<li class="nav-item my-lg-2 ml-2 ml-lg-0">
+    				<li class="nav-item my-lg-2 ml-2 ml-lg-0 d-none d-lg-block">
     					<a class="nav-link btn btn-primary" href="<?php echo Routes::getUri('admin_dashboard');?>">
     					<i class="fas fa-lock mr-lg-1"></i> <span class="d-none d-lg-inline">Administation</span></a>
     				</li>
@@ -86,6 +100,11 @@
     			<div class="h5 d-none d-lg-flex">
     				<?php echo count(MemberOnline::getVisible()); ?> Members online
     			</div>
+				<div class="text-right">
+		    		<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 mb-1 d-lg-none d-inline-block" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
+		    			<small><?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Members online</small>
+	    		</button>
+	    		</div>	  
     			<div class="d-none  text-right mb-1">
     				<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0" data-toggle="collapse" data-target="#members-online" aria-expanded="false" aria-controls="members-online">
     					<small><?php echo count(MemberOnline::getVisible()); ?> Members online</small>

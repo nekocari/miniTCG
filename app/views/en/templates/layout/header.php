@@ -1,4 +1,4 @@
-<html lang="de">
+<html lang="en">
 
 	<head>
 		<meta charset="utf-8">
@@ -21,6 +21,10 @@
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 		
+		
+	    <!-- additional css -->
+	    <?php echo $this->getCssLinks(); ?>
+		
 	</head>
 	<body>
         
@@ -38,8 +42,7 @@
                 <nav class="navbar navbar-expand-sm navbar-light px-0 py-3">   
                 	
                 	<a class="navbar-brand" href="<?php echo BASE_URI; ?>"><?php if(($name = Setting::getByName('app_name')->getValue()) != 'miniTCG'){ echo $name; }else{ ?>mini<span class="tcg">TCG</span> <small><?php echo APP_VERSION; ?></small><?php } ?></a>        	
-                        	
-                    
+                                       
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     	<span class="navbar-toggler-icon"></span>
                     </button>

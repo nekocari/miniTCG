@@ -43,6 +43,7 @@ class Layout {
     	$js_files = array(),
     	$css_files = array(),
     	$breadcrumbs = array(),
+    	$html_title = '',
     	$login;
     
         
