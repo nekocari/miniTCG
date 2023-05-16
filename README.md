@@ -10,11 +10,13 @@ miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
 But it should be mostly english by now and the views are being translated as well, with options to add in other languages in the future.*
 
 
+
 ---
 
 ## Table of contents
 [Requirements](#requirements)  
-[How to Setup](#how-to-setup)  
+[How to setup](#how-to-setup)  
+[How to use](#how-to-use)  
 [Current Features](#current-features)    
 [Features TBA](#features-tba)  
 [Used Libs & Co.](#used-libs--co)    
@@ -28,7 +30,7 @@ lowest tested specs:
 * PHP 7.4 
 * MariaDB 10.3.38 
 
-## How to Setup
+## How to setup
 * open config/constants.php and update it with your information
 * upload all files via ftp to your server
 * open browser and go to your miniTCG installation /setup/setup.php
@@ -37,6 +39,9 @@ lowest tested specs:
 * login and head to administration -> settings first to customize the application
 * look through all the other options and customize the app even more. :)
 
+## How to use
+Some general topics will be explained on the ([github wiki](https://github.com/nekocari/miniTCG/wiki)).
+If you got further questions don't hesitate to ask!
 
 
 ## Current Features
@@ -65,6 +70,7 @@ lowest tested specs:
     * gift random cards
     * gift money
     * edit profil data
+    * upload membercard images
     * reset passwords
     * delete accounts
   * manage decks
@@ -78,7 +84,7 @@ lowest tested specs:
     * add new game settings for custom games
   * manage application
     * main categories and subcategories
-    * level
+    * level incl. fileupload for badges
     * deck types
       * create, edit, delete individual types
       * change deck sizes
@@ -138,7 +144,6 @@ lowest tested specs:
 * add decks without uploading files
 * add reset option for shop
 * add individualization for handing out update cards
-* add simple pages without the need to mess the controller files
 
 
 ## Used Libs & Co.
