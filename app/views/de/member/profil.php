@@ -4,7 +4,7 @@
 	<div><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
 	<div class="col-12 col-md mb-2">
 		angemeldet am: <?php echo $member->getJoinDate($this->login->getUser()->getTimezone()); ?><br>
-		letzte Login: <?php echo $member->getLoginDate($this->login->getUser()->getTimezone()); ?>
+		letzter Login: <?php echo $member->getLoginDate($this->login->getUser()->getTimezone()); ?>
 		<br>
 		<span class="badge badge-dark">Stufe: <?php echo $member->getLevel('object')->getName(); ?></span> |
 		<span class="badge badge-secondary"><?php echo $member->getCardCount(); ?> Karten</span> |
