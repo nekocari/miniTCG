@@ -38,6 +38,13 @@ class CardFlagged extends Card {
             return true;
         }
     }
+    public function deckInCollect(){
+        if(!$this->collect_flag){
+            return false;
+        }else{
+            return true;
+        }
+    }
     public function mastered(){
     	if(!$this->mastered_flag){
     		return false;
