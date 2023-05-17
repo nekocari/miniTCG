@@ -16,7 +16,7 @@
 		<span class="d-inline-block card-member-profil">
 			<?php echo $mastercard->getDeck()->getMasterCard(); ?>
         	<?php if($mastercard->getPossessionCounter() > 1){ ?>
-        		<span class="badge badge-dark"><?php echo $mastercard->getPossessionCounter(); ?></span>
+        		<span class="badge bg-dark"><?php echo $mastercard->getPossessionCounter(); ?></span>
         	<?php } ?>
 		</span>
 		<br>

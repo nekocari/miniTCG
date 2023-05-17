@@ -27,9 +27,7 @@
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>ascending</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>descending</option>
 				</select>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
-				</div>
+				<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
 			</div>
 		</div>
 		<div class="col-12 col-md py-md-0 py-1">
@@ -40,9 +38,7 @@
 						<option><?php echo $gs->getName('de'); ?></option>
 					<?php } ?>
 				</datalist>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
-				</div>
+				<button class="btn btn-dark"><i class="fas fa-search "></i></button>
 			</div>
 		</div>
 	</div>
@@ -64,13 +60,14 @@
 		<?php foreach($list->getItems() as $game){ ?>
 		    	<tr style="white-space:nowrap">
 		    		<td><?php echo $game->getName('en'); ?></td>
-		    		<td class="text-center"><span class="badge"><?php echo $game->getStatus(); ?></span></td>
+		    		<td class="text-center"><span class="badge text-bg-light"><?php echo $game->getStatus(); ?></span></td>
 		    		<td class="text-center"><?php echo $game->getType(); ?></td>
 		    		<td class="text-center"><?php if(!$game->isDailyGame()){ echo $game->getWaitTime().' min'; }else{ echo '-'; } ?></td>
 		    		<td class="text-right">
-		    			<a href="<?php echo Routes::getUri('admin_games_edit');?>?id=<?php echo $game->getId(); ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i> edit</a>
+		    			<a href="<?php echo Routes::getUri('admin_games_edit');?>?id=<?php echo $game->getId(); ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i> 
+						<span class="d-none d-md-inline">edit</span></a>
 		    			<button class="btn btn-sm btn-danger" name="delete_game" value="<?php echo $game->getId(); ?>" 
-		    			onclick="return confirm('Delete game <?php echo $game->getName('en'); ?>?')"><i class="fas fa-times"></i> delete</button>
+		    			onclick="return confirm('Delete game <?php echo $game->getName('en'); ?>?')"><i class="fas fa-times"></i> <span class="d-none d-md-inline">delete</span></button>
 		    		</td>
 		    	</tr>
 		<?php } ?>

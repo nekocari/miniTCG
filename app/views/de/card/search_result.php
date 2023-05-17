@@ -8,7 +8,7 @@
 		<col width="60%">
 		<col width="30%">
 	</colgroup>
-	<thead class="thead-light">
+	<thead class="table-light">
 	<tr>
 		<th>#</th>
 		<th>Name</th>

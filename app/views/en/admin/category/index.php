@@ -13,9 +13,9 @@
 <div class="card mx-auto my-4">
 	<div class="card-header d-flex justify-content-between align-items-center">
 		<?php echo $category->getName(); ?>
-		<div class="row">
+		<div class="">
 			<?php if(!isset($subcategories[$category->getId()]) OR !count($subcategories[$category->getId()])){ ?>
-			<form class="col px-1 m-0" method="POST" action="">
+			<form class="d-inline px-1 m-0" method="POST" action="">
 				<button class="btn btn-danger btn-sm del-link" onclick="return confirm('Are you sure you want to delete <?php echo $category->getName(); ?>?');">
 					<i class="fas fa-times"></i> <span class="d-none d-md-inline">delete</span></button>
 				<input type="hidden" name="action" value="del_cat">
@@ -31,8 +31,8 @@
 		<?php if(isset($subcategories[$category->getId()])){ foreach($subcategories[$category->getId()] as $subcategory){ ?>
 		<li class="list-group-item d-flex justify-content-between align-items-center">
 			<?php echo $subcategory->getName(); ?>
-			<div class="row">
-    			<form class="col px-1 m-0" method="POST" action="">
+			<div class="">
+    			<form class="d-inline px-1 m-0" method="POST" action="">
     				<button class="btn btn-danger btn-sm del-link" onclick="return confirm('Are you sure you want to delete  <?php echo $subcategory->getName(); ?>?');">
     					<i class="fas fa-times"></i> <span class="d-none d-md-inline">delete</span></button>
     				<input type="hidden" name="action" value="del_subcat">

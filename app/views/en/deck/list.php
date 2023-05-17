@@ -7,7 +7,7 @@
 <?php if($list->getCount() > 0) { ?>
 <div class="table-responsive">
 	<table class="table">
-		<thead class="thead-light">
+		<thead class="table-light">
 			<tr>
 				<th>ID</th>
 				<th>Name</th>

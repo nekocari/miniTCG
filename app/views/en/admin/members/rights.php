@@ -18,7 +18,7 @@ foreach($rights as $right){
 ?>
 	<tr>
 		<td>
-			<span class="badge badge-secondary">inactiv</span>
+			<span class="badge bg-secondary">inactiv</span>
 		</td>
 		<td>
 			<?php echo $right->getName(); ?><br>
@@ -39,7 +39,7 @@ foreach($rights as $right){
 ?>
 	<tr>
 		<td>
-			<span class="badge badge-primary">activ</span>
+			<span class="badge bg-primary">activ</span>
 		</td>
 		<td>
 			<?php echo $right->getName(); ?><br>

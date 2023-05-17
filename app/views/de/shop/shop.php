@@ -2,7 +2,7 @@
 
 <p class="text-center">
 	Du kannst 
-	<span class="h3"><span class="badge badge-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
+	<span class="h3"><span class="badge bg-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
 	ausgeben
 </p>
 

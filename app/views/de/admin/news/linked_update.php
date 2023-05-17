@@ -14,7 +14,7 @@
 	<h3>Verbundenes Update</h3>
     <div class="card my-3">
     	<div class="card-header">
-    		<span class="badge badge-<?php if($linked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
+    		<span class="badge bg-<?php if($linked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
     			<?php echo $linked_update->getStatus(); ?>
     		</span>
     		<?php echo $linked_update->getDate($this->login->getUser()->getTimezone()); ?>
@@ -38,7 +38,7 @@
     <?php foreach($unlinked_updates as $unlinked_update){ ?>
     <div class="card my-3">
     	<div class="card-header">
-    		<span class="badge badge-<?php if($unlinked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
+    		<span class="badge bg-<?php if($unlinked_update->getStatus() == 'new'){ echo "primary"; }else{ echo "secondary"; } ?>">
     			<?php echo $unlinked_update->getStatus(); ?>
     		</span>
     		<?php echo $unlinked_update->getDate($this->login->getUser()->getTimezone()); ?>

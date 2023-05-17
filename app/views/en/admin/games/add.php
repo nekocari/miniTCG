@@ -19,7 +19,7 @@
     		<td>Name</td>
     		<td>
     			<?php foreach(SUPPORTED_LANGUAGES as $key => $lang){?>
-    				<span class="badge"><?php echo $lang; ?></span>
+    				<span class="badge text-bg-light"><?php echo $lang; ?></span>
     				<input class="form-control mb-1" type="text" name="name[<?php echo $key; ?>]" required>
     			<?php } ?>
     		</td>
@@ -28,7 +28,7 @@
     		<td>Description</td>
     		<td>
     			<?php foreach(SUPPORTED_LANGUAGES as $key => $lang){?>
-    				<span class="badge"><?php echo $lang; ?></span>
+    				<span class="badge text-bg-light"><?php echo $lang; ?></span>
     				<textarea class="form-control mb-1" name="description[<?php echo $key; ?>]" required></textarea>
     			<?php } ?>
     		</td>

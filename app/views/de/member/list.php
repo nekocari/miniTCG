@@ -14,14 +14,14 @@
 	<thead>
 	<tr>
 		<th colspan="3" id="<?php echo $lv->getLevel(); ?>">
-			<div class="row  m-0 justify-content-between">
+			<div class="d-flex  m-0 justify-content-between">
 			<span>Stufe <?php echo $lv->getLevel(); ?>: <?php echo $lv->getName(); ?></span>
-			<span class="badge badge-dark"><?php echo count($members[$lv->getId()]); ?> Mitglieder</span>
+			<span class="badge bg-dark"><?php echo count($members[$lv->getId()]); ?> Mitglieder</span>
 			</div>
 		</th>
 	</tr>
 	</thead>
-	<tr class="thead-light">
+	<tr class="table-light">
 		<th>ID</th>
 		<th>Name</th>
 		<th>Level</th>

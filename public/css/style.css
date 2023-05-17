@@ -3,11 +3,16 @@
 @import url('https://fonts.googleapis.com/css?family=ABeeZee|Roboto');
 
 :root{ 
+	--font-family-body:  Roboto;
+	--font-family-headings:  ABeeZee;
+
 	--def-border-radius: 0.5rem;
-	--collect: var(--success);
-	--keep: var(--warning);
-	--wishlist: var(--primary);
+
+	--collect: var(--bs-success);
+	--keep: var(--bs-warning);
+	--wishlist: var(--bs-primary);
 }
+
 
 .navbar-toggler{
 	border: 0;
@@ -21,28 +26,42 @@
 	font-size: 1.5rem;
 }
 
-.navbar-brand .tcg {
-	color: var(--primary);
-	font-weight: bold;
-}
 
 .navbar-brand small{
-	color: lightgrey;
+	color: var(--bs-gray-500);
 	font-size: 0.8rem;
 }
 
 #member-nav {
-	background-color: var(--light);
-	background-color: color-mix(in srgb, var(--light) 98%, black);
+	background-color: rgba(0,0,0,0.05);
+}
+
+[data-bs-theme="dark"] #member-nav{
+	background-color: rgba(255,255,255,0.015);
 }
 
 body{
-	font-family: Roboto;
+	font-family: var(--font-family-body);
+}
+
+a {
+	text-decoration: none;
+}
+
+a:not([class]):hover{
+	text-decoration: underline;
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-	font-family: ABeeZee;
+	font-family: var(--font-family-headings);
 	letter-spacing: -.1rem;
+}
+
+.text-left {
+	text-align: left;
+}
+.text-right {
+	text-align: right;
 }
 
 .breadcrumb {
@@ -54,13 +73,14 @@ body{
 .deckname {
 	text-transform: uppercase;
 }
+.deckname::before, .deckname::after {
+	color: var(--bs-gray-400);
+}
 .deckname:before {
 	content: "[";
-	color: lightgrey;
 }
 .deckname:after {
 	content: "]";
-	color: lightgrey;
 }
 
 .cardimage, .mastercardimage  {
@@ -75,7 +95,6 @@ body{
 .card-cardmanager {
 	border-radius: 0.25rem;
 	border: 1px solid rgba(0,0,0,0.25);
-	background-color: white;
 	padding: 0.25rem;
 }
 .card-member-profil, .shop-card-image {
@@ -143,7 +162,5 @@ body{
     display: inline-block;
     position: relative;
     width: 40px;
-
-@media (min-width: 992px) { 
 	
 }

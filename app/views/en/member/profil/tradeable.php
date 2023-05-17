@@ -15,7 +15,7 @@
             	<?php echo $card->getImageHtml(); ?>
         	</a>
         	<?php if($card->getPossessionCounter() > 1){ ?>
-    		<span class="badge badge-dark"><?php echo $card->getPossessionCounter(); ?></span>
+    		<span class="badge bg-dark"><?php echo $card->getPossessionCounter(); ?></span>
     		<?php } ?>
     </div>
 	<?php } ?>

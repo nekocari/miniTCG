@@ -13,7 +13,7 @@
 	<div class="card-header">
 		<div class="row">
     		<div class="col">
-    			<?php if($msg->isNew()){ ?><span class="badge badge-primary">New</span><?php } ?>
+    			<?php if($msg->isNew()){ ?><span class="badge bg-primary">New</span><?php } ?>
     			<a href="<?php echo $msg->getSender()->getProfilLink(); ?>"><?php echo $msg->getSender()->getName(); ?></a> 
     			&bull; <?php echo $msg->getDate($this->login->getUser()->getTimezone()); ?>
     		</div>

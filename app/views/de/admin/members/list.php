@@ -21,9 +21,7 @@
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
 				</select>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
-				</div>
+				<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
 			</div>
 		</div>
 		<div class="col-12 col-md py-md-0 py-1">
@@ -34,9 +32,7 @@
 						<option><?php echo $member->getName(); ?></option>
 					<?php } ?>
 				</datalist>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
-				</div>
+				<button class="btn btn-dark"><i class="fas fa-search "></i></button>
 			</div>
 		</div>
 	</div>
@@ -62,8 +58,8 @@
     		<td class="d-none d-md-block"><?php echo $member->getMail(); ?></td>
     		<td class="text-right">
     			<div class="dropdown">
-					<a class="dropdown-toggle" href="#"  id="memberEditDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aktionen</a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberEditDropdown">
+					<a class="dropdown-toggle" href="#"  id="memberEditDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aktionen</a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="memberEditDropdown">
             			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_edit');?>?id=<?php echo $member->getId(); ?>">
             				<i class="fas fa-pencil-alt"></i> Daten bearbeiten</a>  
             			<a class="dropdown-item" href="<?php echo Routes::getUri('admin_member_card');?>?id=<?php echo $member->getId(); ?>">

@@ -2,7 +2,7 @@
 
 <p class="text-center">
 	You got
-	<span class="h3"><span class="badge badge-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
+	<span class="h3"><span class="badge bg-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
 	to spend.
 </p>
 

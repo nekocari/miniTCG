@@ -4,7 +4,7 @@
     <div class="d-inline-block card-member-profil">
     <?php echo $card->getImageHtml(); ?>
     	<?php if($card->getPossessionCounter() > 1){ ?>
-    		<span class="badge badge-dark"><?php echo $card->getPossessionCounter(); ?></span>
+    		<span class="badge bg-dark"><?php echo $card->getPossessionCounter(); ?></span>
     	<?php } ?>
 	</div>
 <?php } }else { $this->renderMessage('info','no cards in this category'); } ?>

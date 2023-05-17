@@ -4,7 +4,7 @@
 <div class="table-responsive">
     <table class="table">
 	<?php foreach($category->getSubcategories() as $subcategory){ ?>
-		<thead class="thead-light">
+		<thead class="table-light">
         	<tr>
         		<th colspan="3"><?php echo $subcategory->getName(); ?></th>
         	</tr>

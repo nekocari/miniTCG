@@ -21,11 +21,11 @@
 	
 	<div class="my-2 col-12 col-md-8">
 		<p>
-			uploaded by <span class="badge badge-dark ml-1"><i class="fas fa-user"></i></span>
+			uploaded by <span class="badge bg-dark ms-1"><i class="fas fa-user"></i></span>
 			<a href="<?php echo $deck->getCreatorObj()->getProfilLink(); ?>"><?php echo $deck->getCreatorName(); ?></a> 
-    		on <span class="badge badge-dark ml-1"><i class="fas fa-calendar-alt"></i></span> 
+    		on <span class="badge bg-dark ms-1"><i class="fas fa-calendar-alt"></i></span> 
     		<?php if($this->login->isloggedIn()){ echo $deck->getDate($this->login->getUser()->getTimezone()); } else { echo $deck->getDate(); } ?> <br>
-    		in <span class="badge badge-dark ml-1"><i class="fas fa-folder"></i></span>
+    		in <span class="badge bg-dark ms-1"><i class="fas fa-folder"></i></span>
     		<a href="<?php echo $deck->getCategory()->getLinkUrl(); ?>"><?php echo $deck->getCategoryName(); ?> - <?php echo $deck->getSubcategoryName(); ?></a>
 		</p>
 		

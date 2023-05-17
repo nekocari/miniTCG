@@ -18,18 +18,13 @@
 				<select class="form-control" name="direction">
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>ascending</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>descending</option>
-				</select>
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
-				</div>
+				</select><button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>
 			</div>
 		</div>
 		<div class="col-12 col-md py-md-0 py-1">
 			<div class="input-group input-group-sm">
 				<input class="form-control" type="text" name="search" value="<?php if(isset($_GET['search'])){ echo $_GET['search']; } ?>">
-				<div class="input-group-append">
-					<button class="btn btn-dark"><i class="fas fa-search "></i></button>
-				</div>
+				<button class="btn btn-dark"><i class="fas fa-search "></i></button>
 			</div>
 		</div>
 	</div>
