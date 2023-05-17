@@ -13,13 +13,13 @@
 	<?php echo $pagination; ?>
 	
 	<div>
-	<?php foreach($cards as $card){ ?>
+	<?php foreach($cards as $card){  ?>
 		<div class="d-inline-block text-center m-1 card-cardmanager 
 			<?php 
+				if($card->onWishlist() AND !$card->deckInKeep() AND !$card->deckInCollect()){ echo " card-missing-wishlist"; } 
 				if($card->missingInKeep()){ echo " card-missing-keep"; } 
 				if($card->missingInCollect()){ echo " card-missing-collect"; } 
 				if($card->mastered()){ echo " card-mastered"; } 
-				if($card->onWishlist() AND (!$card->deckInKeep() AND ! $card->deckInCollect())){ echo " card-missing-wishlist"; } 
 			?>
 		">
 			<div>

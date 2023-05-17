@@ -32,14 +32,14 @@ class CardFlagged extends Card {
         }
     }
     public function deckInKeep(){
-        if(!$this->keep_flag){
+        if(!$this->keep_flag OR $this->keep_flag == 0){
             return false;
         }else{
             return true;
         }
     }
     public function deckInCollect(){
-        if(!$this->collect_flag){
+        if(!$this->collect_flag OR $this->collect_flag == 0){
             return false;
         }else{
             return true;
@@ -53,7 +53,7 @@ class CardFlagged extends Card {
     	}
     }
     public function onWishlist(){ 
-    	if(!$this->wishlist_flag){
+    	if(!$this->wishlist_flag OR $this->wishlist_flag == 0){
     		return false;
     	}else{
     		return true;
@@ -153,7 +153,6 @@ class CardFlagged extends Card {
                         break;
                 }
             }
-            
             $req = $this->db->query($sql);
             $card = $req->fetch(PDO::FETCH_ASSOC);
             if($card !== false){

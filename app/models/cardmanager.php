@@ -166,7 +166,7 @@ class Cardmanager {
                             ORDER BY d.deckname ASC, c.number ASC";
                 	break;
             }
-            
+			
             $req = $this->db->query($sql);
             
             foreach($req->fetchALL(PDO::FETCH_CLASS,'CardFlagged') as $card){
