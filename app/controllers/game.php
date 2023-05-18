@@ -175,6 +175,46 @@ class GameController extends AppController {
     	
     }
     
+    public function hangman(){
+    	
+    	// fetch the settings 
+    	$game_setting = GameSetting::getByKey('hangman');
+    	// fetch user specific game data
+    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
+    	
+    	// check if a game object was created and the game is playable
+    	if($game instanceof Game AND $game->isPlayable()){
+    		
+    		// check if a game result was send via post request
+    		if(!isset($_POST['game_result'])){
+    			// display the game
+    			$this->layout()->addJsFile('hangman.js');
+    			$this->layout()->render('game/hangman.php');
+    			
+    		}else{
+    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
+    			// process the game result 
+    			switch($_POST['game_result']){
+    				case 'won':
+    					$data['reward'] = $game->determineReward('win-card:1');
+    					break;
+    				case 'lost':
+    				default:
+    					$data['reward'] = $game->determineReward('lost');
+    					break;
+    			}
+    			
+    			$this->layout()->render('game/display_result.php',$data);
+    		}
+    		
+    	
+    	}else{
+    		// message in case game is not playable
+    		$this->layout()->render('game/wait_message.php');
+    	}
+    	
+    }
+    
     
     /**
      * head or tail
