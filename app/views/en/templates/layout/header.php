@@ -85,4 +85,4 @@
         	
         	
     		<!-- Content -->
-        	<div id="content" class="m-3">
+        	<div id="content" class="mt-4 mx-2">

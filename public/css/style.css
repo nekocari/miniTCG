@@ -1,10 +1,12 @@
 @charset "UTF-8";
 
 @import url('https://fonts.googleapis.com/css?family=ABeeZee|Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Sansita+Swashed&display=swap');
 
-:root{ 
+:root{
 	--font-family-body:  Roboto;
 	--font-family-headings:  ABeeZee;
+	--font-family-brand:  'Sansita Swashed';
 
 	--def-border-radius: 0.5rem;
 
@@ -13,6 +15,16 @@
 	--wishlist: var(--bs-primary);
 }
 
+[data-bs-theme='dark'] {
+	--collect: var(--bs-success);
+	--keep: var(--bs-warning-text-emphasis);
+	--wishlist: var(--bs-primary);
+}
+
+
+.ff-brand {
+	font-family: var(--font-family-brand);
+}
 
 .navbar-toggler{
 	border: 0;
@@ -21,9 +33,14 @@
 	outline: 0;
 }
 
-.navbar-brand {
-	font-style: italic;
-	font-size: 1.5rem;
+.navbar-brand, .navbar-brand:hover {
+	color: var(--bs-primary);
+	font-family: var(--font-family-brand);
+	font-size: 1.75rem;
+	text-shadow: 
+		1px 0px 0px var(--bs-body-bg),
+		1px 1px 0px var(--bs-body-bg),
+		2px 1px 3px rgba(var(--bs-body-color-rgb), 0.6);
 }
 
 
@@ -32,13 +49,6 @@
 	font-size: 0.8rem;
 }
 
-#member-nav {
-	background-color: rgba(0,0,0,0.05);
-}
-
-[data-bs-theme="dark"] #member-nav{
-	background-color: rgba(255,255,255,0.015);
-}
 
 body{
 	font-family: var(--font-family-body);
@@ -68,6 +78,38 @@ a:not([class]):hover{
 	background: transparent;
 	padding-left: 0;
 	padding-right: 0;
+}
+
+.theme-toggle {
+	cursor: pointer;
+}
+.theme-toggle.toggle-light {
+	display: none;
+}
+
+[data-bs-theme='dark'] .theme-toggle.toggle-light {
+	display: inline;
+}
+.theme-toggle.toggle-dark {
+	display: inline;
+}
+
+[data-bs-theme='dark'] .theme-toggle.toggle-dark {
+	display: none;
+}
+
+.btn-outline-dark:hover svg {
+	color: var(--bs-primary);
+}
+
+[data-bs-theme='dark'] .btn-outline-dark {
+	color: var(--bs-light);
+	border-color: var(--bs-light);
+}
+
+[data-bs-theme='dark'] .btn-outline-dark:hover {
+	color: var(--bs-dark);
+	background-color: var(--bs-light);
 }
 
 .deckname {
@@ -116,6 +158,8 @@ a:not([class]):hover{
 	bottom: 0;
 }
 
+/* Card Backgrounds */
+
 .card-missing-wishlist {
 	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
 	background-color: var(--wishlist);
@@ -134,13 +178,32 @@ a:not([class]):hover{
 	border-color: var(--keep);
 }
 
+[data-bs-theme='dark'] [class*=' card-missing-'],
+[data-bs-theme='dark'] [class^='card-missing-'] {
+	background-image: linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,0.75) 100%);
+}
+
 .card-mastered {
 	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
 	border-color: rgba(0,0,0,0.05);
 }
-.card-mastered.card-missing-keep, .card-mastered.card-missing-collect, .card-mastered.card-missing-wishlist {
+[data-bs-theme='dark'] .card-mastered {
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(255,255,255,0.05);
+}
+
+.card-mastered.card-missing-keep, 
+.card-mastered.card-missing-collect, 
+.card-mastered.card-missing-wishlist {
 	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7) 6px, rgba(255,255,255,0.75) 6px, rgba(255,255,255,0.75) 12px);
 	border-color: rgba(0,0,0,0.05);
+}
+
+[data-bs-theme='dark'] .card-mastered.card-missing-keep, 
+[data-bs-theme='dark'] .card-mastered.card-missing-collect,
+[data-bs-theme='dark']  .card-mastered.card-missing-wishlist {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6px, rgba(,0,0,0,0.75) 6px, rgba(0,0,0,0.75) 12px);
+	border-color: rgba(255,255,255,0.05);
 }
 
 .puzzle-view .cardimage {

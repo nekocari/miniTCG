@@ -1,8 +1,8 @@
 <h1><?php echo $member->getName(); ?></h1>
 
-<div class="row m-2">
+<div class="d-md-flex m-2">
 	<div><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
-	<div class="col-12 col-md mb-2">
+	<div class="w-100 mb-2 px-md-3">
 		joined on: <?php echo $member->getJoinDate($this->login->getUser()->getTimezone()); ?><br>
 		last login: <?php echo $member->getLoginDate($this->login->getUser()->getTimezone()); ?>
 		<br>

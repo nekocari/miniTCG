@@ -1,8 +1,8 @@
 <h1><?php echo $member->getName(); ?></h1>
 
-<div class="row m-2">
-	<div class="col"><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
-	<div class="col-12 col-md mb-2">
+<div class="d-md-flex m-2">
+	<div><img src="<?php echo $member->getMemberCardUrl(); ?>"></div>
+	<div class="w-100 mb-2 px-md-3">
 		angemeldet am: <?php echo $member->getJoinDate($this->login->getUser()->getTimezone()); ?><br>
 		letzter Login: <?php echo $member->getLoginDate($this->login->getUser()->getTimezone()); ?>
 		<br>
@@ -10,7 +10,7 @@
 		<span class="badge bg-secondary"><?php echo $member->getCardCount(); ?> Karten</span> |
 		<span class="badge bg-primary"><?php echo $member->getMasterCount(); ?> Master</span>
 	</div>
-	<div class="col"><?php echo $member->getLevel('object')->getLevelBadgeHTML(); ?></div>
+	<div><?php echo $member->getLevel('object')->getLevelBadgeHTML(); ?></div>
 </div>
 
 

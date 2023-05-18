@@ -13,17 +13,32 @@
     	
     	
     	<!-- right -->
-    	<div id="member-nav" class="col-lg-4 col-12 ms-lg-5  py-1 py-lg-5 px-xl-5 px-lg-4 px-md-3 px-2 border-rounded">
+    	<div id="member-nav" class="col-lg-4 col-12 ms-lg-5  py-1 pb-lg-5 pt-lg-4 px-xl-5 px-lg-4 px-md-3 px-2 border-rounded bg-body-secondary bg-opacity-50">
     	
     		<div class="d-block">
-    		
     			<!-- Navigation if IS logged in -->  
             	<?php if($this->login->isLoggedIn()) { ?>  
-    			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
+				<div class="text-right d-none d-lg-block">
+					<a href="#" class="theme-toggle toggle-dark badge rounded-pill bg-dark" onclick="return setTheme('dark')">
+						<i class="fas fa-moon"></i>
+						<span class="d-none d-lg-inline">dark mode</span>
+					</a>
+					<a href="#" class="theme-toggle toggle-light badge rounded-pill bg-light text-dark" onclick="return setTheme('light')">
+						<i class="fas fa-sun"></i>
+						<span class="d-none d-lg-inline">light mode</span>
+					</a>
+				</div>
+    			<div class="m-0 my-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
     				<span class="h5 m-0 text-nowrap">Hallo <b><a href="<?php echo $this->login->getUser()->getProfilLink(); ?>"><?php echo $this->login->getUser()->getName(); ?></a></b></span>
     				
-    				<div class="text-nowrap">
-	    				<a class=" btn btn-dark d-lg-none" href="<?php echo Routes::getUri('signout');?>">
+    				<div class="text-nowrap">						
+						<a href="#" class="d-lg-none theme-toggle toggle-dark badge rounded-pill bg-dark" onclick="return setTheme('dark')">
+							<i class="fas fa-moon"></i> dark
+						</a>
+						<a href="#" class="d-lg-none theme-toggle toggle-light badge rounded-pill bg-light text-dark" onclick="return setTheme('light')">
+							<i class="fas fa-sun"></i> light
+						</a>
+	    				<a class="ms-1 btn btn-dark d-lg-none" href="<?php echo Routes::getUri('signout');?>">
 	    						<i class="fas fa-sign-out-alt me-lg-1"></i> <span class="d-lg-inline d-none">Ausloggen</span>
 	    				</a>
 	    				<?php if(count($this->login->getUser()->getRights()) > 0){ ?>
@@ -33,7 +48,7 @@
 	    				<?php } ?>
 	    			</div>
     			</div>
-    			<ul class="nav nav-fill flex-lg-column justify-content-end justify-content-md-between" id="member-links">
+    			<ul class="mt-1 nav nav-fill flex-lg-column justify-content-end justify-content-md-between" id="member-links">
     				<li class="nav-item">
     					<a class="nav-link d-md-flex justify-content-lg-between align-items-center" href="<?php echo Routes::getUri('member_dashboard');?>">
         					<span><i class="fas fa-house-user me-md-1"></i>&nbsp;<span class="d-none d-md-inline">Mitgliedsbereich</span></span>
@@ -49,7 +64,7 @@
     						<span><i class="fas fa-envelope-open me-1"></i> <span class="d-none d-md-inline me-2">Nachrichten</span></span> 
     						<?php $counter = count(Message::getReceivedByMemberId($this->login->getUserId(),'new')); 
     						if($counter > 0){ ?>
-    							<span class="badge bg-pill badge-dark"><?php echo $counter; ?></span>
+    							<span class="badge bg-pill bg-dark"><?php echo $counter; ?></span>
     						<?php } ?>
     					</a>
     				</li>
@@ -58,7 +73,7 @@
     						<span><i class="fas fa-sync-alt me-1"></i> <span class="d-none d-md-inline me-2">Tauschanfragen</span></span>
     						<?php $counter = count(Trade::getRecievedByMemberId($this->login->getUserId(),'new')); 
     						if($counter > 0){ ?>
-    							<span class="badge bg-pill badge-dark"><?php echo $counter; ?></span>
+    							<span class="badge bg-pill bg-dark"><?php echo $counter; ?></span>
     						<?php } ?>
     					</a>
     				</li>
@@ -81,8 +96,24 @@
     			
     			<!-- Navigation if NOT logged in -->
     			<?php }else{ ?>
+				<div class="text-right d-none d-lg-block">
+					<a href="#" class="theme-toggle toggle-dark badge rounded-pill bg-dark" onclick="return setTheme('dark')">
+						<i class="fas fa-moon"></i>
+						<span class="d-none d-lg-inline">dark mode</span>
+					</a>
+					<a href="#" class="theme-toggle toggle-light badge rounded-pill bg-light text-dark" onclick="return setTheme('light')">
+						<i class="fas fa-sun"></i>
+						<span class="d-none d-lg-inline">light mode</span>
+					</a>
+				</div>
     			<div class="m-0 mb-lg-2 d-flex flex-wrap d-lg-block justify-content-between align-items-center">
-    				<span class="h5 m-0 text-nowrap">Hallo <b>Gast</b></span>
+    				<span class="h5 m-0 text-nowrap">Hallo <b>Gast</b></span>			
+					<a href="#" class="d-lg-none theme-toggle toggle-dark badge rounded-pill bg-dark" onclick="return setTheme('dark')">
+						<i class="fas fa-moon"></i> dark
+					</a>
+					<a href="#" class="d-lg-none theme-toggle toggle-light badge rounded-pill bg-light text-dark" onclick="return setTheme('light')">
+						<i class="fas fa-sun"></i> light
+					</a>
     			</div>
     			<ul class="nav nav-fill flex-lg-column align-items-center" id="member-guest">
     				<li class="nav-item">
@@ -104,10 +135,10 @@
     				<?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Mitglieder online
     			</div>
 				<div class="text-right">
-		    		<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 mb-1 d-lg-none d-inline-block" data-bs-toggle="collapse" data-bs-target="#members-online" aria-expanded="false" aria-controls="members-online">
-		    			<?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Mitglieder online
-	    			</button>
-	    		</div>	    		
+					<button class="btn btn-sm btn-outline-dark dropdown-toggle py-0 d-lg-none d-inline-block" data-bs-toggle="collapse" data-bs-target="#members-online" aria-expanded="false" aria-controls="members-online">
+						<?php echo count(MemberOnline::getVisible($this->login->getUser())); ?> Mitglieder online
+					</button>
+				</div>	    
     			<div id="members-online" class="card collapse d-lg-block">
     				<div class="card-body p-1 p-lg-3">
     					<?php if(count($mo = MemberOnline::getVisible($this->login->getUser()))){ 

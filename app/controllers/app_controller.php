@@ -21,10 +21,7 @@ class AppController {
         $this->login = new Login();
         $this->layout = new Layout($this->login);
         $this->auth = new Authorization($this->login);
-        //$this->layout->addJsFile('jquery-3.5.1.min.js');
-        //$this->layout->addJsFile('jquery-ui.min.js');
-        //$this->layout->addJsFile('bootstrap.bundle.min.js');
-        //$this->layout->addJsFile('utilities.'.JS_FINGERPRINT_UTILITIES.'.js');
+        $this->layout->addJsFile('util.js');
         $this->db = Db::getInstance();
     }
     
