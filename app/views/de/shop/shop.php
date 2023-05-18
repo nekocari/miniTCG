@@ -2,7 +2,7 @@
 
 <p class="text-center">
 	Du kannst 
-	<span class="h3"><span class="badge bg-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
+	<span class="h3"><span class="badge text-bg-light"><?php echo $user_money; ?>  <?php echo $currency_name; ?></span></span> 
 	ausgeben
 </p>
 
@@ -14,9 +14,9 @@
     	<?php foreach($s_cards as $s_card){ ?>
         	<div class="card shop-card m-2 text-center">
             	<div class="d-inline-block mb-0 shop-card-image <?php 
+            	if($s_card->onWishlist() AND !$s_card->owned()){ echo " card-missing-wishlist"; } 
             	if($s_card->missingInKeep() AND !$s_card->owned()){ echo " card-missing-keep"; }
             	if($s_card->missingInCollect() AND !$s_card->owned()){ echo " card-missing-collect"; }
-            	if($s_card->onWishlist() AND !$s_card->owned()){ echo " card-missing-wishlist"; } 
             	if($s_card->mastered()){ echo " card-mastered"; } ?>">
 					<?php echo $s_card->getImageHTML(); ?>
         		</div>
