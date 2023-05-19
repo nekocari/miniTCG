@@ -117,7 +117,7 @@ class News extends DbRecordModel{
                 
                 $news_text.= str_replace('[UPDATECONTENT]',$update_content,$template_update);
             }
-            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$news_text,$entry->getDate(),$news_author), $template);
+            echo str_replace(array('[TITLE]','[TEXT]','[DATE]','[AUTHOR]'), array($entry->getTitle(),$news_text,$entry->getDate($login->getUser()->getTimezone()),$news_author), $template);
             
         }
             
