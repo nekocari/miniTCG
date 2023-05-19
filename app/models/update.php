@@ -74,7 +74,9 @@ class Update extends DbRecordModel {
             }
         }      
         
-        $this->setPropValues(['status'=>'public']);
+        $date_time = new DateTime('now');
+        $date_time->format('c');
+        $this->setPropValues(['status'=>'public','date'=>$date_time->format('c'),'utc'=>$date_time->format('c')]);
         $this->update();
         return true;
     }
