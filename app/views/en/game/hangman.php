@@ -4,6 +4,7 @@
 
 <form id="hangman" class="text-center mt-5 mb-2" method="POST">	
 
+	<input id="game-language" type="hidden" name="game_language" value="en">
 	<input id="result-input" type="hidden" name="game_result" value="">
 </form>
 

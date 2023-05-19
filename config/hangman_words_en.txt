@@ -1,0 +1,12 @@
+cloudless
+sunshine
+blizzard
+heatwave
+continuous rain
+autumn storm
+thunderstrom
+rainbow
+summertime
+hurricane
+downpour
+lightning

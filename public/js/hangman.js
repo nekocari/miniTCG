@@ -8,7 +8,7 @@ class hangman {
     mistakesAllowed = 6;
     mistakesMade = 0;
     alphabet = String.fromCharCode(...Array(123).keys()).slice(97).split('');
-    words = ['Waschlappen', 'Hermine', 'Sammlungen'];     // get the random word out of a text file
+    words;
     word;
     wordArray;
     lettersGuessed = [];
@@ -18,18 +18,22 @@ class hangman {
 	
 	init() {
 		var game = this;
-		this.gameElement = document.getElementById('hangman');
+        this.getWords();
         this.getRandomWord();
+		this.gameElement = document.getElementById('hangman');
 
         
 		let stateHTML = document.createElement('div');
 		stateHTML.setAttribute('id','game-state');
         stateHTML.classList.add('h1','no-wrap','overflow-auto');
 
-        this.wordArray.forEach((pos,i) => {
+        this.wordArray.forEach((letter,i) => {
             let element = document.createElement('span');
-            
-            element.innerText = '_';
+            if(letter !== ' '){
+                element.innerText = '_';
+            }else{ 
+                element.innerText = ' ';
+            }
 			element.classList.add('px-2','hangman_pos_'+i);
             stateHTML.append(element);
         });
@@ -61,10 +65,16 @@ class hangman {
         this.word = this.words[Math.floor(Math.random() * this.words.length)];
         this.wordArray = this.word.toLowerCase().split("");
         this.wordArray.forEach((letter,i) => {
-            if(!this.lettersRight.includes(letter)){
+            if(letter !== ' ' && !this.lettersRight.includes(letter)){
                 this.lettersRight.push(letter);
             }
         });
+    }
+    getWords() {
+        let reqest = new XMLHttpRequest();
+        reqest.open( "GET", 'config/hangman_words_'+document.getElementById('game-language').value+'.txt', false ); // false for synchronous request
+        reqest.send( null );
+        this.words = reqest.responseText.split('\r\n');
     }
 	
 	guess(element) {
