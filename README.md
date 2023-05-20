@@ -2,9 +2,9 @@
 
 An automated Trading Card Game Application written in PHP, covering most of the basics.
 This type of TCG is not meant to play with the cards, but to collect and trade them.
-miniTCG is using Bootstrap 4 for styling and FontAwesome for icons.
+miniTCG is using Bootstrap 5 for styling and FontAwesome for icons.
 
-(Because of the DSGVO in Germany you should consider hosting Bootstrap and the FontAwesome iconfont yourself!)
+(Currently Bootstrap is included using a CDN. Because of the DSGVO in Germany you should consider hosting Bootstrap yourself!)
 
 *Note, that this startet as an all german project, so you might stumble upon some german text elements in the code! 
 But it should be mostly english by now and the views are being translated as well, with options to add in other languages in the future.*
@@ -95,6 +95,8 @@ If you got further questions don't hesitate to ask!
       * rename, create or delete them
       * set what's visible in member profil
       * etc.
+    * pages
+      * simple edit function for files in "pages" folder 
     * general settings 
       * card folder path
       * design color theme
@@ -126,7 +128,7 @@ If you got further questions don't hesitate to ask!
   	* sort by date or deck name
   * take cards from updates
   * play games
-  	* 4 simple games included
+  	* 6 simple games included
   * buy cards from a shop
   * search for cards
   * tradelog
@@ -141,16 +143,14 @@ If you got further questions don't hesitate to ask!
 ## Features TBA
 * tagging on decks
 * allow comments on news
-* add decks without uploading files
 * add reset option for shop
 * add individualization for handing out update cards
 
 
 ## Used Libs & Co.
 [Parsedown](https://github.com/erusev/parsedown) by erusev on GitHub  
-Bootstrap 4.6.2  
-jQuery 3.2.1 (CDN)  
-FontAwesome 5.15.3 (CDN)  
+Bootstrap v5.3.0-alpha3 
+FontAwesome 5.15.3 
 
 ## Authors
 

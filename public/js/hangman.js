@@ -74,7 +74,7 @@ class hangman {
         let reqest = new XMLHttpRequest();
         reqest.open( "GET", 'config/hangman_words_'+document.getElementById('game-language').value+'.txt', false ); // false for synchronous request
         reqest.send( null );
-        this.words = reqest.responseText.split('\r\n');
+        this.words = reqest.responseText.split(/\r?\n|\r|\n/g);
     }
 	
 	guess(element) {
