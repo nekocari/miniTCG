@@ -161,19 +161,30 @@ class DeckController extends AppController{
         $data['deck_types'] = DeckType::getAll(['name'=>'ASC']); 
         $data['max_deck_size'] = DeckType::getMaxSize();
         
-        if(isset($_POST['upload']) AND isset($_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type']) AND isset($_FILES)){
+        if(isset($_POST['upload'],$_POST['name'],$_POST['deckname'],$_POST['subcategory'],$_POST['type'])){
             try{
-                $upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $this->login()->getUserId(), $_POST['subcategory'], $_POST['type'], $_POST['description']);
+				if(isset($_FILES) AND count($_FILES) > 0){ 
+					// with files to upload
+                	$upload = new CardUpload($_POST['name'], $_POST['deckname'], $_FILES, $this->login()->getUserId(), $_POST['subcategory'], $_POST['type'], $_POST['description']);
+					if(($upload_status = $upload->store()) === true){    
+						$this->layout()->addSystemMessage('success','deck_upload_success');
+					}else{
+						$this->layout()->addSystemMessage('error','deck_upload_failed',[],' - '.$upload_status);
+					}
+				}else{
+					// add new deck record to db
+					$pd = new Parsedown();
+					$deck = new Carddeck();
+					$deck->setPropValues(['deckname'=>$_POST['deckname'], 'name'=>$_POST['name'], 'creator'=>$this->login()->getUserId(), 'type_id'=>$_POST['type'], 'description'=>$_POST['description'], 'description_html'=>$pd->parse($_POST['description'])]);
+					$deck->create();
+					// add new link to subcategory
+					$deck_subcat = new DeckSubcategory();
+					$deck_subcat->setPropValues(['deck_id'=>$deck->getId(), 'subcategory_id'=>$_POST['subcategory']]);
+					$deck_subcat->create();
+					
+					$this->layout()->addSystemMessage('success','deck_add_success');
+				}                
                 
-                if(($upload_status = $upload->store()) === true){
-                    
-                    $this->layout()->addSystemMessage('success','deck_upload_success');
-                    
-                }else{
-                
-                    $this->layout()->addSystemMessage('error','deck_upload_failed',[],' - '.$upload_status);
-                    
-                }
             }
             catch(PDOException $e){
                 switch($e->getCode()){

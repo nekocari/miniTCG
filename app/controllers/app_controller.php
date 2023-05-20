@@ -21,6 +21,7 @@ class AppController {
         $this->login = new Login();
         $this->layout = new Layout($this->login);
         $this->auth = new Authorization($this->login);
+        $this->layout->addCssFile('fontawesome5.min.css');
         $this->layout->addJsFile('util.js');
         $this->db = Db::getInstance();
     }

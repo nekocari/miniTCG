@@ -112,6 +112,23 @@ a:not([class]):hover{
 	background-color: var(--bs-light);
 }
 
+[data-bs-theme='dark'] .btn-dark {
+    --bs-btn-color: var(--bs-dark);
+    --bs-btn-bg: var(--bs-light);
+    --bs-btn-border-color: var(--bs-light);
+    --bs-btn-hover-color: var(--bs-dark);
+    --bs-btn-hover-bg: var(--bs-gray-500);
+    --bs-btn-hover-border-color: var(--bs-gray-500);
+    --bs-btn-focus-shadow-rgb: 66,70,73;
+    --bs-btn-active-color: var(--bs-light);
+    --bs-btn-active-bg: var(--bs-gray-500);
+    --bs-btn-active-border-color: var(--bs-gray-500);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--bs-light);
+    --bs-btn-disabled-bg: var(--bs-gray-500);
+    --bs-btn-disabled-border-color: var(--bs-gray-500);
+}
+
 .deckname {
 	text-transform: uppercase;
 }
@@ -201,8 +218,8 @@ a:not([class]):hover{
 
 [data-bs-theme='dark'] .card-mastered.card-missing-keep, 
 [data-bs-theme='dark'] .card-mastered.card-missing-collect,
-[data-bs-theme='dark']  .card-mastered.card-missing-wishlist {
-	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6px, rgba(,0,0,0,0.75) 6px, rgba(0,0,0,0.75) 12px);
+[data-bs-theme='dark'] .card-mastered.card-missing-wishlist {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6px, rgba(0,0,0,0.75) 6px, rgba(0,0,0,0.75) 12px);
 	border-color: rgba(255,255,255,0.05);
 }
 

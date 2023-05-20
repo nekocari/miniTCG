@@ -39,7 +39,7 @@
         		<h4><i class="fas fa-clone"></i> Karten</h4>
         		<small>Verwalte die Karten des TCG</small>
         		<nav class="nav justify-content-end">
-        			<a class="nav-link" href="<?php echo Routes::getUri('deck_upload');?>">hochladen</a>
+        			<a class="nav-link" href="<?php echo Routes::getUri('deck_upload');?>">hinzufügen</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_deck_index');?>">Liste anzeigen</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('deck_update');?>">Updates</a>
         		</nav>
@@ -80,6 +80,7 @@
         		<h4><i class="fas fa-cogs"></i> Applikation</h4>
         		<small>Grundeinstellungen des TCG</small>
         		<nav class="nav justify-content-end">
+        			<a class="nav-link" href="<?php echo Routes::getUri('admin_pages');?>">Seiten</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_settings');?>">Einstellungen</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_routes_index');?>">Routing</a>
         			<a class="nav-link" href="<?php echo Routes::getUri('admin_sql_import');?>">SQL Import</a>

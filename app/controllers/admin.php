@@ -209,6 +209,52 @@ class AdminController extends AppController {
     	
     	$this->layout()->render('admin/games/edit.php',$data);
     }
+
+	/**
+	 * Pages
+	 */
+	public function pagesIndex() {
+        // check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	//$this->auth()->setRequirements('rights', ['EditPages']);
+    	$this->redirectNotAuthorized();
+		
+		$pages = array();
+		foreach(SUPPORTED_LANGUAGES as $lang_key => $lang_name){
+			if(is_dir(($dir_path = PATH.'app/views/'.$lang_key.'/pages'))){
+				$handle = opendir($dir_path);
+				while (false !== ($entry = readdir($handle))) {
+					if(is_file($dir_path.'/'.$entry)){
+						$path = str_replace('config/../', '',$dir_path.'/'.$entry);
+						$pages[] = ['language'=>$lang_key, 'filename'=>$entry, 'path'=>$path];		
+					}
+				}
+				closedir($handle);
+			}
+		}
+        $this->layout()->render('admin/pages/list.php',['pages'=>$pages]);     
+	}
+
+	public function pagesEdit() {
+        // check if user has required rights
+    	$this->auth()->setRequirements('roles', ['Admin']);
+    	//$this->auth()->setRequirements('rights', ['EditPages']);
+    	$this->redirectNotAuthorized();
+		
+		if(!isset($_POST['file_path']) or !is_file($_POST['file_path'])){
+			$this->redirectNotFound();
+		}
+
+		if(isset($_POST['submit'])){
+			file_put_contents($_POST['file_path'], $_POST['content']);
+			$this->layout()->addSystemMessage('success', 'changes_saved');
+		}
+		
+		$file['path'] = $_POST['file_path'];
+		$file['content'] = file_get_contents($file['path']);
+		
+        $this->layout()->render('admin/pages/edit.php',['file'=>$file]);     
+	}
     
     
     /**

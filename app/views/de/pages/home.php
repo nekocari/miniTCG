@@ -8,5 +8,4 @@
 </div>
 
 
-
 <?php News::display(3,'de',$this->login); ?>

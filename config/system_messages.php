@@ -222,6 +222,10 @@
     ]);
     
     // DECK UPLOAD
+    $sys_msg_text_handler->addCode('deck_add_success', [
+        'en'=>'Deck successfully added. Please upload image files manually.',
+        'de'=>'Deck wurde erfolgreich hinzugefügt. Bitte lade die Bilddateien manuel hoch.'
+]);
     $sys_msg_text_handler->addCode('deck_upload_success', [
     		'en'=>'deck successfully uploaded',
     		'de'=>'Deck wurde erfolgreich hochgeladen.'
