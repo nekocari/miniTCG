@@ -99,7 +99,7 @@ If you got further questions don't hesitate to ask!
       * simple edit function for files in "pages" folder 
     * general settings 
       * card folder path
-      * design color theme
+      * design theme folder
       * currency  
       * shop 
       * etc.
