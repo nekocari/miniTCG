@@ -6,3 +6,6 @@ INSERT INTO `games_settings` (`id`, `game_key`, `status`, `type`, `wait_time`, `
 -- file editing pages
 INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('admin_pages', 'admin/pages/list.php', 'Admin', 'pagesIndex', 'get', '0');
 INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('admin_pages_edit', 'admin/pages/edit.php', 'Admin', 'pagesEdit', 'get|post', '0');
+
+-- update for design switch
+UPDATE `settings` SET `value` = '1', `description` = '{\"en\":\"theme template folder\",\"de\":\"Theme Template Ordner\"}' WHERE `settings`.`name` = 'app_theme';

@@ -19,14 +19,10 @@ class Layout {
 	        'clear'
     );
     private static $headerTemplate = array(
-	        'default'=>'templates/layout/header.php',
-	        'landing'=>'templates/layout/header.php',
-	        'admin'=>'templates/layout/header.php'
+	        'default'=>'header.php'
     );
     private static $footerTemplate = array(
-	        'default'=>'templates/layout/footer.php',
-	        'landing'=>'templates/layout/footer.php',
-	        'admin'=>'templates/layout/footer.php'
+	        'default'=>'footer.php'
     );
     private $system_messages = array(
         'success'=>array(),
@@ -40,6 +36,7 @@ class Layout {
     	$mode = 'default',
     	$darkmode = false,
     	$views_path,
+        $theme = 1,
     	$js_files = array(),
     	$css_files = array(),
     	$breadcrumbs = array(),
@@ -50,17 +47,26 @@ class Layout {
     public function __construct($login) {
         $this->login = $login;
         $this->setLanguage();
+        $this->setTheme(Setting::getByName('app_theme')->getValue());
     }
     
     private function __clone(){}
     
     /**
-     * 
-     * @param string $mode [default|clear|landing]
+     * @param string $mode [default|clear]
      */
     public function setMode($mode) {
         if(in_array($mode, self::$modeOptions)){
             $this->mode = $mode;
+        }
+    }
+
+    /**
+     * @param string $theme
+     */
+    public function setTheme($theme) {
+        if(is_dir(PATH.'app/views/'.$this->getLang().'/templates/layout/'.$theme)){
+            $this->theme = $theme;
         }
     }
     
@@ -85,16 +91,14 @@ class Layout {
             
             switch($this->mode){
                 case 'default':
-                case 'landing':
-                case 'admin':
-                    require_once $this->views_path.self::$headerTemplate[$this->mode];
+                    require_once $this->views_path.'templates/layout/'.$this->theme.'/'.self::$headerTemplate[$this->mode];
                     foreach($this->system_messages as $sys_messages_by_type){
                         foreach($sys_messages_by_type as $sys_msg){
                             $this->renderSystemMessages($sys_msg);
                         }
                     }
                     require_once $this->views_path.$view;
-                    require_once $this->views_path.self::$footerTemplate[$this->mode];                                        
+                    require_once $this->views_path.'templates/layout/'.$this->theme.'/'.self::$footerTemplate[$this->mode];                                        
                     break;
                     
                 case 'clear':
@@ -310,10 +314,10 @@ class Layout {
     
     /*
      * unused!
-     */
     public function getNotifications() {
     	return $this->notifications;
     }
+     */
     
 }
 
