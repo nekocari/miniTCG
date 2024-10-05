@@ -24,6 +24,10 @@ class Game extends DbRecordModel {
         parent::__construct();
     }
     
+    public static function getAllowedResultTypes(){
+    	return self::$allowed_game_results;
+    }
+    
     /**
      * get game datafrom database using game type and member id
      * 
@@ -138,6 +142,12 @@ class Game extends DbRecordModel {
     }
     
     
+    /**
+     * @todo make multiple result actions possible eg. cards and money
+     * @param string $result
+     * @throws ErrorException
+     * @return mixed[] with keys type, text, cards
+     */
     public function determineReward($result){
         
         // get result code of the current specific game
@@ -160,21 +170,24 @@ class Game extends DbRecordModel {
                 case 'win-card:':
                     $game_reward['type'] = 'won';
                     $game_reward['text'] = $this->reward_texts['won'];
+                    $cards = null;
                     try{
                     	$cards = Card::createRandomCards($this->getMember(), $result_amount);
                     }
                     catch (ErrorException $e){
-                    	error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+                    	error_log(date('Y-m-d H:i:s').' - Game Result no cards created: '.$e->getMessage().PHP_EOL,3,ERROR_LOG);
                     }
                     // Tradelog
                     $cardnames = '';
-                    foreach($cards as $card){
-                    		$cardnames.= $card->getName().' (#'.$card->getId().'), ';
+                    if(is_array($cards)){
+	                    foreach($cards as $card){
+	                    		$cardnames.= $card->getName().' (#'.$card->getId().'), ';
+	                    }
+	                    $cardnames = substr($cardnames,0,-2);
                     }
-                    $cardnames = substr($cardnames,0,-2);
                     Tradelog::addEntry($this->getMember(), 'game_won_log_text',$this->getGameSettings()->getName($this->getMember()->getLang()).' -> '.$cardnames);
                     
-                    if(!is_array($cards)){
+                    if(!is_array($cards) AND !is_null($cards)){
                         $game_reward['cards'][] = $cards;
                     }else{
                         $game_reward['cards'] = $cards;

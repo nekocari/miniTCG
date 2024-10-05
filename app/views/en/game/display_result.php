@@ -5,7 +5,7 @@
 <p class="text-center"><?php echo $reward['text']; ?></p>
 
 <div class="text-center">
-	<?php if(isset($reward['cards'])){ foreach($reward['cards'] as $card){ echo $card->getImageHTML(); }} ?>
+	<?php if(isset($reward['cards']) AND !is_null($reward['cards'])){ foreach($reward['cards'] as $card){ echo $card->getImageHTML(); }}else{ echo '- no cards found -'; } ?>
 </div>
 <div class="text-center h3">
 	<?php if(isset($reward['money'])){ echo $reward['money']; } ?>
