@@ -6,3 +6,4 @@ public/img/cards/_filler/*.gif
 public/img/cards/_filler/puzzle/*.gif
 !public/img/cards/_filler/
 vendor/
+HowToAddGame.md

@@ -92,6 +92,14 @@ class AdminController extends AppController {
 	    			$lucky->setResults($_POST['lucky_results']);
 	    			$lucky->create();
     			}
+    			if($_POST['type'] == 'custom' AND $_POST['no_custom_code'] == 1){
+    				// if is custom create entry in games custom table
+    				$custom_game = new GameCustom();;
+    				$custom_game->setPropValues($_POST);
+    				$custom_game->setResults($_POST['custom_results']);
+    				$custom_game->setSettingsId($game_setting->getId());
+    				$custom_game->create();
+    			}
     			
     			$this->layout()->addSystemMessage('success', 'admin_games_add_success');
     			$_GET['id']=$game_setting->getId();
@@ -146,6 +154,7 @@ class AdminController extends AppController {
     	
     	$data['choices'] = $data['results'] = '';
     	$lucky = LuckyGame::getByPk($game_setting->getId());
+    	$custom_game = GameCustom::getBySettingsId($game_setting->getId());
     	
     	if(isset($_POST['editGame']) ){
     		try{
@@ -166,7 +175,16 @@ class AdminController extends AppController {
 	    				$lucky->setResults($_POST['lucky_results']);
 	    				$lucky->update();
 	    		}
-	    		
+	    		if($game_setting->getType() == 'custom' AND $_POST['no_custom_code'] == 1){
+	    			// if is custom create entry in games custom table
+	    			if(!$custom_game instanceof GameCustom){
+	    				$custom_game = new GameCustom();
+	    				$custom_game->setSettingsId($game_setting->getId());
+	    				$custom_game->create();
+	    			}
+	    			$custom_game->setPropValues(['view_file_path'=>$_POST['view_file_path'],'js_file_path'=>$_POST['js_file_path'],'results'=>$_POST['custom_results']]);
+	    			$custom_game->update();
+	    		}
 	    		$this->layout()->addSystemMessage('success', 'changes_saved');
     		}
     		catch(ErrorException $e){
@@ -205,6 +223,11 @@ class AdminController extends AppController {
     			$data['results'].= $result.',';
     		}
     		$data['results'] = substr($data['results'],0,-1);
+    	}
+    	if($custom_game instanceof GameCustom){
+    		$data['game_custom'] = $custom_game;
+    	}else{
+    		$data['game_custom'] = new GameCustom();
     	}
     	
     	$this->layout()->render('admin/games/edit.php',$data);

@@ -36,7 +36,7 @@ class GameCustom extends DbRecordModel {
     
     /**
      * @param int $id
-     * @return GameCustom|NULL|NULL
+     * @return GameCustom|NULL
      */
     public static function getBySettingsId($id) {
     	return parent::getByUniqueKey('settings_id',$id);
@@ -55,13 +55,38 @@ class GameCustom extends DbRecordModel {
     	return $this->results;
     }
     public function getResults() {
-    	return json_decode($this->results,true);
+    	$results_expl = explode(',', $this->results);
+    	foreach ($results_expl as $result_set){
+    		$action = trim(substr($result_set, 0, strpos($result_set, '=>')));
+    		$result = trim(substr($result_set, strpos($result_set, '=>')+2));
+    		$results_arr[$action] = $result;
+    	}
+    	return $results_arr;
     }
     public function getJsFilePath() {
     	return $this->js_file_path;
     }
     public function getViewFilePath() {
     	return $this->view_file_path;
+    }
+    
+    public function setResults($str){
+    	if(is_string($str)){
+    		$this->results = $str;
+    	}else{
+    		throw new ErrorException('results are not in string format');
+    	}
+    }
+    
+    public function setSettingsId($id){
+    	$this->settings_id = $id;
+    }
+    
+    public function isUsed(){
+    	if(!empty($this->getResultsPlain()) OR !empty($this->getViewFilePath()) OR !empty($this->getJsFilePath()) ){
+    		return true;
+    	}
+    	return false;
     }
     
 }

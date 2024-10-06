@@ -11,7 +11,7 @@ class Card extends DbRecordModel {
     
     protected $id, $name, $deck, $number, $owner, $status_id, $date, $utc, $owner_obj, $deck_obj, $status;
     
-    private $is_tradeable;
+    private $is_tradeable, $counter;
     
     protected static 
         $db_table = 'cards',
@@ -82,14 +82,15 @@ class Card extends DbRecordModel {
 			unset($order_settings['name']);
         }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
-        $sql = "SELECT MIN(cards.id), COUNT(cards.id) as counter, cards.* FROM cards  ".
+        $sql = "SELECT  cards.*, MIN(cards.id) as id, COUNT(cards.id) as counter FROM cards  ".
           		"LEFT JOIN decks ON decks.id = cards.deck ".$sql_where['query_part'].
         		" GROUP BY name HAVING counter > 1 ".$sql_order['query_part'];
         
         $req = $db->prepare($sql);
         $req->execute($sql_where['param_array']);
         foreach ($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
-            $duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
+        	$duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
+        	$duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
         }
         return $duplicates;
     }

@@ -29,8 +29,11 @@ class GameController extends AppController {
 	            if($entry_game instanceof Game and $entry_game->isPlayable()){
 	            	$link_url = Routes::getUri($entry->getRouteIdentifier());
 	            	// in case identifier points to default lucky game page add game id to url
-	            	if($entry->getRouteIdentifier() == 'game_default_lucky' OR $entry->getRouteIdentifier() == 'game_custom'){
+	            	if($entry->getRouteIdentifier() == 'game_default_lucky'){
 	            		$link_url.= '?id='.$entry->getId();
+	            	}
+	            	if($entry->getRouteIdentifier() == 'game_custom'){
+	            		$link_url.= '?id='.GameCustom::getBySettingsId($entry->getId())->getId();
 	            	}
 	                $link = '<a href="'.$link_url.'">';
 	                $link.= $sys_msgs->getTextByCode('game_play_now',$this->login()->getUser()->getLang());
@@ -87,6 +90,48 @@ class GameController extends AppController {
         }
     }
     
+    
+    
+    /**
+     * default for custom games (setup via app administration)
+     */
+    private function defaultGame($game_id){
+    	if(!is_numeric($game_id) OR !($game_custom = GameCustom::getById($game_id)) instanceof GameCustom){
+    		$this->redirectNotFound();
+    	}
+    	// fetch the settings
+    	$game_setting = GameSetting::getById($game_custom->getSettingsId());
+    	// fetch user specific game data
+    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
+    	
+    	// check if a game object was created and the game is playable
+    	if($game instanceof Game AND $game->isPlayable()){
+    		
+    		// check if a game result was send via post request
+    		if(!isset($_POST['game_result'])){
+    			// display the game
+    			if(!empty($game_custom->getJsFilePath())){
+    				$this->layout()->addJsFile($game_custom->getJsFilePath());
+    			}
+    			$this->layout()->render($game_custom->getViewFilePath(),['game'=>$game_setting]);
+    			
+    		}else{
+    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
+    			// process the game result
+    			if(array_key_exists($_POST['game_result'], $game_custom->getResults())){
+    				$data['reward'] = $game->determineReward($game_custom->getResults()[$_POST['game_result']]);
+    			}else{
+    				$data['reward'] = $game->determineReward('lost');
+    			}
+    			$this->layout()->render('game/display_result.php',$data);
+    		}
+    	}else{
+    		// message in case game is not playable
+    		$this->layout()->render('game/wait_message.php');
+    	}
+    }
+    
+    
     /**
      * trade in
      * @todo: refactor
@@ -133,86 +178,12 @@ class GameController extends AppController {
     }
     
     public function rockPaperScissors(){
-    	
-    	// fetch the settings 
-    	$game_setting = GameSetting::getByKey('rps');
-    	// fetch user specific game data
-    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
-    	
-    	// check if a game object was created and the game is playable
-    	if($game instanceof Game AND $game->isPlayable()){
-    		
-    		// check if a game result was send via post request
-    		if(!isset($_POST['game_result'])){
-    			// display the game
-    			$this->layout()->addJsFile('rock_paper_scissors.js');
-    			$this->layout()->render('game/rock_paper_scissors.php');
-    			
-    		}else{
-    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
-    			// process the game result 
-    			switch($_POST['game_result']){
-    				case 'won':
-    					$data['reward'] = $game->determineReward('win-card:1');
-    					break;
-    				case 'tied':
-    					$data['reward'] = $game->determineReward('win-money:50');
-    					break;
-    				case 'lost':
-    				default:
-    					$data['reward'] = $game->determineReward('lost');
-    					break;
-    			}
-    			
-    			$this->layout()->render('game/display_result.php',$data);
-    		}
-    		
-    	
-    	}else{
-    		// message in case game is not playable
-    		$this->layout()->render('game/wait_message.php');
-    	}
+    	$this->defaultGame(2);
     	
     }
     
     public function hangman(){
-    	
-    	// fetch the settings 
-    	$game_setting = GameSetting::getByKey('hangman');
-    	// fetch user specific game data
-    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
-    	
-    	// check if a game object was created and the game is playable
-    	if($game instanceof Game AND $game->isPlayable()){
-    		
-    		// check if a game result was send via post request
-    		if(!isset($_POST['game_result'])){
-    			// display the game
-    			$this->layout()->addJsFile('hangman.js');
-    			$this->layout()->render('game/hangman.php');
-    			
-    		}else{
-    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
-    			// process the game result 
-    			switch($_POST['game_result']){
-    				case 'won':
-    					$data['reward'] = $game->determineReward('win-card:1');
-    					break;
-    				case 'lost':
-    				default:
-    					$data['reward'] = $game->determineReward('lost');
-    					break;
-    			}
-    			
-    			$this->layout()->render('game/display_result.php',$data);
-    		}
-    		
-    	
-    	}else{
-    		// message in case game is not playable
-    		$this->layout()->render('game/wait_message.php');
-    	}
-    	
+    	$this->defaultGame(1);
     }
     
     
@@ -240,37 +211,7 @@ class GameController extends AppController {
      * default for custom games (setup via app administration)
      */
     public function customGame(){
-    	if(!isset($_GET['id']) OR !($game_custom = GameCustom::getBySettingsId($_GET['id'])) instanceof GameCustom){
-    		$this->redirectNotFound();
-    	}
-    	// fetch the settings
-    	$game_setting = GameSetting::getById($game_custom->getSettingsId());
-    	// fetch user specific game data
-    	$game = Game::getById($game_setting->getKey(), $this->login()->getUserId());
-    	
-    	// check if a game object was created and the game is playable
-    	if($game instanceof Game AND $game->isPlayable()){
-    		
-    		// check if a game result was send via post request
-    		if(!isset($_POST['game_result'])){
-    			// display the game
-    			if(!empty($game_custom->getJsFilePath())){
-    				$this->layout()->addJsFile($game_custom->getJsFilePath());
-    			}
-    			$this->layout()->render($game_custom->getViewFilePath());
-    			
-    		}else{
-    			$data['game_name'] = $game_setting->getName($this->login()->getUser()->getLang());
-    			// process the game result
-    			if(array_key_exists($_POST['game_result'], $game_custom->getResults())){
-    				$data['reward'] = $game->determineReward($game_custom->getResults()[$_POST['game_result']]);
-    			}    			
-    			$this->layout()->render('game/display_result.php',$data);
-    		}
-    	}else{
-    		// message in case game is not playable
-    		$this->layout()->render('game/wait_message.php');
-    	}
+    	$this->defaultGame($_GET['id']);
     }
     
     

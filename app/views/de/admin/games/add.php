@@ -36,7 +36,7 @@
     	<tr>
     		<td>Status</td>
     		<td>
-    			<select class="form-control" name="status" required >
+    			<select class="form-select" name="status" required >
     				<option selected>online</option>
     				<option>offline</option>
     			</select>
@@ -45,7 +45,7 @@
     	<tr>
     		<td>Art</td>
     		<td>
-    			<select class="form-control" name="type" id="game-type" required >
+    			<select class="form-select" name="type" id="game-type" required >
     				<option selected>lucky</option>
     				<option>custom</option>
     			</select>
@@ -53,7 +53,7 @@
     	</tr>
     	<tr id="lucky-choices" class="">
     		<td>Auswahlmöglichkeiten</td>
-    		<td><select class="form-control" name="lucky_choice_type">
+    		<td><select class="form-select" name="lucky_choice_type">
     				<option value="text">Texte</option>
     				<option value="image">Bildpfade</option>
     			</select>
@@ -73,10 +73,60 @@
     			<small class="text-muted">Jeweils mit Komma trennen.<br>Es müssen <b>mindestens</b> so viele Resultate wie Auswahlmöglichkeiten festgelegt werden!</small>
     		</td>
     	</tr>
+    	<tr id="custom-method" class="d-none">
+    		<td>Standard Methode verwenden?</td>
+    		<td>
+    			<label for="custom-switch-1">
+    				<input id="custom-switch-1" class="custom-checkbox custom-switch" type="radio" name="no_custom_code" value="1" checked>
+    				ja
+    			</label>
+    			<label for="custom-switch-0">
+    				<input id="custom-switch-0" class="custom-checkbox custom-switch" type="radio" name="no_custom_code" value="0"> 
+    				nein
+    			</label>
+    		</td>
+    	</tr>
+    	<tr id="custom-results" class="custom-game-inputs d-none">
+    		<td>Mögliche Resultate<br>
+    			<small class="text-muted">
+    				unterstützte Resultate:
+    				<pre>win-card:[ZAHL]<br>win-money:[ZAHL]<br>lost</pre>
+    			</small>
+    		</td>
+    		<td>
+    			<textarea class="form-control" name="custom_results" placeholder="z.B. won=>win-card:2, lost=>lost"></textarea>
+    			<small class="text-muted">Format: [Spielergebnis wie durch POST übergeben]=>[Resultat] mehrere mögliche Ergebnisse durch Komma trennen
+    			(Mehr dazu im <a href="https://github.com/nekocari/miniTCG/wiki/Games#how-to-add-my-own-game" target="_blank">Wiki</a>)</small>
+    		</td>
+    	</tr>
+    	<tr id="custom-view-file" class="custom-game-inputs d-none">
+    		<td>View Datei<br>
+    			<small class="text-muted">Datei die den HTML Code beinhaltet.</small>
+    		</td>
+    		<td>
+    			<div class="input-group">
+    				<span class="input-group-text">app/views/(lang)/</span>
+    				<input class="form-control" type="text" name="view_file_path" placeholder="game/mygame.php">
+    			</div>
+    		</td>
+    	</tr>
+    	<tr id="custom-js-file" class="custom-game-inputs d-none">
+    		<td>Javascript Datei<br>
+    			<small class="text-muted"><i>optional</i><br>Javascript Code für Spiel</small>
+    		</td>
+    		<td>
+    			<div class="input-group">
+    				<span class="input-group-text">public/js/</span>
+    				<input class="form-control" type="text" name="js_file_path" placeholder="mygame.js">
+    			</div>
+    		</td>
+    	</tr>
     	<tr>
     		<td>Routing Identifier</td>
     		<td><input class="form-control" type="text" name="route_identifier" required>
-    		<small class="text-muted">Für "lucky" Spiele kannst du <pre class="d-inline">game_default_lucky</pre> verwenden.</small></td>
+    			<small class="text-muted">Für "lucky" Spiele kannst du <pre class="d-inline">game_default_lucky</pre> verwenden.<br>
+    			Für "custom" Spiele <pre class="d-inline">game_custom</pre> (Mehr dazu im <a href="https://github.com/nekocari/miniTCG/wiki/Games#how-to-add-my-own-game" target="_blank">Wiki</a>)</small>
+    		</td>
     	</tr>
     	<tr>
     		<td>Tägliches Spiel?</td>
@@ -103,37 +153,4 @@
 	</p>
 </form>
 
-<script>
-let isDaily = false;
-let dailySwitches = document.querySelectorAll('input[name="daily_game"]');
-let waitTimeInput = document.getElementById('wait-time-input');
-
-dailySwitches.forEach((checkbox) => { 
-	checkbox.addEventListener('change', (event) => {
-		if (event.target.checked) {
-			changeInputVisibility(event.target.value);
-		}
-	})
-});
-function changeInputVisibility(val){ 
-	if(val == 1){
-		waitTimeInput.classList.add('d-none');
-	}else{
-		waitTimeInput.classList.remove('d-none');
-	}	
-}
-let luckyChoices = document.getElementById('lucky-choices');
-let luckyResults = document.getElementById('lucky-results');
-let gameType = document.getElementById('game-type');
-gameType.addEventListener("change", choices);
-function choices(){ 
-	if(gameType.value != 'lucky'){
-		luckyChoices.classList.add('d-none');
-		luckyResults.classList.add('d-none');
-	}else{
-		luckyChoices.classList.remove('d-none');
-		luckyResults.classList.remove('d-none');
-	}	
-	console.log(gameType.value);
-}
-</script>
+<script src="public/js/add_game.js"  charset="utf-8"></script>

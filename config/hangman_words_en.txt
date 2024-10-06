@@ -4,7 +4,7 @@ blizzard
 heatwave
 continuous rain
 autumn storm
-thunderstrom
+thunderstorm
 rainbow
 summertime
 hurricane

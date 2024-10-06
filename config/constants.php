@@ -41,7 +41,7 @@
     
     
     // no need to edit here -------------------------------------------------------------------------------------
-    define('APP_VERSION','v1.3.0 beta');
+    define('APP_VERSION','v1.3.1 beta');
     define('PATH', dirname(__FILE__).'/../'); 		// relativer Pfad
     define('SERVER_URL', $_SERVER['SERVER_NAME']);
     define('ERROR_LOG', PATH.'app_error.log');      // to be used in later versions

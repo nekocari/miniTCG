@@ -64,11 +64,11 @@ class rps {
 		
 		if(this.roundsLeft == 0){
 			document.getElementById('game-buttons').innerText = '';
-			let winner;
-			if(this.pointsCom <= this.pointsPlayer){ winner = 'won'; }else
-			if(this.pointsCom >= this.pointsPlayer){ winner = 'lost'; }else
-			{ winner = 'tied'; }
-			document.getElementById('result-input').value = winner;
+			let end;
+			if(this.pointsCom <= this.pointsPlayer){ end = 'won'; }else
+			if(this.pointsCom >= this.pointsPlayer){ end = 'lost'; }else
+			{ end = 'tied'; }
+			document.getElementById('result-input').value = end;
 			let game=this;
 			setTimeout(function() { game.gameElement.submit() }, 1000);
 		}
