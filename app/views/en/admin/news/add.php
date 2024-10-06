@@ -13,7 +13,7 @@
 <table class="table table-striped">
 	<tbody>
 		<tr>
-			<td>Titlw</td>
+			<td>Title</td>
 			<td><input class="form-control" type="text" name="title" required></td>
 		</tr>
 		<tr>

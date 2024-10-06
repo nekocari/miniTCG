@@ -33,7 +33,7 @@ if(($table_count > 0 AND !isset($_POST['admin_user'])) OR isset($_POST['start_se
 			// Temporary variable, used to store current query
 			$templine = '';
 			// Read in entire file
-			$lines = file(PATH.'setup/structure_v1_3beta.sql');
+			$lines = file(PATH.'setup/structure_v1_3_1beta.sql');
 			// Loop through each line
 			foreach ($lines as $line)
 			{

@@ -126,7 +126,9 @@
     	<tr>
     		<td>Routing Identifier</td>
     		<td><input class="form-control" type="text" name="route_identifier" value="<?php echo $game->getRouteIdentifier(); ?>" required>
-    		<small class="text-muted">Für "lucky" Spiele kannst du <pre class="d-inline">game_default_lucky</pre> verwenden.</small></td>
+    			<small class="text-muted">Für "lucky" Spiele kannst du <pre class="d-inline">game_default_lucky</pre> verwenden.<br>
+    			Für "custom" Spiele <pre class="d-inline">game_custom</pre> (Mehr dazu im <a href="https://github.com/nekocari/miniTCG/wiki/Games#how-to-add-my-own-game" target="_blank">Wiki</a>)</small>
+    		</td>
     	</tr>
     	<tr>
     		<td>Tägliches Spiel?</td>
