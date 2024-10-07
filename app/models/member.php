@@ -13,7 +13,7 @@ class Member extends DbRecordModel {
         $id, $name, $mail, $info_text, $info_text_html, $level, $money, $join_date, $login_date, $status, $ip;
     
     private 
-        $password, $cards, $masterd_decks, $rights, $profil_cards, $tradeable_cards, $settings, $member_card_url;
+        $password, $cards, $mastered_decks, $rights, $profil_cards, $tradeable_cards, $settings, $member_card_url;
     
     private static $member_card_path;
     
@@ -201,14 +201,14 @@ class Member extends DbRecordModel {
     }
     
     /**
-     * Uses Carddeck Method getMasterdByMember to get this members masterd decks
+     * Uses Carddeck Method getMasteredByMember to get this members mastered decks
      * 
      * @return Carddeck[]
      */
     public function getMasteredDecks($grouped = false) {
         if(!isset($this->mastered_decks)){
             $this->mastered_decks = array();
-            $masters = Master::getMasterdByMember($this->id,$grouped);
+            $masters = Master::getMasteredByMember($this->id,$grouped);
             $this->mastered_decks = $masters;
         }
         return $this->mastered_decks;
@@ -319,7 +319,7 @@ class Member extends DbRecordModel {
      */
     public function getMasterCount(){
         $master_counter = 0;
-        if(!is_null($this->masterd_decks)){
+        if(!is_null($this->mastered_decks)){
             $master_counter = count($this->getMasteredDecks());
         }else{
             $sql = "SELECT COUNT(*) FROM ".Master::getDbTableName()." WHERE member = ".$this->getId();

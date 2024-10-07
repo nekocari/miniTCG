@@ -9,7 +9,7 @@
 
 class Shop {
         
-    private $next_restock_date, $shop_restock_minutes, $max_stock, $cards_sum, $card_objs;
+	private $next_restock_date, $shop_restock_minutes, $shop_max_stock, $cards_sum, $card_objs;
     
     public function __construct() {
         $this->next_restock_date = Setting::getByName('shop_next_restock')->getValue();

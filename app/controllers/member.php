@@ -122,8 +122,8 @@ class MemberController extends AppController {
             $order = 'DESC';
         }
         
-        // get masterd sets from database
-        $masters = Master::getMasterdByMember($this->login()->getUserId(),$grouped,[$order_by=>$order]);
+        // get mastered sets from database
+        $masters = Master::getMasteredByMember($this->login()->getUserId(),$grouped,[$order_by=>$order]);
         
         // pagination
         $pagination = new Pagination($masters, 20, Routes::getUri('member_mastercards').'?order_by='.$order_by);

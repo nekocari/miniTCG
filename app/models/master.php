@@ -23,7 +23,7 @@ class Master extends DbRecordModel {
         parent::__construct();
     }
     
-    public static function getMasterdByMember($member_id, $grouped = true, $order_settings = ['deckname'=>'ASC']) {
+    public static function getMasteredByMember($member_id, $grouped = true, $order_settings = ['deckname'=>'ASC']) {
         
         $mastered_decks = array();
         $db = DB::getInstance();
@@ -34,7 +34,7 @@ class Master extends DbRecordModel {
         }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
         
-        $query = 'SELECT MIN(dm.date), dm.*, COUNT(dm.id) as counter
+        $query = 'SELECT dm.*, MIN(dm.date) as date, COUNT(dm.id) as counter
                 FROM decks_master dm
                 JOIN decks d ON d.id = dm.deck
                 WHERE dm.member = :member_id '.$sql_group.' '.$sql_order['query_part'];
@@ -60,15 +60,18 @@ class Master extends DbRecordModel {
         }
         $sql_order = self::buildSqlPart('order_by',$order_settings);
         
-        $query = 'SELECT dm.date as master_date,master.*
+        $query = 'SELECT dm.date as master_date ,master.id, master.name, master.mail, 
+				master.info_text, master.info_text_html, master.level, master.money, master.join_date, master.login_date, master.status
                 FROM decks_master dm
                 JOIN members master ON master.id = dm.member
                 WHERE dm.deck = :deck_id '.$sql_group.' '.$sql_order['query_part'];
         $req = $db->prepare($query);
         $req->execute(array(':deck_id'=>$deck_id));
         if($req->rowCount() > 0){
-            foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
-                $members[] = $member;
+        	//foreach($req->fetchAll(PDO::FETCH_CLASS,'Member') as $member){
+        	foreach($req->fetchAll(PDO::FETCH_ASSOC) as $result){
+        		$member = new Member();
+                $members[] = $member->setPropValues($result);
             }
         }
         return $members;
