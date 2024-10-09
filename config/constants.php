@@ -5,7 +5,7 @@
     define('MYSQL_PASS',     '');		 			// password
     define('MYSQL_DATABASE', 'miniTCG');	 		// database ame
     
-    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path / Basispfad
+    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path (put a '/' at the end) // Basispfad (schreibe "/" ans Ende)
     
     define('DEFAULT_TIMEZONE','Europe/Berlin'); 	// default application timezone 
     
@@ -41,7 +41,7 @@
     
     
     // no need to edit here -------------------------------------------------------------------------------------
-    define('APP_VERSION','v1.3.1 beta');
+    define('APP_VERSION','v1.3.1.1 beta');
     define('PATH', dirname(__FILE__).'/../'); 		// relativer Pfad
     define('SERVER_URL', $_SERVER['SERVER_NAME']);
     define('ERROR_LOG', PATH.'app_error.log');      // to be used in later versions

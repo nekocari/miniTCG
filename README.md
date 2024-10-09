@@ -31,6 +31,7 @@ lowest tested specs:
 * MariaDB 10.3.38 
 
 ## How to setup
+* select a .htaccess file (depending on whether it is in a subfolder or in the root directory) and rename it to “.htaccess”.
 * open config/constants.php and update it with your information
 * upload all files via ftp to your server
 * open browser and go to your miniTCG installation /setup/setup.php

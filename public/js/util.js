@@ -18,6 +18,7 @@ class DeckUpload {
     typeSelect;
     fileCheckbox;
     constructor() { 
+        this.nameString = document.getElementById('name-string').value;
         this.fileUploads = document.getElementById('file-uploads');
         this.typeSelect = document.getElementById('type');
         this.typeSelect.addEventListener("change", ()=>{ this.updateFileUpload() });
@@ -33,11 +34,18 @@ class DeckUpload {
             this.fileUploads.innerHTML = '';
             for (let i=1;i<=deckSize;i++){ 
                 upload = '<div class="col-12 col-lg-6 form-group">';
-                upload+= '<label for="file'+i+'">Karte '+i+'</label>';
+                upload+= '<label for="file'+i+'">'+this.nameString+' '+i+'</label>';
                 upload+= '<input class="form-control form-control-sm" type="file" id="file'+i+'" name="card_'+i+'">';
                 upload+= '</div>';
                 this.fileUploads.innerHTML+= upload;
             }
+            upload = '<div class="col-12 col-lg-6 form-group">';
+            upload+= '<label for="file_master">Master '+this.nameString+'</label>';
+            upload+= '<input class="form-control form-control-sm" type="file" id="file_master" name="_master">';
+            upload+= '</div>';
+            this.fileUploads.innerHTML+= upload;
+            
+            
         }else{
             console.log('more than one selected option found for #type'); 
         }

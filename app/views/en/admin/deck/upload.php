@@ -113,5 +113,5 @@
 
 </form>
 
-
+<input type="hidden" id="name-string" value="Card">
 <script>document.addEventListener("DOMContentLoaded", () => { new DeckUpload() });</script>

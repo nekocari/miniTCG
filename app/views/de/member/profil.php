@@ -19,7 +19,7 @@
 	
 <?php if($member->getInfoText()) { ?>  	
     <p class="text-left">
-    <button class="btn btn-sm btn-link" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="collapse">
+    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse">
     	Infos und Tauschregeln von <span class="font-weight-bold"><?php echo $member->getName(); ?></span>
     </button>
     </p>
