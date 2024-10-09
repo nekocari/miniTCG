@@ -39,11 +39,6 @@ class DeckUpload {
                 upload+= '</div>';
                 this.fileUploads.innerHTML+= upload;
             }
-            upload = '<div class="col-12 col-lg-6 form-group">';
-            upload+= '<label for="file_master">Master '+this.nameString+'</label>';
-            upload+= '<input class="form-control form-control-sm" type="file" id="file_master" name="_master">';
-            upload+= '</div>';
-            this.fileUploads.innerHTML+= upload;
             
             
         }else{

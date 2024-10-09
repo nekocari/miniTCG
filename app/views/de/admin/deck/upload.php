@@ -82,8 +82,8 @@
 				<?php echo $this->renderMessage('info','Please upload the files manually!'); ?>
 			</div>
 
-			<div id="file-uploads">
-				<div class="row">
+			<div>
+				<div id="file-uploads" class="row">
 					<?php for($i = 1; $i <= $deck_types[0]->getSize(); $i++){ ?>
 					<div class="col-12 col-lg-6 form-group">
 						<label for="file<?php echo $i; ?>">Karte <?php echo $i; ?></label>
