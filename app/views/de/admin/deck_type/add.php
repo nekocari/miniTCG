@@ -59,7 +59,14 @@
     	<tr>
     		<td>Platzhalter Dateipfad<br>
     		<small class="text-muted">individuel = Ordnerpfad / identisch = Dateipfad</small></td>
-    		<td><input class="form-control" type="text" name="filler_path" value="<?php echo $deck_type->getFillerPath(); ?>" required></td>
+    		<td>
+	    		<div class="input-group">
+	        		<div class="input-group-prepend">
+	    				<div class="input-group-text">public/img/cards/</div>
+	    			</div>
+		    		<input class="form-control" type="text" name="filler_path" value="<?php echo $deck_type->getFillerPath(); ?>" required>
+		    	</div>
+		    </td>
     	</tr>
     	<tr>
     		<td>Karten pro Reihe<br><small class="text-muted">falls keine Template benutz wird</small></td>
