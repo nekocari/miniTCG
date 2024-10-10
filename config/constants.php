@@ -5,7 +5,7 @@
     define('MYSQL_PASS',     '');		 			// password
     define('MYSQL_DATABASE', 'miniTCG');	 		// database ame
     
-    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path (put a '/' at the end) // Basispfad (schreibe "/" ans Ende)
+    define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path (keep the '/' at the end) even with top level domain (e.g. https://domain.com/)
     
     define('DEFAULT_TIMEZONE','Europe/Berlin'); 	// default application timezone 
     

@@ -53,9 +53,9 @@
 	<tbody>
 <?php foreach($list->getItems() as $member){ ?>
     	<tr style="white-space:nowrap">
-    		<td class="d-none d-sm-block"><?php echo $member->getId(); ?></td>
+    		<td class="d-none d-sm-table-cell"><?php echo $member->getId(); ?></td>
     		<td><a href="<?php echo $member->getProfilLink(); ?>"><?php echo $member->getName(); ?></a></td>
-    		<td class="d-none d-md-block"><?php echo $member->getMail(); ?></td>
+    		<td class="d-none d-md-table-cell"><?php echo $member->getMail(); ?></td>
     		<td class="text-right">
     			<div class="dropdown">
 					<a class="dropdown-toggle" href="#"  id="memberEditDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Aktionen</a>
