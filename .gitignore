@@ -6,5 +6,10 @@ config/constants_web.php
 public/img/cards/_filler/*.gif
 public/img/cards/_filler/puzzle/*.gif
 !public/img/cards/_filler/
+public/js/prism.js
+public/js/code-input.min.js
+public/css/prism.css
+public/css/prism_dark.css
+public/css/code-input.min.css
 vendor/
 HowToAddGame.md
