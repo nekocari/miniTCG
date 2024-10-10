@@ -172,7 +172,7 @@ class MyPagination {
         return $html;
     }
     
-    public function getJumpHtml($option_prepend = null, $auto_submit = true, $css_class="form-control", $text_before = null, $text_after = null) {
+    public function getJumpHtml($option_prepend = null, $auto_submit = true, $css_class="form-select", $text_before = null, $text_after = null) {
         $html = '';
     
         if($this->getTotalPages() > 1){

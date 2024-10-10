@@ -40,7 +40,7 @@
     	<tr>
     		<td>Anfragenmethode(n)</td>
     		<td>
-    			<select class="form-control" name="method" required>
+    			<select class="form-select" name="method" required>
 	    			<option value="get" <?php if($route->getMethod() == 'get'){ echo 'selected'; } ?>>get</option>
 	    			<option value="post" <?php if($route->getMethod() == 'post'){ echo 'selected'; } ?>>post</option>
 	    			<option value="get|post" <?php if($route->getMethod() == 'get|post'){ echo 'selected'; } ?>>get und post</option>

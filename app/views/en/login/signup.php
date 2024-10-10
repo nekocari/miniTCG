@@ -35,7 +35,7 @@
         	<label for="language" class="form-label">Language:</label>
         	<div class="input-group">
     				<div class="input-group-text"><i class="fas fa-language"></i></div>
-        		<select class="form-control" name="lang" id="language" required>
+        		<select class="form-select" name="lang" id="language" required>
         			<?php foreach(SUPPORTED_LANGUAGES as $key => $lang){ ?>
         				<option value="<?php echo $key; ?>" <?php if($this->getLang()==$key){ echo 'selected'; } ?>><?php echo $lang; ?></option>
         			<?php } ?>

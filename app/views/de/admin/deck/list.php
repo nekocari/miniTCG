@@ -12,13 +12,13 @@
 	<div class="row">
 		<div class="col-12 col-md">
 			<div class="input-group input-group-sm">
-				<select class="form-control" name="order">
+				<select class="form-select" name="order">
 					<option value="id" <?php if(isset($_GET['order']) AND $_GET['order']=='id'){ echo 'selected'; } ?>>ID</option>
 					<option value="name" <?php if(isset($_GET['order']) AND $_GET['order']=='name'){ echo 'selected'; } ?>>Name</option>
 					<option value="deckname" <?php if(isset($_GET['order']) AND $_GET['order']=='deckname'){ echo 'selected'; } ?>>Kürzel</option>
 					<option value="status" <?php if(isset($_GET['order']) AND $_GET['order']=='status'){ echo 'selected'; } ?>>Status</option>
 				</select>
-				<select class="form-control" name="direction">
+				<select class="form-select" name="direction">
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
 				</select>

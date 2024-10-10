@@ -53,7 +53,7 @@
 		<tr>
 			<td>Timezone</td>
 			<td>
-				<select class="form-control" name="timezone" required>
+				<select class="form-select" name="timezone" required>
 					<?php foreach(DateTimeZone::listIdentifiers() as $zone){ ?>
 					<option <?php if($zone == $member->getTimezone()){ echo 'selected'; } ?>><?php echo $zone; ?></option>
 					<?php }?>
@@ -63,7 +63,7 @@
 		<tr>
 			<td>Language</td>
 			<td>
-				<select class="form-control" name="lang" required>
+				<select class="form-select" name="lang" required>
 					<?php foreach(SUPPORTED_LANGUAGES as $key=>$lang){ ?>
 					<option value="<?php echo $key; ?>" <?php if($key == $member->getLang()){ echo 'selected'; } ?>><?php echo $lang; ?></option>
 					<?php }?>

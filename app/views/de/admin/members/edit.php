@@ -22,7 +22,7 @@
 		<?php }elseif($var == 'Status'){ ?>
         	<tr>
         		<td><?php echo $var; ?></td>
-        		<td><select class="form-control" name="<?php echo $var; ?>">
+        		<td><select class="form-select" name="<?php echo $var; ?>">
         		<?php foreach($accepted_stati as $status){ ?>
         			<option value="<?php echo $status; ?>" <?php if($value == $status){ echo 'selected'; } ?>><?php echo $status; ?></option>
         		<?php } ?>

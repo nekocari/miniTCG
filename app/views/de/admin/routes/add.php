@@ -37,7 +37,7 @@
     	<tr>
     		<td>Anfragenmethode(n)</td>
     		<td>
-    			<select class="form-control" name="method" required>
+    			<select class="form-select" name="method" required>
 	    			<option value="get">get</option>
 	    			<option value="post">post</option>
 	    			<option value="get|post">get und post</option>

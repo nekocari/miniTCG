@@ -20,7 +20,7 @@
 		</div>
 		
 		<div class="text-center m-2">
-			<select class="form-control" id="offered-card-id" name="offered_card_id">
+			<select class="form-select" id="offered-card-id" name="offered_card_id">
             	<option value="" disabled selected>choose a card</option>            	
                 <?php foreach($cards as $group => $g_cards){ if(count($g_cards)){ ?>
 	            	<optgroup label="">

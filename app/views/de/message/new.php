@@ -11,7 +11,7 @@
         	<div class="row">
         		<div class="col-4">Empfänger</div>
         		<div class="col-8">
-        			<select class="form-control" name="recipient" required>
+        			<select class="form-select" name="recipient" required>
         				<?php foreach($recipients as $recipient){ if($recipient->getId() != $this->login->getUser()->getId()) { ?>
         					<option value="<?php echo $recipient->getId(); ?>" 
         					<?php if(isset($_GET['member_id']) AND $recipient->getId() == $_GET['member_id']){ echo 'selected'; }?>>

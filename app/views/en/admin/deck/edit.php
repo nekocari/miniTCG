@@ -35,7 +35,7 @@
     	<tr>
     		<td>Type</td>
     		<td>
-    			<select class="form-control" name="type_id">
+    			<select class="form-select" name="type_id">
     				<?php 
     				foreach(DeckType::getAll() as $type){
     				    echo '<option value="'.$type->getId().'"';
@@ -49,7 +49,7 @@
     	<tr>
     		<td>Creator</td>
     		<td>
-				<select class="form-control" name="creator">
+				<select class="form-select" name="creator">
 					<?php 
 					foreach(Member::getAll(['name'=>'ASC']) as $member){
 					   echo '<option value="'.$member->getId().'"';
@@ -63,7 +63,7 @@
     	<tr>
     		<td>Category</td>
     		<td>
-        		<select class="form-control" id="category" name="subcategory" required>
+        		<select class="form-select" id="category" name="subcategory" required>
         			<?php foreach(Category::getAll(['name'=>'ASC']) as $category){ ?>
         			<optgroup label="<?php echo $category->getName(); ?>">
         				<?php foreach($category->getSubcategories() as $subcategory){

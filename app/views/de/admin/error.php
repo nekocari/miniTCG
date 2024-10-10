@@ -1,1 +1,1 @@
-<a href="#">zurück</a>
+<a href="javascript:history.back()">zurück</a>

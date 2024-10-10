@@ -29,7 +29,7 @@
 				<small><?php echo $card->getName(); ?></small>
 			</div>
 			<div>
-	        	<select class="form-control form-control-sm" name="newStatus[<?php echo $card->getId(); ?>]">
+	        	<select class="form-select form-select-sm" name="newStatus[<?php echo $card->getId(); ?>]">
 	        		<?php echo $card->getSortingOptionsHTML(); ?>
 	        	</select>
 	    	</div>

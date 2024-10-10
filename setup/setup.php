@@ -114,7 +114,7 @@ if(($table_count > 0 AND !isset($_POST['admin_user'])) OR isset($_POST['start_se
 					'			Language'.
 					'		</div>'.
 					'		<div class="col-12">'.
-					'			<select class="form-control" name="language" required>'.$lang_options.
+					'			<select class="form-select" name="language" required>'.$lang_options.
 					'			</select>'.
 					'		</div>'.
 					'	</div>'.

@@ -7,7 +7,7 @@
 
 <?php if(count($cards)){ ?>
 	<p>
-        <select name="card" class="form-control d-inline w-auto">
+        <select class="form-select d-inline w-auto" name="card">
         <?php foreach($cards as $option){ ?>
         	<option value="<?php echo $option['card']->getId(); ?>"><?php echo $option['card']->getName().' ('.$option['possessionCounter'].')'; ?></option>
         <?php } ?>

@@ -32,7 +32,7 @@
     		<div class="row">
         		<div class="form-group col-12 col-lg-6">
             		<label for="category">Kategorie <br></label>
-            		<select class="form-control" id="category" name="subcategory" required>
+            		<select class="form-select" id="category" name="subcategory" required>
             			<?php foreach($categories as $category){ ?>
             			<optgroup label="<?php echo $category->getName(); ?>">
             				<?php foreach($category->getSubcategories() as $subcategory){ ?>
@@ -44,7 +44,7 @@
             	</div>
             	<div class="form-group col-12 col-lg-6">
             		<label for="type">Typ</label>
-            		<select class="form-control" id="type" name="type" required>
+            		<select class="form-select" id="type" name="type" required>
             			<?php foreach($deck_types as $type){ ?>
             				<option value="<?php echo $type->getId(); ?>" data-size="<?php echo $type->getSize(); ?>">
             					<?php echo $type->getName(); ?> (<?php echo $type->getSize(); ?> Karten)

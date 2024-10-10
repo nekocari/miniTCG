@@ -19,11 +19,11 @@
 	<div class="row">
 		<div class="col-12 col-md">
 			<div class="input-group input-group-sm">
-				<select class="form-control" name="order">
+				<select class="form-select" name="order">
 					<option value="id" <?php if(isset($_GET['order']) AND $_GET['order']=='id'){ echo 'selected'; } ?>>ID</option>
 					<option value="type" <?php if(isset($_GET['order']) AND $_GET['order']=='type'){ echo 'selected'; } ?>>Art</option>
 				</select>
-				<select class="form-control" name="direction">
+				<select class="form-select" name="direction">
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>aufsteigend</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>absteigend</option>
 				</select>

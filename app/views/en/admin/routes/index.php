@@ -13,11 +13,11 @@
 	<div class="row">
 		<div class="col-12 col-md">
 			<div class="input-group input-group-sm">
-				<select class="form-control" name="order">
+				<select class="form-select" name="order">
 					<option value="identifier" <?php if(isset($_GET['order']) AND $_GET['order']=='identifier'){ echo 'selected'; } ?>>Identifier</option>
 					<option value="url" <?php if(isset($_GET['order']) AND $_GET['order']=='url'){ echo 'selected'; } ?>>URL</option>
 				</select>
-				<select class="form-control" name="direction">
+				<select class="form-select" name="direction">
 					<option value="ASC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='ASC'){ echo 'selected'; } ?>>ascending</option>
 					<option value="DESC" <?php if(isset($_GET['direction']) AND $_GET['direction']=='DESC'){ echo 'selected'; } ?>>descending</option>
 				</select><button class="btn btn-dark"><i class="fas fa-exchange-alt fa-rotate-90"></i></button>

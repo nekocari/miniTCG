@@ -10,7 +10,7 @@
 <h1>Unterategorie bearbeiten</h1>
 
 <form class="form-inline" method="POST" action="">
-	<select class="form-control m-2" name="category">
+	<select class="form-select m-2" name="category">
 		<?php foreach($categories as $cat){
 		    echo '<option value="'.$cat->getId().'"';
 		    if($cat->getId() == $category->getId()){ echo 'selected'; }

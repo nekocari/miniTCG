@@ -17,7 +17,7 @@
 	<tr>
 		<td>Welche Nummer ersetzen?</td>
 		<td>
-        	<select name="number" class="form-control">
+        	<select name="number" class="form-select">
         		<?php foreach($card_keys as $i){ ?>
         		<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
         		<?php } ?>

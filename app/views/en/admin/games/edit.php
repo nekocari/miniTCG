@@ -35,7 +35,7 @@
     	<tr>
     		<td>Status</td>
     		<td>
-    			<select class="form-control" name="status" required >
+    			<select class="form-select" name="status" required >
     				<option <?php if($game->getStatus() == 'online'){ echo 'selected'; } ?>>online</option>
     				<option <?php if($game->getStatus() == 'offline'){ echo 'selected'; } ?>>offline</option>
     			</select>
@@ -44,7 +44,7 @@
     	<tr>
     		<td>Type</td>
     		<td>
-    			<select class="form-control" name="type" id="game-type" required disabled>
+    			<select class="form-select" name="type" id="game-type" required disabled>
     				<option <?php if($game->getType() == 'lucky'){ echo 'selected'; } ?>>lucky</option>
     				<option <?php if($game->getType() == 'custom'){ echo 'selected'; } ?>>custom</option>
     			</select>
@@ -53,7 +53,7 @@
     	<?php if($game->getType() == 'lucky'){ ?>
     	<tr id="lucky-choices">
     		<td>Choices</td>
-    		<td><select class="form-control" name="lucky_choice_type">
+    		<td><select class="form-select" name="lucky_choice_type">
     				<option value="text" <?php if($choice_type == 'text'){ echo 'selected'; } ?>>Texts</option>
     				<option value="image" <?php if($choice_type == 'image'){ echo 'selected'; } ?>>Images</option>
     			</select>

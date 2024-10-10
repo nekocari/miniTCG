@@ -11,7 +11,7 @@
 		<tr>
 			<td>Deck</td>
 			<td>
-				<select id="deck-select" name="deck_id" class="form-control">
+				<select class="form-select" id="deck-select" name="deck_id">
 					<?php foreach($decks as $deck){ ?>
 						<option value="<?php echo $deck->getId(); ?>" data-size="<?php echo $deck->getSize(); ?>">
 							<?php echo $deck->getDeckname(); ?>
@@ -23,7 +23,7 @@
 		<tr>
 			<td>Nummer</td>
 			<td>
-				<select id="number-select" name="number" class="form-control">
+				<select class="form-select" id="number-select" name="number">
 					<?php for($i = 1; $i <= $decksize; $i++){ ?>
 						<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 					<?php } ?>
