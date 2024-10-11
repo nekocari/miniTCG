@@ -3,7 +3,7 @@
     define('MYSQL_HOST',     'localhost'); 			// host name
     define('MYSQL_USER',     'root'); 				// username
     define('MYSQL_PASS',     '');		 			// password
-    define('MYSQL_DATABASE', 'miniTCG');	 		// database ame
+    define('MYSQL_DATABASE', 'miniDevTCG');	 		// database ame
     
     define('BASE_URI', 'http://localhost/eclipse/miniTCG/'); // base path (keep the '/' at the end) even with top level domain (e.g. https://domain.com/)
     

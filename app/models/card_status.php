@@ -61,7 +61,7 @@ class CardStatus extends DbRecordModel {
      * retuns all status for untradeable cards besides new and collect
      * @return CardStatus[]
      */
-    public static function getNotTradeable() {
+    public static function getNotTradeable($order_settings = ['position'=>'ASC']) {
     	return parent::getWhere(['tradeable'=>0,'collections'=>0,'new'=>0]);
     }
     

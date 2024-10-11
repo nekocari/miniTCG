@@ -13,16 +13,35 @@
 	<?php echo $pagination; ?>
 	
 	<div>
-	<?php foreach($cards as $card){  ?>
-		<div class="d-inline-block text-center m-1 card-cardmanager 
-			<?php 
-				if($card->onWishlist() AND !$card->deckInKeep() AND !$card->deckInCollect()){ echo " card-missing-wishlist"; } 
-				if($card->missingInKeep()){ echo " card-missing-keep"; } 
-				if($card->missingInCollect()){ echo " card-missing-collect"; } 
-				if($card->mastered()){ echo " card-mastered"; } 
-			?>
-		">
-			<div>
+	<?php foreach($cards as $card){ 
+		
+		//var_dump($card);
+	?>
+		<div class="d-inline-block text-center m-1 card-cardmanager ">
+		
+			<?php /*
+			$title_text = '';
+			if($card->onWishlist() AND !$card->deckInCollect() AND $card->missingInNotTradeable()){
+				// Auf Wunschliste und Deck noch nicht in Collect oder einer nicht tauschbaren Kategorie
+					$title_text = "Noch nicht in deiner Sammlung oder einer untauschbaren Kategorie";
+					echo " card-missing-wishlist"; 
+				}
+				if($card->missingInCollect()){
+					// wenn nicht in collect CSS Klasse einfügen
+					echo " card-missing-collect"; }
+				if($card->mastered()){ 
+					echo " card-mastered"; } 
+					foreach(CardStatus::getNotTradeable( ['position'=>'DESC']) as $nt_status){
+					if($card->missingIn($nt_status->getId())){
+						$title_text = "Noch nicht in ".$nt_status->getName();
+						echo " card-missing-status-".$nt_status->getId();
+						echo " card-missing-keep";
+						break;
+					}
+				}
+			*/  ?>
+		
+			<div title="<?php echo $title_text; ?>">
 				<?php echo $card->getImageHtml(); ?>
 			</div>
 			<div>
@@ -35,6 +54,7 @@
 	    	</div>
 		</div>
 	<?php } ?>
+	
 	</div>
 	
 	<?php echo $pagination; ?>

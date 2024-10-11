@@ -10,14 +10,27 @@
 
 class CardFlagged extends Card {
     
-    protected $keep_flag, $collect_flag, $wishlist_flag, $mastered_flag, $in_keep_flag, $in_collect_flag, $owned_flag, $possession_counter=1;    
-    
+	protected $not_tradeable_flag, $collect_flag, 
+		$in_not_tradeable_flag, $in_collect_flag, 
+		$wishlist_flag, $mastered_flag, $owned_flag,
+		$custom_flags=array(), $custom_in_flags=array(), 
+		$possession_counter=1;    
+	
     public function __construct() {
         parent::__construct();
     }
     
-    public function missingInKeep(){
-        if($this->missingInCollect() OR $this->keep_flag == 0 OR $this->in_keep_flag == 1){
+    
+    public function missingIn($manager_category_id) {
+    	if(!$this->deckInStatus($manager_category_id) OR in_array($manager_category_id, $this->custom_in_flags)){
+    		return false;
+    	}else{
+    		return true;
+    	}
+    }
+    
+    public function missingInNotTradeable(){
+        if($this->missingInCollect() OR $this->not_tradeable_flag_flag == 0 OR $this->in_not_tradeable_flag == 1){
             return false;
         }else{
             return true;
@@ -31,13 +44,29 @@ class CardFlagged extends Card {
             return true;
         }
     }
-    public function deckInKeep(){
-        if(!$this->keep_flag OR $this->keep_flag == 0){
-            return false;
-        }else{
-            return true;
-        }
+    
+    public function deckInStatus($manager_category_id) {
+    	if(!in_array($manager_category_id, $this->custom_flags)){
+    		return false;
+    	}else{
+    		return true;
+    	}
     }
+    /**
+     * at least one card of deck exists in an untradeable status?
+     * @return boolean
+     */
+    public function deckInNotTradeable(){
+    	if(!$this->not_tradeable_flag OR $this->not_tradeable_flag == 0){
+    		return false;
+    	}else{
+    		return true;
+    	}
+    }
+    /**
+     * at least one card of deck exists in an collect status?
+     * @return boolean
+     */
     public function deckInCollect(){
         if(!$this->collect_flag OR $this->collect_flag == 0){
             return false;
@@ -67,10 +96,41 @@ class CardFlagged extends Card {
     	}
     }
     
+    /**
+     */
+    
+    public function setCustomFlagIds($flag_ids){
+    	if(is_array($flag_ids)){
+    		foreach($flag_ids as $flag_id){
+    			$this->setCustomFlagId($flag_id);
+    		}
+    	}else{
+    		$this->setCustomFlagId($flag_ids);
+    	}
+    }
+    
+    private function setCustomFlagId($flag_id){
+    	$this->custom_flags[] = intval($flag_id);
+    }
+    
+    public function setCustomInFlagIds($flag_ids){
+    	if(is_array($flag_ids)){
+    		foreach($flag_ids as $flag_id){
+    			$this->setCustomInFlagId($flag_id);
+    		}
+    	}else{
+    		$this->setCustomInFlagId($flag_ids);
+    	}
+    }
+    
+    private function setCustomInFlagId($flag_id){
+    	$this->custom_in_flags[] = intval($flag_id);
+    }
+    
     /** 
      * determins flags for the current card
      */
-    public function flag($compare_user_id,$query_style='join'){
+    public function flag($compare_user_id,$query_style='join'){ // BIG TODO! see cardmanager changes for in untradeables
         
         if(!is_null($compare_user_id) AND $compare_user_id != $this->getOwnerId()){
         	
@@ -181,44 +241,59 @@ class CardFlagged extends Card {
     public function getSortingOptions(){
         $options = array();
         $options[] = array('name'=>'','value'=>'','prop_selected'=>false);
-        foreach(self::getAcceptedStatiObj() as $key=>$status){
+        
+        $option_selected = false;
+        // go throug statis (from highest to lowest priority)
+        foreach(array_reverse(self::getAcceptedStatiObj()) as $key=>$status){
             $option = array();
-            if($this->getStatusId() != $key){
+            // skip if card status id = select status id -> dont show current status as option
+            // or skip if card status is not new (only pre select options there)
+            if($this->getStatusId() != $status->getId() AND !$status->isNew()){
             	
+            		
             	$option['name'] = $status->getName();
-            	$option['value'] = $key;
+            	$option['value'] = $status->getId();
             	$option['prop_selected'] = false;
             	
-            	// ( not "new")
-            	if(!$status->isNew()){
-	            	// ("keep")
-	            	if(!$status->isNew() AND !$status->isCollections() AND !$status->isTradeable() AND  $this->missingInKeep() AND $this->getStatus()->isNew()){
-	            		$option['prop_selected'] = true;
-	            	}
-	            	// ("collect")
-	            	if($status->isCollections() AND $this->in_collect_flag == 0 AND $this->missingInCollect() AND $this->getStatus()->isNew()){
-	            		$option['prop_selected'] = true;
-	            	}
-	            	// ("trade)
-	            	if($status->isTradeable() AND !$this->missingInCollect() AND !$this->missingInKeep() AND $this->getStatus()->isNew()){
-	            		$option['prop_selected'] = true;
-	            	}
-            	
-            		$options[] = $option;
+            	// if nothing was selected until now
+            	if(!$option_selected){
+            		
+            		// COLLECT
+            		// select status is collect and card is missing in collect
+            		if($status->isCollections() AND $this->missingInCollect() ){
+            			$option_selected = true;
+            			$option['prop_selected'] = true;
+            		}
+            		// KEEP - UNTRADEABLES
+            		// select status is not collections and untradeable and card is missing in this untradeable status
+            		if(!$status->isCollections() AND !$status->isTradeable() AND $this->missingIn($status->getId()) ){
+            			$option_selected = true;
+            			$option['prop_selected'] = true;
+            		}
+            		// trade might - TRADEABLES
+            		// select status is not collections and tradeable and at least one card of deck is in status
+            		if(!$status->isCollections() AND $status->isTradeable() AND $this->deckInStatus($status->getId()) ){
+            			$option_selected = true;
+            			$option['prop_selected'] = true;
+            		}
             	}
+            	
+            	// add to option element to options array
+            	$options[] = $option;
             }
         }
         return $options;
     } 
     
     public function getSortingOptionsHTML(){
+    	
         $html = '';
         foreach($this->getSortingOptions() as $option){
             $html.= '<option value="'.$option['value'].'"';
             if($option['prop_selected']){
                 $html.= ' selected';
             }
-            $html.= '>'.$option['name'].'</option>\n';
+            $html.= '>'.$option['name'].'</option>';
         }
         return $html;
     }
