@@ -43,7 +43,8 @@ class Game extends DbRecordModel {
         if(!is_null($game_data) AND count($game_data) == 1){
             $game = $game_data[0];
         }else{
-            $date = date('Y-m-d',time()-(60*60*24)).' 00:00:00';
+        	// new db entry with - yesterday midnight, so everything should be playable
+        	$date = ((new DateTime('yesterday',new DateTimeZone(DEFAULT_TIMEZONE)))->setTime(0,0,0))->format('c');
             $game = new Game();
             $game->setPropValues(array('member'=>$member_id,'type'=>$type,'date'=>$date));
             $game->create();
@@ -69,6 +70,31 @@ class Game extends DbRecordModel {
      * @return number
      */
     public function getMinutesToWait() {
+    	$last_game = new DateTimeImmutable($this->date,new DateTimeZone(DEFAULT_TIMEZONE));
+    	
+    	if($this->getGameSettings()->getWaitTime() === false){
+    		$start_today_time = new DateTime('now',new DateTimeZone(DEFAULT_TIMEZONE)); // todays date
+    		$start_today_time->setTime(0, 0, 0); // set time to midnight
+    		if($last_game < $start_today_time){
+    			$minutes_to_wait = 0;
+    		}else{
+    			$interval = $start_today_time->diff((new DateTime('tomorrow',new DateTimeZone($this->member_obj->getTimezone())))->setTime(0,0,0));
+    			$minutes_to_wait = $interval->format('%i');
+    		}
+    	}
+    	else{
+    		$interval = new DateInterval('PT'.$this->getGameSettings()->getWaitTime().'M');
+    		$next_game = $last_game->add($interval);
+    		$minutes_to_wait = max(0 , ceil(($next_game->getTimestamp() - (new DateTime('now',new DateTimeZone(DEFAULT_TIMEZONE)))->getTimestamp()) / 60));
+    	}
+    	return $minutes_to_wait;
+    }
+    
+    /**
+     * @deprecated
+     * @return number
+     */
+    public function _getMinutesToWait() {
     	
     	$last_game_time = strtotime($this->date);
     	
@@ -126,17 +152,11 @@ class Game extends DbRecordModel {
     /**
      * set a new date using an unix timestamp
      * 
-     * @param int $date - unix timestamp
-     * @param string $mode - default is 'unix'
+     * @param string $date - date time string
      * 
      * @return boolean
      */
-    public function setDate($date, $mode='unix') {
-        if($mode == 'unix'){
-            $date = date('Y-m-d H:i:s', $date);
-        }else{
-            return false;
-        }
+    public function setDate($date) {
         $this->date = $date;
         return true;
     }
@@ -218,7 +238,7 @@ class Game extends DbRecordModel {
                     return false;
                     break;
             }
-            $this->setDate(time());
+            $this->setDate((new DateTimeImmutable('now'))->format('c'));
             $this->update();
             return $game_reward;
             

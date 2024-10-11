@@ -13,6 +13,7 @@ class App {
 		try{
 			$this->routes = Routes::getInstance(Db::getInstance());
 			$this->autoloading();
+			date_default_timezone_set(DEFAULT_TIMEZONE);
 		}
 		catch(PDOException $e){
 			die("mini TCG setup not complete");

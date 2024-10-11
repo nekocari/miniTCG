@@ -324,6 +324,10 @@ abstract class DbRecordModel {
             $property_values = array();
             
             foreach($this as $key => $value){
+            	if($key == 'utc' AND empty($value)){
+            		$date = new DateTime('now',new DateTimeZone('UTC'));
+            		$value = $date->format('c');
+            	}
                 if(in_array($key,static::$db_fields)){
                     if($value != 'CURRENT_TIMESTAMP'){
                         $properties.= $key.'=?, ';
