@@ -69,7 +69,7 @@
     			</small>
     		</td>
     		<td>
-    			<textarea class="form-select" name="lucky_results"><?php echo $results; ?></textarea>
+    			<textarea class="form-control" name="lucky_results"><?php echo $results; ?></textarea>
     			<small class="text-muted">Jeweils mit Komma trennen.<br>Es müssen <b>mindestens</b> so viele Resultate wie Auswahlmöglichkeiten festgelegt werden!</small>
     		</td>
     	</tr>
