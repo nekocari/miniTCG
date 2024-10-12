@@ -13,16 +13,35 @@
 	<?php echo $pagination; ?>
 	
 	<div>
-	<?php foreach($cards as $card){ ?>
-		<div class="d-inline-block text-center m-1 card-cardmanager 
-			<?php 
-				if($card->onWishlist() AND !$card->deckInKeep() AND !$card->deckInCollect() ){ echo " card-missing-wishlist"; } 
-				if($card->missingInKeep()){ echo " card-missing-keep"; } 
-				if($card->missingInCollect()){ echo " card-missing-collect"; } 
-				if($card->mastered()){ echo " card-mastered"; } 
+	<?php foreach($cards as $card){ // loop through cards ?>
+		<div class="d-inline-block text-center m-1 card-cardmanager	
+			<?php // ADD CSS CLASSES TO STYLE ELEMENT
+				// var for additional alt text
+				$title_text = '';
+				// deck is mastered
+				if($card->mastered()){  		
+					echo " card-mastered"; }
+				// card missing in collection
+				if($card->missingInCollect()){ 	
+					echo " card-missing-collect"; }
+				// deck on wishlist not missing in an untradeable category and is not part of collection
+					if($card->onWishlist() AND !$card->deckInCollect() AND !$card->deckInNotTradeable() ){
+					echo " card-missing-wishlist"; }
+				// card missing in an untrdeable category that is NOT collect
+				if($card->missingInNotTradeable() AND !$card->missingInCollect()){ 
+					echo " card-missing-keep"; }
+				// add class for untradeable category with highes position value,
+				// where card is missing in format "card-missing-status-[category ID]"
+				foreach(CardStatus::getNotTradeable( ['position'=>'DESC']) as $nt_status){
+					if($card->missingIn($nt_status->getId()) AND !$card->missingInCollect()){
+						$title_text = "Noch nicht in ".$nt_status->getName();
+						echo " card-missing-status-".$nt_status->getId();
+						break;
+					}
+				}
 			?>
 		">
-			<div>
+			<div title="<?php echo $title_text; ?>">
 				<?php echo $card->getImageHtml(); ?>
 			</div>
 			<div>

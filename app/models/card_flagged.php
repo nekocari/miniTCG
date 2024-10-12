@@ -10,9 +10,9 @@
 
 class CardFlagged extends Card {
     
-	protected $not_tradeable_flag, $collect_flag, 
-		$in_not_tradeable_flag, $in_collect_flag, 
-		$wishlist_flag, $mastered_flag, $owned_flag,
+	protected $not_tradeable_flag = 0, $collect_flag = 0,
+		$in_not_tradeable_flag = 0, $in_collect_flag = 0, 
+		$wishlist_flag = 0, $mastered_flag = 0, $owned_flag = 0,
 		$custom_flags=array(), $custom_in_flags=array(), 
 		$possession_counter=1;    
 	
@@ -21,6 +21,12 @@ class CardFlagged extends Card {
     }
     
     
+    // MISSING IN FLAG CHECKS
+    /**
+     * has card missing flag for certain category id?
+     * @param int $manager_category_id
+     * @return boolean
+     */
     public function missingIn($manager_category_id) {
     	if(!$this->deckInStatus($manager_category_id) OR in_array($manager_category_id, $this->custom_in_flags)){
     		return false;
@@ -29,14 +35,21 @@ class CardFlagged extends Card {
     	}
     }
     
+    /**
+     * Is card missing in an untradeable category?
+     * @return boolean
+     */
     public function missingInNotTradeable(){
-        if($this->missingInCollect() OR $this->not_tradeable_flag_flag == 0 OR $this->in_not_tradeable_flag == 1){
+        if($this->missingInCollect() OR $this->not_tradeable_flag == 0 OR $this->in_not_tradeable_flag == 1){
             return false;
         }else{
             return true;
         }
     }
-    
+    /**
+     * Is card missing in collection?
+     * @return boolean
+     */
     public function missingInCollect(){
         if($this->collect_flag == 0 OR $this->in_collect_flag == 1){
             return false;
@@ -45,6 +58,12 @@ class CardFlagged extends Card {
         }
     }
     
+    // DECK CHECKS
+    /**
+     * is at least one card of the deck in a certain category?
+     * @param int $manager_category_id
+     * @return boolean
+     */
     public function deckInStatus($manager_category_id) {
     	if(!in_array($manager_category_id, $this->custom_flags)){
     		return false;
@@ -53,7 +72,7 @@ class CardFlagged extends Card {
     	}
     }
     /**
-     * at least one card of deck exists in an untradeable status?
+     * is at least one card of the deck in an untradeable category?
      * @return boolean
      */
     public function deckInNotTradeable(){
@@ -64,7 +83,7 @@ class CardFlagged extends Card {
     	}
     }
     /**
-     * at least one card of deck exists in an collect status?
+     * is this deck currently beeing collected?
      * @return boolean
      */
     public function deckInCollect(){
@@ -74,6 +93,12 @@ class CardFlagged extends Card {
             return true;
         }
     }
+    
+    // MASTER CHECK
+    /**
+     * is this deck already mastered?
+     * @return boolean
+     */
     public function mastered(){
     	if(!$this->mastered_flag){
     		return false;
@@ -81,6 +106,12 @@ class CardFlagged extends Card {
     		return true;
     	}
     }
+    
+    // WISHLIST CHECK
+    /**
+     * is this deck on the wishlist?
+     * @return boolean
+     */
     public function onWishlist(){ 
     	if(!$this->wishlist_flag OR $this->wishlist_flag == 0){
     		return false;
@@ -88,6 +119,12 @@ class CardFlagged extends Card {
     		return true;
     	}
     }
+    
+    // DUPLICATE
+    /**
+     * Is this card owned by compare user (only for check on trade offer pages)
+     * @return boolean
+     */
     public function owned(){
     	if(!$this->owned_flag){
     		return false;
@@ -97,8 +134,9 @@ class CardFlagged extends Card {
     }
     
     /**
+     * adds the ids of categories where cards of deck are in
+     * @param int[]|int $flag_ids
      */
-    
     public function setCustomFlagIds($flag_ids){
     	if(is_array($flag_ids)){
     		foreach($flag_ids as $flag_id){
@@ -108,11 +146,14 @@ class CardFlagged extends Card {
     		$this->setCustomFlagId($flag_ids);
     	}
     }
-    
     private function setCustomFlagId($flag_id){
     	$this->custom_flags[] = intval($flag_id);
     }
     
+    /**
+     * adds the ids of categories the card is already in
+     * @param int[]|int $flag_ids
+     */
     public function setCustomInFlagIds($flag_ids){
     	if(is_array($flag_ids)){
     		foreach($flag_ids as $flag_id){
@@ -122,7 +163,6 @@ class CardFlagged extends Card {
     		$this->setCustomInFlagId($flag_ids);
     	}
     }
-    
     private function setCustomInFlagId($flag_id){
     	$this->custom_in_flags[] = intval($flag_id);
     }
@@ -130,105 +170,113 @@ class CardFlagged extends Card {
     /** 
      * determins flags for the current card
      */
-    public function flag($compare_user_id,$query_style='join'){ // BIG TODO! see cardmanager changes for in untradeables
+    public function flag($compare_user_id,$query_style='exists'){
         
         if(!is_null($compare_user_id) AND $compare_user_id != $this->getOwnerId()){
         	
-        	//$status_id_new = CardStatus::getNew()->getId();
-        	$status_id_collect = CardStatus::getCollect()->getId();
+        	// str with ids of stati not tradeable to use in sql in
         	$status_ids_not_tradeable_str = 'NULL,';
         	$status_not_tradeable = CardStatus::getNotTradeable();
         	foreach($status_not_tradeable as $status_nt){
         		$status_ids_not_tradeable_str.= $status_nt->getId().',';
         	}
         	$status_ids_not_tradeable_str = substr($status_ids_not_tradeable_str,0,-1);
-            
-            if(!is_null($this->id)){
-                // on default use card id to set flags
-                switch($query_style){
-                    case 'exists':
-                        $sql = "SELECT c.*,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck) as collect_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as keep_flag,
-                                	EXISTS (SELECT 1 FROM decks_master WHERE member = ".$compare_user_id." and deck = c.deck) as mastered_flag,
-                                	EXISTS (SELECT 1 FROM members_wishlist WHERE member_id = ".$compare_user_id." and deck_id = c.deck) as wishlist_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and deck = c.deck AND number = c.number) as owned_flag
-                                    FROM cards c
-                                    WHERE c.id = ".$this->id;
+        	
+        	// deck id and number is needed 
+        	if(is_null($this->deck) OR is_null($this->number)){
+        		throw new ErrorException();
+        	}
+        	// get all status (manager category) objects
+        	$card_stati = CardStatus::getAll();
+			switch($query_style){
+				case 'exists':
+					$sql_not_tradeables = '';
+					foreach($card_stati as $nt_status){
+						if(!$nt_status->isNew()){
+							$sql_not_tradeables.= "
+								EXISTS (SELECT 1 FROM cards WHERE owner = c.owner AND status_id = " . $nt_status->getId() . " AND deck = c.deck AND number = c.number) as in_status" . $nt_status->getId() . "_flag,
+								EXISTS (SELECT 1 FROM cards WHERE owner = c.owner AND status_id = " . $nt_status->getId() . " AND deck = c.deck) as status" . $nt_status->getId() . "_flag, ";
+						}
+					}
+                	$sql = "SELECT
+								$sql_not_tradeables
+                        		EXISTS (SELECT 1 FROM cards WHERE owner =  c.owner AND status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_not_tradeable_flag,
+                        		EXISTS (SELECT 1 FROM cards WHERE owner = c.owner AND status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as not_tradeable_flag,
+								EXISTS (SELECT 1 FROM decks_master WHERE member = c.owner AND deck = c.deck) as mastered_flag,
+								EXISTS (SELECT 1 FROM members_wishlist WHERE member_id =  c.owner AND deck_id = c.deck) as wishlist_flag,
+								EXISTS (SELECT 1 FROM cards WHERE owner = c.owner AND deck = c.deck AND number = c.number) as owned_flag
+							FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number, ".$compare_user_id." as owner) c ";
                         break;
-                    default:
-                        $sql = "SELECT c.*, collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
-                                    FROM cards c
-                                    LEFT JOIN trades t ON (t.offered_card = c.id OR t.requested_card = c.id) AND t.status = 'new'
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
-                                        collect ON collect.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
-                                        keep ON keep.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$compare_user_id.")
-                                        mastered ON mastered.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$compare_user_id.")
-                                        wishlist ON wishlist.deck_id = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
-                                        in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
-                                    LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
-                                        in_keep ON in_keep.deck = c.deck AND in_keep.number = c.number
-                                    LEFT JOIN (SELECT DISTINCT deck, number, 1 as flag FROM cards WHERE owner = ".$compare_user_id.")
-                                        owned ON owned.deck = c.deck AND owned.number = c.number 
-                                    WHERE c.id = ".$this->id;
-                        break;
-                }
-                
-            }elseif(!is_null($this->deck) AND !is_null($this->number)){
-                switch($query_style){
-                    case 'exists':
+            		default: // also works, but is usually slower
+	            		$sql_status_joins = '';
+	            		$sql_status_flag_fields = '';
+	            		foreach($card_stati as $nt_status){
+	            			if(!$nt_status->isNew()){
+	            				$sql_status_flag_fields.= "status" . $nt_status->getId() . ".flag as status" . $nt_status->getId() . "_flag, ";
+	            				$sql_status_flag_fields.= "in_status" . $nt_status->getId() . ".flag as in_status" . $nt_status->getId() . "_flag, ";
+	            				$sql_status_joins.= "
+		                            LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = " . $nt_status->getId() . " )
+		                                status" . $nt_status->getId() . " ON status" . $nt_status->getId() . ".deck = c.deck
+		                            LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = " . $nt_status->getId() . " )
+		                                in_status" . $nt_status->getId() . " ON in_status" . $nt_status->getId() . ".deck = c.deck AND in_status" . $nt_status->getId() . ".number = c.number ";
+	            			}
+	            		}
                         $sql = "SELECT 
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck) as collect_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck) as keep_flag,
-                                	EXISTS (SELECT 1 FROM decks_master WHERE member = ".$compare_user_id." and deck = c.deck) as mastered_flag,
-                                	EXISTS (SELECT 1 FROM members_wishlist WHERE member_id = ".$compare_user_id." and deck_id = c.deck) as wishlist_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id = $status_id_collect and deck = c.deck AND number = c.number) as in_collect_flag,
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and status_id IN($status_ids_not_tradeable_str) and deck = c.deck AND number = c.number) as in_keep_flag
-                                	EXISTS (SELECT 1 FROM cards WHERE owner = ".$compare_user_id." and deck = c.deck AND number = c.number) as owned_flag
-                                    FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c ";
-                        break;
-                    default:
-                        $sql = "SELECT collect.flag as collect_flag, keep.flag as keep_flag, wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, in_keep.flag as in_keep_flag, in_collect.flag as in_collect_flag, owned.flag as owned_flag
-                                    FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
-                                        collect ON collect.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
-                                        keep ON keep.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$compare_user_id.")
-                                        mastered ON mastered.deck = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$compare_user_id.")
-                                        wishlist ON wishlist.deck_id = c.deck
-                                    LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id = $status_id_collect)
-                                        in_collect ON in_collect.deck = c.deck AND in_collect.number = c.number
-                                    LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str))
-                                        in_keep ON in_keep.deck = c.deck AND in_keep.number = c.number 
-                                    LEFT JOIN (SELECT DISTINCT deck, number, 1 as flag FROM cards WHERE owner = ".$compare_user_id.")
-                                        owned ON owned.deck = c.deck AND owned.number = c.number ";
+									$sql_status_flag_fields wishlist.flag as wishlist_flag, mastered.flag as mastered_flag, owned.flag as owned_flag, 
+									not_tradeable.flag as not_tradeable_flag, in_not_tradeable.in_not_tradeable_flag
+								FROM (SELECT  ".$this->deck." as deck, ".$this->number." as number) c 
+								$sql_status_joins
+								LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM decks_master WHERE member = ".$compare_user_id.") 
+									mastered ON mastered.deck = c.deck 
+								LEFT JOIN (SELECT DISTINCT deck_id, 1 as flag FROM members_wishlist WHERE member_id = ".$compare_user_id.") 
+									wishlist ON wishlist.deck_id = c.deck 
+								LEFT JOIN (SELECT DISTINCT deck, number, 1 as flag FROM cards WHERE owner = ".$compare_user_id.") 
+									owned ON owned.deck = c.deck AND owned.number = c.number 
+								LEFT JOIN (SELECT DISTINCT deck, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str) )
+	                                not_tradeable ON not_tradeable.deck = c.deck
+								LEFT JOIN (SELECT DISTINCT deck, number, status_id, 1 as flag FROM cards WHERE owner = ".$compare_user_id." AND status_id IN($status_ids_not_tradeable_str) )
+	                                in_not_tradeable ON in_not_tradeable.deck = c.deck AND in_not_tradeable.number = c.number";
                         break;
                 }
-            }
+            
             $req = $this->db->query($sql);
-            $card = $req->fetch(PDO::FETCH_ASSOC);
-            if($card !== false){
-                $this->setPropValues($card);
+            $card_values = $req->fetch(PDO::FETCH_ASSOC);
+            if($card_values !== false){
+                $this->setPropValues($card_values);
+                //flags
+                foreach($card_stati as $nt_status){
+                	// do not flag for status new
+                	if(!$nt_status->isNew()){
+                		if(isset($card_values['status'.$nt_status->getId().'_flag']) AND $card_values['status'.$nt_status->getId().'_flag'] == 1){                			
+                			// in case current status is for collections
+                			if($nt_status->isCollections()){
+                				$this->setPropValues(['collect_flag'=>1]);
+                			}else{
+                				$this->setCustomFlagIds($nt_status->getId());
+                			}
+                		}
+                		if(isset($card_values['in_status'.$nt_status->getId().'_flag']) AND $card_values['in_status'.$nt_status->getId().'_flag'] == 1){
+                			// in case current status is for collections
+                			if($nt_status->isCollections()){
+                				$this->setPropValues(['in_collect_flag'=>1]);
+                			}else{
+                				$this->setCustomInFlagIds($nt_status->getId());
+                			}
+                		}
+                	}
+                }
             }
             
             
         }else{
             // set all flags to 0;
-            $this->keep_flag = 0; // in untradebale status but not collection or new
-            $this->collect_flag = 0;
             $this->wishlist_flag = 0;
             $this->mastered_flag = 0;
-            $this->in_keep_flag = 0;
-            $this->in_collect_flag = 0;
             $this->owned_flag = 0;
+            $this->collect_flag = 0;
+            $this->in_collect_flag = 0;
+            $this->not_tradeable_flag = 0;
+            $this->in_not_tradeable_flag = 0;
         }
         return $this;
     }
@@ -240,17 +288,15 @@ class CardFlagged extends Card {
     
     public function getSortingOptions(){
         $options = array();
-        $options[] = array('name'=>'','value'=>'','prop_selected'=>false);
         
         $option_selected = false;
         // go throug statis (from highest to lowest priority)
-        foreach(array_reverse(self::getAcceptedStatiObj()) as $key=>$status){
+        foreach(array_reverse(self::getAcceptedStatiObj()) as $status){
             $option = array();
             // skip if card status id = select status id -> dont show current status as option
             // or skip if card status is not new (only pre select options there)
             if($this->getStatusId() != $status->getId() AND !$status->isNew()){
             	
-            		
             	$option['name'] = $status->getName();
             	$option['value'] = $status->getId();
             	$option['prop_selected'] = false;
@@ -266,7 +312,7 @@ class CardFlagged extends Card {
             		}
             		// KEEP - UNTRADEABLES
             		// select status is not collections and untradeable and card is missing in this untradeable status
-            		if(!$status->isCollections() AND !$status->isTradeable() AND $this->missingIn($status->getId()) ){
+            		if(!$status->isCollections() AND !$status->isTradeable() AND $this->missingIn($status->getId())  ){
             			$option_selected = true;
             			$option['prop_selected'] = true;
             		}
@@ -282,11 +328,17 @@ class CardFlagged extends Card {
             	$options[] = $option;
             }
         }
-        return $options;
+        // no other option fits and deck is mastered pre select lowest priority category
+        if($option_selected AND $this->mastered() ){
+        	$options[(count($options)-1)]['prop_selected'] = true;
+        }
+        // insert empty option
+        $options[] = array('name'=>'','value'=>'','prop_selected'=>false);
+        
+        return array_reverse($options);
     } 
     
     public function getSortingOptionsHTML(){
-    	
         $html = '';
         foreach($this->getSortingOptions() as $option){
             $html.= '<option value="'.$option['value'].'"';
@@ -297,5 +349,25 @@ class CardFlagged extends Card {
         }
         return $html;
     }
+    
+    
+    public function getFlags() {
+    	$flags = array();
+    	foreach($this->custom_flags as $name => $value){
+    		if($value == 1){
+    			$flags[$name] = $value;
+    		}
+    	}
+    	$flags['not_tradeable_flag'] = $this->not_tradeable_flag;
+    	$flags['collect_flag'] = $this->collect_flag;
+    	$flags['in_not_tradeable_flag'] = $this->in_not_tradeable_flag;
+    	$flags['in_collect_flag'] = $this->in_collect_flag;
+    	$flags['wishlist_flag'] = $this->wishlist_flag;
+    	$flags['mastered_flag'] = $this->mastered_flag;
+    	$flags['owned_flag'] = $this->owned_flag;
+    	
+    	return $flags;
+    }
+    
     
 }

@@ -27,7 +27,7 @@
 	                <?php } foreach($g_cards as $card){ ?>
 		                <option value="<?php echo $card->getId(); ?>" data-url="<?php echo $card->getImageUrl(); ?>">
 		                	<?php if($card->missingInCollect() AND !$card->owned()){ echo '&star; '; } ?>
-		                	<?php if($card->missingInKeep() AND !$card->owned()){ echo '&#11048; '; } ?>
+		                	<?php if($card->missingInNotTradeable() AND !$card->owned()){ echo '&#11048; '; } ?>
 		                	<?php if($card->onWishlist() AND !$card->owned()){ echo '&#9825; '; } ?>
 		                	<?php if($card->mastered()){ echo '&#10680; '; } ?>
 		                	<?php echo $card->getName(); if($card->getPossessionCounter() > 1){ echo ' ('.$card->getPossessionCounter().')'; }  ?>

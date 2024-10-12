@@ -21,7 +21,7 @@
 			<i class="fas fa-sync-alt h1"></i>
 			<div class="text-center d-inline-block">
 				<div class="d-inline-block card-member-profil <?php 
-				if($trade->getOfferedCard()->missingInKeep() AND !$trade->getOfferedCard()->owned()){ echo " card-missing-keep"; } 
+				if($trade->getOfferedCard()->missingInNotTradeable() AND !$trade->getOfferedCard()->owned()){ echo " card-missing-keep"; } 
 				if($trade->getOfferedCard()->missingInCollect() AND !$trade->getOfferedCard()->owned()){ echo " card-missing-collect"; }
 				if($trade->getOfferedCard()->onWishlist()AND !$trade->getOfferedCard()->owned()){ echo " card-missing-wishlist"; } 
     				if($trade->getOfferedCard()->mastered()){ echo " card-mastered"; } ?>">

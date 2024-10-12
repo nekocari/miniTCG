@@ -6,7 +6,7 @@
     </div>
     <?php foreach($cat_elements as $card){ ?>
         <div class="d-inline-block card-member-profil <?php 
-        if($card->missingInKeep() AND !$card->owned()){ echo " card-missing-keep"; }
+        if($card->missingInNotTradeable() AND !$card->owned()){ echo " card-missing-keep"; }
         if($card->missingInCollect() AND !$card->owned()){ echo " card-missing-collect"; }
         if($card->onWishlist() AND !$card->owned()){ echo " card-missing-wishlist"; } 
         if($card->mastered()){ echo " card-mastered"; } 

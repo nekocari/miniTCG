@@ -31,6 +31,16 @@ class CardStatus extends DbRecordModel {
     }
     
     /**
+     * retuns all Elements from Database
+     * @param array $order_settings [fieldname=>direction]
+     * @param int $limit optional limit settings
+     * @return CardStatus[]
+     */
+    public static function getAll($order_settings=['position'=>'ASC'],$limit=null){
+    	return parent::getAll($order_settings, $limit);
+    }
+    
+    /**
      * retuns the status ment for new cards
      * @return CardStatus
      */

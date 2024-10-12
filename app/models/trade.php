@@ -256,8 +256,7 @@ class Trade extends DbRecordModel {
     }
     public function getOfferedCard() {
         if(!$this->offered_card_obj instanceof CardFlagged){
-            $card = new CardFlagged();
-            $card->setPropValues(['id'=>$this->offered_card]);
+            $card = CardFlagged::getById($this->offered_card);
             $this->offered_card_obj = $card->flag($this->recipient_id);
         }
         return $this->offered_card_obj;
@@ -270,8 +269,7 @@ class Trade extends DbRecordModel {
     }
     public function getRequestedCard() {
         if(!$this->requested_card_obj instanceof CardFlagged){
-            $card = new CardFlagged();
-            $card->setPropValues(['id'=>$this->requested_card]);
+            $card = CardFlagged::getById($this->requested_card);
             $this->requested_card_obj = $card->flag($this->offerer_id);
         }
         return $this->requested_card_obj;

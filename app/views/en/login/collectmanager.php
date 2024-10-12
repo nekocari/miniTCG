@@ -2,7 +2,7 @@
 
 <p class="text-center">
 <?php foreach(Card::getAcceptedStatiObj() as $status){ ?>
-	<a class="btn btn-outline-secondary" href="<?php echo Routes::getUri('member_cardmanager')."?status=".$status->getId(); ?>"><?php echo strtoupper($status->getName()); ?></a>
+	<a class="btn btn-outline-dark" href="<?php echo Routes::getUri('member_cardmanager')."?status=".$status->getId(); ?>"><?php echo strtoupper($status->getName()); ?></a>
 <?php } ?>
 </p>
 

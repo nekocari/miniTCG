@@ -181,7 +181,7 @@ class Member extends DbRecordModel {
     			$group = 'general';
     			if($card->mastered()){ $group =  'mastered'; }
     			if($card->onWishlist() AND !$card->owned()){ $group =  'wishlist'; } 
-    			if($card->missingInKeep() AND !$card->owned()){ $group =  'keep'; } 
+    			if($card->missingInNotTradeable() AND !$card->owned()){ $group =  'keep'; } 
     			if($card->missingInCollect() AND !$card->owned()){ $group = 'collect'; }
 	    		$this->tradeable_cards[$group][] = $card;
     		}

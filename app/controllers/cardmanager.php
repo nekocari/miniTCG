@@ -14,7 +14,7 @@ class CardmanagerController extends AppController {
     public function cardmanager() {
         
     	$this->redirectNotLoggedIn();
-    	$cardmanager = new Cardmanager($this->login()->getUser(),'join'); // if join runs slow, try using exists
+    	$cardmanager = new Cardmanager($this->login()->getUser(),'exists'); // if exits runs slow, try using join
         
         // a card status was selected and is valid then set as status
         if(isset($_GET['status']) AND array_key_exists($_GET['status'], Card::getAcceptedStati())){
