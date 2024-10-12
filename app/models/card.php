@@ -90,7 +90,6 @@ class Card extends DbRecordModel {
         $req->execute($sql_where['param_array']);
         foreach ($req->fetchAll(PDO::FETCH_CLASS,__CLASS__) as $card){
         	$duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
-        	$duplicates[] = ['card'=>$card,'possessionCounter'=>$card->counter];
         }
         return $duplicates;
     }
