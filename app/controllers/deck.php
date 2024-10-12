@@ -248,6 +248,7 @@ class DeckController extends AppController{
             if($deck instanceof Carddeck){
                 try{
                     $deck->setPropValues($_POST);
+                    $deck->setPropValues(['description_html'=>NULL]);
                     $deck->update();
                     if($deck->getSubcategory()->getId() != $_POST['subcategory']){
                         $relation = DeckSubcategory::getByUniqueKey('deck_id', $deck->getId());
