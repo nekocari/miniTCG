@@ -40,12 +40,22 @@ class CardFlagged extends Card {
      * @return boolean
      */
     public function missingInNotTradeable(){
-        if($this->missingInCollect() OR $this->not_tradeable_flag == 0 OR $this->in_not_tradeable_flag == 1){
-            return false;
-        }else{
-            return true;
-        }
+    	if($this->missingInCollect() OR $this->not_tradeable_flag == 0 OR $this->in_not_tradeable_flag == 1){
+    		return false;
+    	}else{
+    		return true;
+    	}
     }
+    
+    /**
+     * @deprecated
+     * keep was replaced with not tradeable categories
+     * @return boolean
+     */
+    public function missingInKeep(){
+    	return $this->missingInNotTradeable();
+    }
+    
     /**
      * Is card missing in collection?
      * @return boolean
@@ -81,6 +91,14 @@ class CardFlagged extends Card {
     	}else{
     		return true;
     	}
+    }
+    /**
+     * @deprecated
+     * keep was replaced with not tradeable categories
+     * @return boolean
+     */
+    public function deckInKeep(){
+    	return $this->deckInNotTradeable();
     }
     /**
      * is this deck currently beeing collected?
@@ -312,7 +330,7 @@ class CardFlagged extends Card {
             		}
             		// KEEP - UNTRADEABLES
             		// select status is not collections and untradeable and card is missing in this untradeable status
-            		if(!$status->isCollections() AND !$status->isTradeable() AND $this->missingIn($status->getId())  ){
+            		if(!$status->isCollections() AND !$status->isTradeable() AND $this->missingIn($status->getId()) AND ($this->getStatus()->isNew() OR $this->isTradeable()) ){
             			$option_selected = true;
             			$option['prop_selected'] = true;
             		}

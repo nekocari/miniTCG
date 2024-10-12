@@ -285,9 +285,8 @@ class Card extends DbRecordModel {
     public function isTradeable() {
         if(is_null($this->is_tradeable)){
             $this->is_tradeable = false;
-            if($this->getStatus()){
-                // TODO: make use of: Trade::getWhere($condition)?
-                $query = 'SELECT count(*) FROM trades WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
+            if($this->getStatus()->isTradeable()){
+                $query = 'SELECT count(*) FROM '.Trade::getDbTableName().' WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
                 $trades = $this->db->query($query)->fetchColumn();
                 if($trades == 0){
                     $this->is_tradeable = true;
