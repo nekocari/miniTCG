@@ -73,13 +73,13 @@ class Game extends DbRecordModel {
     	$last_game = new DateTimeImmutable($this->date,new DateTimeZone(DEFAULT_TIMEZONE));
     	
     	if($this->getGameSettings()->getWaitTime() === false){
-    		$start_today_time = new DateTime('now',new DateTimeZone(DEFAULT_TIMEZONE)); // todays date
+    		$start_today_time = new DateTime('now',new DateTimeZone($this->getMember()->getTimezone())); // todays date
     		$start_today_time->setTime(0, 0, 0); // set time to midnight
     		if($last_game < $start_today_time){
     			$minutes_to_wait = 0;
     		}else{
-    			$interval = $start_today_time->diff((new DateTime('tomorrow',new DateTimeZone($this->member_obj->getTimezone())))->setTime(0,0,0));
-    			$minutes_to_wait = $interval->format('%i');
+    			$tomorrow = (new DateTime('tomorrow',new DateTimeZone($this->getMember()->getTimezone())))->setTime(0,0,0);
+    			$minutes_to_wait = max(0 , ceil(($tomorrow->getTimestamp() - (new DateTime('now',new DateTimeZone(DEFAULT_TIMEZONE)))->getTimestamp()) / 60));
     		}
     	}
     	else{
@@ -238,7 +238,7 @@ class Game extends DbRecordModel {
                     return false;
                     break;
             }
-            $this->setDate((new DateTimeImmutable('now'))->format('c'));
+            $this->setDate((new DateTimeImmutable('now',new DateTimeZone(DEFAULT_TIMEZONE)))->format('c'));
             $this->update();
             return $game_reward;
             
