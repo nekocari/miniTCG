@@ -41,7 +41,7 @@
     
     
     // no need to edit here -------------------------------------------------------------------------------------
-    define('APP_VERSION','v1.3.1.1 beta');
+    define('APP_VERSION','v1.3.1.2 beta');
     define('PATH', dirname(__FILE__).'/../'); 					// relative path
     define('DEFAULT_FOLDER_PAGES','app/views/[lang]/pages/'); 	// default path for pages without controller setup
     define('SERVER_URL', $_SERVER['SERVER_NAME']);				// current server

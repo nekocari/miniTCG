@@ -333,7 +333,7 @@ class AdminController extends AppController {
 		try{
 			$file_path = $_POST['del_page'];
 			if(file_exists($file_path) and unlink($file_path)){
-				$this->layout()->addSystemMessage('success', 'file_deleted');
+				$this->layout()->addSystemMessage('success', 'element_deleted');
 			}
 		}
 		catch (Exception $e){
