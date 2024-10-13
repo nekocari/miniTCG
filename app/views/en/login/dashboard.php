@@ -34,6 +34,12 @@
 		</a>
 	</div>
 	<div class="col-6 col-md-4 text-center p-4">
+		<a class="btn btn-outline-dark w-100" href="<?php echo Routes::getUri('member_wishlist');?>">
+			<i class="fas fa-heart h1"></i><br>
+			Wishlist
+		</a>
+	</div>
+	<div class="col-6 col-md-4 text-center p-4">
 		<a class="btn btn-outline-dark w-100" href="<?php echo Routes::getUri('game');?>">
 			<i class="fas fa-gamepad h1"></i><br>
 			Games

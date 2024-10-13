@@ -9,7 +9,7 @@
 
 class MemberWishlistEntry extends DbRecordModel {
     
-    protected $member_id, $deck_id;
+    protected $id, $member_id, $deck_id, $date, $utc;
     private $member_obj, $deck_obj;
     
     protected static
@@ -19,6 +19,14 @@ class MemberWishlistEntry extends DbRecordModel {
         $sql_order_by_allowed_values = array('id','date','utc');
     
 
+    /**
+     * @param int $id
+     * @return MemberWishlistEntry|NULL
+     */
+	public static function getById($id){
+		return parent::getByPk($id);
+	}
+	
 	/**
 	 * @param int $id 
 	 * @return MemberWishlistEntry[]
@@ -46,6 +54,10 @@ class MemberWishlistEntry extends DbRecordModel {
 		return false;
 	}
 	
+	public function getId(){
+		return $this->id;
+	}
+	
 	public function getMemberId() {
 		return $this->member_id;
 	}
@@ -62,10 +74,15 @@ class MemberWishlistEntry extends DbRecordModel {
 	}
     
     public function getDeck() {
-        if(!$this->deck_ob instanceof Carddeck){
+        if(!$this->deck_obj instanceof Carddeck){
             $this->deck_obj = Carddeck::getById($this->deck_id);
         }
         return $this->deck_obj;
+    }
+    
+    public function getDate() {
+    	$date = new DateTime($this->date);
+    	return $date->format('d.m.Y');
     }
     
     

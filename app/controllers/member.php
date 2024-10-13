@@ -146,18 +146,18 @@ class MemberController extends AppController {
     	$this->redirectNotLoggedIn();
     	
     	if(isset($_POST['delete'])){
-    		$wish = MemberWishlistEntry::getById();
-    		if($wish instanceof MemberWishlistEntry){
+    		$wish = MemberWishlistEntry::getById($_POST['delete']);
+    		if($wish instanceof MemberWishlistEntry AND $wish->getMemberId() == $this->login()->getUserId() ){
     			if($wish->delete()){
-    				$this->layout()->addSystemMessage('success', 'wishlist_deck_deleted');
+    				$this->layout()->addSystemMessage('success', 'wishlist_del_success');
     			}
     		}
     	}
     	
-    	$list = new MemberWishlist();
-    	$list->setMember($this->login()->getUser());
+    	$list = new Wishlist($this->login()->getUserId());
+    	$list->setViewer($this->login()->getUser());
     	
-    	$data['list'] = $list;
+    	$data['wishlist'] = $list;
     	
     	$this->layout()->render('member/wishlist.php',$data);
     	

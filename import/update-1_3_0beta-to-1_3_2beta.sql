@@ -11,3 +11,6 @@ ALTER TABLE `shop_cards` CHANGE `utc` `utc` TIMESTAMP NOT NULL;
 ALTER TABLE `tradelog` CHANGE `utc` `utc` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE `trades` CHANGE `utc` `utc` TIMESTAMP NOT NULL;
 ALTER TABLE `updates` CHANGE `utc` `utc` TIMESTAMP NOT NULL;
+
+-- add new route for wishlist
+INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('member_wishlist', 'member/wishlist.php', 'Member', 'wishlist', 'get|post', '0')
