@@ -336,7 +336,7 @@ class CardFlagged extends Card {
             		}
             		// trade might - TRADEABLES
             		// select status is not collections and tradeable and at least one card of deck is in status
-            		if(!$status->isCollections() AND $status->isTradeable() AND $this->deckInStatus($status->getId()) ){
+            		if(!$status->isCollections() AND $status->isTradeable() AND $this->deckInStatus($status->getId()) AND ($this->getStatus()->isNew() OR !$this->deckInNotTradeable()) ){
             			$option_selected = true;
             			$option['prop_selected'] = true;
             		}
