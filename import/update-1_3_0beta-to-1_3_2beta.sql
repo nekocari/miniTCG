@@ -13,4 +13,6 @@ ALTER TABLE `trades` CHANGE `utc` `utc` TIMESTAMP NOT NULL;
 ALTER TABLE `updates` CHANGE `utc` `utc` TIMESTAMP NOT NULL;
 
 -- add new route for wishlist
-INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('member_wishlist', 'member/wishlist.php', 'Member', 'wishlist', 'get|post', '0')
+INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `deletable`) VALUES ('member_wishlist', 'member/wishlist.php', 'Member', 'wishlist', 'get|post', '0');
+-- allow post on pages list
+UPDATE `routing` SET `method` = 'get|post' WHERE `routing`.`identifier` = 'admin_pages';

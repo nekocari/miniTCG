@@ -9,6 +9,31 @@
 
 <?php echo $this->renderMessage('info','Selbst erstellte Seiten haben <b>keine Route</b>! Weitere Infos im <a target="_blank" href="https://github.com/nekocari/miniTCG/wiki/Add-a-new-page">Wiki auf GitHub</a>.'); ?>
 
+<form method="post" action="">
+	<div class="row">
+		<div class="col-12 col-md">
+			<div class="input-group">
+				<div class="input-group-text">neue Seite:</div>
+				<input class="form-control" type="text" name="filename" value="" placeholder="dateiname" pattern="[a-z0-9_\-]+">
+				<div class="input-group-text">.php</div>
+			</div>
+		</div>
+		<div class="col-12 col-md">
+			<div class="input-group">
+				<div class="input-group-text">Sprache:</div>
+				<select class="form-select" name="lang">
+					<?php foreach(SUPPORTED_LANGUAGES as $key => $lang){ ?>
+						<option value="<?php echo $key; ?>"><?php echo $lang; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+		</div>
+		<div class="col-12 col-md">
+			<button class="btn btn-primary" type="submit" name="add_page" value="1">anlegen</button>
+		</div>
+	</div>
+</form>
+
 <div class="table-responsive">
 
     <table class="table table-striped">
@@ -25,6 +50,12 @@
                 <td><?php echo SUPPORTED_LANGUAGES[$page['language']]; ?></td>
                 <td><?php echo $page['filename']; ?></td>
                 <td class="text-right">
+                    <form class="d-inline" method="POST" action="">
+                        <button class="btn btn-sm btn-danger" name="del_page" value="<?php echo $page['path']; ?>" type="submit"
+                        onclick="return confirm('Sicher?')">
+                            <i class="fas fa-times"></i> <span class="d-none d-md-inline">löschen</span>
+                        </button>
+                    </form>
                     <form class="d-inline" method="POST" action="<?php echo ROUTES::getUri('admin_pages_edit'); ?>">
                         <button class="btn btn-sm btn-primary" name="file_path" value="<?php echo $page['path']; ?>" type="submit">
                             <i class="fas fa-pencil-alt"></i> <span class="d-none d-md-inline">bearbeiten</span>

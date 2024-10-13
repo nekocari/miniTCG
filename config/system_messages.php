@@ -43,9 +43,17 @@
     		'en' => 'Changes saved.',
     		'de' => 'Änderungen gespeichert.'
     ]);
+    $sys_msg_text_handler->addCode('file_created', [
+    		'en' => 'A file was created.',
+    		'de' => 'Eine Datei wurde erstellt.'
+    ]);
     $sys_msg_text_handler->addCode('element_deleted', [
     		'en' => 'Element was deleted.',
     		'de' => 'Element wurde gelöscht.'
+    ]);
+    $sys_msg_text_handler->addCode('folder_not_found',[
+    		'en'=>'Folder not found.',
+    		'de'=>'Verzeichnis nicht gefunden.'
     ]);
     
     // SETTINGS
@@ -186,8 +194,7 @@
     $sys_msg_text_handler->addCode('template_not_found',[
     		'en'=>'Template not found.',
     		'de'=>'Template Pfad nicht gefunden'
-    ]);
-    
+    ]);   
     
     
     

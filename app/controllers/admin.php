@@ -241,6 +241,13 @@ class AdminController extends AppController {
     	$this->auth()->setRequirements('roles', ['Admin']);
     	//$this->auth()->setRequirements('rights', ['EditPages']);
     	$this->redirectNotAuthorized();
+    	
+    	if(isset($_POST['add_page'])){
+    		$this->pagesAdd();
+    	}
+    	if(isset($_POST['del_page'])){
+    		$this->pagesDelete();
+    	}
 		
 		$pages = array();
 		foreach(SUPPORTED_LANGUAGES as $lang_key => $lang_name){
@@ -277,6 +284,62 @@ class AdminController extends AppController {
 		$file['content'] = file_get_contents($file['path']);
 		
         $this->layout()->render('admin/pages/edit.php',['file'=>$file]);     
+	}
+	
+	private function pagesAdd() {
+		try{
+			if(empty($_POST['filename']) or !isset($_POST['lang'])){
+				$this->layout()->addSystemMessage('error', 'folder_not_found');
+				return false;
+			}
+			
+			// check if filename is valid
+			if(!preg_match('/^[\w\.]+$/', $_POST['filename'])){
+				$this->layout()->addSystemMessage('error', 'input_invalid_character');
+				return false;
+			}
+
+			$new_file_folder = str_replace('[lang]', strtolower($_POST['lang']), DEFAULT_FOLDER_PAGES);
+			// add slash if missing
+			if(substr($new_file_folder, strlen($new_file_folder)-1,1) != '/'){
+				$new_file_folder = $new_file_folder."/";
+			}
+			$new_file_path = $new_file_folder.strtolower($_POST['filename']).".php";
+			
+			// check if folder exists
+			if(!is_dir(substr($new_file_folder,0,-1))){
+				$this->layout()->addSystemMessage('error', 'folder_not_found');
+				return false;
+			}
+				
+			if(file_exists($new_file_path)){
+				$this->layout()->addSystemMessage('error', 'file_exists');
+				return false;
+			}
+			
+			$file = fopen($new_file_path, 'w');
+			fclose($file);
+			
+			$this->layout()->addSystemMessage('success', 'file_created');
+			return true;
+		}
+		catch (Exception $e){
+			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+			return false;
+		}		
+	}
+	
+	private function pagesDelete() {
+		try{
+			$file_path = $_POST['del_page'];
+			if(file_exists($file_path) and unlink($file_path)){
+				$this->layout()->addSystemMessage('success', 'file_deleted');
+			}
+		}
+		catch (Exception $e){
+			error_log($e->getMessage().PHP_EOL,3,ERROR_LOG);
+			return false;
+		}		
 	}
     
     

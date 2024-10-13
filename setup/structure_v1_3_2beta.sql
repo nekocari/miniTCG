@@ -453,7 +453,7 @@ INSERT INTO `routing` (`identifier`, `url`, `controller`, `action`, `method`, `d
 ('admin_member_manage_rights', 'admin/members/manage_rights.php', 'Admin', 'manageRights', 'get|post', '0'),
 ('admin_member_reset_password', 'admin/members/reset_password.php', 'Admin', 'resetPassword', 'get|post', '0'),
 ('admin_member_search', 'admin/members/search.php', 'Admin', 'searchMember', 'get|post', '0'),
-('admin_pages', 'admin/pages/list.php', 'Admin', 'pagesIndex', 'get', '0'),
+('admin_pages', 'admin/pages/list.php', 'Admin', 'pagesIndex', 'get|post', '0'),
 ('admin_pages_edit', 'admin/pages/edit.php', 'Admin', 'pagesEdit', 'get|post', '0'),
 ('admin_routes_add', 'admin/routes/add.php', 'Admin', 'addRoute', 'get|post', '0'),
 ('admin_routes_edit', 'admin/routes/edit.php', 'Admin', 'editRoute', 'get|post', '0'),
