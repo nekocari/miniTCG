@@ -162,7 +162,7 @@ class Member extends DbRecordModel {
      */
     public function getProfilCardsByStatus($status_id, $only_tradeable = true){
     	if(!isset($this->profil_cards[$status_id])){
-    		$this->profil_cards[$status_id] = CardFlagged::getMemberCardsByStatus($this->getId(), $status_id, true);
+    		$this->profil_cards[$status_id] = CardFlagged::getMemberCardsByStatus($this->getId(), $status_id, $only_tradeable);
     	}
     	return $this->profil_cards[$status_id];
     }
