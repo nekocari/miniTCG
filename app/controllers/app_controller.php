@@ -20,6 +20,7 @@ class AppController {
     	MemberOnline::truncate();
         $this->login = new Login();
         $this->layout = new Layout($this->login);
+        $this->layout->addCssFile('miniTCG.css');
         $this->layout->addCssFile('fontawesome5.min.css');
         $this->layout->addJsFile('util.js');
         $this->auth = new Authorization($this->login);

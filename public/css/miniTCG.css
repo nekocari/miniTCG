@@ -1,0 +1,122 @@
+:root{
+	/* color values for card highlighting (light mode)- using Bootstrap CSS vars to ajust to any custom color theme */
+	--collect: var(--bs-success);
+	--keep: var(--bs-warning);
+	--wishlist: var(--bs-primary);
+}
+
+[data-bs-theme='dark'] {
+	/* color values for card highlighting (dark mode) - using Bootstrap CSS vars to ajust to any custom color theme */
+	--collect: var(--bs-success);
+	--keep: var(--bs-warning-text-emphasis);
+	--wishlist: var(--bs-primary);
+}
+
+/* decknames default style - uppercase with light grey brackets */
+.deckname {
+	text-transform: uppercase;
+}
+.deckname::before, .deckname::after {
+	color: var(--bs-border-color-translucent);
+}
+.deckname:before {
+	content: "[";
+}
+.deckname:after {
+	content: "]";
+}
+
+/* card images default style */
+.cardimage, .mastercardimage  {
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: center center;
+	margin: 2px;
+	vertical-align: bottom;
+}
+
+/* default border style for card highlighting */
+.card-cardmanager {
+	border-radius: var(--bs-border-radius);
+	border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color-translucent);
+	padding: var(--bs-border-radius);
+}
+.card-member-profil, .shop-card-image {
+	border-radius: var(--bs-border-radius);
+	border: var(--bs-border-width) var(--bs-border-style) transparent;
+	background-color: transparent;
+	padding: var(--bs-border-radius);
+	margin: calc(var(--bs-border-radius) * 1.25);
+	position: relative; /* important for badge positioning! */
+}
+
+/* default positions for badges on cards */
+.card-member-profil .badge {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+
+/* Card Highlighting Backgrounds depending on vars (at the top) */
+
+/* Light Mode */
+.card-missing-wishlist {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--wishlist);
+	border-color: var(--wishlist);
+}
+
+.card-missing-collect {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--collect);
+	border-color: var(--collect);
+}
+
+.card-missing-keep {
+	background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75) 100%);
+	background-color: var(--keep);
+	border-color: var(--keep);
+}
+
+.card-mastered {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(0,0,0,0.05);
+}
+
+.card-mastered.card-missing-keep, 
+.card-mastered.card-missing-collect, 
+.card-mastered.card-missing-wishlist {
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7) 6px, rgba(255,255,255,0.75) 6px, rgba(255,255,255,0.75) 12px);
+	border-color: rgba(0,0,0,0.05);
+}
+
+/* Dark Mode */
+[data-bs-theme='dark'] [class*=' card-missing-'],
+[data-bs-theme='dark'] [class^='card-missing-'] {
+	background-image: linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,0.75) 100%);
+}
+
+[data-bs-theme='dark'] .card-mastered {
+	background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04) 6px, transparent 6px, transparent 12px);
+	border-color: rgba(255,255,255,0.05);
+}
+
+[data-bs-theme='dark'] .card-mastered.card-missing-keep, 
+[data-bs-theme='dark'] .card-mastered.card-missing-collect,
+[data-bs-theme='dark'] .card-mastered.card-missing-wishlist {
+	background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6px, rgba(0,0,0,0.75) 6px, rgba(0,0,0,0.75) 12px);
+	border-color: rgba(255,255,255,0.05);
+}
+
+/* rotate elements for use in administration */
+.text-deg80 {
+    transform: rotate(-80deg);
+    -moz-transform: rotate(-80deg);
+    -webkit-transform: rotate(-80deg);
+    -o-transform: rotate(-80deg);
+    -ms-transform: rotate(-80deg);
+    display: inline-block;
+    position: relative;
+    width: 40px;
+}
