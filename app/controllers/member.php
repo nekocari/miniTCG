@@ -54,7 +54,11 @@ class MemberController extends AppController {
             	$partial_uri = 'member/profil/master.php';
                 break;
             default:
-            	$cat_elements = $member->getProfilCardsByStatus($cat->getId(), false);            	
+            	if(!isset($_GET['filter']) OR $_GET['filter'] != 'needed'){
+            		$cat_elements = $member->getProfilCardsByStatus($cat->getId(), false);
+            	}else{
+            		$cat_elements = $member->getNeededProfilCardsByStatus($cat->getId(), $this->login()->getUserId(), false);
+            	}
             	if(!$cat->isCollections()){
             		// not collections
             		$pagination = new Pagination($cat_elements, 30,$member->getProfilLink().'&cat='.$cat->getId());

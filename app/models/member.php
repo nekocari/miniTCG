@@ -168,6 +168,19 @@ class Member extends DbRecordModel {
     }
     
     /**
+     * 
+     * @param unknown $status_id
+     * @param boolean $only_tradeable
+     * @return unknown
+     */
+    public function getNeededProfilCardsByStatus($status_id, $compare_member_id, $only_tradeable = true){
+    	if(!isset($this->profil_cards['needed'][$status_id]) OR is_null($this->profil_cards['needed'][$status_id])){
+    		$this->profil_cards['needed'][$status_id] = CardFlagged::getNeededMemberCardsByStatus($this->getId(), $status_id, $compare_member_id, $only_tradeable);
+    	}
+    	return $this->profil_cards['needed'][$status_id];
+    }
+    
+    /**
      * retuns an array of flaggable cards
      * @param int $status_id
      * @param boolean $only_tradeable

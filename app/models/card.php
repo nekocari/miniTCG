@@ -117,17 +117,63 @@ class Card extends DbRecordModel {
     
     
     /**
-     * 
+     *
      * @param int $member_id
      * @param int $status_id
      * @param boolean $only_tradeable
      * @return Card[]
      */
     public static function getMemberCardsByStatus($member_id, $status_id, $only_tradeable = false) {
-    	$query = "SELECT c.* FROM ".self::getDbTableName()." c LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id 
+    	$query = "SELECT c.* FROM ".self::getDbTableName()." c LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id
 				WHERE owner = :owner AND status_id = :status_id ORDER BY d.deckname ASC, c.number ASC";
     	$req = Db::getInstance()->prepare($query);
     	$req->execute([':owner'=>$member_id,':status_id'=>$status_id]);
+    	$cards = array();
+    	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
+    		if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
+    			if(!key_exists($card->getName(), $cards)){
+    				$cards[$card->getName()] = $card;
+    			}else{
+    				$cards[$card->getName()]->possession_counter++;
+    			}
+    		}
+    	}
+    	return $cards;
+    }
+    
+    
+    /**
+     * 
+     * @param int $member_id
+     * @param int $status_id
+     * @param int $compare_member_id
+     * @param boolean $only_tradeable
+     * @param boolean $include_hidden
+     * @return Card[]
+     */
+    public static function getNeededMemberCardsByStatus($member_id, $status_id, $compare_member_id, $only_tradeable = true, $include_hidden = false) {
+    	$not_tradeable_status_arr = CardStatus::getAll();
+    	$not_tradeable_status_id_str = '';
+    	foreach($not_tradeable_status_arr as $status){
+    		if(!$status->isNew() AND ($status->isCollections() OR !$status->isTradeable()) AND ($include_hidden OR !$include_hidden AND $status->isPublic()) ){
+    			$not_tradeable_status_id_str.= $status->getId().',';
+    		}
+    	}
+    	$not_tradeable_status_id_str = substr($not_tradeable_status_id_str,0,-1);
+    	$query = "SELECT c.* FROM ".self::getDbTableName()." c 
+				LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id
+				JOIN (
+					SELECT DISTINCT deck FROM cards WHERE owner = :compare_id AND status_id IN ( $not_tradeable_status_id_str) 
+				) as need_decks ON need_decks.deck = c.deck
+				LEFT JOIN (
+					SELECT DISTINCT deck, number 
+					FROM cards WHERE owner = :compare_id
+				) as compare_cards ON compare_cards.deck = c.deck AND compare_cards.number = c.number
+				WHERE c.owner = :owner AND c.status_id = :status_id  AND compare_cards.number IS NULL
+				ORDER BY d.deckname ASC, c.number ASC";
+    	
+    	$req = Db::getInstance()->prepare($query);
+    	$req->execute([':owner'=>$member_id,':compare_id'=>$compare_member_id,':status_id'=>$status_id]);
     	$cards = array();
     	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
     		if(!$only_tradeable OR ($only_tradeable AND $card->isTradeable())){
