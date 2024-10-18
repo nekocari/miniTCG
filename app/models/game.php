@@ -90,6 +90,16 @@ class Game extends DbRecordModel {
     	return $minutes_to_wait;
     }
     
+    public function getTimeToWait($lang='en'){
+    	$minutes = $this->getMinutesToWait();
+    	$sys_msgs = SystemMessageTextHandler::getInstance();
+    	if($minutes < 60){
+    		return $minutes . "  " . $sys_msgs->getTextByCode('game_waiting_minutes',$lang);
+    	}else{
+    		return ' > ' . floor($minutes/60). ' ' . $sys_msgs->getTextByCode('game_waiting_hours',$lang);
+    	}
+    }
+    
     /**
      * @deprecated
      * @return number

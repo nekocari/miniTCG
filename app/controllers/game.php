@@ -42,7 +42,7 @@ class GameController extends AppController {
 	            }else{
 	                
 	                if(!$entry->isDailyGame()){
-	                	$link = $entry_game->getMinutesToWait().' '.$sys_msgs->getTextByCode('game_waiting_minutes',$this->login()->getUser()->getLang());
+	                	$link = $entry_game->getTimeToWait($this->login()->getUser()->getLang());
 	                }else{
 	                	$link = $sys_msgs->getTextByCode('game_waiting_tomorrow',$this->login()->getUser()->getLang());
 	                }

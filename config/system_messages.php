@@ -308,6 +308,10 @@
     		'en'=>'minutes waiting time',
     		'de'=>'Minuten warten'
     ]);
+    $sys_msg_text_handler->addCode('game_waiting_hours',[
+    		'en'=>'hours waiting time',
+    		'de'=>'Stunden warten'
+    ]);
     $sys_msg_text_handler->addCode('game_waiting_tomorrow',[
     		'en'=>'wait until tomorrow',
     		'de'=>'warte bis morgen'

@@ -64,10 +64,9 @@ class rps {
 		
 		if(this.roundsLeft == 0){
 			document.getElementById('game-buttons').innerText = '';
-			let end;
-			if(this.pointsCom <= this.pointsPlayer){ end = 'won'; }else
-			if(this.pointsCom >= this.pointsPlayer){ end = 'lost'; }else
-			{ end = 'tied'; }
+			let end = 'tied';
+			if(this.pointsCom < this.pointsPlayer){ end = 'won'; }
+			if(this.pointsCom > this.pointsPlayer){ end = 'lost'; }
 			document.getElementById('result-input').value = end;
 			let game=this;
 			setTimeout(function() { game.gameElement.submit() }, 250);
