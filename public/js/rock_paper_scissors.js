@@ -70,7 +70,7 @@ class rps {
 			{ end = 'tied'; }
 			document.getElementById('result-input').value = end;
 			let game=this;
-			setTimeout(function() { game.gameElement.submit() }, 1000);
+			setTimeout(function() { game.gameElement.submit() }, 250);
 		}
 		
 	}

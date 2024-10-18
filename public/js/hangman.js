@@ -95,7 +95,7 @@ class hangman {
                 document.getElementById('game-buttons').innerText = '';
                 document.getElementById('result-input').value = 'won';
                 let game=this;
-                setTimeout(function() { game.gameElement.submit() }, 1000);
+                setTimeout(function() { game.gameElement.submit() }, 250);
             }
 
         }else{
@@ -105,7 +105,7 @@ class hangman {
                 document.getElementById('game-buttons').innerText = '';
                 document.getElementById('result-input').value = 'lost';
                 let game=this;
-                setTimeout(function() { game.gameElement.submit() }, 1000);
+                setTimeout(function() { game.gameElement.submit() }, 250);
             }
         }
 		
