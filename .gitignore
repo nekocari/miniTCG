@@ -1,6 +1,7 @@
 .settings/
 .project
 .buildpath
+.gitignore
 .htaccess
 config/constants_web.php
 public/img/cards/_filler/*.gif
