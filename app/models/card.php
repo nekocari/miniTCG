@@ -146,11 +146,13 @@ class Card extends DbRecordModel {
      * @param int $member_id
      * @return Card[]
      */
-    public static function getMemberCardsTradeable($member_id) {
+    public static function getMemberCardsTradeable($member_id, $include_hidden = true) {
     	$tradeable_status_arr = CardStatus::getTradeable();
     	$tradeable_status_id_str = '';
     	foreach($tradeable_status_arr as $status){
-    		$tradeable_status_id_str.= $status->getId().',';
+    		if($include_hidden OR !$include_hidden AND $status->isPublic()){
+    			$tradeable_status_id_str.= $status->getId().',';
+    		}
     	}
     	$tradeable_status_id_str = substr($tradeable_status_id_str,0,-1);
     	
@@ -162,7 +164,6 @@ class Card extends DbRecordModel {
     	$req = Db::getInstance()->prepare($query);
     	$req->execute([':owner'=>$member_id,':status_id_str'=>$tradeable_status_id_str]);
     	$cards = array();
-    	
     	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
     		if(!key_exists($card->getName(), $cards)){
     			$cards[$card->getName()] = $card;
@@ -174,8 +175,8 @@ class Card extends DbRecordModel {
     }
     
     
-    /*
-     * @deprecated user update() instead
+    /**
+     * @deprecated use update() instead
      */
     public function store() {
         return parent::update();
@@ -281,10 +282,10 @@ class Card extends DbRecordModel {
     	return str_replace($tpl_placeholder, $replace, self::$tpl_html);    	
     }
     
-    public function isTradeable() {
+    public function isTradeable($include_hidden = true) {
         if(is_null($this->is_tradeable)){
             $this->is_tradeable = false;
-            if($this->getStatus()->isTradeable()){
+            if($this->getStatus()->isTradeable() AND (!$include_hidden AND $this->getStatus()->isPublic())){
                 $query = 'SELECT count(*) FROM '.Trade::getDbTableName().' WHERE (offered_card = '.$this->id.' OR requested_card = '.$this->id.') AND status = \'new\' ';
                 $trades = $this->db->query($query)->fetchColumn();
                 if($trades == 0){
