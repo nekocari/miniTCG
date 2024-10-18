@@ -151,6 +151,12 @@ class DeckType extends DbRecordModel {
     
     public function update() {
     	if($this->validate()){
+    		// check if deck size was changed
+    		$old_state = self::getById($this->getId());
+    		if($old_state->getSize() != $this->getSize()){
+    			// update all decks with new size
+    			$this->db->query("UPDATE " . Carddeck::getDbTableName() . " SET size = " . intval($this->getSize()) . " WHERE type_id = " . $this->getId());
+    		}
     		return parent::update();
     	}
     }
