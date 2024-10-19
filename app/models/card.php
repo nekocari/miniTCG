@@ -209,10 +209,10 @@ class Card extends DbRecordModel {
     	$query = "SELECT c.* FROM ".self::getDbTableName()." c 
 				LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id
 				LEFT JOIN ".Trade::getDbTableName()." t ON t.status = 'new' AND (offered_card = c.id OR requested_card = c.id)
-				WHERE owner = :owner AND status_id IN( :status_id_str ) AND t.id IS NULL 
+				WHERE owner = :owner AND status_id IN( $tradeable_status_id_str ) AND t.id IS NULL 
 				ORDER BY d.deckname ASC, c.number ASC";
     	$req = Db::getInstance()->prepare($query);
-    	$req->execute([':owner'=>$member_id,':status_id_str'=>$tradeable_status_id_str]);
+    	$req->execute([':owner'=>$member_id]);
     	$cards = array();
     	foreach($req->fetchAll(PDO::FETCH_CLASS,get_called_class()) as $card){
     		if(!key_exists($card->getName(), $cards)){

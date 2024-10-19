@@ -186,10 +186,10 @@ class Member extends DbRecordModel {
      * @param boolean $only_tradeable
      * @return CardFlagged[]
      */
-    public function getTradeableCards($flag_for_member_id = NULL){
+    public function getTradeableCards($flag_for_member_id = NULL, $include_hidden = true){
     	if(!is_null($flag_for_member_id) AND (!is_array($this->tradeable_cards) OR !$this->tradeable_cards[0] instanceof CardFlagged)){
     		$this->tradeable_cards = array('collect'=>array(),'keep'=>array(),'wishlist'=>array(),'general'=>array(),'mastered'=>array());
-    		foreach(CardFlagged::getMemberCardsTradeable($this->getId()) as $card){
+    		foreach(CardFlagged::getMemberCardsTradeable($this->getId(), $include_hidden) as $card){
     			$card->flag($flag_for_member_id);
     			$group = 'general';
     			if($card->mastered()){ $group =  'mastered'; }

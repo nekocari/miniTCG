@@ -121,7 +121,7 @@ class TradeController extends AppController {
                 // check if trade user is not logged in user
                 if($data['requested_card']->getOwner()->getId() != $this->login()->getUser()->getId()){
                     // get all tradeable cards from logged in user 
-                    $data['cards'] = $this->login()->getUser()->getTradeableCards($data['requested_card']->getOwner()->getId());
+                    $data['cards'] = $this->login()->getUser()->getTradeableCards($data['requested_card']->getOwner()->getId(),false);
                     //die(var_dump($data['cards']));
                     $this->layout()->render('trade/add.php',$data);
                     
