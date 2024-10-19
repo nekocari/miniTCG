@@ -272,7 +272,7 @@ CREATE TABLE `members` (
   `level` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
   `money` int(11) NOT NULL DEFAULT 0,
   `join_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `login_date` timestamp DEFAULT NULL,
+  `login_date` timestamp NULL DEFAULT NULL,
   `status` enum('pending','default','suspended') NOT NULL DEFAULT 'pending',
   `ip` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
