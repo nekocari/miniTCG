@@ -16,7 +16,7 @@ class AppController {
     protected static $output_header_types = ['html','json','image/gif','image/png','image/jpeg'];
     protected $layout, $login, $auth, $db;
     
-    public function __construct() {
+    public function __construct() { 
     	MemberOnline::truncate();
         $this->login = new Login();
         $this->layout = new Layout($this->login);
