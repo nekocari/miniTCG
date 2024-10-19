@@ -40,7 +40,6 @@
     <a class="nav-link <?php if($cat == 'master'){ echo 'active'; } ?>" href="<?php echo $member->getProfilLink().'&cat=master'; ?>">Master Karten</a>
   </li>
 </ul>
-<div class="text-end"><a href="<?php echo $_SERVER['REQUEST_URI'].'&filter=needed'; ?>" class="btn btn-sm btn-outline-secondary">nur benötigte Karten</a></div>
         
 <?php include $this->partial($partial_uri); ?>
 

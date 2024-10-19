@@ -11,7 +11,7 @@ class Card extends DbRecordModel {
     
     protected $id, $name, $deck, $number, $owner, $status_id, $date, $utc, $owner_obj, $deck_obj, $status;
     
-    private $is_tradeable, $counter;
+    private $is_tradeable, $counter, $possetion_counter;
     
     protected static 
         $db_table = 'cards',
@@ -160,18 +160,22 @@ class Card extends DbRecordModel {
     		}
     	}
     	$not_tradeable_status_id_str = substr($not_tradeable_status_id_str,0,-1);
-    	$query = "SELECT c.* FROM ".self::getDbTableName()." c 
+    	
+    	$query = "SELECT 
+    				c.*, IF(compare_wish.id, 1, 0) as wishlist_flag, IF(need_decks.deck, 1, 0) as in_not_tradeable_flag
+				FROM ".self::getDbTableName()." c 
 				LEFT JOIN ".Carddeck::getDbTableName()." d ON c.deck = d.id
-				JOIN (
+				LEFT JOIN (
 					SELECT DISTINCT deck FROM cards WHERE owner = :compare_id AND status_id IN ( $not_tradeable_status_id_str) 
 				) as need_decks ON need_decks.deck = c.deck
+				LEFT JOIN ".MemberWishlistEntry::getDbTableName()." as compare_wish ON compare_wish.member_id = :compare_id AND compare_wish.deck_id = c.deck
 				LEFT JOIN (
-					SELECT DISTINCT deck, number 
-					FROM cards WHERE owner = :compare_id
-				) as compare_cards ON compare_cards.deck = c.deck AND compare_cards.number = c.number
+					SELECT DISTINCT deck, number FROM ".self::getDbTableName()." WHERE owner = :compare_id
+				) as compare_cards ON (compare_cards.deck = need_decks.deck OR compare_cards.deck = compare_wish.deck_id) AND compare_cards.number = c.number
 				WHERE c.owner = :owner AND c.status_id = :status_id  AND compare_cards.number IS NULL
+				HAVING wishlist_flag = 1 OR in_not_tradeable_flag = 1 
 				ORDER BY d.deckname ASC, c.number ASC";
-    	
+    	// echo $query;
     	$req = Db::getInstance()->prepare($query);
     	$req->execute([':owner'=>$member_id,':compare_id'=>$compare_member_id,':status_id'=>$status_id]);
     	$cards = array();

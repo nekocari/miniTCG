@@ -1,4 +1,12 @@
-<div class="my-4">
+<div class="mt-2">
+
+<div class="text-end mb-2">
+	<?php if(!isset($_GET['filter'])){ ?>
+		<a href="<?php echo $member->getProfilLink().'&cat='.$cat->getId().'&filter=needed'; ?>" class="btn btn-sm btn-outline-secondary">needed cards only</a>
+	<?php }else{ ?>
+		<a href="<?php echo $member->getProfilLink().'&cat='.$cat->getId(); ?>" class="btn btn-sm btn-outline-secondary">remove filter</a>
+	<?php } ?>
+</div>
 
 <?php if(isset($cat_elements) AND count($cat_elements) ){  ?>
     <div class="alert alert-info" role="alert">
