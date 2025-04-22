@@ -2,7 +2,7 @@
 
 <hr>
 
-<div class="row">
+<div class="row container mx-auto">
 	<div class="col-6 col-md-4 text-center p-4">
 		<a class="btn btn-outline-dark w-100" href="<?php echo Routes::getUri('member_cardmanager');?>">
 			<i class="fas fa-folder-open h1"></i><br>
