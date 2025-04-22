@@ -43,7 +43,7 @@
 <p class="text-center mx-2">
 	<a class="btn btn-dark" href="<?php echo Routes::getUri('admin_member_index');?>">zurück zur Liste</a> 
 	&bull; <input class="btn btn-primary" type="submit" name="updateMemberdata" value="speichern">
-	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+	<input type="hidden" name="id" value="<?php echo intval($_GET['id']); ?>">
 </p>
 </form>
 
@@ -52,6 +52,6 @@
 <form method="post" action="" onsubmit="return confirm('Diese Aktion kann nicht rückgängig gemacht werden.\nFortfahren?');">
 	<p class="text-center">
     	<input class="btn btn-danger" type="submit" name="deleteMemberdata" value="Mitglied endgültig LÖSCHEN">
-    	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+    	<input type="hidden" name="id" value="<?php echo intval($_GET['id']); ?>">
     </p>
 </form>

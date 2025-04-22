@@ -43,7 +43,7 @@
 <p class="text-center mx-2">
 	<a class="btn btn-dark" href="<?php echo Routes::getUri('admin_member_index');?>">go back</a> 
 	&bull; <input class="btn btn-primary" type="submit" name="updateMemberdata" value="save">
-	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+	<input type="hidden" name="id" value="<?php echo intval($_GET['id']); ?>">
 </p>
 </form>
 
@@ -52,6 +52,6 @@
 <form method="post" action="" onsubmit="return confirm('This action can not be undone.\n Are you sure?');">
 	<p class="text-center">
     	<input class="btn btn-danger" type="submit" name="deleteMemberdata" value="DELETE member">
-    	<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+    	<input type="hidden" name="id" value="<?php echo intval($_GET['id']); ?>">
     </p>
 </form>

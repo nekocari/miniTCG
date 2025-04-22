@@ -44,6 +44,6 @@
 		<a class="btn btn-dark" href="<?php echo Routes::getUri('deck_update');?>">go back</a> 
 		<?php if(!$update->isPublic()){ ?>
 		&bull; <input class="btn btn-primary" type="submit" name="editUpdate" value="save"></p>
-		<input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+		<input type="hidden" name="id" value="<?php echo intval($_GET['id']); ?>">
 		<?php } ?>
 </form>

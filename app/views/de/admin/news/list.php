@@ -24,7 +24,7 @@
 		</div>
 		<div class="col-12 col-md py-md-0 py-1">
 			<div class="input-group input-group-sm">
-				<input class="form-control" type="text" name="search" value="<?php if(isset($_GET['search'])){ echo $_GET['search']; } ?>">
+				<input class="form-control" type="text" name="search" value="<?php if(isset($_GET['search'])){ echo htmlspecialchars($_GET['search']); } ?>">
 				<button class="btn btn-dark"><i class="fas fa-search "></i></button>
 			</div>
 		</div>

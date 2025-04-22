@@ -32,7 +32,7 @@
 		</div>
 		<div class="col-12 col-md py-md-0 py-1">
 			<div class="input-group input-group-sm">
-				<input class="form-control" type="text" name="search" list="game-list-data" value="<?php if(isset($_GET['search'])){ echo $_GET['search']; } ?>">
+				<input class="form-control" type="text" name="search" list="game-list-data" value="<?php if(isset($_GET['search'])){ echo htmlspecialchars($_GET['search']); } ?>">
 				<datalist id="game-list-data">
 					<?php foreach(GameSetting::getAll() as $gs){ ?>
 						<option><?php echo $gs->getName('de'); ?></option>
