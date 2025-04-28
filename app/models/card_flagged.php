@@ -304,7 +304,7 @@ class CardFlagged extends Card {
         return $this->possession_counter;
     }
     
-    public function getSortingOptions($preselect = false){
+    public function getSortingOptions(){
         $options = array();
         
         $option_selected = false;
@@ -361,7 +361,11 @@ class CardFlagged extends Card {
      * @param boolean $preselect
      * @return string
      */
-    public function getSortingOptionsHTML($preselect = false){
+    public function getSortingOptionsHTML(){
+    	$preselect = false;
+    	if(Setting::getByName('cardmanager_preselect')->getValue() == 1){
+    		$preselect = true;
+    	}
         $html = '';
         foreach($this->getSortingOptions() as $option){
             $html.= '<option value="'.$option['value'].'"';
