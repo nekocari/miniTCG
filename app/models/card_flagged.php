@@ -304,7 +304,7 @@ class CardFlagged extends Card {
         return $this->possession_counter;
     }
     
-    public function getSortingOptions(){
+    public function getSortingOptions($preselect = false){
         $options = array();
         
         $option_selected = false;
@@ -356,11 +356,16 @@ class CardFlagged extends Card {
         return array_reverse($options);
     } 
     
-    public function getSortingOptionsHTML(){
+    /**
+     * returns html for select options in html
+     * @param boolean $preselect
+     * @return string
+     */
+    public function getSortingOptionsHTML($preselect = false){
         $html = '';
         foreach($this->getSortingOptions() as $option){
             $html.= '<option value="'.$option['value'].'"';
-            if($option['prop_selected']){
+            if(is_bool($preselect) AND $preselect AND $option['prop_selected']){
                 $html.= ' selected';
             }
             $html.= '>'.$option['name'].'</option>';
