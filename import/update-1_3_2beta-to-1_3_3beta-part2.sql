@@ -1,0 +1,14 @@
+UPDATE `settings` SET `meta` = '{\"type\":\"mail\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'app_mail';
+UPDATE `settings` SET `meta` = '{\"type\":\"bool\",\"allowed_values\":\"0,1\"}' WHERE `settings`.`name` = 'cards_decks_public';
+UPDATE `settings` SET `meta` = '{\"type\":\"bool\",\"allowed_values\":\"0,1\"}' WHERE `settings`.`name` = 'cards_decks_upcoming_public';
+UPDATE `settings` SET `meta` = '{\"type\":\"select\",\"allowed_values\":\"gif,jpg,png\"}' WHERE `settings`.`name` = 'cards_file_type';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'cards_per_page';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'cards_startdeck_num';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'levelup_gift_cards';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'master_gift_cards';
+UPDATE `settings` SET `meta` = '{\"type\":\"bool\",\"allowed_values\":\"0,1\"}' WHERE `settings`.`name` = 'members_profil_public';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'shop_max_stock';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'shop_price_max';
+UPDATE `settings` SET `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'shop_price_min';
+UPDATE `settings` SET `meta` = '{\"type\":\"bool\",\"allowed_values\":\"0,1\"}' WHERE `settings`.`name` = 'cardmanager_preselection';
+UPDATE `settings` SET `description` = '{\"en\":\"Time between each restock in minutes\",\"de\":\"Wartezeit zwischen Auffüllungen im Shop in Minuten\"}', `meta` = '{\"type\":\"number\",\"allowed_values\":\"\"}' WHERE `settings`.`name` = 'shop_restock_minutes';
