@@ -17,7 +17,7 @@ class Setting extends DbRecordModel {
     protected static
     $db_table = 'settings',
     $db_pk = 'name',
-    $db_fields = array('name','value','description'),
+    $db_fields = array('name','value','description','meta'),
     $sql_order_by_allowed_values = array('name');
    
     public function __construct() {
@@ -30,7 +30,7 @@ class Setting extends DbRecordModel {
     
     public function getValue() {
         return $this->value;
-    }    
+    }
     
     public function getDescription($lang='de') {
     	$description = json_decode($this->description,true);
@@ -38,6 +38,20 @@ class Setting extends DbRecordModel {
     		return $description[$lang];
     	}else{
     		return $description[0];
+    	}
+    }
+    
+    /**
+     * 
+     * @param string $field
+     * @return mixed
+     */
+    public function getMeta($field) {
+    	$metadata = json_decode($this->meta,true);
+    	if(isset($metadata[$field])){
+    		return $metadata[$field];
+    	}else{
+    		return null;
     	}
     }
     
